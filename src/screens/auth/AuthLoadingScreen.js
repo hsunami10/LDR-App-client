@@ -6,7 +6,6 @@ class AuthLoadingScreen extends Component {
   constructor(props) {
     super(props);
 
-    // TODO: Use AsyncStorage to see if the user is already logged in
     this.getLoginInfo()
       .then(obj => {
         if (obj) {
@@ -26,8 +25,6 @@ class AuthLoadingScreen extends Component {
 
   async getLoginInfo() {
     try {
-      // BUG: Breaks here?
-      // BUG: "TypeError: Cannot read property 'resetGenericPasswordForOptions' of undefined"
       const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, email }
       if (credentials) {
         console.log(`Credentials successfully loaded: ${credentials}`);
