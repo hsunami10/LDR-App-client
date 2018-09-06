@@ -54,34 +54,40 @@ export STACK (
 )
 */
 
+const CardStack = createStackNavigator(
+  {
+    // NOTE: Other screens with card transitions here
+    ViewPost: ViewPostScreen
+  },
+  {}
+);
+
+const MainStack = createStackNavigator(
+  {
+    // NOTE: 5 bottom main tabbed screen here
+    AppCardStack: CardStack
+  },
+  {
+    // NOTE: Set initialRouteName to the main app view
+    mode: 'card',
+    headerMode: 'screen'
+  }
+);
+
+const ModalStack = createStackNavigator(
+  {
+    // NOTE: Modals here
+    ViewProfile: ViewProfileScreen
+  },
+  {}
+);
+
 // NOTE: Feed as default
 // NOTE: // TODO: Remember to set header: null in static navigationOptions when needed
 export default createStackNavigator(
   {
-    AppMainStack: createStackNavigator(
-      {
-        // NOTE: 5 bottom main tabbed screen here
-        AppCardStack: createStackNavigator(
-          {
-            // NOTE: Other screens with card transitions here
-            ViewPost: ViewPostScreen
-          },
-          {}
-        )
-      },
-      {
-        // NOTE: Set initialRouteName to the main app view
-        mode: 'card',
-        headerMode: 'screen'
-      }
-    ),
-    AppModalStack: createStackNavigator(
-      {
-        // NOTE: Modals here
-        ViewProfile: ViewProfileScreen
-      },
-      {}
-    )
+    AppMainStack: MainStack,
+    AppModalStack: ModalStack
   },
   {
     initialRouteName: 'AppMainStack',

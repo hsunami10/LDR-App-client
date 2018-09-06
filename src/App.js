@@ -3,7 +3,7 @@ import { Platform, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 import { SafeAreaView } from 'react-navigation';
-import NavStack from '../src/navigation';
+import RootStack from '../src/navigation/RootStack';
 import store from '../index';
 // import firebase from 'firebase'; // NOTE: This crashes android emulator
 
@@ -19,7 +19,7 @@ class App extends Component {
       return (
         <SafeAreaView style={{ flex: 1 }}>
           <Provider store={store}>
-            <NavStack />
+            <RootStack />
           </Provider>
         </SafeAreaView>
       );
@@ -27,7 +27,7 @@ class App extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Provider store={store}>
-          <NavStack />
+          <RootStack />
         </Provider>
       </View>
     );
