@@ -6,36 +6,26 @@ import {
   ForgotPasswordScreen
 } from '../screens/auth';
 
-const MainSubStack = createStackNavigator(
+const MainStack = createStackNavigator(
   {
+    Welcome: WelcomeScreen,
     LogIn: LogInScreen,
     SignUp: SignUpScreen
   },
   {
+    initialRouteName: 'Welcome',
     headerMode: 'screen'
   }
 );
 
-const MainStack = createStackNavigator(
-  {
-    Welcome: WelcomeScreen,
-    AuthSubStack: MainSubStack
-  },
-  {
-    initialRouteName: 'Welcome',
-    headerMode: 'none'
-  }
-);
-
+// NOTE: Auth modals here: forgot password, set location, camera, etc.
 const ModalStack = createStackNavigator(
   {
-    // NOTE: Auth modals here: forgot password, set location, camera, etc.
     ForgotPassword: ForgotPasswordScreen
   },
   {}
 );
 
-// NOTE: Welcome screen does not have a regular header
 export default createStackNavigator(
   {
     AuthMainStack: MainStack,

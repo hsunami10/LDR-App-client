@@ -5,12 +5,12 @@ export const WelcomeScreen = props => (
   <View style={styles.viewStyle}>
     <Text>Welcome Screen!</Text>
     <Button
-      onPress={props.navigation.navigate('LogIn')}
+      onPress={() => props.navigation.navigate('LogIn')}
       title="Log In"
       color="blue"
     />
     <Button
-      onPress={props.navigation.navigate('SignUp')}
+      onPress={() => props.navigation.navigate('SignUp')}
       title="Sign Up"
       color="blue"
     />
