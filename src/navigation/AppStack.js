@@ -85,6 +85,7 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'AppMainStack',
-    mode: 'modal'
+    mode: 'modal',
+    headerMode: 'none'
   }
 );
