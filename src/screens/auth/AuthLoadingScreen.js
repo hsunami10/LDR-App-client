@@ -36,7 +36,6 @@ class AuthLoadingScreen extends Component {
       console.log('Credentials do not exist.');
       return Promise.resolve(null);
     } catch (e) {
-      await Keychain.resetGenericPassword();
       return Promise.reject(e);
     }
   }
