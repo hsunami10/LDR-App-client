@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 
-export const WelcomeScreen = props => (
+const WelcomeScreen = props => (
   <View style={styles.viewStyle}>
     <Text>Welcome Screen!</Text>
     <Button
@@ -24,3 +24,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+export default WelcomeScreen;

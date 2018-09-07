@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Input, Button } from '../../components/common';
 import { isValidInput } from '../../assets/helpers';
 
-export class LogInScreen extends Component {
+class LogInScreen extends Component {
   state = {
     username: '',
     password: '',
@@ -65,3 +65,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+export default LogInScreen;

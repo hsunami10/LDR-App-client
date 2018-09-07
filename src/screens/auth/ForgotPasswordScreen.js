@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export const ForgotPasswordScreen = () => (
+const ForgotPasswordScreen = () => (
   <View style={styles.viewStyle}>
     <Text>Forgot Password Modal!</Text>
   </View>
@@ -14,3 +14,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+export default ForgotPasswordScreen;

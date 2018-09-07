@@ -1,2 +1,3 @@
 // Auth action types
-export const SPLASH_SCREEN_STOP_LOADING = 'splash_screen_stop_loading';
+export const START_LOADING = 'start_loading';
+export const STOP_LOADING = 'stop_loading';

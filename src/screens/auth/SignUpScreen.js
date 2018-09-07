@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
 import { Input, Button } from '../../components/common';
 import { isValidInput } from '../../assets/helpers';
+import { signUpWithUsernameAndPassword } from '../../actions/AuthActions';
 
-export class SignUpScreen extends Component {
+class SignUpScreen extends Component {
   state = {
     username: '',
     password: '',
@@ -33,7 +35,7 @@ export class SignUpScreen extends Component {
     if (isValidInput([username, password, confirmPassword])) {
       // Check password match
       if (password === confirmPassword) {
-        // TODO: Handle signing up here
+        this.props.signUpWithUsernameAndPassword(username, password);
       } else {
         // TODO: Handle invalid input message here
       }
@@ -76,3 +78,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+export default connect(null, { signUpWithUsernameAndPassword })(SignUpScreen);

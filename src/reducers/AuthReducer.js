@@ -1,5 +1,6 @@
 import {
-  SPLASH_SCREEN_STOP_LOADING
+  START_LOADING,
+  STOP_LOADING
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -7,14 +8,15 @@ const INITIAL_STATE = {
   email: '',
   user: null,
   error: '',
-  splash_loading: true,
   loading: false
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SPLASH_SCREEN_STOP_LOADING:
-      return { ...state, splash_loading: false };
+    case START_LOADING:
+      return { ...state, loading: true };
+    case STOP_LOADING:
+      return { ...state, loading: false };
     default:
       return state;
   }
