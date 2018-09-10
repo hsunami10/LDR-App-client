@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Image } from 'react-native';
+import { ROOT_URL } from '../../constants/variables';
 
 const WelcomeScreen = props => (
   <View style={styles.viewStyle}>
@@ -13,6 +14,11 @@ const WelcomeScreen = props => (
       onPress={() => props.navigation.navigate('SignUp')}
       title="Sign Up"
       color="blue"
+    />
+    {/* TODO: Remove this later */}
+    <Image
+      style={{ width: 50, height: 50 }}
+      source={{ uri: `${ROOT_URL}/images/groups/nature.jpeg` }}
     />
   </View>
 );
