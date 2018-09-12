@@ -47,7 +47,7 @@ export const logIn = (username, password) => {
 };
 
 // ========================================== Signing Up ==========================================
-const handleUPResponse = (dispatch, resp) => {
+const handleUPResponse = (dispatch, resp, navigation) => {
   if (resp.data.msg) {
     // TODO: Handle username already taken message here
     console.log(resp.data.msg);
@@ -57,12 +57,13 @@ const handleUPResponse = (dispatch, resp) => {
       type: SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
       payload: resp.data.id
     });
-    dispatch(stopLoading());
+    // TODO: Call navigation.navigate('route') here
   }
+  dispatch(stopLoading());
 };
 
 // NOTE: Have loading be ALWAYS AT LEAST 1 second
-export const signUpWithUsernameAndPassword = (username, password) => {
+export const signUpWithUsernameAndPassword = (username, password, navigation) => {
   return dispatch => {
     const beforeReq = Date.now();
     dispatch(startLoading());
@@ -70,9 +71,9 @@ export const signUpWithUsernameAndPassword = (username, password) => {
       .then(resp => {
         const diff = Date.now() - beforeReq;
         if (diff < MIN_LOADING_TIME) {
-          setTimeout(() => handleUPResponse(dispatch, resp), MIN_LOADING_TIME - diff);
+          setTimeout(() => handleUPResponse(dispatch, resp, navigation), MIN_LOADING_TIME - diff);
         } else {
-          handleUPResponse(dispatch, resp);
+          handleUPResponse(dispatch, resp, navigation);
         }
       })
       .catch(error => {

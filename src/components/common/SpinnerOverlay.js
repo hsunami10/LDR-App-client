@@ -10,7 +10,7 @@ export const SpinnerOverlay = props => (
       animation={props.animation}
       overlayColor={props.overlayColor}
       size={props.size}
-      textContent={props.textContent}
+      textContent={props.text}
       textStyle={props.textStyle}
       visible={props.visible}
     >

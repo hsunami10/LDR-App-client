@@ -38,7 +38,7 @@ class SignUpScreen extends Component {
       if (password === confirmPassword) {
         // Check password length
         if (password.length >= 6) {
-          this.props.signUpWithUsernameAndPassword(username, password);
+          this.props.signUpWithUsernameAndPassword(username, password, this.props.navigation);
         } else {
           // TODO: Handle invalid password length message here
         }
@@ -78,7 +78,7 @@ class SignUpScreen extends Component {
         />
         <Button onPress={this.signUp}>Sign Up</Button>
         <Button onPress={this.signUpFB}>Sign up with Facebook</Button>
-        <SpinnerOverlay visible={this.props.loading} text="Signing Up..." />
+        <SpinnerOverlay visible={this.props.loading} />
       </View>
     );
   }
