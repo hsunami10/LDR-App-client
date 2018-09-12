@@ -25,7 +25,7 @@ class AuthLoadingScreen extends Component {
 
   async getLoginInfo() {
     try {
-      const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, email }
+      const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, uid }
       if (credentials) {
         console.log(`Credentials successfully loaded: ${credentials}`);
         return Promise.resolve(credentials);

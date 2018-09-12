@@ -1,16 +1,17 @@
 import axios from 'axios';
 import {
-  START_LOADING,
-  STOP_LOADING
+  START_OVERLAY_LOADING,
+  STOP_OVERLAY_LOADING,
+  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS
 } from './types';
-import { ROOT_URL } from '../constants/variables';
+import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
 
 export const startLoading = () => {
-  return { type: START_LOADING };
+  return { type: START_OVERLAY_LOADING };
 };
 
 export const stopLoading = () => {
-  return { type: STOP_LOADING };
+  return { type: STOP_OVERLAY_LOADING };
 };
 
 // Get public or private profile information
@@ -46,14 +47,38 @@ export const logIn = (username, password) => {
 };
 
 // ========================================== Signing Up ==========================================
+const handleUPResponse = (dispatch, resp) => {
+  if (resp.data.msg) {
+    // TODO: Handle username already taken message here
+    console.log(resp.data.msg);
+  } else {
+    // TODO: Handle sign up username and password success
+    dispatch({
+      type: SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
+      payload: resp.data.id
+    });
+    dispatch(stopLoading());
+  }
+};
+
+// NOTE: Have loading be ALWAYS AT LEAST 1 second
 export const signUpWithUsernameAndPassword = (username, password) => {
   return dispatch => {
+    const beforeReq = Date.now();
+    dispatch(startLoading());
     axios.post(`${ROOT_URL}/api/signup/username`, { username, password })
       .then(resp => {
-        console.log(resp.data);
+        const diff = Date.now() - beforeReq;
+        if (diff < MIN_LOADING_TIME) {
+          setTimeout(() => handleUPResponse(dispatch, resp), MIN_LOADING_TIME - diff);
+        } else {
+          handleUPResponse(dispatch, resp);
+        }
       })
       .catch(error => {
         console.log(`signUp error: ${error}`);
+        console.log(error.status);
+        dispatch(stopLoading());
       });
   };
 };

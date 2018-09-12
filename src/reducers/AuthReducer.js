@@ -1,6 +1,7 @@
 import {
-  START_LOADING,
-  STOP_LOADING
+  START_OVERLAY_LOADING,
+  STOP_OVERLAY_LOADING,
+  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,10 +14,12 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case START_LOADING:
+    case START_OVERLAY_LOADING:
       return { ...state, loading: true };
-    case STOP_LOADING:
+    case STOP_OVERLAY_LOADING:
       return { ...state, loading: false };
+    case SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS:
+      return { ...state, uid: action.payload };
     default:
       return state;
   }
