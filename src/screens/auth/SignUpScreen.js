@@ -1,16 +1,31 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { Input, Button } from '../../components/common';
 import { isValidInput } from '../../assets/helpers';
-import { signUpWithUsernameAndPassword } from '../../actions/AuthActions';
-import { SpinnerOverlay } from '../../components/common';
+import {
+  closeFatalError,
+  signUpWithUsernameAndPassword
+} from '../../actions/AuthActions';
+import { SpinnerOverlay, Input, Button } from '../../components/common';
 
 class SignUpScreen extends Component {
   state = {
     username: '',
     password: '',
     confirmPassword: ''
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.fatal_title !== '') {
+      Alert.alert(
+        newProps.fatal_title,
+        newProps.error_msg,
+        [
+          { text: 'OK', onPress: () => this.props.closeFatalError() },
+        ],
+        { onDismiss: () => this.props.closeFatalError() }
+      );
+    }
   }
 
   handleChangeText = (text, id) => {
@@ -56,6 +71,7 @@ class SignUpScreen extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <View style={styles.viewStyle}>
         <Text>Sign Up Screen!</Text>
@@ -92,10 +108,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  return {
-    loading: state.auth.loading
-  };
-};
+const mapStateToProps = state => ({
+  fatal_title: state.auth.fatal_title,
+  error_msg: state.auth.error_msg,
+  loading: state.auth.loading
+});
 
-export default connect(mapStateToProps, { signUpWithUsernameAndPassword })(SignUpScreen);
+export default connect(mapStateToProps, {
+  closeFatalError,
+  signUpWithUsernameAndPassword
+})(SignUpScreen);

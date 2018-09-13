@@ -4969,6 +4969,10 @@ react-native-loading-spinner-overlay@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-0.5.2.tgz#b7bcd277476d596615fd7feee601789f9bdc7acc"
 
+react-native-restart@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-restart/-/react-native-restart-0.0.7.tgz#e2ec764dcb0a82918a301c8664c30df75225f7e3"
+
 react-native-safe-area-view@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.7.0.tgz#38f5ab9368d6ef9e5d18ab64212938af3ec39421"
