@@ -7,7 +7,7 @@ import {
   resetAuthErrors,
   signUpWithUsernameAndPassword
 } from '../../actions/AuthActions';
-import { SpinnerOverlay, Input, Button } from '../../components/common';
+import { SpinnerOverlay, Input, Button, StandardHeader } from '../../components/common';
 import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
@@ -18,6 +18,12 @@ class SignUpScreen extends Component {
   }
 
   componentWillUnmount() {
+    this.props.resetAuthErrors();
+  }
+
+  // Clear input fields and errors
+  resetEverything = () => {
+    this.setState(() => ({ username: '', password: '', confirmPassword: '' }));
     this.props.resetAuthErrors();
   }
 
@@ -46,7 +52,11 @@ class SignUpScreen extends Component {
       if (password === confirmPassword) {
         // Check password length
         if (password.length >= 6) {
-          this.props.signUpWithUsernameAndPassword(username, password, this.props.navigation);
+          this.props.signUpWithUsernameAndPassword(
+            { username, password },
+            this.props.navigation,
+            this.resetEverything
+          );
         } else {
           this.props.setAuthErrors('password', 'Password must be at least 6 characters');
         }
@@ -65,31 +75,37 @@ class SignUpScreen extends Component {
 
   render() {
     return (
-      <View style={styles.viewStyle}>
-        <Text>Sign Up Screen!</Text>
-        <Input
-          placeholder="Username"
-          onChangeText={text => this.handleChangeText(text, 0)}
-          value={this.state.username}
-          showBorder={this.props.error_field === 'username'}
+      <View>
+        <StandardHeader
+          title="Sign Up"
+          navigation={this.props.navigation}
         />
-        <Input
-          placeholder="Password"
-          secureTextEntry
-          onChangeText={text => this.handleChangeText(text, 1)}
-          value={this.state.password}
-          showBorder={this.props.error_field === 'password'}
-        />
-        <Input
-          placeholder="Confirm Password"
-          secureTextEntry
-          onChangeText={text => this.handleChangeText(text, 2)}
-          value={this.state.confirmPassword}
-          showBorder={this.props.error_field === 'password'}
-        />
-        <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
-        <Button onPress={this.signUp}>Sign Up</Button>
-        <Button onPress={this.signUpFB}>Sign up with Facebook</Button>
+        <View style={styles.viewStyle}>
+          <Input
+            placeholder="Username"
+            onChangeText={text => this.handleChangeText(text, 0)}
+            value={this.state.username}
+            showBorder={this.props.error_field === 'username'}
+          />
+          <Input
+            placeholder="Password"
+            secureTextEntry
+            onChangeText={text => this.handleChangeText(text, 1)}
+            value={this.state.password}
+            showBorder={this.props.error_field === 'password'}
+          />
+          <Input
+            placeholder="Confirm Password"
+            secureTextEntry
+            onChangeText={text => this.handleChangeText(text, 2)}
+            value={this.state.confirmPassword}
+            showBorder={this.props.error_field === 'password'}
+          />
+          <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
+          <Button onPress={this.signUp}>Sign Up</Button>
+          <Button onPress={this.signUpFB}>Sign up with Facebook</Button>
+        </View>
+
         <SpinnerOverlay visible={this.props.loading} />
       </View>
     );
@@ -98,7 +114,6 @@ class SignUpScreen extends Component {
 
 const styles = StyleSheet.create({
   viewStyle: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   }

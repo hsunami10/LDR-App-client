@@ -3,16 +3,28 @@ import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import LogInScreen from '../screens/auth/LogInScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import CreateProfileScreen from '../screens/auth/CreateProfileScreen';
+
+const AfterInputStack = createStackNavigator(
+  {
+    CreateProfile: CreateProfileScreen
+  },
+  {
+    initialRouteName: 'CreateProfile',
+    headerMode: 'none'
+  }
+);
 
 const MainStack = createStackNavigator(
   {
     Welcome: WelcomeScreen,
     LogIn: LogInScreen,
-    SignUp: SignUpScreen
+    SignUp: SignUpScreen,
+    AfterInput: AfterInputStack
   },
   {
     initialRouteName: 'Welcome',
-    headerMode: 'screen'
+    headerMode: 'none'
   }
 );
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Input, Button } from '../../components/common';
+import { Input, Button, StandardHeader } from '../../components/common';
 import { isValidInput } from '../../assets/helpers';
 
 class LogInScreen extends Component {

@@ -47,34 +47,35 @@ export const logIn = (username, password) => {
 };
 
 // ========================================== Signing Up ==========================================
-const handleUPResponse = (dispatch, response, navigation) => {
+const handleUPResponse = (dispatch, response, navigation, resetEverything) => {
   if (response.data.msg) {
-    dispatch(setAuthErrors('username', response.data.msg));
+    dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
   } else {
     dispatch({
       type: SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
       payload: response.data.id
     });
-    // TODO: Call navigation.navigate('route') here - also resets auth errors
+    navigation.navigate('AfterInput');
+    resetEverything();
   }
   dispatch(stopLoading());
 };
 
 // NOTE: Have loading be ALWAYS AT LEAST 1 second
-export const signUpWithUsernameAndPassword = (username, password, navigation) => {
+export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => {
   return dispatch => {
     const beforeReq = Date.now();
     dispatch(startLoading());
-    axios.post(`${ROOT_URL}/api/signup/username`, { username, password })
+    axios.post(`${ROOT_URL}/api/signup/username`, userObj)
       .then(response => {
         const diff = Date.now() - beforeReq;
         if (diff < MIN_LOADING_TIME) {
           setTimeout(
-            () => handleUPResponse(dispatch, response, navigation),
+            () => handleUPResponse(dispatch, response, navigation, resetEverything),
             MIN_LOADING_TIME - diff
           );
         } else {
-          handleUPResponse(dispatch, response, navigation);
+          handleUPResponse(dispatch, response, navigation, resetEverything);
         }
       })
       .catch(error => {
