@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { isValidInput } from '../../assets/helpers';
-import {
-  closeFatalError,
-  signUpWithUsernameAndPassword
-} from '../../actions/AuthActions';
+import { signUpWithUsernameAndPassword } from '../../actions/AuthActions';
 import { SpinnerOverlay, Input, Button } from '../../components/common';
 
 class SignUpScreen extends Component {
@@ -13,19 +10,6 @@ class SignUpScreen extends Component {
     username: '',
     password: '',
     confirmPassword: ''
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.fatal_title !== '') {
-      Alert.alert(
-        newProps.fatal_title,
-        newProps.error_msg,
-        [
-          { text: 'OK', onPress: () => this.props.closeFatalError() },
-        ],
-        { onDismiss: () => this.props.closeFatalError() }
-      );
-    }
   }
 
   handleChangeText = (text, id) => {
@@ -109,12 +93,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  fatal_title: state.auth.fatal_title,
-  error_msg: state.auth.error_msg,
-  loading: state.auth.loading
+  loading: state.loading
 });
 
-export default connect(mapStateToProps, {
-  closeFatalError,
-  signUpWithUsernameAndPassword
-})(SignUpScreen);
+export default connect(mapStateToProps, { signUpWithUsernameAndPassword })(SignUpScreen);

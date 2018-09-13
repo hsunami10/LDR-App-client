@@ -1,32 +1,10 @@
 import axios from 'axios';
 import {
-  START_OVERLAY_LOADING,
-  STOP_OVERLAY_LOADING,
-  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
-  SHOW_FATAL_ERROR,
-  CLOSE_FATAL_ERROR
+  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS
 } from './types';
 import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
+import { stopLoading, startLoading } from './LoadingActions';
 import handleError from '../assets/error';
-
-export const startLoading = () => ({
-  type: START_OVERLAY_LOADING
-});
-
-export const stopLoading = () => ({
-  type: STOP_OVERLAY_LOADING
-});
-
-// Show an alert of the fatal error
-export const showFatalError = (title, msg) => ({
-  type: SHOW_FATAL_ERROR,
-  payload: { title, msg }
-});
-
-// Close alert of the fatal error
-export const closeFatalError = () => ({
-  type: CLOSE_FATAL_ERROR
-});
 
 // Get public or private profile information
 // NOTE: Use this after valid keychain crednetials or seeing public profiles
