@@ -6,7 +6,7 @@ export const SpinnerOverlay = props => (
   <View style={{ flex: 1 }}>
     <Spinner
       cancelable={props.cancelable}
-      color={props.color}
+      color={props.color || 'black'}
       animation={props.animation}
       overlayColor={props.overlayColor}
       size={props.size}

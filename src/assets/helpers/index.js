@@ -1,5 +1,19 @@
 // NOTE: This file holds all helper functions
 
+import { Alert } from 'react-native';
+import RNRestart from 'react-native-restart';
+
+// TODO: Send report to development team
+export const handleError = error => {
+  Alert.alert(
+      'Oops!',
+      `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`,
+    [
+      { text: 'Restart', onPress: () => RNRestart.Restart() }
+    ]
+  );
+};
+
 // ======================================== Authentication ========================================
 // Checks for spaces and empty strings
 export const isValidInput = input => {

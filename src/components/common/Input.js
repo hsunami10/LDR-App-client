@@ -9,11 +9,12 @@ export const Input = props => {
     onChangeText,
     placeholder,
     secureTextEntry,
-    showLabel
+    showLabel,
+    showBorder
   } = props;
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle, { borderWidth: (showBorder ? 1 : 0) }]}>
       {showLabel ? <Text style={labelStyle}>{label || 'Label'}</Text> : null}
       <TextInput
         secureTextEntry={secureTextEntry}
@@ -45,6 +46,7 @@ const styles = {
     height: 40,
     // flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: 'red'
   }
 };

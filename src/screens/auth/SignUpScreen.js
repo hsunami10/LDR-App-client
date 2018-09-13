@@ -2,14 +2,23 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { isValidInput } from '../../assets/helpers';
-import { signUpWithUsernameAndPassword } from '../../actions/AuthActions';
+import {
+  setAuthErrors,
+  resetAuthErrors,
+  signUpWithUsernameAndPassword
+} from '../../actions/AuthActions';
 import { SpinnerOverlay, Input, Button } from '../../components/common';
+import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
   state = {
     username: '',
     password: '',
     confirmPassword: ''
+  }
+
+  componentWillUnmount() {
+    this.props.resetAuthErrors();
   }
 
   handleChangeText = (text, id) => {
@@ -39,13 +48,13 @@ class SignUpScreen extends Component {
         if (password.length >= 6) {
           this.props.signUpWithUsernameAndPassword(username, password, this.props.navigation);
         } else {
-          // TODO: Handle invalid password length message here
+          this.props.setAuthErrors('password', 'Password must be at least 6 characters');
         }
       } else {
-        // TODO: Handle passwod doesn't match message here
+        this.props.setAuthErrors('password', 'Passwords do not match');
       }
     } else {
-      // TODO: Handle invalid input message here
+      this.props.setAuthErrors('', 'Invalid username or password');
     }
   }
 
@@ -55,7 +64,6 @@ class SignUpScreen extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <View style={styles.viewStyle}>
         <Text>Sign Up Screen!</Text>
@@ -63,19 +71,23 @@ class SignUpScreen extends Component {
           placeholder="Username"
           onChangeText={text => this.handleChangeText(text, 0)}
           value={this.state.username}
+          showBorder={this.props.error_field === 'username'}
         />
         <Input
           placeholder="Password"
           secureTextEntry
           onChangeText={text => this.handleChangeText(text, 1)}
           value={this.state.password}
+          showBorder={this.props.error_field === 'password'}
         />
         <Input
           placeholder="Confirm Password"
           secureTextEntry
           onChangeText={text => this.handleChangeText(text, 2)}
           value={this.state.confirmPassword}
+          showBorder={this.props.error_field === 'password'}
         />
+        <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
         <Button onPress={this.signUp}>Sign Up</Button>
         <Button onPress={this.signUpFB}>Sign up with Facebook</Button>
         <SpinnerOverlay visible={this.props.loading} />
@@ -93,7 +105,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  error_field: state.auth.error_field,
+  error_msg: state.auth.error_msg,
   loading: state.loading
 });
 
-export default connect(mapStateToProps, { signUpWithUsernameAndPassword })(SignUpScreen);
+export default connect(mapStateToProps, {
+  setAuthErrors,
+  resetAuthErrors,
+  signUpWithUsernameAndPassword
+})(SignUpScreen);
