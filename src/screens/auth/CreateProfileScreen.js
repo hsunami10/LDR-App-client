@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
+import { StandardHeader } from '../../components/common';
 
+// BUG: Swiping back with this goes to the AuthLoadingScreen?
 class CreateProfileScreen extends Component {
+  static navigationOptions = {
+    gesturesEnabled: false
+  }
+
   render() {
     return (
       <View>
-        <Text>Create Profile!</Text>
+        <StandardHeader
+          showRight
+          rightTitle="Create"
+          title="Create Profile"
+          onPressRight={() => console.log('create profile')}
+          disableBack
+        />
+        <View>
+          <Text>Create Profile!</Text>
+        </View>
       </View>
     );
   }

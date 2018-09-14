@@ -55,7 +55,8 @@ const handleUPResponse = (dispatch, response, navigation, resetEverything) => {
       type: SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
       payload: response.data.id
     });
-    navigation.navigate('AfterInput');
+    // TODO: Store into keychain
+    navigation.navigate('CreateProfile');
     resetEverything();
   }
   dispatch(stopLoading());

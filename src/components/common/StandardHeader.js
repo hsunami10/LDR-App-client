@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import { View, StyleSheet, BackHandler, Platform } from 'react-native';
 import { HeaderTitle } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { MIN_HEADER_HEIGHT } from '../../constants/variables';
@@ -12,49 +12,92 @@ import { HeaderRight } from './HeaderRight';
 
 /**
  * This is a customizable header.
+ * http://usejsdoc.org/tags-type.html
  *
  * @callback onPressLeft      (optional) The action to take when the left action is pressed.
  * @callback onPressRight     (optional) The action to take when the right action is pressed.
- *
- * All parameters are a part of the props object.
  *
  * @param {Object}   props
  * @param {string}   props.title                          The header title.
  * @param {string}   [props.leftTitle=null]               The title of the left action.
  * @param {string}   [props.rightTitle='Submit']          The title of the right action.
- * @param {boolean}  [props.showLeft]                     Determine whether to show a left action.
- * @param {boolean}  [props.showRight]                    Determine whether to show a right action.
+ * @param {boolean}  [props.showLeft]                     Whether or not to show the default left.
+ * @param {boolean}  [props.showRight]                    Whether or not to show the default right.
+ * @param {boolean}  [props.disableBack]                  Disable Android hardware back button.
  * @param {number}   [props.height=MIN_HEADER_HEIGHT]     The height of the header.
+ * @param {React}    [props.headerLeft]                   Custom component for the header left.
+ *                                                        Rendered when props.showLeft = undefined.
+ * @param {React}    [props.headerRight]                  Custom component for the header right.
+ *                                                        Rendered when props.showRight = undefined.
  */
-export const StandardHeader = props => {
-  const height = props.height || MIN_HEADER_HEIGHT;
-  const { onPressLeft, onPressRight, title, leftTitle, rightTitle, showLeft, showRight } = props;
-  return (
-    <View style={[styles.containerStyle, { height }]}>
-      <View styles={[styles.containerStyle, styles.actionsContainerStyle]}>
-        {showLeft ? (
-          <HeaderLeft
-            onPressLeft={onPressLeft}
-            leftTitle={leftTitle}
-          />
-        ) : null}
-        {showRight ? (
-          <HeaderRight
-            onPressRight={onPressRight}
-            rightTitle={rightTitle}
-          />
-        ) : null}
-      </View>
+export class StandardHeader extends Component {
+  componentDidMount() {
+    if (this.props.disableBack) {
+      if (Platform.OS === 'android') {
+        console.log('add android handler');
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+      } else {
+        // TODO: Handle iOS swipe back gesture
+      }
+    }
+  }
 
-      <View
-        pointerEvents="none"
-        style={[styles.containerStyle, { height }, styles.titleContainerStyle]}
-      >
-        <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle>
+  componentWillUnmount() {
+    if (this.props.disableBack) {
+      if (Platform.OS === 'android') {
+        console.log('remove android handler');
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+      } else {
+        // TODO: Handle iOS swipe back gesture
+      }
+    }
+  }
+
+  handleBackButton = () => {
+    console.log('android hardware back button pressed');
+    return true;
+  }
+
+  render() {
+    const height = this.props.height || MIN_HEADER_HEIGHT;
+    const {
+      onPressLeft,
+      onPressRight,
+      title,
+      leftTitle,
+      rightTitle,
+      showLeft,
+      showRight,
+      headerLeft,
+      headerRight
+    } = this.props;
+    return (
+      <View style={[styles.containerStyle, { height }]}>
+        <View styles={[styles.containerStyle, styles.actionsContainerStyle]}>
+          {showLeft ? (
+            <HeaderLeft
+              onPressLeft={onPressLeft}
+              leftTitle={leftTitle}
+            />
+          ) : headerLeft}
+          {showRight ? (
+            <HeaderRight
+              onPressRight={onPressRight}
+              rightTitle={rightTitle}
+            />
+          ) : headerRight}
+        </View>
+
+        <View
+          pointerEvents="none"
+          style={[styles.containerStyle, { height }, styles.titleContainerStyle]}
+        >
+          <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle>
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   containerStyle: {
