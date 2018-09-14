@@ -4,10 +4,6 @@ import { StandardHeader } from '../../components/common';
 
 // BUG: Swiping back with this goes to the AuthLoadingScreen?
 class CreateProfileScreen extends Component {
-  static navigationOptions = {
-    gesturesEnabled: false
-  }
-
   render() {
     return (
       <View>

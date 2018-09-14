@@ -11,12 +11,6 @@ import { SpinnerOverlay, Input, Button, StandardHeader } from '../../components/
 import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
-  // BUG: Swiping back with this goes to the AuthLoadingScreen?
-  // TODO: Remove this later -- only for testing swiping back
-  static navigationOptions = {
-    gesturesEnabled: false
-  }
-
   state = {
     username: '',
     password: '',

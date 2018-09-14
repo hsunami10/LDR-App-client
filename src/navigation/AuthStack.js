@@ -10,7 +10,12 @@ const MainStack = createStackNavigator(
     Welcome: WelcomeScreen,
     LogIn: LogInScreen,
     SignUp: SignUpScreen,
-    CreateProfile: CreateProfileScreen
+    CreateProfile: {
+      screen: CreateProfileScreen,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    }
   },
   {
     initialRouteName: 'Welcome',

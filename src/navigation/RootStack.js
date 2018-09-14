@@ -30,7 +30,12 @@ const RootStack = createStackNavigator(
 export default createStackNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    Root: RootStack
+    Root: {
+      screen: RootStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    }
   },
   {
     initialRouteName: 'AuthLoading',
