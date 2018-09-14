@@ -77,8 +77,12 @@ class SignUpScreen extends Component {
     return (
       <View>
         <StandardHeader
+          showLeft
+          showRight
           title="Sign Up"
-          navigation={this.props.navigation}
+          leftTitle="Back"
+          onPressRight={() => console.log('right pressed')}
+          onPressLeft={() => this.props.navigation.goBack()}
         />
         <View style={styles.viewStyle}>
           <Input
