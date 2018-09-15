@@ -60,6 +60,7 @@ class SignUpScreen extends Component {
       if (password === confirmPassword) {
         // Check password length
         if (password.length >= 6) {
+          this.props.resetAuthErrors();
           this.props.signUpWithUsernameAndPassword(
             { username, password },
             this.props.navigation,
@@ -110,7 +111,6 @@ class SignUpScreen extends Component {
             />
             <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
             <Button onPress={this.signUp}>Sign Up</Button>
-            <Button onPress={() => Keyboard.dismiss()}>Dismiss</Button>
           </View>
           <SpinnerOverlay visible={this.props.loading} />
         </View>

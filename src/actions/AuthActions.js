@@ -2,6 +2,7 @@ import axios from 'axios';
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
+  LOG_IN_USERNAME_AND_PASSWORD_SUCCESS,
   SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS
 } from './types';
 import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
@@ -34,20 +35,45 @@ export const resetAuthErrors = () => {
 };
 
 // ======================================= Logging In / Out =======================================
-export const logIn = (username, password) => {
+const logInUPResponse = (dispatch, response, navigation, resetEverything) => {
+  if (response.data.msg) {
+    dispatch(setAuthErrors('username', response.data.msg)); // Username does not exist
+  } else {
+    dispatch({
+      type: LOG_IN_USERNAME_AND_PASSWORD_SUCCESS,
+      payload: response.data // user object
+    });
+    // TODO: Store into keychain
+    navigation.navigate('App');
+    resetEverything();
+  }
+  dispatch(stopLoading());
+};
+
+export const logInWithUsernameAndPassword = (userObj, navigation, resetEverything) => {
   return dispatch => {
-    axios.get(`${ROOT_URL}/api/login/${username}/${password}`)
+    const beforeReq = Date.now();
+    dispatch(startLoading());
+    axios.get(`${ROOT_URL}/api/login/${userObj.username}/${userObj.password}`)
       .then(response => {
-        console.log(response.data);
+        const diff = Date.now() - beforeReq;
+        if (diff < MIN_LOADING_TIME) {
+          setTimeout(
+            () => logInUPResponse(dispatch, response, navigation, resetEverything),
+            MIN_LOADING_TIME - diff
+          );
+        } else {
+          logInUPResponse(dispatch, response, navigation, resetEverything);
+        }
       })
       .catch(error => {
-        console.log(`logIn error: ${error}`);
+        handleError(error);
       });
   };
 };
 
 // ========================================== Signing Up ==========================================
-const handleUPResponse = (dispatch, response, navigation, resetEverything) => {
+const signUpUPResponse = (dispatch, response, navigation, resetEverything) => {
   if (response.data.msg) {
     dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
   } else {
@@ -62,7 +88,6 @@ const handleUPResponse = (dispatch, response, navigation, resetEverything) => {
   dispatch(stopLoading());
 };
 
-// NOTE: Have loading be ALWAYS AT LEAST 1 second
 export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => {
   return dispatch => {
     const beforeReq = Date.now();
@@ -72,11 +97,11 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
         const diff = Date.now() - beforeReq;
         if (diff < MIN_LOADING_TIME) {
           setTimeout(
-            () => handleUPResponse(dispatch, response, navigation, resetEverything),
+            () => signUpUPResponse(dispatch, response, navigation, resetEverything),
             MIN_LOADING_TIME - diff
           );
         } else {
-          handleUPResponse(dispatch, response, navigation, resetEverything);
+          signUpUPResponse(dispatch, response, navigation, resetEverything);
         }
       })
       .catch(error => {
