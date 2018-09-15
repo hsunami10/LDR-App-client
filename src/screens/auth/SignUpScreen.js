@@ -8,7 +8,13 @@ import {
   resetAuthErrors,
   signUpWithUsernameAndPassword
 } from '../../actions/AuthActions';
-import { SpinnerOverlay, Input, Button, StandardHeader } from '../../components/common';
+import {
+  SpinnerOverlay,
+  Input,
+  Button,
+  StandardHeader,
+  DismissKeyboard
+} from '../../components/common';
 import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
@@ -72,41 +78,43 @@ class SignUpScreen extends Component {
 
   render() {
     return (
-      <View>
-        <StandardHeader
-          showLeft
-          title="Sign Up"
-          leftTitle="Back"
-          onPressLeft={() => this.props.navigation.goBack()}
-        />
-        <View style={styles.viewStyle}>
-          <Input
-            placeholder="Username"
-            onChangeText={text => this.handleChangeText(text, 0)}
-            value={this.state.username}
-            showBorder={this.props.error_field === 'username'}
+      <DismissKeyboard>
+        <View>
+          <StandardHeader
+            showLeft
+            title="Sign Up"
+            leftTitle="Back"
+            onPressLeft={() => this.props.navigation.goBack()}
           />
-          <Input
-            placeholder="Password"
-            secureTextEntry
-            onChangeText={text => this.handleChangeText(text, 1)}
-            value={this.state.password}
-            showBorder={this.props.error_field === 'password'}
-          />
-          <Input
-            placeholder="Confirm Password"
-            secureTextEntry
-            onChangeText={text => this.handleChangeText(text, 2)}
-            value={this.state.confirmPassword}
-            showBorder={this.props.error_field === 'password'}
-            onSubmitEditing={() => console.log('submit')}
-          />
-          <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
-          <Button onPress={this.signUp}>Sign Up</Button>
+          <View style={styles.viewStyle}>
+            <Input
+              placeholder="Username"
+              onChangeText={text => this.handleChangeText(text, 0)}
+              value={this.state.username}
+              showBorder={this.props.error_field === 'username'}
+            />
+            <Input
+              placeholder="Password"
+              secureTextEntry
+              onChangeText={text => this.handleChangeText(text, 1)}
+              value={this.state.password}
+              showBorder={this.props.error_field === 'password'}
+            />
+            <Input
+              placeholder="Confirm Password"
+              secureTextEntry
+              onChangeText={text => this.handleChangeText(text, 2)}
+              value={this.state.confirmPassword}
+              showBorder={this.props.error_field === 'password'}
+              onSubmitEditing={() => console.log('submit')}
+            />
+            <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
+            <Button onPress={this.signUp}>Sign Up</Button>
+            <Button onPress={() => Keyboard.dismiss()}>Dismiss</Button>
+          </View>
+          <SpinnerOverlay visible={this.props.loading} />
         </View>
-
-        <SpinnerOverlay visible={this.props.loading} />
-      </View>
+      </DismissKeyboard>
     );
   }
 }

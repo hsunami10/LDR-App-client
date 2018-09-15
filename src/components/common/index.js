@@ -1,4 +1,5 @@
 export * from './Button';
+export * from './DismissKeyboard';
 export * from './FullScreenLoading';
 export * from './HeaderLeft';
 export * from './HeaderRight';
