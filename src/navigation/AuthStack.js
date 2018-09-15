@@ -28,7 +28,9 @@ const ModalStack = createStackNavigator(
   {
     ForgotPassword: ForgotPasswordScreen
   },
-  {}
+  {
+    headerMode: 'none'
+  }
 );
 
 export default createStackNavigator(

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { TextInput, View, Text } from 'react-native';
 
 export const Input = props => {
@@ -10,11 +11,18 @@ export const Input = props => {
     placeholder,
     secureTextEntry,
     showLabel,
-    showBorder
+    showBorder,
+    borderColor,
+    onSubmitEditing
   } = props;
 
   return (
-    <View style={[containerStyle, { borderWidth: (showBorder ? 1 : 0) }]}>
+    <View
+      style={[
+        containerStyle, { borderWidth: (showBorder ? 1 : 0),
+          borderColor: borderColor || 'red' }
+        ]}
+    >
       {showLabel ? <Text style={labelStyle}>{label || 'Label'}</Text> : null}
       <TextInput
         secureTextEntry={secureTextEntry}
@@ -23,9 +31,22 @@ export const Input = props => {
         value={value}
         onChangeText={onChangeText}
         style={inputStyle}
+        onSubmitEditing={onSubmitEditing}
       />
     </View>
   );
+};
+
+Input.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string.isRequired,
+  onChangeText: PropTypes.func.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  secureTextEntry: PropTypes.bool,
+  showLabel: PropTypes.bool,
+  showBorder: PropTypes.bool,
+  borderColor: PropTypes.string,
+  onSubmitEditing: PropTypes.func
 };
 
 const styles = {

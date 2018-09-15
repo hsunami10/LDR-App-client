@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
 import { HeaderBackButton } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -12,6 +13,11 @@ export const HeaderLeft = props => (
     />
   </View>
 );
+
+HeaderLeft.propTypes = {
+  leftTitle: PropTypes.string,
+  onPressLeft: PropTypes.func.isRequired
+};
 
 const styles = StyleSheet.create({
   leftContainerStyle: {

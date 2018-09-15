@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { MIN_HEADER_HEIGHT } from '../../constants/variables';
@@ -10,6 +11,11 @@ export const HeaderRight = props => (
     </TouchableOpacity>
   </View>
 );
+
+HeaderRight.propTypes = {
+  onPressRight: PropTypes.func.isRequired,
+  rightTitle: PropTypes.string
+};
 
 const styles = StyleSheet.create({
   rightContainerStyle: {

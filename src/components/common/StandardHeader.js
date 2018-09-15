@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, StyleSheet, BackHandler, Platform } from 'react-native';
 import { HeaderTitle } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
@@ -36,8 +37,6 @@ export class StandardHeader extends Component {
       if (Platform.OS === 'android') {
         console.log('add android handler');
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-      } else {
-        // TODO: Handle iOS swipe back gesture
       }
     }
   }
@@ -47,8 +46,6 @@ export class StandardHeader extends Component {
       if (Platform.OS === 'android') {
         console.log('remove android handler');
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-      } else {
-        // TODO: Handle iOS swipe back gesture
       }
     }
   }
@@ -98,6 +95,20 @@ export class StandardHeader extends Component {
     );
   }
 }
+
+StandardHeader.propTypes = {
+  disableBack: PropTypes.bool,
+  height: PropTypes.number,
+  onPressLeft: PropTypes.func,
+  onPressRight: PropTypes.func,
+  title: PropTypes.string.isRequired,
+  leftTitle: PropTypes.string,
+  rightTitle: PropTypes.string,
+  showLeft: PropTypes.bool,
+  showRight: PropTypes.bool,
+  headerLeft: PropTypes.element,
+  headerRight: PropTypes.element
+};
 
 const styles = StyleSheet.create({
   containerStyle: {

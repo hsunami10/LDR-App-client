@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import { isValidInput } from '../../assets/helpers';
 import {
@@ -18,10 +19,10 @@ class SignUpScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.resetAuthErrors();
+    this.resetEverything();
   }
 
-  // Clear input fields and errors
+  // Pseudo componentWillUnmount
   resetEverything = () => {
     this.setState(() => ({ username: '', password: '', confirmPassword: '' }));
     this.props.resetAuthErrors();
@@ -45,6 +46,7 @@ class SignUpScreen extends Component {
 
   signUp = () => {
     const { username, password, confirmPassword } = this.state;
+    Keyboard.dismiss();
 
     // Check spaces
     if (isValidInput([username, password, confirmPassword])) {
@@ -66,11 +68,6 @@ class SignUpScreen extends Component {
     } else {
       this.props.setAuthErrors('', 'Invalid username or password');
     }
-  }
-
-  signUpFB = () => {
-    // TODO: Use Facebook SDK to sign up
-    console.log('sign up with facebook sdk');
   }
 
   render() {
@@ -102,10 +99,10 @@ class SignUpScreen extends Component {
             onChangeText={text => this.handleChangeText(text, 2)}
             value={this.state.confirmPassword}
             showBorder={this.props.error_field === 'password'}
+            onSubmitEditing={() => console.log('submit')}
           />
           <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
           <Button onPress={this.signUp}>Sign Up</Button>
-          <Button onPress={this.signUpFB}>Sign up with Facebook</Button>
         </View>
 
         <SpinnerOverlay visible={this.props.loading} />
@@ -113,6 +110,15 @@ class SignUpScreen extends Component {
     );
   }
 }
+
+SignUpScreen.propTypes = {
+  resetAuthErrors: PropTypes.func.isRequired,
+  signUpWithUsernameAndPassword: PropTypes.func.isRequired,
+  setAuthErrors: PropTypes.func.isRequired,
+  error_field: PropTypes.string.isRequired,
+  error_msg: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired
+};
 
 const styles = StyleSheet.create({
   viewStyle: {

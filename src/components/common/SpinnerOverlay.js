@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -18,3 +19,18 @@ export const SpinnerOverlay = props => (
     </Spinner>
   </View>
 );
+
+SpinnerOverlay.propTypes = {
+  cancelable: PropTypes.bool,
+  color: PropTypes.string,
+  animation: PropTypes.string,
+  overlayColor: PropTypes.string,
+  size: PropTypes.string,
+  text: PropTypes.string,
+  textStyle: PropTypes.object,
+  visible: PropTypes.bool.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ])
+};

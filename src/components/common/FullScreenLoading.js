@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { View, ActivityIndicator, Text } from 'react-native';
 import general from '../../constants/styles/general';
 
@@ -8,3 +9,8 @@ export const FullScreenLoading = ({ text, size }) => (
     <ActivityIndicator size={size || 'large'} />
   </View>
 );
+
+FullScreenLoading.propTypes = {
+  text: PropTypes.string,
+  size: PropTypes.string
+};
