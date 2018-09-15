@@ -22,14 +22,12 @@ import { HeaderRight } from './HeaderRight';
  * @param {string}   props.title                          The header title.
  * @param {string}   [props.leftTitle=null]               The title of the left action.
  * @param {string}   [props.rightTitle='Submit']          The title of the right action.
- * @param {boolean}  [props.showLeft]                     Whether or not to show the default left.
- * @param {boolean}  [props.showRight]                    Whether or not to show the default right.
+ * @param {boolean}  [props.showLeft]                     Whether or not to show the header left.
+ * @param {boolean}  [props.showRight]                    Whether or not to show the header right.
  * @param {boolean}  [props.disableBack]                  Disable Android hardware back button.
  * @param {number}   [props.height=MIN_HEADER_HEIGHT]     The height of the header.
  * @param {React}    [props.headerLeft]                   Custom component for the header left.
- *                                                        Rendered when props.showLeft = undefined.
  * @param {React}    [props.headerRight]                  Custom component for the header right.
- *                                                        Rendered when props.showRight = undefined.
  */
 export class StandardHeader extends Component {
   componentDidMount() {
@@ -73,16 +71,18 @@ export class StandardHeader extends Component {
         <View styles={[styles.containerStyle, styles.actionsContainerStyle]}>
           {showLeft ? (
             <HeaderLeft
+              headerLeft={headerLeft}
               onPressLeft={onPressLeft}
               leftTitle={leftTitle}
             />
-          ) : headerLeft}
+          ) : null}
           {showRight ? (
             <HeaderRight
+              headerRight={headerRight}
               onPressRight={onPressRight}
               rightTitle={rightTitle}
             />
-          ) : headerRight}
+          ) : null}
         </View>
 
         <View

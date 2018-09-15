@@ -7,16 +7,19 @@ import { MIN_HEADER_HEIGHT } from '../../constants/variables';
 
 export const HeaderLeft = props => (
   <View style={styles.leftContainerStyle}>
-    <HeaderBackButton
-      title={props.leftTitle || null}
-      onPress={props.onPressLeft}
-    />
+    {props.headerLeft ||
+      <HeaderBackButton
+        title={props.leftTitle || null}
+        onPress={props.onPressLeft}
+      />
+    }
   </View>
 );
 
 HeaderLeft.propTypes = {
   leftTitle: PropTypes.string,
-  onPressLeft: PropTypes.func.isRequired
+  onPressLeft: PropTypes.func.isRequired,
+  headerLeft: PropTypes.element
 };
 
 const styles = StyleSheet.create({

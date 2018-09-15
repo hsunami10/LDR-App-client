@@ -6,15 +6,18 @@ import { MIN_HEADER_HEIGHT } from '../../constants/variables';
 
 export const HeaderRight = props => (
   <View style={styles.rightContainerStyle}>
-    <TouchableOpacity onPress={props.onPressRight}>
-      <Text style={styles.rightTextStyle}>{props.rightTitle || 'Submit'}</Text>
-    </TouchableOpacity>
+    {props.headerRight ||
+      <TouchableOpacity onPress={props.onPressRight}>
+        <Text style={styles.rightTextStyle}>{props.rightTitle || 'Submit'}</Text>
+      </TouchableOpacity>
+    }
   </View>
 );
 
 HeaderRight.propTypes = {
   onPressRight: PropTypes.func.isRequired,
-  rightTitle: PropTypes.string
+  rightTitle: PropTypes.string,
+  headerRight: PropTypes.element
 };
 
 const styles = StyleSheet.create({
