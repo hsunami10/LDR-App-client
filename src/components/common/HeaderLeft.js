@@ -10,7 +10,7 @@ export const HeaderLeft = props => (
     {props.headerLeft ||
       <HeaderBackButton
         title={props.leftTitle || null}
-        onPress={props.onPressLeft}
+        onPress={props.onLeftPress}
       />
     }
   </View>
@@ -18,7 +18,7 @@ export const HeaderLeft = props => (
 
 HeaderLeft.propTypes = {
   leftTitle: PropTypes.string,
-  onPressLeft: PropTypes.func.isRequired,
+  onLeftPress: PropTypes.func.isRequired,
   headerLeft: PropTypes.element
 };
 

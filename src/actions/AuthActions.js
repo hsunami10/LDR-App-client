@@ -1,25 +1,33 @@
 import axios from 'axios';
+import * as Keychain from 'react-native-keychain';
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
-  LOG_IN_USERNAME_AND_PASSWORD_SUCCESS,
-  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS
+  SET_USER_ID
 } from './types';
 import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { handleError } from '../assets/helpers';
 
 // Get public or private profile information
-// NOTE: Use this after valid keychain crednetials or seeing public profiles
-export const getUserInfo = (uid, type) => {
+// NOTE: Use this after valid keychain credentials or seeing public profiles
+// type: private, public
+export const getUserInfo = (id, type) => {
   return dispatch => {
-    axios.get(`${ROOT_URL}/api/user/${uid}/${type}`)
+    axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
       .then(response => {
         console.log(response.data);
       })
       .catch(error => {
         console.log(`getUserInfo error: ${error}`);
       });
+  };
+};
+
+export const setUserID = id => {
+  return {
+    type: SET_USER_ID,
+    payload: id
   };
 };
 
@@ -34,18 +42,38 @@ export const resetAuthErrors = () => {
   return { type: RESET_AUTH_ERRORS };
 };
 
+// obj: { id, bool }
+export const setActive = obj => {
+  axios.put(`${ROOT_URL}/api/user/set_active`, obj)
+    .catch(err => {
+      handleError(err);
+    });
+};
+
+const storeCredentials = (async id => {
+  try {
+    await Keychain.setGenericPassword(id, id);
+    return Promise.resolve(id);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+});
+
 // ======================================= Logging In / Out =======================================
 const logInUPResponse = (dispatch, response, navigation, resetEverything) => {
   if (response.data.msg) {
-    dispatch(setAuthErrors('username', response.data.msg)); // Username does not exist
+    dispatch(setAuthErrors('', response.data.msg)); // Invalid username or password
   } else {
-    dispatch({
-      type: LOG_IN_USERNAME_AND_PASSWORD_SUCCESS,
-      payload: response.data // user object
-    });
-    // TODO: Store into keychain
-    navigation.navigate('App');
-    resetEverything();
+    storeCredentials(response.data.id)
+      .then(id => {
+        dispatch(setUserID(id));
+        navigation.navigate('App');
+        setActive({ id, bool: true });
+        resetEverything();
+      })
+      .catch(err => {
+        handleError(err);
+      });
   }
   dispatch(stopLoading());
 };
@@ -77,13 +105,16 @@ const signUpUPResponse = (dispatch, response, navigation, resetEverything) => {
   if (response.data.msg) {
     dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
   } else {
-    dispatch({
-      type: SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
-      payload: response.data.id
-    });
-    // TODO: Store into keychain
-    navigation.navigate('CreateProfile');
-    resetEverything();
+    storeCredentials(response.data.id)
+      .then(id => {
+        dispatch(setUserID(id));
+        navigation.navigate('CreateProfile');
+        setActive({ id, bool: true });
+        resetEverything();
+      })
+      .catch(err => {
+        handleError(err);
+      });
   }
   dispatch(stopLoading());
 };

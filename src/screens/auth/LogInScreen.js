@@ -75,7 +75,7 @@ class LogInScreen extends Component {
             showLeft
             title="Log In"
             leftTitle="Back"
-            onPressLeft={() => this.props.navigation.goBack()}
+            onLeftPress={() => this.props.navigation.goBack()}
           />
           <View style={styles.viewStyle}>
             <Input
@@ -86,6 +86,7 @@ class LogInScreen extends Component {
             />
             <Input
               placeholder="Password"
+              secureTextEntry
               onChangeText={text => this.handleChangeText(text, 1)}
               value={this.state.password}
             />

@@ -11,7 +11,7 @@ class CreateProfileScreen extends Component {
           showRight
           rightTitle="Create"
           title="Create Profile"
-          onPressRight={() => console.log('create profile')}
+          onRightPress={() => console.log('create profile')}
           disableBack
         />
         <View>

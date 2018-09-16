@@ -9,12 +9,12 @@
   "dependencies": {
     "axios": "^0.18.0",
     "eslint-config-rallycoding": "^3.2.0",
-    "firebase": "^5.4.2",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-actionsheet": "^2.4.2",
     "react-native-iphone-x-helper": "^1.1.0",
     "react-native-keychain": "^3.0.0",
     "react-native-loading-spinner-overlay": "^0.5.2",

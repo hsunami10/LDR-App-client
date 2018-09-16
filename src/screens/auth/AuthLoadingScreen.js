@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as Keychain from 'react-native-keychain';
 import { FullScreenLoading } from '../../components/common';
+import { setActive } from '../../actions/AuthActions';
 
 class AuthLoadingScreen extends Component {
   constructor(props) {
@@ -9,9 +10,8 @@ class AuthLoadingScreen extends Component {
     this.getLoginInfo()
       .then(obj => {
         if (obj) {
-          // TODO: Log in remotely, then go to main default screen (discover or feed)
-          console.log('AuthLoadingScreen: Logged in! Go to feed screen');
           this.props.navigation.navigate('App');
+          setActive({ id: obj.username, bool: true });
         } else {
           // TODO: Go to welcome screen
           console.log('AuthLoadingScreen: Not logged in! Go to auth screen');
@@ -27,10 +27,8 @@ class AuthLoadingScreen extends Component {
     try {
       const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, uid }
       if (credentials) {
-        console.log(`Credentials successfully loaded: ${credentials}`);
         return Promise.resolve(credentials);
       }
-      console.log('Credentials do not exist.');
       return Promise.resolve(null);
     } catch (e) {
       return Promise.reject(e);

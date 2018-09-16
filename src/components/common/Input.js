@@ -13,7 +13,8 @@ export const Input = props => {
     showLabel,
     showBorder,
     borderColor,
-    onSubmitEditing
+    onSubmitEditing,
+    autoFocus
   } = props;
 
   return (
@@ -28,10 +29,12 @@ export const Input = props => {
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         autoCorrect={false}
+        autoCapitalize="none"
         value={value}
         onChangeText={onChangeText}
         style={inputStyle}
         onSubmitEditing={onSubmitEditing}
+        autoFocus={autoFocus}
       />
     </View>
   );
@@ -46,7 +49,8 @@ Input.propTypes = {
   showLabel: PropTypes.bool,
   showBorder: PropTypes.bool,
   borderColor: PropTypes.string,
-  onSubmitEditing: PropTypes.func
+  onSubmitEditing: PropTypes.func,
+  autoFocus: PropTypes.bool
 };
 
 const styles = {

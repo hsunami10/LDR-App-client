@@ -1,12 +1,12 @@
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
-  SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS,
+  SET_USER_ID
 } from '../actions/types';
 import { handleError } from '../assets/helpers';
 
 const INITIAL_STATE = {
-  uid: '',
+  id: '',
   email: '',
   user: null,
   error_field: '', // 'username', 'password', 'both'
@@ -30,8 +30,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case RESET_AUTH_ERRORS:
       return { ...state, error_field: '', error_msg: ' ' };
-    case SIGN_UP_USERNAME_AND_PASSWORD_SUCCESS:
-      return { ...state, uid: action.payload };
+    case SET_USER_ID:
+      return { ...state, id: action.payload };
     default:
       return state;
   }

@@ -85,7 +85,7 @@ class SignUpScreen extends Component {
             showLeft
             title="Sign Up"
             leftTitle="Back"
-            onPressLeft={() => this.props.navigation.goBack()}
+            onLeftPress={() => this.props.navigation.goBack()}
           />
           <View style={styles.viewStyle}>
             <Input

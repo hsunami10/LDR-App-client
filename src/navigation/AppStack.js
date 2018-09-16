@@ -1,6 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
-import ViewProfileScreen from '../screens/app/ViewProfileScreen';
-import ViewPostScreen from '../screens/app/ViewPostScreen';
+import MainScreen from '../screens/app/MainScreen';
+import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
+import ViewPostScreen from '../screens/app/social/ViewPostScreen';
 
 /*
 // NOTE: Structure
@@ -59,18 +60,25 @@ const CardStack = createStackNavigator(
     // NOTE: Other screens with card transitions here
     ViewPost: ViewPostScreen
   },
-  {}
+  {
+    headerMode: 'none'
+  }
 );
 
 const MainStack = createStackNavigator(
   {
-    // NOTE: 5 bottom main tabbed screen here
+    Main: {
+      screen: MainScreen,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
     AppCardStack: CardStack
   },
   {
-    // NOTE: Set initialRouteName to the main app view
+    initialRouteName: 'Main',
     mode: 'card',
-    headerMode: 'screen'
+    headerMode: 'none'
   }
 );
 
@@ -79,7 +87,9 @@ const ModalStack = createStackNavigator(
     // NOTE: Modals here
     ViewProfile: ViewProfileScreen
   },
-  {}
+  {
+    headerMode: 'none'
+  }
 );
 
 // NOTE: Feed as default

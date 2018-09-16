@@ -15,8 +15,8 @@ import { HeaderRight } from './HeaderRight';
  * This is a customizable header.
  * http://usejsdoc.org/tags-type.html
  *
- * @callback onPressLeft      (optional) The action to take when the left action is pressed.
- * @callback onPressRight     (optional) The action to take when the right action is pressed.
+ * @callback onLeftPress      (optional) The action to take when the left action is pressed.
+ * @callback onRightPress     (optional) The action to take when the right action is pressed.
  *
  * @param {Object}   props
  * @param {string}   props.title                          The header title.
@@ -56,8 +56,8 @@ export class StandardHeader extends Component {
   render() {
     const height = this.props.height || MIN_HEADER_HEIGHT;
     const {
-      onPressLeft,
-      onPressRight,
+      onLeftPress,
+      onRightPress,
       title,
       leftTitle,
       rightTitle,
@@ -72,14 +72,14 @@ export class StandardHeader extends Component {
           {showLeft ? (
             <HeaderLeft
               headerLeft={headerLeft}
-              onPressLeft={onPressLeft}
+              onLeftPress={onLeftPress}
               leftTitle={leftTitle}
             />
           ) : null}
           {showRight ? (
             <HeaderRight
               headerRight={headerRight}
-              onPressRight={onPressRight}
+              onRightPress={onRightPress}
               rightTitle={rightTitle}
             />
           ) : null}
@@ -99,9 +99,12 @@ export class StandardHeader extends Component {
 StandardHeader.propTypes = {
   disableBack: PropTypes.bool,
   height: PropTypes.number,
-  onPressLeft: PropTypes.func,
-  onPressRight: PropTypes.func,
-  title: PropTypes.string.isRequired,
+  onLeftPress: PropTypes.func,
+  onRightPress: PropTypes.func,
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]).isRequired,
   leftTitle: PropTypes.string,
   rightTitle: PropTypes.string,
   showLeft: PropTypes.bool,
