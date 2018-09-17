@@ -47,7 +47,7 @@ class LogInScreen extends Component {
 
   forgotPassword = () => {
     Keyboard.dismiss();
-    // TODO: Implement forgotten password
+    this.props.navigation.navigate('ForgotPassword');
   }
 
   logIn = () => {

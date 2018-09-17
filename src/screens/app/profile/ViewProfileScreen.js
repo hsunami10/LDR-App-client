@@ -29,15 +29,13 @@ class ViewProfileScreen extends Component {
     }
   }
 
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  }
+  showActionSheet = () => this.ActionSheet.show();
 
   logOut = async () => {
     try {
       await Keychain.resetGenericPassword();
       this.props.navigation.navigate('Welcome');
-      setActive({ id: this.props.id, bool: false });
+      setActive(this.props.id, false);
     } catch (err) {
       handleError(err);
     }

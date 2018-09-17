@@ -7,48 +7,7 @@ import {
 } from './types';
 import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { handleError } from '../assets/helpers';
-
-// Get public or private profile information
-// NOTE: Use this after valid keychain credentials or seeing public profiles
-// type: private, public
-export const getUserInfo = (id, type) => {
-  return dispatch => {
-    axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.log(`getUserInfo error: ${error}`);
-      });
-  };
-};
-
-export const setUserID = id => {
-  return {
-    type: SET_USER_ID,
-    payload: id
-  };
-};
-
-export const setAuthErrors = (errorField, errorMsg) => {
-  return {
-    type: SET_AUTH_ERRORS,
-    payload: { errorField, errorMsg }
-  };
-};
-
-export const resetAuthErrors = () => {
-  return { type: RESET_AUTH_ERRORS };
-};
-
-// obj: { id, bool }
-export const setActive = obj => {
-  axios.put(`${ROOT_URL}/api/user/set_active`, obj)
-    .catch(err => {
-      handleError(err);
-    });
-};
+import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 const storeCredentials = (async id => {
   try {
@@ -59,8 +18,73 @@ const storeCredentials = (async id => {
   }
 });
 
+// Get public or private profile information
+// NOTE: Use this after valid keychain credentials or seeing public profiles
+// type: private, public
+export const getUserInfo = (id, type) => dispatch => {
+  axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.log(`getUserInfo error: ${error}`);
+    });
+};
+
+export const setAuthErrors = (errorField, errorMsg, success = false) => ({
+  type: SET_AUTH_ERRORS,
+  payload: { errorField, errorMsg, success }
+});
+
+export const resetAuthErrors = () => ({ type: RESET_AUTH_ERRORS });
+
+export const setUserID = id => ({
+  type: SET_USER_ID,
+  payload: id
+});
+
+// obj: { id, bool }
+export const setActive = (id, bool) => {
+  axios.put(`${ROOT_URL}/api/user/set_active`, { id, bool })
+    .catch(err => {
+      handleError(err);
+    });
+};
+
+// ======================================== Forgot Password ========================================
+const handleForgotPassword = ({ dispatch, response, navigation, clearInput }) => {
+  if (response.data.success) {
+    dispatch(setAuthErrors('', response.data.msg, true));
+    clearInput();
+  } else if (response.data.not_verified) {
+    // TODO: Ask use if they want to verify their email
+    // QUESTION: Should we do this? Security issues...
+    // If yes, then navigate to email verification screen
+    dispatch(setAuthErrors('username', response.data.msg));
+  } else {
+    dispatch(setAuthErrors('username', response.data.msg));
+  }
+  dispatch(stopLoading());
+};
+
+export const forgotPassword = (email, navigation, clearInput) => dispatch => {
+  const beforeReq = Date.now();
+  dispatch(startLoading());
+  axios.post(`${ROOT_URL}/api/login/forgot_password`, { email })
+    .then(response => {
+      waitUntilMinTime(
+        beforeReq,
+        handleForgotPassword,
+        { dispatch, response, navigation, clearInput }
+      );
+    })
+    .catch(error => {
+      handleError(error);
+    });
+};
+
 // ======================================= Logging In / Out =======================================
-const logInUPResponse = (dispatch, response, navigation, resetEverything) => {
+const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) => {
   if (response.data.msg) {
     dispatch(setAuthErrors('', response.data.msg)); // Invalid username or password
   } else {
@@ -68,7 +92,7 @@ const logInUPResponse = (dispatch, response, navigation, resetEverything) => {
       .then(id => {
         dispatch(setUserID(id));
         navigation.navigate('App');
-        setActive({ id, bool: true });
+        setActive(id, true);
         resetEverything();
       })
       .catch(err => {
@@ -78,30 +102,24 @@ const logInUPResponse = (dispatch, response, navigation, resetEverything) => {
   dispatch(stopLoading());
 };
 
-export const logInWithUsernameAndPassword = (userObj, navigation, resetEverything) => {
-  return dispatch => {
-    const beforeReq = Date.now();
-    dispatch(startLoading());
-    axios.get(`${ROOT_URL}/api/login/${userObj.username}/${userObj.password}`)
-      .then(response => {
-        const diff = Date.now() - beforeReq;
-        if (diff < MIN_LOADING_TIME) {
-          setTimeout(
-            () => logInUPResponse(dispatch, response, navigation, resetEverything),
-            MIN_LOADING_TIME - diff
-          );
-        } else {
-          logInUPResponse(dispatch, response, navigation, resetEverything);
-        }
-      })
-      .catch(error => {
-        handleError(error);
-      });
-  };
+export const logInWithUsernameAndPassword = (userObj, navigation, resetEverything) => dispatch => {
+  const beforeReq = Date.now();
+  dispatch(startLoading());
+  axios.get(`${ROOT_URL}/api/login/${userObj.username}/${userObj.password}`)
+    .then(response => {
+      waitUntilMinTime(
+        beforeReq,
+        logInUPResponse,
+        { dispatch, response, navigation, resetEverything }
+      );
+    })
+    .catch(error => {
+      handleError(error);
+    });
 };
 
 // ========================================== Signing Up ==========================================
-const signUpUPResponse = (dispatch, response, navigation, resetEverything) => {
+const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) => {
   if (response.data.msg) {
     dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
   } else {
@@ -109,7 +127,7 @@ const signUpUPResponse = (dispatch, response, navigation, resetEverything) => {
       .then(id => {
         dispatch(setUserID(id));
         navigation.navigate('CreateProfile');
-        setActive({ id, bool: true });
+        setActive(id, true);
         resetEverything();
       })
       .catch(err => {
@@ -119,24 +137,18 @@ const signUpUPResponse = (dispatch, response, navigation, resetEverything) => {
   dispatch(stopLoading());
 };
 
-export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => {
-  return dispatch => {
-    const beforeReq = Date.now();
-    dispatch(startLoading());
-    axios.post(`${ROOT_URL}/api/signup/username`, userObj)
-      .then(response => {
-        const diff = Date.now() - beforeReq;
-        if (diff < MIN_LOADING_TIME) {
-          setTimeout(
-            () => signUpUPResponse(dispatch, response, navigation, resetEverything),
-            MIN_LOADING_TIME - diff
-          );
-        } else {
-          signUpUPResponse(dispatch, response, navigation, resetEverything);
-        }
-      })
-      .catch(error => {
-        handleError(error);
-      });
-  };
+export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => dispatch => {
+  const beforeReq = Date.now();
+  dispatch(startLoading());
+  axios.post(`${ROOT_URL}/api/signup/username`, userObj)
+    .then(response => {
+      waitUntilMinTime(
+        beforeReq,
+        signUpUPResponse,
+        { dispatch, response, navigation, resetEverything }
+      );
+    })
+    .catch(error => {
+      handleError(error);
+    });
 };

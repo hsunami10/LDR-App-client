@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet } from 'react-native';
 import { HeaderBackButton } from 'react-navigation';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { MIN_HEADER_HEIGHT } from '../../constants/variables';
+import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 
 export const HeaderLeft = props => (
   <View style={styles.leftContainerStyle}>
@@ -18,7 +17,7 @@ export const HeaderLeft = props => (
 
 HeaderLeft.propTypes = {
   leftTitle: PropTypes.string,
-  onLeftPress: PropTypes.func.isRequired,
+  onLeftPress: PropTypes.func,
   headerLeft: PropTypes.element
 };
 
@@ -26,6 +25,6 @@ const styles = StyleSheet.create({
   leftContainerStyle: {
     position: 'absolute',
     alignSelf: 'flex-start',
-    height: MIN_HEADER_HEIGHT - getStatusBarHeight(true), // Default header height, no status bar
+    height: MIN_HEADER_HEIGHT_NO_STATUS_BAR
   }
 });

@@ -11,7 +11,7 @@ class AuthLoadingScreen extends Component {
       .then(obj => {
         if (obj) {
           this.props.navigation.navigate('App');
-          setActive({ id: obj.username, bool: true });
+          setActive(obj.username, true);
         } else {
           // TODO: Go to welcome screen
           console.log('AuthLoadingScreen: Not logged in! Go to auth screen');

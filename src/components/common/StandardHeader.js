@@ -48,10 +48,7 @@ export class StandardHeader extends Component {
     }
   }
 
-  handleBackButton = () => {
-    console.log('android hardware back button pressed');
-    return true;
-  }
+  handleBackButton = () => true;
 
   render() {
     const height = this.props.height || MIN_HEADER_HEIGHT;

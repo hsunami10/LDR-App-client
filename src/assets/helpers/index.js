@@ -1,7 +1,7 @@
 // NOTE: This file holds all helper functions
-
 import { Alert } from 'react-native';
 import RNRestart from 'react-native-restart';
+import { MIN_LOADING_TIME } from '../../constants/variables';
 
 // TODO: Send report to development team
 export const handleError = error => {
@@ -13,6 +13,19 @@ export const handleError = error => {
     ],
     { cancelable: false }
   );
+};
+
+// Waits until MIN_LOADING_TIME is up (if quicker than MIN_LOADING_TIME)
+export const waitUntilMinTime = (beforeReq, callback, param) => {
+  const diff = Date.now() - beforeReq;
+  if (diff < MIN_LOADING_TIME) {
+    setTimeout(
+      () => callback(param),
+      MIN_LOADING_TIME - diff
+    );
+  } else {
+    callback(param);
+  }
 };
 
 // ======================================== Authentication ========================================

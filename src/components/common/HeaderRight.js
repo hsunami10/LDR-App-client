@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { MIN_HEADER_HEIGHT } from '../../constants/variables';
+import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 
 export const HeaderRight = props => (
   <View style={styles.rightContainerStyle}>
@@ -15,7 +14,7 @@ export const HeaderRight = props => (
 );
 
 HeaderRight.propTypes = {
-  onRightPress: PropTypes.func.isRequired,
+  onRightPress: PropTypes.func,
   rightTitle: PropTypes.string,
   headerRight: PropTypes.element
 };
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    height: MIN_HEADER_HEIGHT - getStatusBarHeight(true)
+    height: MIN_HEADER_HEIGHT_NO_STATUS_BAR
   },
   rightTextStyle: {
     color: '#007aff',
