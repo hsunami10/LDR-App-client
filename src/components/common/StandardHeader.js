@@ -10,6 +10,7 @@ import { HeaderRight } from './HeaderRight';
 // TODO: Handle background images
 // TODO: Handle custom left and right actions.
 // TODO: Handle animations - with an animated prop, use Animated.View instead
+// TODO: Handle iOS vs. Android design
 
 /**
  * This is a customizable header.
@@ -63,6 +64,11 @@ export class StandardHeader extends Component {
       headerLeft,
       headerRight
     } = this.props;
+
+    let titleAlign = {};
+    if (Platform.OS === 'ios') titleAlign = { alignItems: 'center' };
+    else titleAlign = { marginLeft: MIN_HEADER_HEIGHT };
+
     return (
       <View style={[styles.containerStyle, { height }]}>
         <View styles={[styles.containerStyle, styles.actionsContainerStyle]}>
@@ -84,7 +90,11 @@ export class StandardHeader extends Component {
 
         <View
           pointerEvents="none"
-          style={[styles.containerStyle, { height }, styles.titleContainerStyle]}
+          style={[
+            styles.containerStyle,
+            { height },
+            styles.titleContainerStyle,
+            titleAlign]}
         >
           <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle>
         </View>
@@ -129,7 +139,6 @@ const styles = StyleSheet.create({
   titleContainerStyle: {
     position: 'absolute',
     backgroundColor: 'rgba(0,0,0,0)',
-    alignItems: 'center',
     justifyContent: 'center'
   },
   headerTitleStyle: {
