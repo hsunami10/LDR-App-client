@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as Keychain from 'react-native-keychain';
+import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive } from '../../actions/AuthActions';
+import { setActive, setUserID } from '../../actions/AuthActions';
+import { handleError } from '../../assets/helpers';
 
 class AuthLoadingScreen extends Component {
   constructor(props) {
@@ -12,14 +15,13 @@ class AuthLoadingScreen extends Component {
         if (obj) {
           this.props.navigation.navigate('App');
           setActive(obj.username, true);
+          this.props.setUserID(obj.username);
         } else {
-          // TODO: Go to welcome screen
-          console.log('AuthLoadingScreen: Not logged in! Go to auth screen');
           this.props.navigation.navigate('Auth');
         }
       })
       .catch(err => {
-        console.log(`AuthLoadingScreen Error: ${err}`);
+        handleError(err);
       });
   }
 
@@ -40,4 +42,8 @@ class AuthLoadingScreen extends Component {
   }
 }
 
-export default AuthLoadingScreen;
+AuthLoadingScreen.propTypes = {
+  setUserID: PropTypes.func.isRequired
+};
+
+export default connect(null, { setUserID })(AuthLoadingScreen);

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import FeedScreen from './social/FeedScreen';
 import DiscoverScreen from './social/DiscoverScreen';

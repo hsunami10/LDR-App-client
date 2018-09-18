@@ -5,7 +5,7 @@ import {
   RESET_AUTH_ERRORS,
   SET_USER_ID
 } from './types';
-import { ROOT_URL, MIN_LOADING_TIME } from '../constants/variables';
+import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { handleError, waitUntilMinTime } from '../assets/helpers';
 
@@ -46,6 +46,9 @@ export const setUserID = id => ({
 // obj: { id, bool }
 export const setActive = (id, bool) => {
   axios.put(`${ROOT_URL}/api/user/set_active`, { id, bool })
+    .then(response => {
+      console.log(response);
+    })
     .catch(err => {
       handleError(err);
     });
