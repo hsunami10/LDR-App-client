@@ -60,7 +60,6 @@ class ViewProfileScreen extends Component {
         </View>
         <ActionSheet
           ref={this.ref}
-          title="Profile Settings"
           options={['Edit Profile', 'Log Out', 'Cancel']}
           cancelButtonIndex={2}
           destructiveButtonIndex={1}

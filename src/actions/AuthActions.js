@@ -11,7 +11,7 @@ import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 const storeCredentials = (async id => {
   try {
-    await Keychain.setGenericPassword(id, id);
+    // await Keychain.setGenericPassword(id, id); // TODO: Remove this later, testing only
     return Promise.resolve(id);
   } catch (e) {
     return Promise.reject(e);
@@ -128,7 +128,7 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
   } else {
     storeCredentials(response.data.id)
       .then(id => {
-        dispatch(setUserID(id));
+        // dispatch(setUserID(id)); // TODO: Remove this later - bug testing
         navigation.navigate('CreateProfile');
         setActive(id, true);
         resetEverything();

@@ -67,7 +67,7 @@ export class StandardHeader extends Component {
 
     let titleAlign = {};
     if (Platform.OS === 'ios') titleAlign = { alignItems: 'center' };
-    else titleAlign = { marginLeft: MIN_HEADER_HEIGHT };
+    else titleAlign = { marginLeft: this.props.disableBack ? 0 : MIN_HEADER_HEIGHT };
 
     return (
       <View style={[styles.containerStyle, { height }]}>

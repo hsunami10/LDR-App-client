@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
 import { StandardHeader, ClickableImage } from '../../components/common';
 
-// BUG: Swiping back with this goes to the AuthLoadingScreen?
+// BUG: Cannot change crop rect dimension with ImagePicker
+
 class CreateProfileScreen extends Component {
   onPressAction = index => {
     switch (index) {
       case 0:
-        console.log('take photo');
+        ImagePicker.openCamera({
+          width: 300,
+          height: 300,
+          cropperToolbarTitle: 'Move and Scale',
+          cropping: true
+        }).then(image => {
+          console.log(image);
+        }).catch(err => {
+          console.log(err);
+        });
         break;
       case 1:
-        console.log('choose from library');
+        ImagePicker.openPicker({
+          width: 300,
+          height: 300,
+          cropperToolbarTitle: 'Move and Scale',
+          cropping: true
+        }).then(image => {
+          console.log(image);
+        }).catch(err => {
+          console.log(err);
+        });
         break;
       default:
         return;
@@ -37,7 +57,6 @@ class CreateProfileScreen extends Component {
           disableBack
         />
         <View style={styles.viewStyle}>
-          <Text>Create Profile!</Text>
           <ClickableImage
             width={200}
             height={200}
