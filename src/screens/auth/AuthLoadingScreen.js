@@ -1,43 +1,58 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Keychain from 'react-native-keychain';
+import { NetInfo, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserID } from '../../actions/AuthActions';
 import { navigateToRoute } from '../../actions/NavigationActions';
 import { handleError } from '../../assets/helpers';
 
+// QUESTION: Have auth loading the same as the splash screen, but with a loading indicator?
+
 class AuthLoadingScreen extends Component {
   constructor(props) {
     super(props);
 
-    this.getLoginInfo()
-      .then(obj => {
-        if (obj) {
+    // NOTE: THis runs once by default
+    NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
+  }
+
+  getLoginInfo = async connectionInfo => {
+    if (connectionInfo.type === 'none') {
+      this.showNoConnectionAlert();
+    } else {
+      try {
+        const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, uid }
+        if (credentials) {
           this.props.navigateToRoute('Main');
           this.props.navigation.navigate('App');
-          setActive(obj.username, true);
-          this.props.setUserID(obj.username);
+          setActive(credentials.username, true);
+          this.props.setUserID(credentials.username);
         } else {
           this.props.navigateToRoute('Welcome');
           this.props.navigation.navigate('Auth');
         }
-      })
-      .catch(err => {
-        handleError(err);
-      });
+      } catch (e) {
+        handleError(new Error(`Unable to access keychain. ${e.message}`), true);
+      }
+    }
   }
 
-  async getLoginInfo() {
-    try {
-      const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, uid }
-      if (credentials) {
-        return Promise.resolve(credentials);
-      }
-      return Promise.resolve(null);
-    } catch (e) {
-      return Promise.reject(e);
+  handleConnectionChange = connectionInfo => {
+    if (this.props.current_route === 'AuthLoading') {
+      this.getLoginInfo(connectionInfo);
+    } else if (connectionInfo.type === 'none') {
+      this.showNoConnectionAlert();
     }
+  }
+
+  showNoConnectionAlert = () => {
+    Alert.alert(
+      'Oh no!',
+      'You do not have internet connection. Please connect to the internet and try again.',
+      [{ text: 'Ok', onPress: () => this.setState(() => ({ alerted: false })) }]
+    );
   }
 
   render() {
@@ -47,7 +62,10 @@ class AuthLoadingScreen extends Component {
 
 AuthLoadingScreen.propTypes = {
   setUserID: PropTypes.func.isRequired,
-  navigateToRoute: PropTypes.func.isRequired
+  navigateToRoute: PropTypes.func.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
-export default connect(null, { setUserID, navigateToRoute })(AuthLoadingScreen);
+const mapStateToProps = state => ({ current_route: state.navigation.current_route });
+
+export default connect(mapStateToProps, { setUserID, navigateToRoute })(AuthLoadingScreen);

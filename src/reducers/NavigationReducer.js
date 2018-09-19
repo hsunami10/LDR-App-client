@@ -5,8 +5,8 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  current_route: '',
-  routes: []
+  current_route: 'AuthLoading',
+  routes: ['AuthLoading']
 };
 
 export default (state = INITIAL_STATE, action) => {
