@@ -34,6 +34,7 @@ target 'LDR_App_client' do
   end
 
   pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 end
 
 # very important to have, unless you removed React dependencies for Libraries
