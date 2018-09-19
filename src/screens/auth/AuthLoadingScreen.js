@@ -4,6 +4,7 @@ import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserID } from '../../actions/AuthActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
 import { handleError } from '../../assets/helpers';
 
 class AuthLoadingScreen extends Component {
@@ -13,10 +14,12 @@ class AuthLoadingScreen extends Component {
     this.getLoginInfo()
       .then(obj => {
         if (obj) {
+          this.props.navigateToRoute('Main');
           this.props.navigation.navigate('App');
           setActive(obj.username, true);
           this.props.setUserID(obj.username);
         } else {
+          this.props.navigateToRoute('Welcome');
           this.props.navigation.navigate('Auth');
         }
       })
@@ -43,7 +46,8 @@ class AuthLoadingScreen extends Component {
 }
 
 AuthLoadingScreen.propTypes = {
-  setUserID: PropTypes.func.isRequired
+  setUserID: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired
 };
 
-export default connect(null, { setUserID })(AuthLoadingScreen);
+export default connect(null, { setUserID, navigateToRoute })(AuthLoadingScreen);

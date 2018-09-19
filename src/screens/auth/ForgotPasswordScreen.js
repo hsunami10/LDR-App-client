@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, Input, Button, SpinnerOverlay } from '../../components/common';
 import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 import { forgotPassword, resetAuthErrors } from '../../actions/AuthActions';
+import { popRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class ForgotPasswordScreen extends Component {
@@ -14,6 +15,11 @@ class ForgotPasswordScreen extends Component {
   componentWillUnmount() {
     this.setState(() => ({ email: '' }));
     this.props.resetAuthErrors();
+  }
+
+  close = () => {
+    this.props.popRoute('LogIn');
+    this.props.navigation.popToTop();
   }
 
   handleChangeText = email => this.setState(() => ({ email }));
@@ -34,7 +40,7 @@ class ForgotPasswordScreen extends Component {
           headerLeft={
             <TouchableOpacity
               style={styles.buttonStyle}
-              onPress={() => this.props.navigation.popToTop()}
+              onPress={this.close}
             >
               <Icon name={`${Platform.OS}-close`} size={45} />
             </TouchableOpacity>
@@ -64,6 +70,7 @@ ForgotPasswordScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   forgotPassword: PropTypes.func.isRequired,
   resetAuthErrors: PropTypes.func.isRequired,
+  popRoute: PropTypes.func.isRequired,
   success: PropTypes.bool.isRequired,
   error_msg: PropTypes.string.isRequired,
   error_field: PropTypes.string.isRequired
@@ -90,5 +97,6 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   forgotPassword,
-  resetAuthErrors
+  resetAuthErrors,
+  popRoute
 })(ForgotPasswordScreen);

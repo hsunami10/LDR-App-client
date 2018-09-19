@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { StandardHeader } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive } from '../../../actions/AuthActions';
+import { navigateToRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
   onPressAction = index => {
@@ -34,6 +35,7 @@ class ViewProfileScreen extends Component {
   logOut = async () => {
     try {
       await Keychain.resetGenericPassword();
+      this.props.navigateToRoute('Welcome');
       this.props.navigation.navigate('Welcome');
       setActive(this.props.id, false);
     } catch (err) {
@@ -71,7 +73,8 @@ class ViewProfileScreen extends Component {
 }
 
 ViewProfileScreen.propTypes = {
-  id: PropTypes.string
+  id: PropTypes.string.isRequired,
+  navigateToRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -89,4 +92,4 @@ const mapStateToProps = state => ({
   id: state.auth.id
 });
 
-export default connect(mapStateToProps, null)(ViewProfileScreen);
+export default connect(mapStateToProps, { navigateToRoute })(ViewProfileScreen);

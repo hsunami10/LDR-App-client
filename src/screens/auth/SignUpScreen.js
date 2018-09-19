@@ -15,6 +15,7 @@ import {
   StandardHeader,
   DismissKeyboard
 } from '../../components/common';
+import { goBackwardRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
@@ -32,6 +33,11 @@ class SignUpScreen extends Component {
   resetEverything = () => {
     this.setState(() => ({ username: '', password: '', confirmPassword: '' }));
     this.props.resetAuthErrors();
+  }
+
+  handleLeftPress = () => {
+    this.props.goBackwardRoute();
+    this.props.navigation.goBack();
   }
 
   handleChangeText = (text, id) => {
@@ -85,7 +91,7 @@ class SignUpScreen extends Component {
             showLeft
             title="Sign Up"
             leftTitle="Back"
-            onLeftPress={() => this.props.navigation.goBack()}
+            onLeftPress={this.handleLeftPress}
           />
           <View style={styles.viewStyle}>
             <Input
@@ -123,6 +129,7 @@ SignUpScreen.propTypes = {
   resetAuthErrors: PropTypes.func.isRequired,
   signUpWithUsernameAndPassword: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
+  goBackwardRoute: PropTypes.func.isRequired,
   error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired
@@ -144,5 +151,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   setAuthErrors,
   resetAuthErrors,
-  signUpWithUsernameAndPassword
+  signUpWithUsernameAndPassword,
+  goBackwardRoute
 })(SignUpScreen);

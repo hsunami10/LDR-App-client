@@ -7,11 +7,12 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
+import { navigateToRoute } from './NavigationActions';
 import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 const storeCredentials = (async id => {
   try {
-    // await Keychain.setGenericPassword(id, id); // TODO: Remove this later, testing only
+    // await Keychain.setGenericPassword(id, id); // NOTE: TODO: Remove this later, testing only
     return Promise.resolve(id);
   } catch (e) {
     return Promise.reject(e);
@@ -94,6 +95,7 @@ const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) =>
     storeCredentials(response.data.id)
       .then(id => {
         dispatch(setUserID(id));
+        dispatch(navigateToRoute('Main'));
         navigation.navigate('App');
         setActive(id, true);
         resetEverything();
@@ -128,7 +130,8 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
   } else {
     storeCredentials(response.data.id)
       .then(id => {
-        // dispatch(setUserID(id)); // TODO: Remove this later - bug testing
+        dispatch(setUserID(id));
+        dispatch(navigateToRoute('CreateProfile'));
         navigation.navigate('CreateProfile');
         setActive(id, true);
         resetEverything();

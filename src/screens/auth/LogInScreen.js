@@ -14,6 +14,7 @@ import {
   resetAuthErrors,
   logInWithUsernameAndPassword
 } from '../../actions/AuthActions';
+import { navigateToRoute, goBackwardRoute } from '../../actions/NavigationActions';
 import { isValidInput } from '../../assets/helpers';
 import textStyles from '../../constants/styles/text';
 
@@ -32,6 +33,11 @@ class LogInScreen extends Component {
     this.props.resetAuthErrors();
   }
 
+  handleLeftPress = () => {
+    this.props.goBackwardRoute();
+    this.props.navigation.goBack();
+  }
+
   handleChangeText = (text, id) => {
     switch (id) {
       case 0:
@@ -47,6 +53,7 @@ class LogInScreen extends Component {
 
   forgotPassword = () => {
     Keyboard.dismiss();
+    this.props.navigateToRoute('ForgotPassword');
     this.props.navigation.navigate('ForgotPassword');
   }
 
@@ -75,7 +82,7 @@ class LogInScreen extends Component {
             showLeft
             title="Log In"
             leftTitle="Back"
-            onLeftPress={() => this.props.navigation.goBack()}
+            onLeftPress={this.handleLeftPress}
           />
           <View style={styles.viewStyle}>
             <Input
@@ -107,7 +114,9 @@ LogInScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   logInWithUsernameAndPassword: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
-  resetAuthErrors: PropTypes.func.isRequired
+  resetAuthErrors: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  goBackwardRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -126,5 +135,7 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   setAuthErrors,
   resetAuthErrors,
-  logInWithUsernameAndPassword
+  logInWithUsernameAndPassword,
+  navigateToRoute,
+  goBackwardRoute
 })(LogInScreen);

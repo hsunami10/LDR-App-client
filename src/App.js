@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, View, Alert } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 import { SafeAreaView } from 'react-navigation';
