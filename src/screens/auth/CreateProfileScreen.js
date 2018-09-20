@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Alert } from 'react-native';
+import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
 import {
@@ -10,37 +11,45 @@ import {
   DismissKeyboard,
   Button
 } from '../../components/common';
+import { alertPermission } from '../../assets/helpers';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 
 class CreateProfileScreen extends Component {
-  state = { bio: '', buttonText: 'Get Location', loading: false }
+  state = {
+    bio: '',
+    buttonText: 'Get Location',
+    loading: false,
+    cameraPermission: '',
+    locationPermission: '',
+    photoPermission: ''
+  }
+
+  componentDidMount() {
+    Permissions.checkMultiple(['camera', 'photo', 'location']).then(response => {
+      this.setState(() => ({
+        cameraPermission: response.camera,
+        locationPermission: response.location,
+        photoPermission: response.photo
+      }));
+    });
+  }
 
   onPressAction = index => {
     switch (index) {
       case 0:
-        ImagePicker.openCamera({
-          width: 300,
-          height: 300,
-          cropperToolbarTitle: 'Move and Scale',
-          cropping: true
-        }).then(image => {
-          console.log(image);
-        }).catch(err => {
-          console.log(err);
-        });
+        if (this.state.cameraPermission === 'authorized') {
+          this.openCamera();
+        } else {
+          alertPermission(this.state.cameraPermission, this.requestPermission, 'camera');
+        }
         break;
       case 1:
-        ImagePicker.openPicker({
-          width: 300,
-          height: 300,
-          cropperToolbarTitle: 'Move and Scale',
-          cropping: true
-        }).then(image => {
-          console.log(image);
-        }).catch(err => {
-          console.log(err);
-        });
+        if (this.state.photoPermission === 'authorized') {
+          this.openPhotos();
+        } else {
+          alertPermission(this.state.photoPermission, this.requestPermission, 'photo');
+        }
         break;
       default:
         return;
@@ -51,17 +60,71 @@ class CreateProfileScreen extends Component {
     console.log('create profile');
   }
 
-  updateLocation = () => {
-    console.log('update location');
+  locationPressed = () => {
+    if (this.state.locationPermission === 'authorized') {
+      this.updateLocation();
+    } else {
+      alertPermission(this.state.locationPermission, this.requestPermission, 'location');
+    }
   }
 
   handleChangeText = bio => this.setState(() => ({ bio }))
 
-  showActionSheet = () => this.ActionSheet.show();
+  showActionSheet = () => this.ActionSheet.show()
 
   ref = o => {
     this.ActionSheet = o;
     return this.ActionSheet;
+  }
+
+  requestPermission = type => {
+    Permissions.request(type).then(response => {
+      if (response === 'authorized') {
+        switch (type) {
+          case 'camera':
+            this.openCamera();
+            break;
+          case 'location':
+            this.updateLocation();
+            break;
+          case 'photo':
+            this.openPhotos();
+            break;
+          default:
+
+        }
+      }
+    });
+  }
+
+  openCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 300,
+      cropperToolbarTitle: 'Move and Scale',
+      cropping: true
+    }).then(image => {
+      console.log(image);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  openPhotos = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 300,
+      cropperToolbarTitle: 'Move and Scale',
+      cropping: true
+    }).then(image => {
+      console.log(image);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  updateLocation = () => {
+    console.log('update location');
   }
 
   render() {
@@ -93,7 +156,7 @@ class CreateProfileScreen extends Component {
               containerStyle={{ marginTop: 10 }}
             />
             <Button
-              onPress={this.updateLocation}
+              onPress={this.locationPressed}
               loading={this.state.loading}
               style={{ marginTop: 10 }}
             >

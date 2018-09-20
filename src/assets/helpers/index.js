@@ -1,6 +1,7 @@
 // NOTE: This file holds all helper functions
 import { Alert, NetInfo, Platform } from 'react-native';
 import RNRestart from 'react-native-restart';
+import Permissions from 'react-native-permissions'
 import { MIN_LOADING_TIME } from '../../constants/variables';
 
 // TODO: Send report to development team
@@ -41,6 +42,59 @@ export const getConnectionInfo = async () => {
   }
 
   return NetInfo.getConnectionInfo();
+};
+
+// ========================================= Permissions =========================================
+const alertRestrictedPermission = () => {
+  if (Platform.OS === 'ios') {
+    Alert.alert(
+      'Your access has been restricted.',
+      'This feature is either not supported by this device or blocked by parental controls.',
+      [{ text: 'OK' }]
+    );
+  }
+};
+/**
+ * This function handles all alerts for all permission types in the app.
+ * @param  {string} permissionStatus          The status of the permission.
+ *                                            Values: 'authorized', 'denied', 'restricted', 'undetermined'.
+ * @callback        requestPermissionCallback The function that requests for permission if this alert is accepted.
+ *                                            This function takes in a "type" parameter.
+ * @param  {string} type                      The type of permission.
+ */
+export const alertPermission = (permissionStatus, requestPermissionCallback, type) => {
+  let title = '';
+  let msg = '';
+  switch (type) {
+    case 'camera':
+      title = 'Can we access your camera?';
+      msg = 'We need access so you can take pictures for your profile picture and topic images.';
+      break;
+    case 'location':
+      title = 'Can we access your location?';
+      msg = 'We need access so you can find posts near you and update your partner.';
+      break;
+    case 'photo':
+      title = 'Can we access your photos?';
+      msg = 'We need access so you can set your profile picture and choose topic images.';
+      break;
+    default:
+      return;
+  }
+  if (permissionStatus === 'denied' || permissionStatus === 'undetermined') {
+    Alert.alert(
+      title,
+      msg,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        permissionStatus === 'undetermined' ?
+        { text: 'OK', onPress: () => requestPermissionCallback(type) } :
+        { text: 'Go to Settings', onPress: Permissions.openSettings }
+      ]
+    );
+  } else if (permissionStatus === 'restricted') {
+    alertRestrictedPermission();
+  }
 };
 
 // ======================================== Authentication ========================================
