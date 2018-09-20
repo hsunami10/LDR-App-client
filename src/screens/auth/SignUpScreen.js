@@ -86,7 +86,7 @@ class SignUpScreen extends Component {
   render() {
     return (
       <DismissKeyboard>
-        <View>
+        <View style={{ flex: 1 }}>
           <StandardHeader
             showLeft
             title="Sign Up"

@@ -29,19 +29,19 @@ export const waitUntilMinTime = (beforeReq, callback, param) => {
   }
 };
 
-// export const getConnectionInfo = async () => {
-//   if (Platform.OS === 'ios') {
-//     return new Promise((resolve, reject) => {
-//       const connectionHandler = connectionInfo => {
-//         NetInfo.removeEventListener('connectionChange', connectionHandler);
-//         resolve(connectionInfo);
-//       };
-//       NetInfo.addEventListener('connectionChange', connectionHandler);
-//     });
-//   }
-//
-//   return NetInfo.getConnectionInfo();
-// };
+export const getConnectionInfo = async () => {
+  if (Platform.OS === 'ios') {
+    return new Promise((resolve, reject) => {
+      const connectionHandler = connectionInfo => {
+        NetInfo.removeEventListener('connectionChange', connectionHandler);
+        resolve(connectionInfo);
+      };
+      NetInfo.addEventListener('connectionChange', connectionHandler);
+    });
+  }
+
+  return NetInfo.getConnectionInfo();
+};
 
 // ======================================== Authentication ========================================
 // Checks for spaces and empty strings
@@ -49,6 +49,7 @@ export const isValidInput = input => {
   if (input instanceof Array) {
     for (let i = 0, len = input.length; i < len; ++i) {
       if (!input[i].trim()) return false;
+      if (input[i].trim().includes(' ')) return false;
     }
     return true;
   } else if (input instanceof String) {

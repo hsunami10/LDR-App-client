@@ -1,32 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, View, Text } from 'react-native';
+import { TextInput, View, } from 'react-native';
 
-export const Input = props => {
+// TODO: Finish making multi-line input component
+
+export const MultiLineInput = props => {
   const {
-    label,
     value,
+    width,
+    height,
     onChangeText,
     placeholder,
     secureTextEntry,
-    showLabel,
-    showBorder,
     borderColor,
+    borderWidth,
     onSubmitEditing,
     autoFocus,
-    containerStyle,
-    inputStyle
+    numberOfLines,
+    inputStyle,
+    containerStyle
   } = props;
 
   return (
     <View
       style={[
-        styles.containerStyle, { borderWidth: (showBorder ? 1 : 0),
-          borderColor: borderColor || 'red' }, containerStyle || {}
-        ]}
+        {
+          width,
+          height,
+          borderWidth: borderWidth || 0,
+          borderColor: borderColor || 'transparent'
+        },
+        containerStyle || {}
+      ]}
     >
-      {showLabel ? <Text style={styles.labelStyle}>{label || 'Label'}</Text> : null}
       <TextInput
+        multiline
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         autoCorrect={false}
@@ -36,24 +44,27 @@ export const Input = props => {
         style={[styles.inputStyle, inputStyle || {}]}
         onSubmitEditing={onSubmitEditing}
         autoFocus={autoFocus}
+        numberOfLines={numberOfLines}
       />
     </View>
   );
 };
 
-Input.propTypes = {
-  label: PropTypes.string,
+MultiLineInput.propTypes = {
   value: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
   onChangeText: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
   secureTextEntry: PropTypes.bool,
   showLabel: PropTypes.bool,
-  showBorder: PropTypes.bool,
+  borderWidth: PropTypes.number,
   borderColor: PropTypes.string,
   onSubmitEditing: PropTypes.func,
   autoFocus: PropTypes.bool,
-  containerStyle: PropTypes.object,
-  inputStyle: PropTypes.object
+  numberOfLines: PropTypes.number,
+  inputStyle: PropTypes.object,
+  containerStyle: PropTypes.object
 };
 
 const styles = {
@@ -63,18 +74,8 @@ const styles = {
     paddingLeft: 5,
     fontSize: 18,
     lineHeight: 23,
-    flex: 2
-  },
-  labelStyle: {
-    fontSize: 18,
-    paddingLeft: 20,
-    flex: 1
-  },
-  containerStyle: {
-    height: 40,
-    // flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: 'red'
+    flex: 2,
+    borderColor: 'black',
+    borderWidth: 1
   }
 };
