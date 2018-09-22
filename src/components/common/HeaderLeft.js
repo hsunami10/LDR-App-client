@@ -10,6 +10,7 @@ export const HeaderLeft = props => (
       <HeaderBackButton
         title={props.leftTitle || null}
         onPress={props.onLeftPress}
+        disabled={props.disableLeft}
       />
     }
   </View>
@@ -18,7 +19,8 @@ export const HeaderLeft = props => (
 HeaderLeft.propTypes = {
   leftTitle: PropTypes.string,
   onLeftPress: PropTypes.func,
-  headerLeft: PropTypes.element
+  headerLeft: PropTypes.element,
+  disableLeft: PropTypes.bool
 };
 
 const styles = StyleSheet.create({

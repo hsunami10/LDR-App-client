@@ -62,7 +62,9 @@ export class StandardHeader extends Component {
       showLeft,
       showRight,
       headerLeft,
-      headerRight
+      headerRight,
+      disableRight,
+      disableLeft
     } = this.props;
 
     let titleAlign = {};
@@ -77,6 +79,7 @@ export class StandardHeader extends Component {
               headerLeft={headerLeft}
               onLeftPress={onLeftPress}
               leftTitle={leftTitle}
+              disableLeft={disableLeft}
             />
           ) : null}
           {showRight ? (
@@ -84,6 +87,7 @@ export class StandardHeader extends Component {
               headerRight={headerRight}
               onRightPress={onRightPress}
               rightTitle={rightTitle}
+              disableRight={disableRight}
             />
           ) : null}
         </View>
@@ -117,7 +121,9 @@ StandardHeader.propTypes = {
   showLeft: PropTypes.bool,
   showRight: PropTypes.bool,
   headerLeft: PropTypes.element,
-  headerRight: PropTypes.element
+  headerRight: PropTypes.element,
+  disableRight: PropTypes.bool,
+  disableLeft: PropTypes.bool
 };
 
 const styles = StyleSheet.create({

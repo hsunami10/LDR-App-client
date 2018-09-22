@@ -12,13 +12,14 @@ import {
   Button
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers';
+import { MIN_LOADING_TIME } from '../../constants/variables';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 
 class CreateProfileScreen extends Component {
   state = {
     bio: '',
-    buttonText: 'Get Location',
+    buttonText: 'Enable Location',
     loading: false
   }
 
@@ -39,9 +40,7 @@ class CreateProfileScreen extends Component {
     console.log('create profile');
   }
 
-  locationPressed = () => {
-    checkPermission('location', this.handleCheckPermission);
-  }
+  locationPressed = () => checkPermission('location', this.handleCheckPermission)
 
   handleChangeText = bio => this.setState(() => ({ bio }))
 
@@ -114,7 +113,11 @@ class CreateProfileScreen extends Component {
   }
 
   updateLocation = () => {
-    console.log('update location');
+    // NOTE: Make sure the two strings are exactly the same, otherwise this won't work
+    if (this.state.buttonText !== 'Location Enabled!') {
+      this.setState(() => ({ loading: true }));
+      setTimeout(() => this.setState(() => ({ loading: false, buttonText: 'Location Enabled!' })), MIN_LOADING_TIME);
+    }
   }
 
   render() {
@@ -127,6 +130,7 @@ class CreateProfileScreen extends Component {
             title="Create Profile"
             onRightPress={this.createProfile}
             disableBack
+            disableRight={this.state.loading}
           />
           <View style={styles.viewStyle}>
             <ClickableImage
