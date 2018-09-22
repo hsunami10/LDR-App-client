@@ -1,12 +1,14 @@
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
-  SET_USER_ID
+  SET_USER_CREDENTIALS,
+  SET_NOT_FIRST_LOG_IN
 } from '../actions/types';
 import { handleError } from '../assets/helpers';
 
 const INITIAL_STATE = {
   id: '',
+  first_login: false,
   email: '',
   user: null,
   error_field: '', // 'username', 'password', 'both'
@@ -32,8 +34,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case RESET_AUTH_ERRORS:
       return { ...state, error_field: '', error_msg: ' ', success: true };
-    case SET_USER_ID:
-      return { ...state, id: action.payload };
+    case SET_USER_CREDENTIALS:
+      return { ...state, id: action.payload.id, first_login: action.payload.firstLogin };
+    case SET_NOT_FIRST_LOG_IN:
+      return { ...state, first_login: false };
     default:
       return state;
   }

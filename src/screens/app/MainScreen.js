@@ -8,6 +8,8 @@ import FeedScreen from './social/FeedScreen';
 import DiscoverScreen from './social/DiscoverScreen';
 import ViewProfileScreen from './profile/ViewProfileScreen';
 import NotificationScreen from './NotificationScreen';
+import { navigateToRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
+import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { checkPermission } from '../../assets/helpers';
 
 // NOTE: Permissions: camera, photo, location, notification
@@ -26,15 +28,18 @@ class MainScreen extends Component {
   }
 
   componentDidMount() {
-    // Only check notification permissions when signing up / logging in
+    // Only check notification permissions when from signing up / logging in screens
     // NOT when you're already logged in
     // If you're already logged in, then routes = ['AuthLoading', 'Main']
-    if (this.props.routes[this.props.routes.length - 2] !== 'AuthLoading') {
+    console.log(this.props.first_login)
+    if (this.props.first_login) {
       checkPermission('notification', this.handleCheckPermission);
     }
+    this.props.navigateToRoute('feed'); // FeedScreen is the default screen
   }
 
   handleCheckPermission = (type, response) => {
+    console.log('notification permission: ' + response);
     if (response === 'undetermined') {
       Permissions.request(type)
         .then(resp => {
@@ -53,17 +58,22 @@ class MainScreen extends Component {
         [{ text: 'OK', style: 'cancel' }]
       );
     }
+    this.props.setNotFirstLogIn(this.props.id);
   }
 
   handleIndexChange = index => {
     // Don't change scenes if compose tab is clicked
     if (index !== 2) {
-      this.setState((prevState) => ({
-        navigationState: { ...prevState.navigationState, index }
-      }));
+      this.setState((prevState) => {
+        this.props.replaceCurrentRoute(prevState.navigationState.routes[index].key);
+        return {
+          navigationState: { ...prevState.navigationState, index }
+        };
+      });
     }
   }
 
+  // TODO: Handle scrolling up - check routes to see if it's on the same route
   handleTabPress = ({ route }) => {
     switch (route.key) {
       case 'feed':
@@ -129,13 +139,22 @@ class MainScreen extends Component {
 }
 
 MainScreen.propTypes = {
-  routes: PropTypes.array.isRequired,
-  current_route: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  setNotFirstLogIn: PropTypes.func.isRequired,
+  first_login: PropTypes.bool.isRequired,
+  current_route: PropTypes.string.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  replaceCurrentRoute: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  routes: state.navigation.routes,
+  id: state.auth.id,
+  first_login: state.auth.first_login,
   current_route: state.navigation.current_route
 });
 
-export default connect(mapStateToProps)(MainScreen);
+export default connect(mapStateToProps, {
+  navigateToRoute,
+  replaceCurrentRoute,
+  setNotFirstLogIn
+})(MainScreen);

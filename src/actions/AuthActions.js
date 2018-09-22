@@ -3,16 +3,18 @@ import * as Keychain from 'react-native-keychain';
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
-  SET_USER_ID
+  SET_USER_CREDENTIALS,
+  SET_NOT_FIRST_LOG_IN
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { navigateToRoute } from './NavigationActions';
 import { handleError, waitUntilMinTime } from '../assets/helpers';
 
+// Only called when from log in / sign up screen
 const storeCredentials = (async id => {
   try {
-    await Keychain.setGenericPassword(id, id);
+    await Keychain.setGenericPassword(id, 'true');
     return Promise.resolve(id);
   } catch (e) {
     return Promise.reject(e);
@@ -39,10 +41,22 @@ export const setAuthErrors = (errorField, errorMsg, success = false) => ({
 
 export const resetAuthErrors = () => ({ type: RESET_AUTH_ERRORS });
 
-export const setUserID = id => ({
-  type: SET_USER_ID,
-  payload: id
+export const setUserCredentials = (id, firstLogin) => ({
+  type: SET_USER_CREDENTIALS,
+  payload: { id, firstLogin }
 });
+
+export const setNotFirstLogIn = id => dispatch => {
+  (async () => {
+    try {
+      await Keychain.setGenericPassword(id, 'false');
+    } finally {
+      dispatch({ type: SET_NOT_FIRST_LOG_IN });
+    }
+  })().catch(err => {
+    handleError(err);
+  });
+};
 
 // obj: { id, bool }
 export const setActive = (id, bool) => {
@@ -87,6 +101,7 @@ export const forgotPassword = (email, navigation, clearInput) => dispatch => {
     });
 };
 
+// Remote only
 // ======================================= Logging In / Out =======================================
 const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) => {
   if (response.data.msg) {
@@ -94,7 +109,7 @@ const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) =>
   } else {
     storeCredentials(response.data.id)
       .then(id => {
-        dispatch(setUserID(id));
+        dispatch(setUserCredentials(id, true));
         dispatch(navigateToRoute('Main'));
         navigation.navigate('App');
         setActive(id, true);
@@ -130,7 +145,7 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
   } else {
     storeCredentials(response.data.id)
       .then(id => {
-        dispatch(setUserID(id));
+        dispatch(setUserCredentials(id, true));
         dispatch(navigateToRoute('CreateProfile'));
         navigation.navigate('CreateProfile');
         setActive(id, true);

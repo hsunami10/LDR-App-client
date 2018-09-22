@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive, setUserID } from '../../actions/AuthActions';
+import { setActive, setUserCredentials } from '../../actions/AuthActions';
 import { navigateToRoute } from '../../actions/NavigationActions';
 import { handleError } from '../../assets/helpers';
 
@@ -23,12 +23,13 @@ class AuthLoadingScreen extends Component {
       this.showNoConnectionAlert();
     } else {
       try {
-        const credentials = await Keychain.getGenericPassword(); // NOTE: { uid, uid }
+        const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
+        console.log(credentials);
         if (credentials) {
+          this.props.setUserCredentials(credentials.username, credentials.password === 'true');
           this.props.navigateToRoute('Main');
           this.props.navigation.navigate('App');
           setActive(credentials.username, true);
-          this.props.setUserID(credentials.username);
         } else {
           this.props.navigateToRoute('Welcome');
           this.props.navigation.navigate('Auth');
@@ -61,11 +62,14 @@ class AuthLoadingScreen extends Component {
 }
 
 AuthLoadingScreen.propTypes = {
-  setUserID: PropTypes.func.isRequired,
+  setUserCredentials: PropTypes.func.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({ current_route: state.navigation.current_route });
 
-export default connect(mapStateToProps, { setUserID, navigateToRoute })(AuthLoadingScreen);
+export default connect(mapStateToProps, {
+  setUserCredentials,
+  navigateToRoute
+})(AuthLoadingScreen);
