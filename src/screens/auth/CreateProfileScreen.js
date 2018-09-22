@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Dimensions, Text, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -8,11 +8,9 @@ import {
   StandardHeader,
   ClickableImage,
   MultiLineInput,
-  DismissKeyboard,
-  Button
+  DismissKeyboard
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers';
-import { MIN_LOADING_TIME } from '../../constants/variables';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 
@@ -40,8 +38,6 @@ class CreateProfileScreen extends Component {
     console.log('create profile');
   }
 
-  locationPressed = () => checkPermission('location', this.handleCheckPermission)
-
   handleChangeText = bio => this.setState(() => ({ bio }))
 
   showActionSheet = () => this.ActionSheet.show()
@@ -66,12 +62,6 @@ class CreateProfileScreen extends Component {
       case 'camera':
         if (response === 'authorized') {
           this.openCamera();
-          return;
-        }
-        break;
-      case 'location':
-        if (response === 'authorized') {
-          this.updateLocation();
           return;
         }
         break;
@@ -112,14 +102,6 @@ class CreateProfileScreen extends Component {
     });
   }
 
-  updateLocation = () => {
-    // NOTE: Make sure the two strings are exactly the same, otherwise this won't work
-    if (this.state.buttonText !== 'Location Enabled!') {
-      this.setState(() => ({ loading: true }));
-      setTimeout(() => this.setState(() => ({ loading: false, buttonText: 'Location Enabled!' })), MIN_LOADING_TIME);
-    }
-  }
-
   render() {
     return (
       <DismissKeyboard>
@@ -149,13 +131,6 @@ class CreateProfileScreen extends Component {
               height={Dimensions.get('window').width - 250}
               containerStyle={{ marginTop: 10 }}
             />
-            <Button
-              onPress={this.locationPressed}
-              loading={this.state.loading}
-              style={{ marginTop: 10 }}
-            >
-              <Text>{this.state.buttonText}</Text>
-            </Button>
           </View>
           <ActionSheet
             ref={this.ref}

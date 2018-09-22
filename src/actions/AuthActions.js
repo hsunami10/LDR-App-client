@@ -12,7 +12,7 @@ import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 const storeCredentials = (async id => {
   try {
-    // await Keychain.setGenericPassword(id, id); // NOTE: TODO: Remove this later, testing only
+    await Keychain.setGenericPassword(id, id);
     return Promise.resolve(id);
   } catch (e) {
     return Promise.reject(e);

@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, Alert } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
+import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import FeedScreen from './social/FeedScreen';
 import DiscoverScreen from './social/DiscoverScreen';
 import ViewProfileScreen from './profile/ViewProfileScreen';
-import SettingsScreen from './settings/SettingsScreen';
+import NotificationScreen from './NotificationScreen';
+import { checkPermission } from '../../assets/helpers';
 
+// NOTE: Permissions: camera, photo, location, notification
 class MainScreen extends Component {
   state = {
     navigationState: {
@@ -15,35 +19,39 @@ class MainScreen extends Component {
         { key: 'feed', title: 'Feed' },
         { key: 'discover', title: 'Discover' },
         { key: 'compose', title: 'Compose' },
-        { key: 'profile', title: 'Profile' },
-        { key: 'settings', title: 'Settings' }
+        { key: 'notifications', title: 'Notifications' },
+        { key: 'profile', title: 'Profile' }
       ]
-    },
-    cameraPermission: '',
-    locationPermission: '',
-    notificationPermission: '',
-    photoPermission: ''
+    }
   }
 
   componentDidMount() {
-    Permissions.checkMultiple(['camera', 'location', 'notification', 'photo']).then(response => {
-      this.setState(() => ({
-        cameraPermission: response.camera,
-        locationPermission: response.location,
-        notificationPermission: response.notification,
-        photoPermission: response.photo
-      }));
-    });
+    // Only check notification permissions when signing up / logging in
+    // NOT when you're already logged in
+    // If you're already logged in, then routes = ['AuthLoading', 'Main']
+    if (this.props.routes[this.props.routes.length - 2] !== 'AuthLoading') {
+      checkPermission('notification', this.handleCheckPermission);
+    }
   }
 
-  requestPermission = type => {
-    switch (type) {
-      case 'location':
-        break;
-      case 'notification':
-        break;
-      default:
-        return;
+  handleCheckPermission = (type, response) => {
+    if (response === 'undetermined') {
+      Permissions.request(type)
+        .then(resp => {
+          if (resp === 'denied') {
+            Alert.alert(
+              'Enable Later',
+              'If you change your mind, you can always enable push notifications in your settings.',
+              [{ text: 'OK', style: 'cancel' }]
+            );
+          }
+        });
+    } else if (response === 'denied') {
+      Alert.alert(
+        'Enable Notifications',
+        'Enable push notifications in your settings to receive alerts from this app.',
+        [{ text: 'OK', style: 'cancel' }]
+      );
     }
   }
 
@@ -67,11 +75,11 @@ class MainScreen extends Component {
       case 'compose':
         console.log('open compose view');
         break;
+      case 'notifications':
+        console.log('scroll up notifications');
+        break;
       case 'profile':
         console.log('scroll up profile');
-        break;
-      case 'settings':
-        console.log('scroll up settings');
         break;
       default:
         return;
@@ -86,10 +94,10 @@ class MainScreen extends Component {
         return <DiscoverScreen navigation={this.props.navigation} />;
       case 'compose':
         break;
+      case 'notifications':
+        return <NotificationScreen navigation={this.props.navigation} />;
       case 'profile':
         return <ViewProfileScreen type="private" navigation={this.props.navigation} />;
-      case 'settings':
-        return <SettingsScreen navigation={this.props.navigation} />;
       default:
         return;
     }
@@ -120,4 +128,14 @@ class MainScreen extends Component {
   }
 }
 
-export default MainScreen;
+MainScreen.propTypes = {
+  routes: PropTypes.array.isRequired,
+  current_route: PropTypes.string.isRequired
+};
+
+const mapStateToProps = state => ({
+  routes: state.navigation.routes,
+  current_route: state.navigation.current_route
+});
+
+export default connect(mapStateToProps)(MainScreen);

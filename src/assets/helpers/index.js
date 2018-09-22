@@ -85,6 +85,10 @@ export const alertPermission = (permissionStatus, requestPermissionCallback, typ
       title = 'Can we access your location?';
       msg = 'We need access so you can find posts near you and update your partner.';
       break;
+    case 'notification':
+      title = 'Can we send you notifications?';
+      msg = 'You may like notifications for subscribed topics and users, and updates on your partner.';
+      break;
     case 'photo':
       title = 'Can we access your photos?';
       msg = 'We need access so you can set your profile picture and choose topic images.';
@@ -93,6 +97,8 @@ export const alertPermission = (permissionStatus, requestPermissionCallback, typ
       return;
   }
   if (permissionStatus === 'denied' || permissionStatus === 'undetermined') {
+    // NOTE: Only ask for notification permissions if haven't asked before
+    if (permissionStatus === 'denied' && type === 'notification') return;
     Alert.alert(
       title,
       msg,
