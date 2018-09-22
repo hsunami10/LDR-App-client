@@ -11,7 +11,7 @@ import {
   DismissKeyboard,
   Button
 } from '../../components/common';
-import { alertPermission } from '../../assets/helpers';
+import { alertPermission, checkPermission } from '../../assets/helpers';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 
@@ -19,37 +19,16 @@ class CreateProfileScreen extends Component {
   state = {
     bio: '',
     buttonText: 'Get Location',
-    loading: false,
-    cameraPermission: '',
-    locationPermission: '',
-    photoPermission: ''
-  }
-
-  componentDidMount() {
-    Permissions.checkMultiple(['camera', 'photo', 'location']).then(response => {
-      this.setState(() => ({
-        cameraPermission: response.camera,
-        locationPermission: response.location,
-        photoPermission: response.photo
-      }));
-    });
+    loading: false
   }
 
   onPressAction = index => {
     switch (index) {
       case 0:
-        if (this.state.cameraPermission === 'authorized') {
-          this.openCamera();
-        } else {
-          alertPermission(this.state.cameraPermission, this.requestPermission, 'camera');
-        }
+        checkPermission('camera', this.handleCheckPermission);
         break;
       case 1:
-        if (this.state.photoPermission === 'authorized') {
-          this.openPhotos();
-        } else {
-          alertPermission(this.state.photoPermission, this.requestPermission, 'photo');
-        }
+        checkPermission('photo', this.handleCheckPermission);
         break;
       default:
         return;
@@ -61,11 +40,7 @@ class CreateProfileScreen extends Component {
   }
 
   locationPressed = () => {
-    if (this.state.locationPermission === 'authorized') {
-      this.updateLocation();
-    } else {
-      alertPermission(this.state.locationPermission, this.requestPermission, 'location');
-    }
+    checkPermission('location', this.handleCheckPermission);
   }
 
   handleChangeText = bio => this.setState(() => ({ bio }))
@@ -77,24 +52,39 @@ class CreateProfileScreen extends Component {
     return this.ActionSheet;
   }
 
-  requestPermission = type => {
-    Permissions.request(type).then(response => {
-      if (response === 'authorized') {
-        switch (type) {
-          case 'camera':
-            this.openCamera();
-            break;
-          case 'location':
-            this.updateLocation();
-            break;
-          case 'photo':
-            this.openPhotos();
-            break;
-          default:
+  handleCheckPermission = (type, response) => {
+    this.handlePermissionAction(type, response);
+    alertPermission(response, this.requestPermission, type);
+  }
 
+  requestPermission = type => {
+    Permissions.request(type)
+      .then(response => this.handlePermissionAction(type, response));
+  }
+
+  handlePermissionAction = (type, response) => {
+    switch (type) {
+      case 'camera':
+        if (response === 'authorized') {
+          this.openCamera();
+          return;
         }
-      }
-    });
+        break;
+      case 'location':
+        if (response === 'authorized') {
+          this.updateLocation();
+          return;
+        }
+        break;
+      case 'photo':
+        if (response === 'authorized') {
+          this.openPhotos();
+          return;
+        }
+        break;
+      default:
+        return;
+    }
   }
 
   openCamera = () => {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
+import Permissions from 'react-native-permissions';
 import FeedScreen from './social/FeedScreen';
 import DiscoverScreen from './social/DiscoverScreen';
 import ViewProfileScreen from './profile/ViewProfileScreen';
@@ -17,6 +18,32 @@ class MainScreen extends Component {
         { key: 'profile', title: 'Profile' },
         { key: 'settings', title: 'Settings' }
       ]
+    },
+    cameraPermission: '',
+    locationPermission: '',
+    notificationPermission: '',
+    photoPermission: ''
+  }
+
+  componentDidMount() {
+    Permissions.checkMultiple(['camera', 'location', 'notification', 'photo']).then(response => {
+      this.setState(() => ({
+        cameraPermission: response.camera,
+        locationPermission: response.location,
+        notificationPermission: response.notification,
+        photoPermission: response.photo
+      }));
+    });
+  }
+
+  requestPermission = type => {
+    switch (type) {
+      case 'location':
+        break;
+      case 'notification':
+        break;
+      default:
+        return;
     }
   }
 

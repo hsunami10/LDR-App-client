@@ -32,7 +32,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access to let you take photos for profile pictures and topic images.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to find posts near you and to update your partner.</string>
+	<string>We need your location to find posts near you and to keep your partner updated.</string>
 
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Our app does not request this permission or utilize this functionality but it is included in our Info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
@@ -59,8 +59,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to find people and posts near you.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<!-- <key>NSAllowsArbitraryLoads</key>

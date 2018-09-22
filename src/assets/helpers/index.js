@@ -55,6 +55,17 @@ const alertRestrictedPermission = () => {
   }
 };
 /**
+ * This function checks permission statuses.
+ * @param  {string}   type              The current status of the specified permission type.
+ *                                      Values: 'authorized', 'denied', 'restricted', 'undetermined'.
+ * @callback          responseCallback  The function to be called with the type and response string.
+ *                                      Values: 'authorized', 'denied', 'restricted', 'undetermined'.
+ */
+export const checkPermission = (type, responseCallback) => {
+  Permissions.check(type)
+    .then(response => responseCallback(type, response));
+};
+/**
  * This function handles all alerts for all permission types in the app.
  * @param  {string} permissionStatus          The status of the permission.
  *                                            Values: 'authorized', 'denied', 'restricted', 'undetermined'.

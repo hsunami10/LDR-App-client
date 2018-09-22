@@ -22,11 +22,11 @@ target 'LDR_App_client' do
     'RCTWebSocket'
   ]
 
-  target 'LDR_App_client-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-
-  end
+#  target 'LDR_App_client-tvOSTests' do
+#    inherit! :search_paths
+#    # Pods for testing
+#
+#  end
 
   target 'LDR_App_clientTests' do
     inherit! :search_paths
