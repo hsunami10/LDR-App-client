@@ -31,7 +31,6 @@ class MainScreen extends Component {
     // Only check notification permissions when from signing up / logging in screens
     // NOT when you're already logged in
     // If you're already logged in, then routes = ['AuthLoading', 'Main']
-    console.log(this.props.first_login)
     if (this.props.first_login) {
       checkPermission('notification', this.handleCheckPermission);
     }
@@ -39,7 +38,6 @@ class MainScreen extends Component {
   }
 
   handleCheckPermission = (type, response) => {
-    console.log('notification permission: ' + response);
     if (response === 'undetermined') {
       Permissions.request(type)
         .then(resp => {
