@@ -29,8 +29,7 @@ class MainScreen extends Component {
 
   componentDidMount() {
     // Only check notification permissions when from signing up / logging in screens
-    // NOT when you're already logged in
-    // If you're already logged in, then routes = ['AuthLoading', 'Main']
+    // When this.props.first_login = true
     if (this.props.first_login) {
       checkPermission('notification', this.handleCheckPermission);
     }
