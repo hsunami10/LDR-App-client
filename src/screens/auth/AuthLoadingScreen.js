@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserCredentials } from '../../actions/AuthActions';
 import { navigateToRoute } from '../../actions/NavigationActions';
-import { handleError } from '../../assets/helpers';
+import { handleError, showNoConnectionAlert } from '../../assets/helpers';
 
 // QUESTION: Have auth loading the same as the splash screen, but with a loading indicator?
 
@@ -20,7 +20,7 @@ class AuthLoadingScreen extends Component {
 
   getLoginInfo = async connectionInfo => {
     if (connectionInfo.type === 'none') {
-      this.showNoConnectionAlert();
+      showNoConnectionAlert();
     } else {
       try {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
@@ -28,8 +28,8 @@ class AuthLoadingScreen extends Component {
         if (credentials) {
           this.props.setUserCredentials(credentials.username, credentials.password === 'true');
           this.props.navigateToRoute('Main');
-          this.props.navigation.navigate('App');
           setActive(credentials.username, true);
+          this.props.navigation.navigate('App');
         } else {
           this.props.navigateToRoute('Welcome');
           this.props.navigation.navigate('Auth');
@@ -44,16 +44,8 @@ class AuthLoadingScreen extends Component {
     if (this.props.current_route === 'AuthLoading') {
       this.getLoginInfo(connectionInfo);
     } else if (connectionInfo.type === 'none') {
-      this.showNoConnectionAlert();
+      showNoConnectionAlert();
     }
-  }
-
-  showNoConnectionAlert = () => {
-    Alert.alert(
-      'Oh no!',
-      'You do not have internet connection. Please connect to the internet and try again.',
-      [{ text: 'Ok', onPress: () => this.setState(() => ({ alerted: false })) }]
-    );
   }
 
   render() {

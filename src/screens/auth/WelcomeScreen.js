@@ -46,7 +46,7 @@ class WelcomeScreen extends Component {
         {/* TODO: Remove this later */}
         <Image
           style={{ width: 50, height: 50 }}
-          source={{ uri: `${ROOT_URL}/images/groups/nature.jpeg` }}
+          source={{ uri: `${ROOT_URL}/images/topics/nature.jpeg` }}
         />
       </View>
     );

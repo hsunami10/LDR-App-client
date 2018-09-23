@@ -7,14 +7,21 @@ import { MIN_LOADING_TIME } from '../../constants/variables';
 // TODO: Send report to development team
 export const handleError = (error, custom = false) => {
   console.log(error);
-  Alert.alert(
-      'Oops!',
-      (custom ? error.message : `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`),
-    [
-      { text: 'Restart', onPress: () => RNRestart.Restart() }
-    ],
-    { cancelable: false }
-  );
+  this.getConnectionInfo()
+    .then(connectionInfo => {
+      if (connectionInfo.type === 'none') {
+        this.showNoConnectionAlert();
+      } else {
+        Alert.alert(
+            'Oops!',
+            (custom ? error.message : `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`),
+          [
+            { text: 'Restart', onPress: () => RNRestart.Restart() }
+          ],
+          { cancelable: false }
+        );
+      }
+    });
 };
 
 // Waits until MIN_LOADING_TIME is up (if quicker than MIN_LOADING_TIME)
@@ -28,6 +35,14 @@ export const waitUntilMinTime = (beforeReq, callback, param) => {
   } else {
     callback(param);
   }
+};
+
+export const showNoConnectionAlert = () => {
+  Alert.alert(
+    'Oh no!',
+    'You do not have internet connection. Please connect to the internet and try again.',
+    [{ text: 'Ok' }]
+  );
 };
 
 export const getConnectionInfo = async () => {

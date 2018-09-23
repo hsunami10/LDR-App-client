@@ -111,8 +111,8 @@ const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) =>
       .then(id => {
         dispatch(setUserCredentials(id, true));
         dispatch(navigateToRoute('Main'));
-        navigation.navigate('App');
         setActive(id, true);
+        navigation.navigate('App');
         resetEverything();
       })
       .catch(err => {
@@ -147,8 +147,8 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
       .then(id => {
         dispatch(setUserCredentials(id, true));
         dispatch(navigateToRoute('CreateProfile'));
-        navigation.navigate('CreateProfile');
         setActive(id, true);
+        navigation.navigate('CreateProfile');
         resetEverything();
       })
       .catch(err => {
