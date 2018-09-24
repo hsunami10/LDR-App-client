@@ -152,7 +152,16 @@ const createProfileResponse = ({ dispatch, navigation, resetEverything }) => {
 export const createProfile = (dataObj, navigation, resetEverything) => dispatch => {
   const beforeReq = Date.now();
   dispatch(startLoading());
-  axios.post(`${ROOT_URL}/api/create_profile`, dataObj)
+
+  const data = new FormData();
+  data.append('id', dataObj.id);
+  data.append('type', dataObj.type);
+  data.append('bio', dataObj.bio);
+  data.append('clientImage', dataObj.clientImage);
+
+  axios.post(`${ROOT_URL}/api/create_profile`, data, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
     .then(() => {
       waitUntilMinTime(
         beforeReq,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -31,6 +31,11 @@ class CreateProfileScreen extends Component {
       case 1:
         checkPermission('photo', this.handleCheckPermission);
         break;
+      case 2:
+        if (this.state.image) {
+          this.setState(() => ({ image: null }));
+        }
+        break;
       default:
         return;
     }
@@ -39,12 +44,13 @@ class CreateProfileScreen extends Component {
   resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
 
   createProfile = () => {
+    Keyboard.dismiss();
     this.props.createProfile(
       {
         id: this.props.id,
         type: 'profile',
         bio: this.state.bio === '' ? null : this.state.bio,
-        clientImage: this.state.image || null // TODO: Handle real images from react-native-image-crop-picker
+        clientImage: this.state.image || null
       },
       this.props.navigation,
       this.resetEverything
@@ -91,12 +97,19 @@ class CreateProfileScreen extends Component {
 
   openCamera = () => {
     ImagePicker.openCamera({
-      width: 300,
-      height: 300,
+      // width: 300,
+      // height: 300,
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
       console.log(image);
+      this.setState(() => ({
+        image: {
+          uri: image.path,
+          type: image.mime,
+          name: image.filename
+        }
+      }));
     }).catch(err => {
       console.log(err);
     });
@@ -104,12 +117,19 @@ class CreateProfileScreen extends Component {
 
   openPhotos = () => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 300,
+      // width: 300,
+      // height: 300,
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
       console.log(image);
+      this.setState(() => ({
+        image: {
+          uri: image.path,
+          type: image.mime,
+          name: image.filename
+        }
+      }));
     }).catch(err => {
       console.log(err);
     });
@@ -133,6 +153,7 @@ class CreateProfileScreen extends Component {
               height={150}
               onPress={this.showActionSheet}
               type="none"
+              image={this.state.image}
             />
             <MultiLineInput
               multiline
@@ -147,8 +168,13 @@ class CreateProfileScreen extends Component {
           </View>
           <ActionSheet
             ref={this.ref}
-            options={['Take Photo', 'Choose from Library', 'Cancel']}
-            cancelButtonIndex={2}
+            options={
+              this.state.image ?
+              ['Take Photo', 'Choose from Library', 'Remove Photo', 'Cancel'] :
+              ['Take Photo', 'Choose from Library', 'Cancel']
+            }
+            cancelButtonIndex={this.state.image ? 3 : 2}
+            destructiveButtonIndex={this.state.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
         </View>
