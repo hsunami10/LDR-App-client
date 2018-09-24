@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
@@ -11,14 +12,15 @@ import {
   DismissKeyboard
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers';
+import { createProfile } from '../../actions/AuthActions';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 
 class CreateProfileScreen extends Component {
-  state = {
-    bio: '',
-    buttonText: 'Enable Location',
-    loading: false
+  state = { bio: '', loading: false, image: null }
+
+  componentWillUnmount() {
+    this.resetEverything();
   }
 
   onPressAction = index => {
@@ -34,8 +36,19 @@ class CreateProfileScreen extends Component {
     }
   }
 
+  resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
+
   createProfile = () => {
-    console.log('create profile');
+    this.props.createProfile(
+      {
+        id: this.props.id,
+        type: 'profile',
+        bio: this.state.bio === '' ? null : this.state.bio,
+        clientImage: this.state.image || null // TODO: Handle real images from react-native-image-crop-picker
+      },
+      this.props.navigation,
+      this.resetEverything
+    );
   }
 
   handleChangeText = bio => this.setState(() => ({ bio }))
@@ -144,6 +157,11 @@ class CreateProfileScreen extends Component {
   }
 }
 
+CreateProfileScreen.propTypes = {
+  createProfile: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired
+};
+
 const styles = StyleSheet.create({
   viewStyle: {
     flex: 1,
@@ -153,4 +171,6 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CreateProfileScreen;
+const mapStateToProps = state => ({ id: state.auth.id });
+
+export default connect(mapStateToProps, { createProfile })(CreateProfileScreen);

@@ -139,6 +139,30 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
 };
 
 // ========================================== Signing Up ==========================================
+const createProfileResponse = ({ dispatch, navigation, resetEverything, dataObj }) => {
+  dispatch(stopLoading()); // BUG: Doesn't stop loading, hides alert on accident also?
+  dispatch(navigateToRoute('Main'));
+  setActive(dataObj.id, true);
+  navigation.navigate('App');
+  resetEverything();
+};
+
+export const createProfile = (dataObj, navigation, resetEverything) => dispatch => {
+  const beforeReq = Date.now();
+  dispatch(startLoading());
+  axios.post(`${ROOT_URL}/api/create_profile`, dataObj)
+    .then(() => {
+      waitUntilMinTime(
+        beforeReq,
+        createProfileResponse,
+        { dispatch, navigation, resetEverything, dataObj }
+      );
+    })
+    .catch(error => {
+      handleError(error);
+    });
+};
+
 const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) => {
   if (response.data.msg) {
     dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
