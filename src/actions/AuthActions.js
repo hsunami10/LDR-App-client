@@ -61,9 +61,6 @@ export const setNotFirstLogIn = id => dispatch => {
 // obj: { id, bool }
 export const setActive = (id, bool) => {
   axios.put(`${ROOT_URL}/api/user/set_active`, { id, bool })
-    .then(response => {
-      console.log(response);
-    })
     .catch(err => {
       handleError(err);
     });
@@ -139,18 +136,17 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
 };
 
 // ========================================== Signing Up ==========================================
-const createProfileResponse = ({ dispatch, navigation, resetEverything, dataObj }) => {
+const createProfileResponse = ({ dispatch, navigation, resetEverything }) => {
   dispatch(stopLoading());
-  storeCredentials(dataObj.id)
-    .then(id => {
-      dispatch(navigateToRoute('Main'));
-      setActive(id, true);
-      navigation.navigate('App');
-      resetEverything();
-    })
-    .catch(err => {
-      handleError(err);
-    });
+  (async () => {
+    const credentials = await Keychain.getGenericPassword();
+    dispatch(navigateToRoute('Main'));
+    setActive(credentials.username, true);
+    navigation.navigate('App');
+    resetEverything();
+  })().catch(error => {
+    handleError(new Error(`Unable to access keychain. ${error.message}`, true));
+  });
 };
 
 export const createProfile = (dataObj, navigation, resetEverything) => dispatch => {
@@ -161,7 +157,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
       waitUntilMinTime(
         beforeReq,
         createProfileResponse,
-        { dispatch, navigation, resetEverything, dataObj }
+        { dispatch, navigation, resetEverything }
       );
     })
     .catch(error => {
@@ -178,7 +174,6 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
       .then(id => {
         dispatch(setUserCredentials(id, true));
         dispatch(navigateToRoute('CreateProfile'));
-        setActive(id, true);
         navigation.navigate('CreateProfile');
         resetEverything();
       })
