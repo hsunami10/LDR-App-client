@@ -4,6 +4,7 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import LogInScreen from '../screens/auth/LogInScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import CreateProfileScreen from '../screens/auth/CreateProfileScreen';
+import VerifyEmailScreen from '../screens/auth/VerifyEmailScreen';
 
 const MainStack = createStackNavigator(
   {
@@ -12,6 +13,12 @@ const MainStack = createStackNavigator(
     SignUp: SignUpScreen,
     CreateProfile: {
       screen: CreateProfileScreen,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
+    VerifyEmail: {
+      screen: VerifyEmailScreen,
       navigationOptions: {
         gesturesEnabled: false
       }

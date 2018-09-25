@@ -136,17 +136,27 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
 };
 
 // ========================================== Signing Up ==========================================
+export const sendVerificationEmail = (id, email) => dispatch => {
+  dispatch(startLoading());
+  axios.post(`${ROOT_URL}/api/send_verification_email`, { id, email })
+    .then(response => {
+      dispatch(stopLoading());
+      if (response.data.success) {
+        dispatch(setAuthErrors('', response.data.msg, true));
+      } else {
+        dispatch(setAuthErrors('username', response.data.msg));
+      }
+    })
+    .catch(error => {
+      handleError(error);
+    });
+};
+
 const createProfileResponse = ({ dispatch, navigation, resetEverything }) => {
   dispatch(stopLoading());
-  (async () => {
-    const credentials = await Keychain.getGenericPassword();
-    dispatch(navigateToRoute('Main'));
-    setActive(credentials.username, true);
-    navigation.navigate('App');
-    resetEverything();
-  })().catch(error => {
-    handleError(new Error(`Unable to access keychain. ${error.message}`, true));
-  });
+  dispatch(navigateToRoute('VerifyEmail'));
+  navigation.navigate('VerifyEmail');
+  resetEverything();
 };
 
 export const createProfile = (dataObj, navigation, resetEverything) => dispatch => {

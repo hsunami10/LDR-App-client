@@ -1,37 +1,43 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, StyleSheet, Platform, TouchableOpacity, Keyboard, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { DismissKeyboard, StandardHeader, Input, Button, SpinnerOverlay } from '../../components/common';
 import { isValidEmail } from '../../assets/helpers';
-import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
-import { forgotPassword, resetAuthErrors, setAuthErrors } from '../../actions/AuthActions';
-import { popRoute } from '../../actions/NavigationActions';
+import {
+  setAuthErrors,
+  resetAuthErrors,
+  sendVerificationEmail
+} from '../../actions/AuthActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
-class ForgotPasswordScreen extends Component {
+
+class VerifyEmailScreen extends Component {
   state = { email: '' }
 
   componentWillUnmount() {
+    this.resetEverything();
+  }
+
+  resetEverything = () => {
     this.setState(() => ({ email: '' }));
     this.props.resetAuthErrors();
   }
 
-  close = () => {
-    this.props.popRoute('LogIn');
-    this.props.navigation.popToTop();
+  handleRightPress = () => {
+    this.props.navigateToRoute('Main');
+    this.props.navigation.navigate('App');
+    this.resetEverything();
   }
 
-  handleChangeText = email => this.setState(() => ({ email }));
-
-  clearInput = () => this.setState(() => ({ email: '' }));
+  handleChangeText = email => this.setState(() => ({ email }))
 
   sendEmail = () => {
     Keyboard.dismiss();
     if (isValidEmail(this.state.email)) {
       this.props.resetAuthErrors();
-      this.props.forgotPassword(this.state.email, this.props.navigation, this.clearInput);
+      this.props.sendVerificationEmail(this.props.id, this.state.email);
     } else {
       this.props.setAuthErrors('username', 'Invalid email');
     }
@@ -42,20 +48,16 @@ class ForgotPasswordScreen extends Component {
       <DismissKeyboard>
         <View style={{ flex: 1 }}>
           <StandardHeader
-            title="Forgot Password"
-            showLeft
-            headerLeft={
-              <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={this.close}
-              >
-                <Icon name={`${Platform.OS}-close`} size={45} />
-              </TouchableOpacity>
-            }
+            showRight
+            rightTitle={this.props.success ? 'Next' : 'Skip'}
+            title="Verify Email"
+            onRightPress={this.handleRightPress}
+            disableBack
+            disableRight={this.props.loading}
           />
-          <View style={styles.viewStyle}>
+          <View style={styles.centerItems}>
             <Input
-              placeholder="Email"
+              placeholder="Email (optional)"
               onChangeText={this.handleChangeText}
               value={this.state.email}
               showBorder={this.props.error_field === 'username'}
@@ -70,6 +72,7 @@ class ForgotPasswordScreen extends Component {
               {this.props.error_msg}
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
+            <Text>Verify your email to receive developer updates, polls, and forgotten passwords. You can also send feedback, bug reports, user reports, new ideas, and topic requests</Text>
             <SpinnerOverlay visible={this.props.loading} />
           </View>
         </View>
@@ -78,39 +81,36 @@ class ForgotPasswordScreen extends Component {
   }
 }
 
-ForgotPasswordScreen.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  forgotPassword: PropTypes.func.isRequired,
-  setAuthErrors: PropTypes.func.isRequired,
+VerifyEmailScreen.propTypes = {
   resetAuthErrors: PropTypes.func.isRequired,
-  popRoute: PropTypes.func.isRequired,
-  success: PropTypes.bool.isRequired,
+  setAuthErrors: PropTypes.func.isRequired,
+  sendVerificationEmail: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
+  error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
-  error_field: PropTypes.string.isRequired
+  loading: PropTypes.bool.isRequired,
+  success: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
-  viewStyle: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  buttonStyle: {
-    width: MIN_HEADER_HEIGHT_NO_STATUS_BAR,
+  centerItems: {
     justifyContent: 'center',
     alignItems: 'center'
   }
 });
 
 const mapStateToProps = state => ({
+  id: state.auth.id,
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
-  success: state.auth.success,
-  loading: state.loading
+  loading: state.loading,
+  success: state.auth.success
 });
 
 export default connect(mapStateToProps, {
-  forgotPassword,
-  setAuthErrors,
   resetAuthErrors,
-  popRoute
-})(ForgotPasswordScreen);
+  setAuthErrors,
+  sendVerificationEmail,
+  navigateToRoute
+})(VerifyEmailScreen);

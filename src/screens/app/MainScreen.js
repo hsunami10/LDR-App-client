@@ -74,19 +74,27 @@ class MainScreen extends Component {
   handleTabPress = ({ route }) => {
     switch (route.key) {
       case 'feed':
-        console.log('scroll up feed');
+        if (this.props.current_route === 'feed') {
+          console.log('scroll up feed');
+        }
         break;
       case 'discover':
-        console.log('scroll up discover');
+        if (this.props.current_route === 'discover') {
+          console.log('scroll up discover');
+        }
         break;
       case 'compose':
         console.log('open compose view');
         break;
       case 'notifications':
-        console.log('scroll up notifications');
+        if (this.props.current_route === 'notifications') {
+          console.log('scroll up notifications');
+        }
         break;
       case 'profile':
-        console.log('scroll up profile');
+        if (this.props.current_route === 'profile') {
+          console.log('scroll up profile');
+        }
         break;
       default:
         return;

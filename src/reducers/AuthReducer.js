@@ -33,7 +33,7 @@ export default (state = INITIAL_STATE, action) => {
       break;
     }
     case RESET_AUTH_ERRORS:
-      return { ...state, error_field: '', error_msg: ' ', success: true };
+      return { ...state, error_field: '', error_msg: ' ', success: false };
     case SET_USER_CREDENTIALS:
       return { ...state, id: action.payload.id, first_login: action.payload.firstLogin };
     case SET_NOT_FIRST_LOG_IN:
