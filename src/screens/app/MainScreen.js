@@ -134,7 +134,7 @@ class MainScreen extends Component {
             />
           }
           swipeEnabled={false}
-          // animationEnabled={false}
+          animationEnabled={false}
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />

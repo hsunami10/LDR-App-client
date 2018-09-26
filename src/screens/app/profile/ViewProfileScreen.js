@@ -10,6 +10,10 @@ import { setActive } from '../../../actions/AuthActions';
 import { popRoute, navigateToRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
+  componentDidMount() {
+    console.log(this.props.type);
+  }
+
   onPressAction = index => {
     switch (index) {
       case 0:
@@ -76,7 +80,8 @@ class ViewProfileScreen extends Component {
 ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   popRoute: PropTypes.func.isRequired,
-  navigateToRoute: PropTypes.func.isRequired
+  navigateToRoute: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired // private, public
 };
 
 const styles = StyleSheet.create({

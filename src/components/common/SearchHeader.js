@@ -1,9 +1,110 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { MIN_HEADER_HEIGHT } from '../../constants/variables';
 
-// TODO: Finish implementing the searchable header.
-export const SearchHeader = props => (
-  <View>
-    <Text>Search Header!</Text>
-  </View>
-);
+export class SearchHeader extends Component {
+  state = {
+    screenWidth: Dimensions.get('window').width,
+    fullCancelWidth: 44.5, // Width of "Cancel" button TODO: Change this later?
+    cancelWidth: new Animated.Value(0),
+    inAnimation: false
+  }
+
+  // NOTE: Get width of element, doesn't work if display: 'none'
+  handleLayout = event => console.log(event.nativeEvent.layout.width);
+
+  startAnimations = () => {
+    this.props.onFocus();
+    this.setState(() => ({ inAnimation: true }));
+    Animated.timing(this.state.cancelWidth, {
+      toValue: this.state.fullCancelWidth,
+      duration: this.props.animationDuration || 200
+    }).start(() => console.log('animation ended'));
+  }
+
+  cancel = () => {
+    this.props.onCancelPress();
+    Animated.timing(this.state.cancelWidth, {
+      toValue: 0,
+      duration: this.props.animationDuration || 200
+    }).start(() => this.setState(() => ({ inAnimation: false, cancelWidth: new Animated.Value(0) })));
+  }
+
+  render() {
+    return (
+      <View style={styles.containerStyle}>
+        <Animated.View style={styles.inputContainerStyle}>
+          <TextInput
+            placeholder={this.props.placeholder}
+            autoCorrect={false}
+            autoCapitalize="none"
+            value={this.props.value}
+            onChangeText={this.props.onChangeText}
+            onSubmitEditing={this.props.onSubmitEditing}
+            onFocus={this.startAnimations}
+          />
+        </Animated.View>
+        <Animated.View
+          style={[styles.cancelContainerStyle, {
+            display: this.state.inAnimation ? 'flex' : 'none',
+            width: this.state.cancelWidth,
+            opacity: this.state.cancelWidth.interpolate({
+              inputRange: [0, 50],
+              outputRange: [0, 1]
+            })
+          }]}
+        >
+          <TouchableOpacity
+            onLayout={this.handleLayout}
+            onPress={this.cancel}
+          >
+            <Text style={{ fontSize: 14 }} numberOfLines={1} ellipsizeMode="clip">Cancel</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
+    );
+  }
+}
+
+SearchHeader.propTypes = {
+  placeholder: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChangeText: PropTypes.func.isRequired,
+  onSubmitEditing: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onCancelPress: PropTypes.func.isRequired,
+  animationDuration: PropTypes.number
+};
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    height: MIN_HEADER_HEIGHT,
+    top: 0,
+    right: 0,
+    left: 0,
+    paddingTop: getStatusBarHeight(true),
+    backgroundColor: '#f8f8f8',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  inputContainerStyle: {
+    flex: 1,
+    color: 'black',
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    justifyContent: 'center',
+    height: MIN_HEADER_HEIGHT - getStatusBarHeight(true) - 16, // 8 * 2 - margin top and bottom = 8
+    marginLeft: 8,
+    marginRight: 8
+  },
+  cancelContainerStyle: {
+    marginRight: 8
+  }
+});

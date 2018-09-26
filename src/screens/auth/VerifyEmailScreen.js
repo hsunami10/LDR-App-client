@@ -12,7 +12,6 @@ import {
 import { navigateToRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
-
 class VerifyEmailScreen extends Component {
   state = { email: '' }
 
