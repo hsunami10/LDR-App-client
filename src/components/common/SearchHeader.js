@@ -7,13 +7,18 @@ import { MIN_HEADER_HEIGHT } from '../../constants/variables';
 export class SearchHeader extends Component {
   state = {
     screenWidth: Dimensions.get('window').width,
-    fullCancelWidth: 44.5, // Width of "Cancel" button TODO: Change this later?
+    fullCancelWidth: 0,
     cancelWidth: new Animated.Value(0),
-    inAnimation: false
+    inAnimation: true
   }
 
-  // NOTE: Get width of element, doesn't work if display: 'none'
-  handleLayout = event => console.log(event.nativeEvent.layout.width);
+  handleLayout = e => {
+    const width = e.nativeEvent.layout.width;
+    // Run once
+    if (width !== 0 && this.state.fullCancelWidth === 0) {
+      this.setState(() => ({ fullCancelWidth: width, inAnimation: false }));
+    }
+  }
 
   startAnimations = () => {
     this.props.onFocus();
@@ -29,10 +34,11 @@ export class SearchHeader extends Component {
     Animated.timing(this.state.cancelWidth, {
       toValue: 0,
       duration: this.props.animationDuration || 200
-    }).start(() => this.setState(() => ({ inAnimation: false, cancelWidth: new Animated.Value(0) })));
+    }).start(() => this.setState(() => ({ inAnimation: false })));
   }
 
   render() {
+    console.log(this.state);
     return (
       <View style={styles.containerStyle}>
         <Animated.View style={styles.inputContainerStyle}>
@@ -47,17 +53,17 @@ export class SearchHeader extends Component {
           />
         </Animated.View>
         <Animated.View
+          onLayout={this.handleLayout}
           style={[styles.cancelContainerStyle, {
             display: this.state.inAnimation ? 'flex' : 'none',
             width: this.state.cancelWidth,
             opacity: this.state.cancelWidth.interpolate({
-              inputRange: [0, 50],
+              inputRange: [0, this.state.fullCancelWidth],
               outputRange: [0, 1]
             })
-          }]}
+          }, (this.state.fullCancelWidth === 0 ? { width: 'auto' } : {})]}
         >
           <TouchableOpacity
-            onLayout={this.handleLayout}
             onPress={this.cancel}
           >
             <Text style={{ fontSize: 14 }} numberOfLines={1} ellipsizeMode="clip">Cancel</Text>
