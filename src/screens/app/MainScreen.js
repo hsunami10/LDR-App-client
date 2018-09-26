@@ -24,7 +24,8 @@ class MainScreen extends Component {
         { key: 'notifications', title: 'Notifications' },
         { key: 'profile', title: 'Profile' }
       ]
-    }
+    },
+    tabViewHeight: 0
   }
 
   componentDidMount() {

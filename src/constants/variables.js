@@ -14,6 +14,7 @@ export const MIN_LOADING_TIME = 1000; // Minimum time to show loading indicator
 
 export const MIN_HEADER_HEIGHT = Header.HEIGHT; // Minimum header height (including status bar)
 export const MIN_HEADER_HEIGHT_NO_STATUS_BAR = MIN_HEADER_HEIGHT - getStatusBarHeight(true);
+export const SEARCH_HEADER_HEIGHT = Header.HEIGHT;
 
 // NOTE: Change this in server/config/mail.js if changed
 export const EmailSubjectEnum = Object.freeze({

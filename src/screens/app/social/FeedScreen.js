@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Keyboard, Animated } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, Animated, Dimensions } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -13,7 +14,10 @@ TODO: Figure out how to get and organize data from database
  */
 
 class FeedScreen extends Component {
-  state = { search: '', opacity: new Animated.Value(0) }
+  state = {
+    search: '',
+    opacity: new Animated.Value(0)
+  }
 
   handleSearchFocus = () => {
     console.log('focus');
@@ -26,12 +30,12 @@ class FeedScreen extends Component {
 
   handleCancelPress = () => {
     Keyboard.dismiss();
+    this.setState(() => ({ search: '' }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
       duration: 200,
       useNativeDriver: true
     }).start();
-    console.log('cancel pressed');
   }
 
   handleChangeText = search => this.setState(() => ({ search }));
@@ -55,8 +59,15 @@ class FeedScreen extends Component {
           animationDuration={200}
         />
         <View style={styles.centerItems}>
-          <Text>Feed Screen!</Text>
-          <Animated.View style={[styles.searchViewStyle, { opacity: this.state.opacity }]}>
+          <View>
+            <Text>Feed Screen!</Text>
+          </View>
+          <Animated.View
+            style={[styles.searchViewStyle, {
+              opacity: this.state.opacity,
+              height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
+            }]}
+          >
             <Text>Animated View</Text>
           </Animated.View>
         </View>
@@ -72,9 +83,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   searchViewStyle: {
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue'
+    backgroundColor: 'blue',
+    position: 'absolute',
+    width: Dimensions.get('window').width
   }
 });
 

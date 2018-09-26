@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { MIN_HEADER_HEIGHT } from '../../constants/variables';
+import { SEARCH_HEADER_HEIGHT } from '../../constants/variables';
 
 export class SearchHeader extends Component {
   state = {
@@ -38,7 +38,6 @@ export class SearchHeader extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <View style={styles.containerStyle}>
         <Animated.View style={styles.inputContainerStyle}>
@@ -86,7 +85,7 @@ SearchHeader.propTypes = {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    height: MIN_HEADER_HEIGHT,
+    height: SEARCH_HEADER_HEIGHT,
     top: 0,
     right: 0,
     left: 0,
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     justifyContent: 'center',
-    height: MIN_HEADER_HEIGHT - getStatusBarHeight(true) - 16, // 8 * 2 - margin top and bottom = 8
+    height: SEARCH_HEADER_HEIGHT - getStatusBarHeight(true) - 16, // 8 * 2 - margin top and bottom = 8
     marginLeft: 8,
     marginRight: 8
   },
