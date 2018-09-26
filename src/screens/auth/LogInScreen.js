@@ -96,6 +96,8 @@ class LogInScreen extends Component {
               secureTextEntry
               onChangeText={text => this.handleChangeText(text, 1)}
               value={this.state.password}
+              onSubmitEditing={this.logIn}
+              returnKeyType="go"
             />
             <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
             <Button onPress={this.logIn}>Log In</Button>

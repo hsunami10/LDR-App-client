@@ -60,6 +60,8 @@ class VerifyEmailScreen extends Component {
               onChangeText={this.handleChangeText}
               value={this.state.email}
               showBorder={this.props.error_field === 'username'}
+              onSubmitEditing={this.sendEmail}
+              returnKeyType="send"
             />
             <Text
               style={

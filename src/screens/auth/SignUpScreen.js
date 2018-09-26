@@ -113,7 +113,8 @@ class SignUpScreen extends Component {
               onChangeText={text => this.handleChangeText(text, 2)}
               value={this.state.confirmPassword}
               showBorder={this.props.error_field === 'password'}
-              onSubmitEditing={() => console.log('submit')}
+              onSubmitEditing={this.signUp}
+              returnKeyType="go"
             />
             <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
             <Button onPress={this.signUp}>Sign Up</Button>

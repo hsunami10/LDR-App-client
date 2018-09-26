@@ -10,17 +10,23 @@ Show posts with a search header on top
 
 Animation Help - https://www.youtube.com/watch?v=vzPmI0GCDPM
 
+TODO: Figure out how to delay search when user is typing
 TODO: Figure out how to get and organize data from database
+NOTE: Get data from database (for regular feed), but when user searches, search with data retrieved from database
+- or maybe search WITH database? might be heavy + slower
+- but might be better because what if the user before data is retrieved from database?
+- then they cannot search anything until the data is retrieved
+- could disable search...but that will be kind of bad
  */
 
 class FeedScreen extends Component {
   state = {
     search: '',
-    opacity: new Animated.Value(0)
+    opacity: new Animated.Value(0),
+    // typingTimeout: null
   }
 
   handleSearchFocus = () => {
-    console.log('focus');
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -35,15 +41,40 @@ class FeedScreen extends Component {
       toValue: 0,
       duration: 200,
       useNativeDriver: true
-    }).start();
+    }).start(() => {
+      this.animScrollView.getNode().scrollTo({ x: 0, y: 0, animated: false });
+      // TODO: Reset search results - back to default animated view
+    });
   }
 
-  handleChangeText = search => this.setState(() => ({ search }));
+  handleChangeText = search => {
+    this.setState(() => ({ search }));
+
+    // QUESTION: Should I do this? Might be heavy on backend
+    // Could run into some race conditions
+    // if (this.state.typingTimeout) {
+    //   clearTimeout(this.state.typingTimeout);
+    // }
+    //
+    // this.setState(() => ({
+    //   search,
+    //   typingTimeout: setTimeout(() => {
+    //     // TODO: Call action for API endpoint here
+    //     // Query data from database here
+    //     console.log('SEARCH FEED');
+    //   }, 1000)
+    // }));
+  }
 
   handleSubmitEditing = () => {
     Keyboard.dismiss();
     console.log(`search up: ${this.state.search} in feed`);
     // QUESTION: Maybe navigation to a results screen, like in facebook and vent?
+    // TODO: Figure out how to query database
+  }
+
+  handleScroll = () => {
+    Keyboard.dismiss();
   }
 
   render() {
@@ -62,14 +93,71 @@ class FeedScreen extends Component {
           <View>
             <Text>Feed Screen!</Text>
           </View>
-          <Animated.View
+          <Animated.ScrollView
+            ref={o => (this.animScrollView = o)}
+            onScroll={this.handleScroll}
+            scrollEventThrottle={16}
             style={[styles.searchViewStyle, {
               opacity: this.state.opacity,
               height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
             }]}
           >
-            <Text>Animated View</Text>
-          </Animated.View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+              <Text>Animated View</Text>
+            </View>
+          </Animated.ScrollView>
         </View>
       </View>
     );
@@ -83,9 +171,6 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   searchViewStyle: {
-    // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'blue',
     position: 'absolute',
     width: Dimensions.get('window').width

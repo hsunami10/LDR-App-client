@@ -26,7 +26,7 @@ export class SearchHeader extends Component {
     Animated.timing(this.state.cancelWidth, {
       toValue: this.state.fullCancelWidth,
       duration: this.props.animationDuration || 200
-    }).start(() => console.log('animation ended'));
+    }).start();
   }
 
   cancel = () => {
@@ -49,6 +49,7 @@ export class SearchHeader extends Component {
             onChangeText={this.props.onChangeText}
             onSubmitEditing={this.props.onSubmitEditing}
             onFocus={this.startAnimations}
+            returnKeyType="search"
           />
         </Animated.View>
         <Animated.View

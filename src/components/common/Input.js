@@ -15,7 +15,8 @@ export const Input = props => {
     onSubmitEditing,
     autoFocus,
     containerStyle,
-    inputStyle
+    inputStyle,
+    returnKeyType
   } = props;
 
   return (
@@ -36,6 +37,7 @@ export const Input = props => {
         style={[styles.inputStyle, inputStyle || {}]}
         onSubmitEditing={onSubmitEditing}
         autoFocus={autoFocus}
+        returnKeyType={returnKeyType}
       />
     </View>
   );
@@ -53,7 +55,8 @@ Input.propTypes = {
   onSubmitEditing: PropTypes.func,
   autoFocus: PropTypes.bool,
   containerStyle: PropTypes.object,
-  inputStyle: PropTypes.object
+  inputStyle: PropTypes.object,
+  returnKeyType: PropTypes.string
 };
 
 const styles = {
