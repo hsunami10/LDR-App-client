@@ -60,7 +60,7 @@ export const setNotFirstLogIn = id => dispatch => {
 
 // obj: { id, bool }
 export const setActive = (id, bool) => {
-  axios.put(`${ROOT_URL}/api/user/set_active`, { id, bool })
+  axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
     .catch(err => {
       handleError(err);
     });
@@ -85,7 +85,7 @@ const handleForgotPassword = ({ dispatch, response, navigation, clearInput }) =>
 export const forgotPassword = (email, navigation, clearInput) => dispatch => {
   const beforeReq = Date.now();
   dispatch(startLoading());
-  axios.post(`${ROOT_URL}/api/login/forgot_password`, { email })
+  axios.post(`${ROOT_URL}/api/login/forgot-password`, { email })
     .then(response => {
       waitUntilMinTime(
         beforeReq,
@@ -138,7 +138,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
 // ========================================== Signing Up ==========================================
 export const sendVerificationEmail = (id, email) => dispatch => {
   dispatch(startLoading());
-  axios.post(`${ROOT_URL}/api/send_verification_email`, { id, email })
+  axios.post(`${ROOT_URL}/api/send-verification-email`, { id, email })
     .then(response => {
       dispatch(stopLoading());
       if (response.data.success) {
@@ -169,7 +169,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('bio', dataObj.bio);
   data.append('clientImage', dataObj.clientImage);
 
-  axios.post(`${ROOT_URL}/api/create_profile`, data, {
+  axios.post(`${ROOT_URL}/api/create-profile`, data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
     .then(() => {

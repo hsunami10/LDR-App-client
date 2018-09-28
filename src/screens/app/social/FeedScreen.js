@@ -10,13 +10,31 @@ Show posts with a search header on top
 
 Animation Help - https://www.youtube.com/watch?v=vzPmI0GCDPM
 
-TODO: Figure out how to delay search when user is typing
-TODO: Figure out how to get and organize data from database
 NOTE: Get data from database (for regular feed), but when user searches, search with data retrieved from database
 - or maybe search WITH database? might be heavy + slower
-- but might be better because what if the user before data is retrieved from database?
+- but might be better because what if the user types something before data is retrieved from database? - slow internet
 - then they cannot search anything until the data is retrieved
 - could disable search...but that will be kind of bad
+
+NOTE: Combine multiple select queries and order by example
+(select id, date_joined from aliases) UNION ALL (select id, date_joined from users) ORDER BY date_joined asc;
+https://stackoverflow.com/questions/11828772/postgresql-combine-multiple-select-statements
+
+TODO: Figure out how to get and organize data from database
+Things to keep in mind:
+  Exclude:
+    - partner's aliases
+    - blocked users
+  Include:
+    - topics subscribed to
+    - users subscribed to
+    - friends' posts
+    - posts you made
+Order from: (top to bottom) most recent to oldest
+
+First get data for exclusions
+Run loops to create the correct query string
+Apply those query strings to the inclusions
  */
 
 class FeedScreen extends Component {

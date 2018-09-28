@@ -4,7 +4,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 export const ROOT_URL = (
   process.env.NODE_ENV === undefined ||
   process.env.NODE_ENV === 'development' ?
-  'http://192.168.0.189:3000' : 'http://192.168.0.189:3000');
+  'http://localhost:3000' : 'http://localhost:3000');
 // BUG: Using public IP addresses doesn't work? Can't access server - blocked?
 // Only using private IP addresses works on simulator, but doesn't work on phone with cell service
 // TODO: Add production URL
