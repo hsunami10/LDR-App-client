@@ -25,7 +25,7 @@ const storeCredentials = (async id => {
 // NOTE: Use this after valid keychain credentials or seeing public profiles
 // type: private, public
 export const getUserInfo = (id, type) => dispatch => {
-  axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
+  axios.get(`${ROOT_URL}/api/user/${id}/?type=${type}`)
     .then(response => {
       console.log(response.data);
     })

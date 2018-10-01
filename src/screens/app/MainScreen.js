@@ -25,7 +25,7 @@ class MainScreen extends Component {
         { key: 'profile', title: 'Profile' }
       ]
     },
-    tabViewHeight: 0
+    tabViewHeight: 0 // TODO: Find a way to get tab view height
   }
 
   componentDidMount() {
@@ -85,7 +85,9 @@ class MainScreen extends Component {
         }
         break;
       case 'compose':
-        console.log('open compose view');
+        this.props.navigateToRoute('Create');
+        this.props.navigateToRoute('post');
+        this.props.navigation.navigate('Create');
         break;
       case 'notifications':
         if (this.props.current_route === 'notifications') {
@@ -113,7 +115,7 @@ class MainScreen extends Component {
       case 'notifications':
         return <NotificationScreen navigation={this.props.navigation} />;
       case 'profile':
-        return <ViewProfileScreen type="private" navigation={this.props.navigation} />;
+        return <ViewProfileScreen private navigation={this.props.navigation} />;
       default:
         return;
     }

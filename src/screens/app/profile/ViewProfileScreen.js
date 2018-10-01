@@ -11,7 +11,7 @@ import { popRoute, navigateToRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
   componentDidMount() {
-    console.log(this.props.type);
+    console.log(this.props.private);
   }
 
   onPressAction = index => {
@@ -81,7 +81,7 @@ ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   popRoute: PropTypes.func.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired // private, public
+  private: PropTypes.bool
 };
 
 const styles = StyleSheet.create({

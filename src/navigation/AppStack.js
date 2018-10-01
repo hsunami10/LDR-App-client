@@ -2,6 +2,7 @@ import { createStackNavigator } from 'react-navigation';
 import MainScreen from '../screens/app/MainScreen';
 import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
 import ViewPostScreen from '../screens/app/social/ViewPostScreen';
+import CreateMainScreen from '../screens/app/create/CreateMainScreen';
 
 /*
 // NOTE: Structure
@@ -85,7 +86,8 @@ const MainStack = createStackNavigator(
 const ModalStack = createStackNavigator(
   {
     // NOTE: Modals here
-    ViewProfile: ViewProfileScreen
+    ViewProfile: ViewProfileScreen,
+    Create: CreateMainScreen
   },
   {
     headerMode: 'none'

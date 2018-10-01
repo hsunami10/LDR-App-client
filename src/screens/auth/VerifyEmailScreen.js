@@ -73,7 +73,7 @@ class VerifyEmailScreen extends Component {
               {this.props.error_msg}
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
-            <Text>Verify your email to receive developer updates, polls, and forgotten passwords. You can also send feedback, bug reports, user reports, new ideas, and topic requests</Text>
+            <Text>Verify your email to receive developer updates, polls, forgotten passwords, and send feedback, bug reports, user reports, new ideas, and topic requests</Text>
             <SpinnerOverlay visible={this.props.loading} />
           </View>
         </View>
