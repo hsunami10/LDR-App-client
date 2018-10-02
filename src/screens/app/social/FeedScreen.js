@@ -131,15 +131,13 @@ class FeedScreen extends Component {
   }
 
   handleSubmitEditing = () => Keyboard.dismiss()
+  handleScroll = () => Keyboard.dismiss()
 
-  handleScroll = e => {
-    Keyboard.dismiss();
-    // TODO: Figure out how to paginate
-    // NOTE: Don't run this event until the last paginate is finished
-    if (atBottom(e.nativeEvent)) {
-      console.log('at bottom');
-    }
-  }
+  handleEndReached = () => {
+    // TODO: Handle pagination here
+    // If no more old data, then don't do anything anymore
+    console.log('paginate for new data here');
+  };
 
   renderItem = post => {
     return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
@@ -161,10 +159,9 @@ class FeedScreen extends Component {
           data={this.state.posts}
           renderItem={this.renderItem}
           keyExtractor={post => post.id}
-          onEndReached={() => console.log('end of list view reached')}
+          onEndReached={this.handleEndReached}
           onEndReachedThreshold={0}
           onScroll={this.handleScroll}
-          scrollEnabled
           scrollEventThrottle={16}
           refreshControl={
             <RefreshControl

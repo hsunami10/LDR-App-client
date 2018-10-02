@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
 import { atBottom } from '../../../assets/helpers';
@@ -13,6 +13,60 @@ class DiscoverScreen extends Component {
     refreshing: false,
     display: 'none',
     posts: [
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+    ],
+    posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -115,6 +169,10 @@ class DiscoverScreen extends Component {
 
   handleAnimScroll = () => Keyboard.dismiss()
 
+  renderItem = post => {
+    return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -127,9 +185,11 @@ class DiscoverScreen extends Component {
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
         />
-        <View style={styles.centerItems}>
-          <ScrollView
-            ref={o => (this.scrollView = o)}
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={this.state.posts}
+            renderItem={this.renderItem}
+            keyExtractor={post => post.id}
             onScroll={this.handleScroll}
             scrollEventThrottle={16}
             refreshControl={
@@ -138,9 +198,9 @@ class DiscoverScreen extends Component {
                 onRefresh={this.handleRefresh}
               />
             }
-          >
-            <Text>Discover Screen!</Text>
-          </ScrollView>
+            onEndReached={() => console.log('noob')}
+            onEndReachedThreshold={0}
+          />
           <Animated.ScrollView
             ref={o => (this.animScrollView = o)}
             onScroll={this.handleAnimScroll}
@@ -150,62 +210,18 @@ class DiscoverScreen extends Component {
               opacity: this.state.opacity,
               height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
             }]}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.handleRefresh}
+              />
+            }
           >
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-              <Text>Animated View</Text>
-            </View>
+            <FlatList
+              data={this.state.posts2}
+              renderItem={this.renderItem}
+              keyExtractor={post => post.id}
+            />
           </Animated.ScrollView>
         </View>
       </View>
@@ -214,11 +230,6 @@ class DiscoverScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  centerItems: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   searchViewStyle: {
     backgroundColor: 'blue',
     position: 'absolute',
