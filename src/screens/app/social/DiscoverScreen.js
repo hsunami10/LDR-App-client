@@ -1,17 +1,75 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import shortid from 'shortid';
 import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, ScrollView } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
+import { atBottom } from '../../../assets/helpers';
 
 class DiscoverScreen extends Component {
   state = {
     search: '',
     opacity: new Animated.Value(0),
-    refreshing: false
+    refreshing: false,
+    display: 'none',
+    posts: [
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+    ]
   }
 
   handleSearchFocus = () => {
+    this.setState(() => ({ display: 'flex' }));
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -28,6 +86,7 @@ class DiscoverScreen extends Component {
       useNativeDriver: true
     }).start(() => {
       this.animScrollView.getNode().scrollTo({ x: 0, y: 0, animated: false });
+      this.setState(() => ({ display: 'none' }));
       // TODO: Reset search results - back to default animated view
     });
   }
@@ -47,17 +106,14 @@ class DiscoverScreen extends Component {
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
-  handleScroll = () => Keyboard.dismiss()
-
-  /*
-  refreshControl={
-    <RefreshControl
-      refreshing={this.state.refreshing}
-      onRefresh={this.handleRefresh}
-    />
+  handleScroll = e => {
+    // TODO: Figure out how to paginate
+    if (atBottom(e.nativeEvent)) {
+      console.log('at bottom');
+    }
   }
-  TODO Implement refresh control on non-animated scroll view once bug is figured out
-   */
+
+  handleAnimScroll = () => Keyboard.dismiss()
 
   render() {
     return (
@@ -72,15 +128,25 @@ class DiscoverScreen extends Component {
           animationDuration={200}
         />
         <View style={styles.centerItems}>
-          {/*BUG TODO NOTE QUESTION: Second scroll view does not work?*/}
-          <View>
-            <Text>Discover Screen!</Text>
-          </View>
-          <Animated.ScrollView
-            ref={o => (this.animScrollView = o)}
+          <ScrollView
+            ref={o => (this.scrollView = o)}
             onScroll={this.handleScroll}
             scrollEventThrottle={16}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.handleRefresh}
+              />
+            }
+          >
+            <Text>Discover Screen!</Text>
+          </ScrollView>
+          <Animated.ScrollView
+            ref={o => (this.animScrollView = o)}
+            onScroll={this.handleAnimScroll}
+            scrollEventThrottle={16}
             style={[styles.searchViewStyle, {
+              display: this.state.display,
               opacity: this.state.opacity,
               height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
             }]}

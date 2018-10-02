@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, ScrollView } from 'react-native';
+import shortid from 'shortid';
+import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, ScrollView, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import { atBottom } from '../../../assets/helpers';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -40,7 +42,61 @@ class FeedScreen extends Component {
   state = {
     search: '',
     typingTimeout: null,
-    refreshing: false
+    refreshing: false,
+    posts: [
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+    ]
   }
 
   handleCancelPress = () => {
@@ -75,7 +131,19 @@ class FeedScreen extends Component {
   }
 
   handleSubmitEditing = () => Keyboard.dismiss()
-  handleScroll = () => Keyboard.dismiss()
+
+  handleScroll = e => {
+    Keyboard.dismiss();
+    // TODO: Figure out how to paginate
+    // NOTE: Don't run this event until the last paginate is finished
+    if (atBottom(e.nativeEvent)) {
+      console.log('at bottom');
+    }
+  }
+
+  renderItem = post => {
+    return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
+  }
 
   render() {
     return (
@@ -89,9 +157,14 @@ class FeedScreen extends Component {
           animationDuration={200}
           returnKeyType="done"
         />
-        <ScrollView
-          ref={o => (this.animScrollView = o)}
+        <FlatList
+          data={this.state.posts}
+          renderItem={this.renderItem}
+          keyExtractor={post => post.id}
+          onEndReached={() => console.log('end of list view reached')}
+          onEndReachedThreshold={0}
           onScroll={this.handleScroll}
+          scrollEnabled
           scrollEventThrottle={16}
           refreshControl={
             <RefreshControl
@@ -99,63 +172,7 @@ class FeedScreen extends Component {
               onRefresh={this.handleRefresh}
             />
           }
-        >
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-            <Text>Animated View</Text>
-          </View>
-        </ScrollView>
+        />
       </View>
     );
   }

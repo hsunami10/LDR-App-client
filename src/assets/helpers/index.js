@@ -4,13 +4,11 @@ import RNRestart from 'react-native-restart';
 import Permissions from 'react-native-permissions';
 import { MIN_LOADING_TIME } from '../../constants/variables';
 
-export const showNoUserAlert = () => {
-  Alert.alert(
-    'User does not exist',
-    'This account, for some reason, does not exist. If this continues, please report this bug to the development team.',
-    [{ text: 'Ok' }],
-    { cancelable: false }
-  );
+export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  if (contentOffset.y < 0) {
+    console.log('content smaller than view');
+  }
+  return layoutMeasurement.height + contentOffset.y >= contentSize.height && contentOffset.y > 0;
 };
 
 // TODO: Send report to development team
@@ -46,6 +44,16 @@ export const waitUntilMinTime = (beforeReq, callback, param) => {
   }
 };
 
+export const showNoUserAlert = () => {
+  Alert.alert(
+    'User does not exist',
+    'This account, for some reason, does not exist. If this continues, please report this bug to the development team.',
+    [{ text: 'Ok' }],
+    { cancelable: false }
+  );
+};
+
+// ========================================== Connection ==========================================
 export const showNoConnectionAlert = () => {
   Alert.alert(
     'Oh no!',
