@@ -6,6 +6,12 @@ import { SearchHeader } from '../../../components/common';
 import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
 import { atBottom } from '../../../assets/helpers';
 
+// TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics
+// When search is clicked, show animated view with:
+//  - history of searches or
+//  - popular search terms
+// When the user starts typing, THEN show 3 tabs again once all data is retrieved
+
 class DiscoverScreen extends Component {
   state = {
     search: '',
@@ -139,7 +145,7 @@ class DiscoverScreen extends Component {
       duration: 200,
       useNativeDriver: true
     }).start(() => {
-      this.animScrollView.getNode().scrollTo({ x: 0, y: 0, animated: false });
+      this.animList.scrollToOffset({ x: 0, y: 0, animated: false });
       this.setState(() => ({ display: 'none' }));
       // TODO: Reset search results - back to default animated view
     });
@@ -201,28 +207,28 @@ class DiscoverScreen extends Component {
             onEndReached={() => console.log('noob')}
             onEndReachedThreshold={0}
           />
-          <Animated.ScrollView
-            ref={o => (this.animScrollView = o)}
-            onScroll={this.handleAnimScroll}
-            scrollEventThrottle={16}
+          <Animated.View
             style={[styles.searchViewStyle, {
               display: this.state.display,
               opacity: this.state.opacity,
               height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
             }]}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
-              />
-            }
           >
             <FlatList
+              ref={o => (this.animList = o)}
               data={this.state.posts2}
               renderItem={this.renderItem}
               keyExtractor={post => post.id}
+              onScroll={this.handleAnimScroll}
+              scrollEventThrottle={16}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                />
+              }
             />
-          </Animated.ScrollView>
+          </Animated.View>
         </View>
       </View>
     );
