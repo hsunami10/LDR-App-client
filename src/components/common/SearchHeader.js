@@ -21,7 +21,9 @@ export class SearchHeader extends Component {
   }
 
   startAnimations = () => {
-    this.props.onFocus();
+    if (typeof this.props.onFocus === 'function') {
+      this.props.onFocus();
+    }
     this.setState(() => ({ inAnimation: true }));
     Animated.timing(this.state.cancelWidth, {
       toValue: this.state.fullCancelWidth,
@@ -79,7 +81,7 @@ SearchHeader.propTypes = {
   value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
   onSubmitEditing: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired,
+  onFocus: PropTypes.func,
   onCancelPress: PropTypes.func.isRequired,
   animationDuration: PropTypes.number
 };

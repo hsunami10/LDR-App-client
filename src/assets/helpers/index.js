@@ -1,8 +1,17 @@
 // NOTE: This file holds all helper functions
 import { Alert, NetInfo, Platform } from 'react-native';
 import RNRestart from 'react-native-restart';
-import Permissions from 'react-native-permissions'
+import Permissions from 'react-native-permissions';
 import { MIN_LOADING_TIME } from '../../constants/variables';
+
+export const showNoUserAlert = () => {
+  Alert.alert(
+    'User does not exist',
+    'This account, for some reason, does not exist. If this continues, please report this bug to the development team.',
+    [{ text: 'Ok' }],
+    { cancelable: false }
+  );
+};
 
 // TODO: Send report to development team
 export const handleError = (error, custom = false) => {
@@ -41,7 +50,10 @@ export const showNoConnectionAlert = () => {
   Alert.alert(
     'Oh no!',
     'You do not have internet connection. Please connect to the internet and try again.',
-    [{ text: 'Ok' }]
+    [
+      { text: 'Ok', style: 'cancel' },
+      { text: 'Restart', onPress: () => RNRestart.Restart() }
+    ]
   );
 };
 
