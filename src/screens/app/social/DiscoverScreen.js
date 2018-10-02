@@ -18,6 +18,7 @@ class DiscoverScreen extends Component {
     opacity: new Animated.Value(0),
     refreshing: false,
     display: 'none',
+    height: 0,
     posts: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -174,6 +175,10 @@ class DiscoverScreen extends Component {
   }
 
   handleAnimScroll = () => Keyboard.dismiss()
+  handleLayout = e => {
+    const height = e.nativeEvent.layout.height;
+    this.setState(() => ({ height }));
+  }
 
   renderItem = post => {
     return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
@@ -191,7 +196,10 @@ class DiscoverScreen extends Component {
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
         />
-        <View style={{ flex: 1 }}>
+        <View
+          style={{ flex: 1 }}
+          onLayout={this.handleLayout}
+        >
           <FlatList
             data={this.state.posts}
             renderItem={this.renderItem}
@@ -204,14 +212,14 @@ class DiscoverScreen extends Component {
                 onRefresh={this.handleRefresh}
               />
             }
-            onEndReached={() => console.log('noob')}
+            onEndReached={() => console.log('paginate here')}
             onEndReachedThreshold={0}
           />
           <Animated.View
             style={[styles.searchViewStyle, {
               display: this.state.display,
               opacity: this.state.opacity,
-              height: Dimensions.get('window').height - SEARCH_HEADER_HEIGHT - 80 // TODO: Get tab view height
+              height: this.state.height
             }]}
           >
             <FlatList

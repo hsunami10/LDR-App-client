@@ -47,6 +47,8 @@ class CreateMainScreen extends Component {
       <Animated.ScrollView
         onScroll={this.handleScroll}
         scrollEventThrottle={16}
+        // QUESTION: Might need to know the whole view height for animating with keyboard?
+        onLayout={e => console.log(e.nativeEvent.layout)}
       >
         {this.renderSubScene(route.key)}
       </Animated.ScrollView>
