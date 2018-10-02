@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Animated, Keyboard, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, ScrollView } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
 
 class DiscoverScreen extends Component {
   state = {
     search: '',
-    opacity: new Animated.Value(0)
+    opacity: new Animated.Value(0),
+    refreshing: false
   }
 
   handleSearchFocus = () => {
@@ -40,7 +41,23 @@ class DiscoverScreen extends Component {
     // TODO: Figure out how to query database
   }
 
+  handleRefresh = () => {
+    this.setState(() => ({ refreshing: true }));
+    // TODO: Grab new data from database again here, and set refreshing to false
+    setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
+  }
+
   handleScroll = () => Keyboard.dismiss()
+
+  /*
+  refreshControl={
+    <RefreshControl
+      refreshing={this.state.refreshing}
+      onRefresh={this.handleRefresh}
+    />
+  }
+  TODO Implement refresh control on non-animated scroll view once bug is figured out
+   */
 
   render() {
     return (
@@ -55,6 +72,7 @@ class DiscoverScreen extends Component {
           animationDuration={200}
         />
         <View style={styles.centerItems}>
+          {/*BUG TODO NOTE QUESTION: Second scroll view does not work?*/}
           <View>
             <Text>Discover Screen!</Text>
           </View>

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Keyboard, Animated, Dimensions, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, ScrollView } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -38,7 +37,11 @@ Apply those query strings to the inclusions
  */
 
 class FeedScreen extends Component {
-  state = { search: '', typingTimeout: null }
+  state = {
+    search: '',
+    typingTimeout: null,
+    refreshing: false
+  }
 
   handleCancelPress = () => {
     Keyboard.dismiss();
@@ -58,17 +61,20 @@ class FeedScreen extends Component {
       typingTimeout: setTimeout(() => {
         // TODO: Call action for API endpoint here
         // Query data from database here
-        console.log(this.state.search);
+        if (this.state.search.length === 0) {
+          console.log(`search up ${this.state.search}`);
+        }
       }, 1000)
     }));
   }
 
-  handleSubmitEditing = () => {
-    Keyboard.dismiss();
-    console.log(`search up: ${this.state.search} in feed`);
-    // TODO: Figure out how to query database
+  handleRefresh = () => {
+    this.setState(() => ({ refreshing: true }));
+    // TODO: Grab new data from database again here, and set refreshing to false
+    setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
+  handleSubmitEditing = () => Keyboard.dismiss()
   handleScroll = () => Keyboard.dismiss()
 
   render() {
@@ -81,11 +87,18 @@ class FeedScreen extends Component {
           onSubmitEditing={this.handleSubmitEditing}
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
+          returnKeyType="done"
         />
         <ScrollView
           ref={o => (this.animScrollView = o)}
           onScroll={this.handleScroll}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+            />
+          }
         >
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Animated View</Text>

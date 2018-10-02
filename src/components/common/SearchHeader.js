@@ -51,7 +51,7 @@ export class SearchHeader extends Component {
             onChangeText={this.props.onChangeText}
             onSubmitEditing={this.props.onSubmitEditing}
             onFocus={this.startAnimations}
-            returnKeyType="search"
+            returnKeyType={this.props.returnKeyType || 'search'}
           />
         </Animated.View>
         <Animated.View
@@ -83,7 +83,8 @@ SearchHeader.propTypes = {
   onSubmitEditing: PropTypes.func.isRequired,
   onFocus: PropTypes.func,
   onCancelPress: PropTypes.func.isRequired,
-  animationDuration: PropTypes.number
+  animationDuration: PropTypes.number,
+  returnKeyType: PropTypes.string
 };
 
 const styles = StyleSheet.create({
