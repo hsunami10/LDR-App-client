@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, StyleSheet, Animated, Keyboard } from 'react-native';
+import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { replaceCurrentRoute } from '../../../actions/NavigationActions';
+import { StandardHeader } from '../../../components/common';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
 
@@ -32,8 +33,8 @@ class CreateMainScreen extends Component {
     Keyboard.dismiss();
   }
 
-  renderSubScene = key => {
-    switch (key) {
+  renderScene = ({ route }) => {
+    switch (route.key) {
       case 'post':
         return <CreatePostScreen navigation={this.props.navigation} />;
       case 'topic':
@@ -43,19 +44,6 @@ class CreateMainScreen extends Component {
     }
   }
 
-  renderScene = ({ route }) => {
-    return (
-      <Animated.ScrollView
-        onScroll={this.handleScroll}
-        scrollEventThrottle={16}
-        // QUESTION: Might need to know the whole view height for animating with keyboard?
-        onLayout={e => console.log(e.nativeEvent.layout)}
-      >
-        {this.renderSubScene(route.key)}
-      </Animated.ScrollView>
-    );
-  }
-
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -63,11 +51,24 @@ class CreateMainScreen extends Component {
           navigationState={this.state.navigationState}
           renderScene={this.renderScene}
           renderTabBar={props =>
-            <TabBar // TODO: Customize this later
-              {...props}
-              useNativeDriver
-              style={styles.tabBarStyle}
-              indicatorStyle={styles.indicatorStyle} // BUG: Offset displacement
+            <StandardHeader
+              title={
+                <TabBar // TODO: Customize this later
+                  {...props}
+                  useNativeDriver
+                  style={styles.tabBarStyle}
+                  indicatorStyle={styles.indicatorStyle} // BUG: Offset displacement
+                />
+              }
+              height={100}
+              showRight
+              rightTitle={this.state.navigationState.index === 0 ? 'Post' : 'Request'}
+              onRightPress={() => {
+                if (this.state.navigationState.index === 0) console.log('create post');
+                else console.log('request topic');
+                this.props.navigation.navigate('Main');
+              }}
+              // disableBack
             />
           }
           onIndexChange={this.handleIndexChange}

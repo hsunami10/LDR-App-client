@@ -94,6 +94,10 @@ const ModalModalStack = createStackNavigator(
   }
 );
 
+// BUG: ViewProfile is still pushed onto the stack when Create is navigated to?
+// Shown by swiping back on CreateMainScreen
+// Maybe have each modal be in its own stack, instead of multiple modals in one stack
+// Because one it reaches the top of the stack, you can no longer swipe back, you have to swipe down
 const ModalStack = createStackNavigator(
   {
     // NOTE: Modals here

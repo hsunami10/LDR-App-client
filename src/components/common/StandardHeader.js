@@ -68,7 +68,7 @@ export class StandardHeader extends Component {
     } = this.props;
 
     let titleAlign = {};
-    if (Platform.OS === 'ios') titleAlign = { alignItems: 'center' };
+    if (Platform.OS === 'ios' || typeof title !== 'string') titleAlign = { alignItems: 'center' };
     else titleAlign = { marginLeft: this.props.disableBack ? 0 : MIN_HEADER_HEIGHT };
 
     return (
@@ -100,7 +100,9 @@ export class StandardHeader extends Component {
             styles.titleContainerStyle,
             titleAlign]}
         >
-          <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle>
+          {typeof title === 'string' ?
+          <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle> :
+          title}
         </View>
       </View>
     );

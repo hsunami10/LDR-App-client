@@ -29,7 +29,18 @@ class ChooseTopicScreen extends Component {
           returnKeyType="search"
         />
         <SectionList
-          renderItem={({ item, index, section }) => <Text key={index} onPress={() => console.log(item)}>{item}</Text>}
+          renderItem={
+            ({ item, index, section }) =>
+            <Text
+              key={index}
+              onPress={() => {
+                // TODO: Update global state to pass the topic name to CreateMainScreen
+                console.log(item);
+              }}
+            >
+              {item}
+            </Text>
+          }
           renderSectionHeader={({ section: { title } }) => (
             <Text style={{ fontWeight: 'bold', fontSize: 24 }}>{title}</Text>
           )}

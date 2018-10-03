@@ -11,6 +11,8 @@ class CreatePostScreen extends Component {
 
   handleChangeText = body => this.setState(() => ({ body }))
 
+  // BUG: Keyboard must be hidden in order for a button to be pressed?
+  // REASON: Enclosing ScrollView is causing this - how to fix?
   render() {
     return (
       <View style={styles.centerItems}>
@@ -35,7 +37,7 @@ class CreatePostScreen extends Component {
 const styles = StyleSheet.create({
   centerItems: {
     flex: 1,
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center'
   }
 });
