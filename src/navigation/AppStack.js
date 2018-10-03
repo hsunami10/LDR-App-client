@@ -69,12 +69,7 @@ const CardStack = createStackNavigator(
 
 const MainStack = createStackNavigator(
   {
-    Main: {
-      screen: MainScreen,
-      navigationOptions: {
-        gesturesEnabled: false
-      }
-    },
+    Main: MainScreen,
     AppCardStack: CardStack
   },
   {
@@ -88,7 +83,12 @@ const MainStack = createStackNavigator(
 // NOTE: // TODO: Remember to set header: null in static navigationOptions when needed
 export default createStackNavigator(
   {
-    AppMainStack: MainStack,
+    AppMainStack: {
+      screen: MainStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
 
     // Modals
     ViewProfile: ViewProfileScreen,
