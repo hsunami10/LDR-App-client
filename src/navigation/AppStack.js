@@ -84,38 +84,16 @@ const MainStack = createStackNavigator(
   }
 );
 
-const ModalModalStack = createStackNavigator(
-  {
-     // NOTE: Modals in first stack of modals here
-    ChooseTopic: ChooseTopicScreen
-  },
-  {
-    headerMode: 'none'
-  }
-);
-
-// BUG: ViewProfile is still pushed onto the stack when Create is navigated to?
-// Shown by swiping back on CreateMainScreen
-// Maybe have each modal be in its own stack, instead of multiple modals in one stack
-// Because one it reaches the top of the stack, you can no longer swipe back, you have to swipe down
-const ModalStack = createStackNavigator(
-  {
-    // NOTE: Modals here
-    ViewProfile: ViewProfileScreen,
-    Create: CreateMainScreen
-  },
-  {
-    headerMode: 'none'
-  }
-);
-
 // NOTE: Feed as default
 // NOTE: // TODO: Remember to set header: null in static navigationOptions when needed
 export default createStackNavigator(
   {
     AppMainStack: MainStack,
-    AppModalStack: ModalStack,
-    SubModalStack: ModalModalStack
+
+    // Modals
+    ViewProfile: ViewProfileScreen,
+    Create: CreateMainScreen,
+    ChooseTopic: ChooseTopicScreen
   },
   {
     initialRouteName: 'AppMainStack',

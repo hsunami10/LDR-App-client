@@ -15,8 +15,18 @@ const FadeNavigationConfig = () => ({
 
 const RootStack = createStackNavigator(
   {
-    Auth: AuthStack,
-    App: AppStack
+    Auth: {
+      screen: AuthStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
+    App: {
+      screen: AppStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    }
   },
   {
     headerMode: 'none'
