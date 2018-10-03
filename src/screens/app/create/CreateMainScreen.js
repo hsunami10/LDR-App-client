@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet, Animated, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { replaceCurrentRoute } from '../../../actions/NavigationActions';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
@@ -62,9 +63,11 @@ class CreateMainScreen extends Component {
           navigationState={this.state.navigationState}
           renderScene={this.renderScene}
           renderTabBar={props =>
-            <TabBar
+            <TabBar // TODO: Customize this later
               {...props}
               useNativeDriver
+              style={styles.tabBarStyle}
+              indicatorStyle={styles.indicatorStyle} // BUG: Offset displacement
             />
           }
           onIndexChange={this.handleIndexChange}
@@ -78,5 +81,17 @@ class CreateMainScreen extends Component {
 CreateMainScreen.propTypes = {
   replaceCurrentRoute: PropTypes.func.isRequired
 };
+
+const styles = StyleSheet.create({
+  tabBarStyle: {
+    marginTop: getStatusBarHeight(true),
+    width: 200,
+    alignSelf: 'center'
+  },
+  indicatorStyle: {
+    width: 100,
+    alignSelf: 'center'
+  }
+});
 
 export default connect(null, { replaceCurrentRoute })(CreateMainScreen);

@@ -51,9 +51,9 @@ export const MultiLineInput = props => {
 };
 
 MultiLineInput.propTypes = {
-  value: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
   secureTextEntry: PropTypes.bool,

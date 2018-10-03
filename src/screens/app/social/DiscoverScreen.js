@@ -3,22 +3,21 @@ import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import { SEARCH_HEADER_HEIGHT } from '../../../constants/variables';
-import { atBottom } from '../../../assets/helpers';
 
-// TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics
-// When search is clicked, show animated view with:
-//  - history of searches or
-//  - popular search terms
-// When the user starts typing, THEN show 3 tabs again once all data is retrieved
+// TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics - default to middle "Posts"
+// When search is clicked, show animated view with top 10 popular search terms of all time (grabbed from database)
+// When the user starts typing, show the top 10 popular search terms for the keyword
+// When the user clicks enter or scrolls, then search up data in database
 
 class DiscoverScreen extends Component {
   state = {
     search: '',
+    oldSearch: '',
     opacity: new Animated.Value(0),
     refreshing: false,
     display: 'none',
     height: 0,
+    keyboardShown: false,
     posts: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -129,8 +128,17 @@ class DiscoverScreen extends Component {
     ]
   }
 
+  searchResults = () => {
+    console.log(`search up: ${this.state.search} in feed`);
+    if (this.state.oldSearch !== this.state.search) {
+      // TODO: Figure out how to query database
+      // Store search result in database - discover_searches
+    }
+    this.setState(() => ({ oldSearch: this.state.search, keyboardShown: false }));
+  }
+
   handleSearchFocus = () => {
-    this.setState(() => ({ display: 'flex' }));
+    this.setState(() => ({ display: 'flex', keyboardShown: true }));
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -140,7 +148,7 @@ class DiscoverScreen extends Component {
 
   handleCancelPress = () => {
     Keyboard.dismiss();
-    this.setState(() => ({ search: '' }));
+    this.setState(() => ({ search: '', keyboardShown: false }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
       duration: 200,
@@ -154,27 +162,19 @@ class DiscoverScreen extends Component {
 
   handleChangeText = search => this.setState(() => ({ search }))
 
-  handleSubmitEditing = () => {
-    Keyboard.dismiss();
-    console.log(`search up: ${this.state.search} in feed`);
-    // QUESTION: Maybe navigation to a results screen, like in facebook and vent?
-    // TODO: Figure out how to query database
-  }
-
   handleRefresh = () => {
     this.setState(() => ({ refreshing: true }));
     // TODO: Grab new data from database again here, and set refreshing to false
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
-  handleScroll = e => {
-    // TODO: Figure out how to paginate
-    if (atBottom(e.nativeEvent)) {
-      console.log('at bottom');
+  handleAnimScroll = () => {
+    if (this.state.keyboardShown) {
+      Keyboard.dismiss();
+      this.searchResults();
     }
   }
 
-  handleAnimScroll = () => Keyboard.dismiss()
   handleLayout = e => {
     const height = e.nativeEvent.layout.height;
     this.setState(() => ({ height }));
@@ -191,7 +191,7 @@ class DiscoverScreen extends Component {
           placeholder="Search Discover..."
           value={this.state.search}
           onChangeText={this.handleChangeText}
-          onSubmitEditing={this.handleSubmitEditing}
+          onSubmitEditing={this.searchResults}
           onFocus={this.handleSearchFocus}
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
@@ -212,7 +212,7 @@ class DiscoverScreen extends Component {
                 onRefresh={this.handleRefresh}
               />
             }
-            onEndReached={() => console.log('paginate here')}
+            onEndReached={() => console.log('paginate here')} // TODO: Paginate here
             onEndReachedThreshold={0}
           />
           <Animated.View

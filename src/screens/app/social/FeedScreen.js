@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import { atBottom } from '../../../assets/helpers';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -130,7 +129,6 @@ class FeedScreen extends Component {
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
-  handleSubmitEditing = () => Keyboard.dismiss()
   handleScroll = () => Keyboard.dismiss()
 
   handleEndReached = () => {
@@ -150,7 +148,6 @@ class FeedScreen extends Component {
           placeholder="Search Feed..."
           value={this.state.search}
           onChangeText={this.handleChangeText}
-          onSubmitEditing={this.handleSubmitEditing}
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
           returnKeyType="done"

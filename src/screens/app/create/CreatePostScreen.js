@@ -1,12 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Button, MultiLineInput } from '../../../components/common';
 
 class CreatePostScreen extends Component {
+  state = {
+    topic: 'Choose Topic',
+    body: ''
+  }
+
+  handleChangeText = body => this.setState(() => ({ body }))
+
   render() {
     return (
       <View style={styles.centerItems}>
-        <Text>Create Post Screen!</Text>
+        <Button onPress={() => this.props.navigation.navigate('ChooseTopic')}>
+          <Text>{this.state.topic}</Text>
+        </Button>
+        <Button onPress={() => console.log('enable location')}>
+          <Text>{'Enable Location (optional)'}</Text>
+        </Button>
+        <MultiLineInput
+          placeholder="Body"
+          value={this.state.body}
+          onChangeText={this.handleChangeText}
+          width={Dimensions.get('window').width - 40}
+          height={200}
+        />
       </View>
     );
   }

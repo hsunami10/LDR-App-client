@@ -85,8 +85,6 @@ class MainScreen extends Component {
         }
         break;
       case 'compose':
-        this.props.navigateToRoute('Create');
-        this.props.navigateToRoute('post');
         this.props.navigation.navigate('Create');
         break;
       case 'notifications':

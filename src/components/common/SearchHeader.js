@@ -80,7 +80,7 @@ SearchHeader.propTypes = {
   placeholder: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
-  onSubmitEditing: PropTypes.func.isRequired,
+  onSubmitEditing: PropTypes.func,
   onFocus: PropTypes.func,
   onCancelPress: PropTypes.func.isRequired,
   animationDuration: PropTypes.number,

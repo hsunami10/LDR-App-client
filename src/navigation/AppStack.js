@@ -3,6 +3,7 @@ import MainScreen from '../screens/app/MainScreen';
 import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
 import ViewPostScreen from '../screens/app/social/ViewPostScreen';
 import CreateMainScreen from '../screens/app/create/CreateMainScreen';
+import ChooseTopicScreen from '../screens/app/create/ChooseTopicScreen';
 
 /*
 // NOTE: Structure
@@ -83,6 +84,16 @@ const MainStack = createStackNavigator(
   }
 );
 
+const ModalModalStack = createStackNavigator(
+  {
+     // NOTE: Modals in first stack of modals here
+    ChooseTopic: ChooseTopicScreen
+  },
+  {
+    headerMode: 'none'
+  }
+);
+
 const ModalStack = createStackNavigator(
   {
     // NOTE: Modals here
@@ -99,7 +110,8 @@ const ModalStack = createStackNavigator(
 export default createStackNavigator(
   {
     AppMainStack: MainStack,
-    AppModalStack: ModalStack
+    AppModalStack: ModalStack,
+    SubModalStack: ModalModalStack
   },
   {
     initialRouteName: 'AppMainStack',
