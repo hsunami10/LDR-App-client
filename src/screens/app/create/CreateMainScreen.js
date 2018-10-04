@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { goBackwardRoute } from '../../../actions/NavigationActions';
+import { popRoute } from '../../../actions/NavigationActions';
 import { StandardHeader } from '../../../components/common';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
@@ -18,6 +18,10 @@ class CreateMainScreen extends Component {
         { key: 'topic', title: 'Topic' }
       ]
     }
+  }
+
+  componentWillUnmount() {
+    this.props.popRoute(this.props.routes[this.props.routes.length - 2]);
   }
 
   handleIndexChange = index => {
@@ -72,10 +76,7 @@ class CreateMainScreen extends Component {
                 this.props.navigation.navigate('Main');
               }}
               showLeft
-              onLeftPress={() => {
-                this.props.goBackwardRoute();
-                this.props.navigation.goBack();
-              }}
+              onLeftPress={() => this.props.navigation.goBack()}
             />
           }
           onIndexChange={this.handleIndexChange}
@@ -87,7 +88,8 @@ class CreateMainScreen extends Component {
 }
 
 CreateMainScreen.propTypes = {
-  goBackwardRoute: PropTypes.func.isRequired
+  routes: PropTypes.array.isRequired,
+  popRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -102,6 +104,6 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(null, {
-  goBackwardRoute
-})(CreateMainScreen);
+const mapStateToProps = state => ({ routes: state.navigation.routes });
+
+export default connect(mapStateToProps, { popRoute })(CreateMainScreen);
