@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { replaceCurrentRoute } from '../../../actions/NavigationActions';
+import { goBackwardRoute } from '../../../actions/NavigationActions';
 import { StandardHeader } from '../../../components/common';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
@@ -22,7 +22,6 @@ class CreateMainScreen extends Component {
 
   handleIndexChange = index => {
     this.setState((prevState) => {
-      this.props.replaceCurrentRoute(prevState.navigationState.routes[index].key);
       return {
         navigationState: { ...prevState.navigationState, index }
       };
@@ -55,6 +54,10 @@ class CreateMainScreen extends Component {
               title={
                 <TabBar // TODO: Customize this later
                   {...props}
+                  layout={{
+                    ...props.layout,
+                    width: 200
+                  }}
                   useNativeDriver
                   style={styles.tabBarStyle}
                   indicatorStyle={styles.indicatorStyle} // BUG: Offset displacement
@@ -68,7 +71,11 @@ class CreateMainScreen extends Component {
                 else console.log('request topic');
                 this.props.navigation.navigate('Main');
               }}
-              // disableBack
+              showLeft
+              onLeftPress={() => {
+                this.props.goBackwardRoute();
+                this.props.navigation.goBack();
+              }}
             />
           }
           onIndexChange={this.handleIndexChange}
@@ -80,7 +87,7 @@ class CreateMainScreen extends Component {
 }
 
 CreateMainScreen.propTypes = {
-  replaceCurrentRoute: PropTypes.func.isRequired
+  goBackwardRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -95,4 +102,6 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(null, { replaceCurrentRoute })(CreateMainScreen);
+export default connect(null, {
+  goBackwardRoute
+})(CreateMainScreen);

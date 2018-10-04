@@ -12,4 +12,9 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "LDR_App_client";
     }
+
+    // @Override
+    // public void invokeDefaultOnBackPressed() {
+    //     moveTaskToBack(true);
+    // }
 }

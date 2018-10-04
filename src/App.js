@@ -12,8 +12,16 @@ const instructions = Platform.select({
 });
 
 class App extends Component {
+  componentDidMount() {
+    console.log('mount app');
+  }
+
+  componentWillUnmount() {
+    console.log('unmount app');
+  }
+
   render() {
-    console.log(instructions);
+    console.log(`render root app component: ${instructions}`);
     if (isIphoneX()) {
       return (
         <SafeAreaView style={{ flex: 1 }}>

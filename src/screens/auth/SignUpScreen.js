@@ -26,6 +26,7 @@ class SignUpScreen extends Component {
   }
 
   componentWillUnmount() {
+    this.props.goBackwardRoute();
     this.resetEverything();
   }
 
@@ -35,10 +36,7 @@ class SignUpScreen extends Component {
     this.props.resetAuthErrors();
   }
 
-  handleLeftPress = () => {
-    this.props.goBackwardRoute();
-    this.props.navigation.goBack();
-  }
+  handleLeftPress = () => this.props.navigation.goBack()
 
   handleChangeText = (text, id) => {
     switch (id) {

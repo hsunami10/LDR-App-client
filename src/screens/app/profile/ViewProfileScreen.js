@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { StandardHeader } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive } from '../../../actions/AuthActions';
-import { popRoute, navigateToRoute } from '../../../actions/NavigationActions';
+import { popRoute, pushRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
   componentDidMount() {
@@ -40,7 +40,7 @@ class ViewProfileScreen extends Component {
     try {
       await Keychain.resetGenericPassword();
       this.props.popRoute('AuthLoading');
-      this.props.navigateToRoute('Welcome');
+      this.props.pushRoute('Welcome');
       this.props.navigation.navigate('Welcome');
       setActive(this.props.id, false);
     } catch (err) {
@@ -80,7 +80,7 @@ class ViewProfileScreen extends Component {
 ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   popRoute: PropTypes.func.isRequired,
-  navigateToRoute: PropTypes.func.isRequired,
+  pushRoute: PropTypes.func.isRequired,
   private: PropTypes.bool
 };
 
@@ -99,4 +99,4 @@ const mapStateToProps = state => ({
   id: state.auth.id
 });
 
-export default connect(mapStateToProps, { popRoute, navigateToRoute })(ViewProfileScreen);
+export default connect(mapStateToProps, { popRoute, pushRoute })(ViewProfileScreen);

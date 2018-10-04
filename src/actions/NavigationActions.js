@@ -1,14 +1,12 @@
 import {
-  NAVIGATE_TO_ROUTE,
+  PUSH_ROUTE,
   GO_BACKWARD_ROUTE,
   POP_ROUTE,
-  REPLACE_CURRENT_ROUTE
+  // REPLACE_CURRENT_ROUTE
 } from './types';
 
-// This action only adds to routes array if routeName is not already in routes array
-// Only called on navigation.navigate();
-export const navigateToRoute = routeName => ({
-  type: NAVIGATE_TO_ROUTE,
+export const pushRoute = routeName => ({
+  type: PUSH_ROUTE,
   payload: routeName
 });
 
@@ -24,8 +22,8 @@ export const popRoute = routeName => ({
   payload: routeName
 });
 
-// This action should only be called when navigating between tabs
-export const replaceCurrentRoute = routeName => ({
-  type: REPLACE_CURRENT_ROUTE,
-  payload: routeName
-});
+// This action should only be called when navigating between tabs - DEPRECATED, use pushRoute because of android
+// export const replaceCurrentRoute = routeName => ({
+//   type: REPLACE_CURRENT_ROUTE,
+//   payload: routeName
+// });

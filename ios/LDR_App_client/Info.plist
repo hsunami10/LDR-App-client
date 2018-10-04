@@ -26,14 +26,12 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need photo library access to let you choose a profile pictures and topic images.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need camera access to let you take photos for profile pictures and topic images.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location to find posts near you and to keep your partner updated.</string>
-
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Our app does not request this permission or utilize this functionality but it is included in our Info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
 	<key>NSCalendarsUsageDescription</key>
@@ -46,7 +44,6 @@
 	<string>Our app does not request this permission or utilize this functionality but it is included in our Info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Our app does not request this permission or utilize this functionality but it is included in our Info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
-
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -61,8 +58,8 @@
 	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<!-- <key>NSAllowsArbitraryLoads</key>
-    <true/> -->
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>

@@ -9,7 +9,7 @@ import {
   resetAuthErrors,
   sendVerificationEmail
 } from '../../actions/AuthActions';
-import { navigateToRoute } from '../../actions/NavigationActions';
+import { pushRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class VerifyEmailScreen extends Component {
@@ -25,7 +25,7 @@ class VerifyEmailScreen extends Component {
   }
 
   handleRightPress = () => {
-    this.props.navigateToRoute('Main');
+    this.props.pushRoute('Main');
     this.props.navigation.navigate('App');
     this.resetEverything();
   }
@@ -86,12 +86,12 @@ VerifyEmailScreen.propTypes = {
   resetAuthErrors: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
   sendVerificationEmail: PropTypes.func.isRequired,
-  navigateToRoute: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  success: PropTypes.bool.isRequired
+  success: PropTypes.bool.isRequired,
+  pushRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -113,5 +113,5 @@ export default connect(mapStateToProps, {
   resetAuthErrors,
   setAuthErrors,
   sendVerificationEmail,
-  navigateToRoute
+  pushRoute
 })(VerifyEmailScreen);

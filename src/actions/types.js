@@ -9,7 +9,7 @@ export const START_OVERLAY_LOADING = 'start_overlay_loading';
 export const STOP_OVERLAY_LOADING = 'stop_overlay_loading';
 
 // Navigation
-export const NAVIGATE_TO_ROUTE = 'navigate_to_route';
 export const GO_BACKWARD_ROUTE = 'go_backward_route';
 export const POP_ROUTE = 'pop_route';
 export const REPLACE_CURRENT_ROUTE = 'replace_current_route';
+export const PUSH_ROUTE = 'push_route';

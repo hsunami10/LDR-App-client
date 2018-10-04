@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Alert } from 'react-native';
+import { View, Alert, Platform, BackHandler } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
@@ -8,7 +8,7 @@ import FeedScreen from './social/FeedScreen';
 import DiscoverScreen from './social/DiscoverScreen';
 import ViewProfileScreen from './profile/ViewProfileScreen';
 import NotificationScreen from './NotificationScreen';
-import { navigateToRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
+import { pushRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { checkPermission } from '../../assets/helpers';
 
@@ -17,6 +17,7 @@ class MainScreen extends Component {
   state = {
     navigationState: {
       index: 0,
+      // NOTE: If changed, make sure to updated AuthLoadingScreen.js in componentDidMount and this componentDidUpdate
       routes: [
         { key: 'feed', title: 'Feed' },
         { key: 'discover', title: 'Discover' },
@@ -24,8 +25,7 @@ class MainScreen extends Component {
         { key: 'notifications', title: 'Notifications' },
         { key: 'profile', title: 'Profile' }
       ]
-    },
-    tabViewHeight: 0 // TODO: Find a way to get tab view height
+    }
   }
 
   componentDidMount() {
@@ -34,7 +34,32 @@ class MainScreen extends Component {
     if (this.props.first_login) {
       checkPermission('notification', this.handleCheckPermission);
     }
-    this.props.navigateToRoute('feed'); // FeedScreen is the default screen
+    this.props.pushRoute('feed'); // FeedScreen is the default screen
+  }
+
+  componentDidUpdate(prevProps) {
+    if (Platform.OS === 'android') {
+      // If "going back" - current routes array is smaller than the previous one
+      if (this.props.routes.length < prevProps.routes.length) {
+        // NOTE: Make sure it's exactly the same as the one in MainScreen.js
+        // Make sure values correspond with indices in array
+        // If both are tab routes
+        const mainScreenTabKeys = { feed: 0, discover: 1, notifications: 3, profile: 4 };
+        if (
+          mainScreenTabKeys[prevProps.current_route] !== undefined &&
+          mainScreenTabKeys[this.props.current_route] !== undefined
+        ) {
+          // setState here doesn't trigger infinite updates because
+          // the length check will not pass a second time
+          this.setState((prevState) => ({
+            navigationState: {
+              ...prevState.navigationState,
+              index: mainScreenTabKeys[this.props.current_route]
+            }
+          }));
+        }
+      }
+    }
   }
 
   handleCheckPermission = (type, response) => {
@@ -63,7 +88,7 @@ class MainScreen extends Component {
     // Don't change scenes if compose tab is clicked
     if (index !== 2) {
       this.setState((prevState) => {
-        this.props.replaceCurrentRoute(prevState.navigationState.routes[index].key);
+        this.props.pushRoute(prevState.navigationState.routes[index].key);
         return {
           navigationState: { ...prevState.navigationState, index }
         };
@@ -85,6 +110,7 @@ class MainScreen extends Component {
         }
         break;
       case 'compose':
+        this.props.pushRoute('Create');
         this.props.navigation.navigate('Create');
         break;
       case 'notifications':
@@ -149,18 +175,18 @@ MainScreen.propTypes = {
   setNotFirstLogIn: PropTypes.func.isRequired,
   first_login: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
-  navigateToRoute: PropTypes.func.isRequired,
-  replaceCurrentRoute: PropTypes.func.isRequired
+  routes: PropTypes.array.isRequired,
+  pushRoute: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
   first_login: state.auth.first_login,
-  current_route: state.navigation.current_route
+  current_route: state.navigation.current_route,
+  routes: state.navigation.routes
 });
 
 export default connect(mapStateToProps, {
-  navigateToRoute,
-  replaceCurrentRoute,
+  pushRoute,
   setNotFirstLogIn
 })(MainScreen);

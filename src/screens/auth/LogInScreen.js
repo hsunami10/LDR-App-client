@@ -14,7 +14,7 @@ import {
   resetAuthErrors,
   logInWithUsernameAndPassword
 } from '../../actions/AuthActions';
-import { navigateToRoute, goBackwardRoute } from '../../actions/NavigationActions';
+import { goBackwardRoute, pushRoute } from '../../actions/NavigationActions';
 import { isValidInput } from '../../assets/helpers';
 import textStyles from '../../constants/styles/text';
 
@@ -25,6 +25,7 @@ class LogInScreen extends Component {
   }
 
   componentWillUnmount() {
+    this.props.goBackwardRoute();
     this.resetEverything();
   }
 
@@ -33,10 +34,7 @@ class LogInScreen extends Component {
     this.props.resetAuthErrors();
   }
 
-  handleLeftPress = () => {
-    this.props.goBackwardRoute();
-    this.props.navigation.goBack();
-  }
+  handleLeftPress = () => this.props.navigation.goBack()
 
   handleChangeText = (text, id) => {
     switch (id) {
@@ -53,7 +51,7 @@ class LogInScreen extends Component {
 
   forgotPassword = () => {
     Keyboard.dismiss();
-    this.props.navigateToRoute('ForgotPassword');
+    this.props.pushRoute('ForgotPassword');
     this.props.navigation.navigate('ForgotPassword');
   }
 
@@ -117,7 +115,7 @@ LogInScreen.propTypes = {
   logInWithUsernameAndPassword: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
   resetAuthErrors: PropTypes.func.isRequired,
-  navigateToRoute: PropTypes.func.isRequired,
+  pushRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired
 };
 
@@ -138,6 +136,6 @@ export default connect(mapStateToProps, {
   setAuthErrors,
   resetAuthErrors,
   logInWithUsernameAndPassword,
-  navigateToRoute,
-  goBackwardRoute
+  goBackwardRoute,
+  pushRoute
 })(LogInScreen);

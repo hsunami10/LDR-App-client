@@ -31,25 +31,25 @@ import { HeaderRight } from './HeaderRight';
  * @param {React}    [props.headerRight]                  Custom component for the header right.
  */
 export class StandardHeader extends Component {
-  componentDidMount() {
-    if (this.props.disableBack) {
-      if (Platform.OS === 'android') {
-        console.log('add android handler');
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.props.disableBack) {
-      if (Platform.OS === 'android') {
-        console.log('remove android handler');
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-      }
-    }
-  }
-
-  handleBackButton = () => true;
+  // componentDidMount() {
+  //   if (this.props.disableBack) {
+  //     if (Platform.OS === 'android') {
+  //       console.log('add android handler');
+  //       BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  //     }
+  //   }
+  // }
+  //
+  // componentWillUnmount() {
+  //   if (this.props.disableBack) {
+  //     if (Platform.OS === 'android') {
+  //       console.log('remove android handler');
+  //       BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  //     }
+  //   }
+  // }
+  //
+  // handleBackButton = () => true;
 
   render() {
     const height = this.props.height || MIN_HEADER_HEIGHT;

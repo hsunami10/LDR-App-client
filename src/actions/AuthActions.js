@@ -8,7 +8,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { navigateToRoute } from './NavigationActions';
+import { pushRoute } from './NavigationActions';
 import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 // Only called when from log in / sign up screen
@@ -108,7 +108,7 @@ const logInUPResponse = ({ dispatch, response, navigation, resetEverything }) =>
     storeCredentials(response.data.id)
       .then(id => {
         dispatch(setUserCredentials(id, true));
-        dispatch(navigateToRoute('Main'));
+        dispatch(pushRoute('Main'));
         setActive(id, true);
         navigation.navigate('App');
         resetEverything();
@@ -154,7 +154,7 @@ export const sendVerificationEmail = (id, email) => dispatch => {
 
 const createProfileResponse = ({ dispatch, navigation, resetEverything }) => {
   dispatch(stopLoading());
-  dispatch(navigateToRoute('VerifyEmail'));
+  dispatch(pushRoute('VerifyEmail'));
   navigation.navigate('VerifyEmail');
   resetEverything();
 };
@@ -192,7 +192,7 @@ const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) =
     storeCredentials(response.data.id)
       .then(id => {
         dispatch(setUserCredentials(id, true));
-        dispatch(navigateToRoute('CreateProfile'));
+        dispatch(pushRoute('CreateProfile'));
         navigation.navigate('CreateProfile');
         resetEverything();
       })

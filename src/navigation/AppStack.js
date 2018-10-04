@@ -92,7 +92,12 @@ export default createStackNavigator(
 
     // Modals
     ViewProfile: ViewProfileScreen,
-    Create: CreateMainScreen,
+    Create: {
+      screen: CreateMainScreen,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
     ChooseTopic: ChooseTopicScreen
   },
   {
