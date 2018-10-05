@@ -8,10 +8,9 @@ import { setActive, setUserCredentials } from '../../actions/AuthActions';
 import { pushRoute, goBackwardRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert } from '../../assets/helpers';
 
-// NOTE: Handle all hardware back presses here
-
 // QUESTION: Have auth loading the same as the splash screen, but with a loading indicator?
 // BUG: handleConnectionChange is not called again after "BackHandler.exitApp" is called, because connection is not changing
+// BUG: NetInfo handleConnectionChange doesn't work on simulator + emulator
 // TODO: Figure out how to re-run getLoginInfo
 // Maybe look at app states, if it's a certain prev + current app state, then run it again?
 // Nothing changes when moving to background and from background, so don't have to worry about that
@@ -20,8 +19,32 @@ class AuthLoadingScreen extends Component {
   state = { appState: AppState.currentState }
 
   componentDidMount() {
+    console.log('app state in auth loading screen mount: ' + this.state.appState);
+
+    /*
+    App only mounts with an app state of "background" if BackHandler.exitApp() in android was pressed
+    iOS:
+      - first start up: "unknown" to "active"
+      - minimize (home button): "active" to "inactive", "inactive" to "background"
+      - view apps (double press home button): "active" to "inactive"
+      - normal terminate: "active" to "inactive", "inactive" to "background"
+    Android:
+      - first start up: "active" to "active"
+      - minimize (home button): "active" to "background"
+      - view apps (right hardware button): "active" to "background"
+      - normal terminate: "active" to "background"
+      - back handler exit pressed: remove all listeners, but when coming back
+     */
+    if (Platform.OS === 'android' && this.state.appState === 'background') {
+      console.log('coming back from BackHandler.exitApp(), re-check credentials');
+      // TODO: Run this.getLoginInfo()?
+      // First check to see why NetInfo connectionChange listener isn't running on android emulator
+      // Because you don't want to run the same thing twice
+      // Check on real device
+    }
+
     // NOTE: THis runs once by default when the app first starts, not coming from background
-    NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
+    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectionChange);
     AppState.addEventListener('change', this.handleAppStateChange);
 
     if (Platform.OS === 'android') {
@@ -45,10 +68,7 @@ class AuthLoadingScreen extends Component {
          */
         const length = this.props.routes.length;
         if (this.props.current_route === 'Welcome' || this.props.routes[length - 2] === 'Main') {
-          this.backHandler.remove();
-          NetInfo.removeEventListener('connectionChange', this.handleConnectionChange);
-          AppState.removeEventListener('change', this.handleAppStateChange);
-          BackHandler.exitApp(); // BUG: Doing this makes the whole app re-render?
+          BackHandler.exitApp();
           return true;
         } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
           return true;
@@ -64,34 +84,15 @@ class AuthLoadingScreen extends Component {
     }
   }
 
-  shouldComponentUpdate(newProps, newState) {
-    console.log(`old state: ${this.state.appState}`);
-    console.log(`new state: ${newState.appState}`);
-    // If moving to background or inactive, then don't re-render
-    // If moving from background or inactive to foreground, then don't re-render
-    // if (
-    //   (newState.appState === 'inactive' || newState.appState === 'background') ||
-    //   (
-    //     (this.state.appState === 'inactive' || this.state.appState === 'background') &&
-    //     newState.appState === 'active'
-    //   )
-    // ) return false;
-    return true;
-  }
-
   componentWillUnmount() {
-    console.log('unmount auth loading screen');
+    console.log('unmount auth loading screen, remove backhandler, netinfo, appstate listeners');
     this.backHandler.remove();
-    NetInfo.removeEventListener('connectionChange', this.handleConnectionChange);
+    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  handleAppStateChange = nextAppState => {
-    this.setState(() => ({ appState: nextAppState }));
-  }
-
-  getLoginInfo = async connectionInfo => {
-    if (connectionInfo.type === 'none') {
+  getLoginInfo = async isConnected => {
+    if (!isConnected) {
       showNoConnectionAlert();
     } else {
       try {
@@ -117,11 +118,17 @@ class AuthLoadingScreen extends Component {
     }
   }
 
-  handleConnectionChange = connectionInfo => {
-    console.log('auth loading screen handle connection change');
+  handleAppStateChange = nextAppState => {
+    console.log(`old state: ${this.state.appState}`);
+    console.log(`new state: ${nextAppState}`);
+    this.setState(() => ({ appState: nextAppState }));
+  }
+
+  handleConnectionChange = isConnected => {
+    console.log('auth loading screen handle connection change: ', isConnected);
     if (this.props.current_route === 'AuthLoading') {
-      this.getLoginInfo(connectionInfo);
-    } else if (connectionInfo.type === 'none') {
+      this.getLoginInfo(isConnected);
+    } else if (!isConnected) {
       showNoConnectionAlert();
     }
   }

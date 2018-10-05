@@ -14,10 +14,10 @@ export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 // TODO: Send report to development team
 export const handleError = (error, custom = false) => {
   console.log(error);
-  this.getConnectionInfo()
-    .then(connectionInfo => {
-      if (connectionInfo.type === 'none') {
-        this.showNoConnectionAlert();
+  getConnectionInfo()
+    .then(isConnected => {
+      if (!isConnected) {
+        showNoConnectionAlert();
       } else {
         Alert.alert(
             'Oops!',
@@ -69,14 +69,14 @@ export const getConnectionInfo = async () => {
   if (Platform.OS === 'ios') {
     return new Promise((resolve, reject) => {
       const connectionHandler = connectionInfo => {
-        NetInfo.removeEventListener('connectionChange', connectionHandler);
+        NetInfo.isConnected.removeEventListener('connectionChange', connectionHandler);
         resolve(connectionInfo);
       };
-      NetInfo.addEventListener('connectionChange', connectionHandler);
+      NetInfo.isConnected.addEventListener('connectionChange', connectionHandler);
     });
   }
 
-  return NetInfo.getConnectionInfo();
+  return NetInfo.isConnected.getConnectionInfo();
 };
 
 // ========================================= Permissions =========================================

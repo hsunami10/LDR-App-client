@@ -1,10 +1,11 @@
 import { Header } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Platform } from 'react-native';
 
 export const ROOT_URL = (
   process.env.NODE_ENV === undefined ||
   process.env.NODE_ENV === 'development' ?
-  'http://localhost:3000' : 'http://localhost:3000');
+  (Platform.OS === 'android' ? 'http://192.168.0.189:3000' : 'http://localhost:3000') : 'http://localhost:3000');
 // NOTE: Change 'localhost' to an IP address for android emulator to work
 // BUG: Using public IP addresses doesn't work? Can't access server - blocked?
 // Only using private IP addresses works on simulator, but doesn't work on phone with cell service
