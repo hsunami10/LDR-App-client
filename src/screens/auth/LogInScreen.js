@@ -25,8 +25,10 @@ class LogInScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.goBackwardRoute();
-    this.resetEverything();
+    if (this.props.current_route === 'LogIn') {
+      this.props.goBackwardRoute();
+      this.resetEverything();
+    }
   }
 
   resetEverything = () => {
@@ -116,7 +118,8 @@ LogInScreen.propTypes = {
   setAuthErrors: PropTypes.func.isRequired,
   resetAuthErrors: PropTypes.func.isRequired,
   pushRoute: PropTypes.func.isRequired,
-  goBackwardRoute: PropTypes.func.isRequired
+  goBackwardRoute: PropTypes.func.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -127,6 +130,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  current_route: state.navigation.current_route,
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
   loading: state.loading

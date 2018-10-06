@@ -5,7 +5,7 @@ import { NetInfo, AppState, Platform, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserCredentials } from '../../actions/AuthActions';
-import { pushRoute, goBackwardRoute } from '../../actions/NavigationActions';
+import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert } from '../../assets/helpers';
 
 // QUESTION: Have auth loading the same as the splash screen, but with a loading indicator?
@@ -15,6 +15,12 @@ import { handleError, showNoConnectionAlert } from '../../assets/helpers';
 // Maybe look at app states, if it's a certain prev + current app state, then run it again?
 // Nothing changes when moving to background and from background, so don't have to worry about that
 
+/*
+Hangs when:
+  - opening app again after pressing back button to exit / minimize
+  - turning off internet (at welcome screen), pressing back button to exit / minimize, then going back to app - doesn't show "no internet" alert
+ */
+
 class AuthLoadingScreen extends Component {
   state = { appState: AppState.currentState }
 
@@ -22,7 +28,7 @@ class AuthLoadingScreen extends Component {
     console.log('app state in auth loading screen mount: ' + this.state.appState);
 
     /*
-    App only mounts with an app state of "background" if BackHandler.exitApp() in android was pressed
+    App only mounts with an initial app state of "background" if BackHandler.exitApp() in android was pressed
     iOS:
       - first start up: "unknown" to "active"
       - minimize (home button): "active" to "inactive", "inactive" to "background"
@@ -54,6 +60,7 @@ class AuthLoadingScreen extends Component {
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
         /*
         When android hardware back button is pressed:
+        State is not reset - only components are unmounted, state does not reset
 
         Disable back button (don't do anything) when:
           - current_route === 'CreateProfile'
@@ -68,6 +75,12 @@ class AuthLoadingScreen extends Component {
          */
         const length = this.props.routes.length;
         if (this.props.current_route === 'Welcome' || this.props.routes[length - 2] === 'Main') {
+          if (this.props.current_route === 'Welcome') {
+            this.props.goBackwardRoute(); // Reset current_route to AuthLoading
+          } else {
+            // NOTE: If the default main tab screen changes, change this too
+            this.props.replaceCurrentRoute('feed'); // Set default screen to be "feed"
+          }
           BackHandler.exitApp();
           return true;
         } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
@@ -143,7 +156,8 @@ AuthLoadingScreen.propTypes = {
   current_route: PropTypes.string.isRequired,
   routes: PropTypes.array.isRequired,
   pushRoute: PropTypes.func.isRequired,
-  goBackwardRoute: PropTypes.func.isRequired
+  goBackwardRoute: PropTypes.func.isRequired,
+  replaceCurrentRoute: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -154,5 +168,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   setUserCredentials,
   pushRoute,
-  goBackwardRoute
+  goBackwardRoute,
+  replaceCurrentRoute
 })(AuthLoadingScreen);

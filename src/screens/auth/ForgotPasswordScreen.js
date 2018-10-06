@@ -14,9 +14,11 @@ class ForgotPasswordScreen extends Component {
   state = { email: '' }
 
   componentWillUnmount() {
-    this.setState(() => ({ email: '' }));
-    this.props.goBackwardRoute();
-    this.props.resetAuthErrors();
+    if (this.props.current_route === 'ForgotPassword') {
+      this.setState(() => ({ email: '' }));
+      this.props.goBackwardRoute();
+      this.props.resetAuthErrors();
+    }
   }
 
   close = () => this.props.navigation.popToTop()
@@ -86,7 +88,8 @@ ForgotPasswordScreen.propTypes = {
   goBackwardRoute: PropTypes.func.isRequired,
   success: PropTypes.bool.isRequired,
   error_msg: PropTypes.string.isRequired,
-  error_field: PropTypes.string.isRequired
+  error_field: PropTypes.string.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -105,7 +108,8 @@ const mapStateToProps = state => ({
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
   success: state.auth.success,
-  loading: state.loading
+  loading: state.loading,
+  current_route: state.navigation.current_route
 });
 
 export default connect(mapStateToProps, {

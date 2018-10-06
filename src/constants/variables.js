@@ -2,15 +2,14 @@ import { Header } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { Platform } from 'react-native';
 
+/*
+Add IP address to Info.plist for iOS real device
+Use the laptop's IP address and make sure the device is connected to the same wifi
+ */
 export const ROOT_URL = (
   process.env.NODE_ENV === undefined ||
   process.env.NODE_ENV === 'development' ?
-  (Platform.OS === 'android' ? 'http://192.168.0.189:3000' : 'http://localhost:3000') : 'http://localhost:3000');
-// NOTE: Change 'localhost' to an IP address for android emulator to work
-// BUG: Using public IP addresses doesn't work? Can't access server - blocked?
-// Only using private IP addresses works on simulator, but doesn't work on phone with cell service
-// TODO: Add production URL
-// NOTE: Change IP address to laptop's current IP address when needed
+  'http://192.168.0.189:3000' : 'http://192.168.0.189:3000');
 
 export const MIN_LOADING_TIME = 1000; // Minimum time to show loading indicator
 

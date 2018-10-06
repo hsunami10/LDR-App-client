@@ -21,7 +21,9 @@ export default (state = INITIAL_STATE, action) => {
         routes: [...state.routes, action.payload]
       };
     case GO_BACKWARD_ROUTE:
-      copyRoutes.pop();
+      if (copyRoutes.length > 1) {
+        copyRoutes.pop();
+      }
       return {
         ...state,
         current_route: copyRoutes[copyRoutes.length - 1],

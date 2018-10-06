@@ -44,6 +44,7 @@ class CreateProfileScreen extends Component {
   resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
 
   createProfile = () => {
+    console.log('create profile: ', this.state.image);
     Keyboard.dismiss();
     this.props.createProfile(
       {
@@ -102,7 +103,11 @@ class CreateProfileScreen extends Component {
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
+      console.log('OPEN CAMERA FINISHED');
       console.log(image);
+      console.log('path: ' + image.path);
+      console.log('mime: ' + image.mime);
+      console.log('filename: ' + image.filename);
       this.setState(() => ({
         image: {
           uri: image.path,
@@ -123,6 +128,9 @@ class CreateProfileScreen extends Component {
       cropping: true
     }).then(image => {
       console.log(image);
+      console.log('path: ' + image.path);
+      console.log('mime: ' + image.mime);
+      console.log('filename: ' + image.filename);
       this.setState(() => ({
         image: {
           uri: image.path,

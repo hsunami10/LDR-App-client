@@ -16,7 +16,7 @@ import { checkPermission } from '../../assets/helpers';
 class MainScreen extends Component {
   state = {
     navigationState: {
-      index: 0,
+      index: 0, // NOTE: If this default index changes, change the "key" in AuthLoadingScreen, replaceCurrentRoute, where it handles android back press events
       // NOTE: If changed, make sure to updated AuthLoadingScreen.js in componentDidMount and this componentDidUpdate
       routes: [
         { key: 'feed', title: 'Feed' },

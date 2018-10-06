@@ -26,8 +26,10 @@ class SignUpScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.props.goBackwardRoute();
-    this.resetEverything();
+    if (this.props.current_route === 'SignUp') {
+      this.props.goBackwardRoute();
+      this.resetEverything();
+    }
   }
 
   // Pseudo componentWillUnmount
@@ -131,7 +133,8 @@ SignUpScreen.propTypes = {
   goBackwardRoute: PropTypes.func.isRequired,
   error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -142,6 +145,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  current_route: state.navigation.current_route,
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
   loading: state.loading
