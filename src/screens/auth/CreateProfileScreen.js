@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActionSheet from 'react-native-actionsheet';
+import shortid from 'shortid';
 import {
   StandardHeader,
   ClickableImage,
@@ -103,16 +104,11 @@ class CreateProfileScreen extends Component {
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
-      console.log('OPEN CAMERA FINISHED');
-      console.log(image);
-      console.log('path: ' + image.path);
-      console.log('mime: ' + image.mime);
-      console.log('filename: ' + image.filename);
       this.setState(() => ({
         image: {
           uri: image.path,
           type: image.mime,
-          name: image.filename
+          name: image.filename || `${shortid()}.JPG`
         }
       }));
     }).catch(err => {
@@ -127,10 +123,6 @@ class CreateProfileScreen extends Component {
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
-      console.log(image);
-      console.log('path: ' + image.path);
-      console.log('mime: ' + image.mime);
-      console.log('filename: ' + image.filename);
       this.setState(() => ({
         image: {
           uri: image.path,
