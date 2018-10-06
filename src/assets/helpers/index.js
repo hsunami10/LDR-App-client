@@ -69,14 +69,14 @@ export const getConnectionInfo = async () => {
   if (Platform.OS === 'ios') {
     return new Promise((resolve, reject) => {
       const connectionHandler = connectionInfo => {
-        NetInfo.isConnected.removeEventListener('connectionChange', connectionHandler);
+        NetInfo.removeEventListener('connectionChange', connectionHandler);
         resolve(connectionInfo);
       };
-      NetInfo.isConnected.addEventListener('connectionChange', connectionHandler);
+      NetInfo.addEventListener('connectionChange', connectionHandler);
     });
   }
 
-  return NetInfo.isConnected.getConnectionInfo();
+  return NetInfo.getConnectionInfo();
 };
 
 // ========================================= Permissions =========================================

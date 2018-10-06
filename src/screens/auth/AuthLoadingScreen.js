@@ -6,27 +6,12 @@ import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserCredentials } from '../../actions/AuthActions';
 import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
-import { handleError, showNoConnectionAlert } from '../../assets/helpers';
-
-// QUESTION: Have auth loading the same as the splash screen, but with a loading indicator?
-// BUG: handleConnectionChange is not called again after "BackHandler.exitApp" is called, because connection is not changing
-// BUG: NetInfo handleConnectionChange doesn't work on simulator + emulator
-// TODO: Figure out how to re-run getLoginInfo
-// Maybe look at app states, if it's a certain prev + current app state, then run it again?
-// Nothing changes when moving to background and from background, so don't have to worry about that
-
-/*
-Hangs when:
-  - opening app again after pressing back button to exit / minimize
-  - turning off internet (at welcome screen), pressing back button to exit / minimize, then going back to app - doesn't show "no internet" alert
- */
+import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
 class AuthLoadingScreen extends Component {
   state = { appState: AppState.currentState }
 
   componentDidMount() {
-    console.log('app state in auth loading screen mount: ' + this.state.appState);
-
     /*
     App only mounts with an initial app state of "background" if BackHandler.exitApp() in android was pressed
     iOS:
@@ -42,11 +27,12 @@ class AuthLoadingScreen extends Component {
       - back handler exit pressed: remove all listeners, but when coming back
      */
     if (Platform.OS === 'android' && this.state.appState === 'background') {
-      console.log('coming back from BackHandler.exitApp(), re-check credentials');
+      getConnectionInfo()
+        .then(connectionInfo => {
+          this.getLoginInfo(connectionInfo.type !== 'none');
+        });
       // TODO: Run this.getLoginInfo()?
-      // First check to see why NetInfo connectionChange listener isn't running on android emulator
-      // Because you don't want to run the same thing twice
-      // Check on real device
+      // Check connection here again
     }
 
     // NOTE: THis runs once by default when the app first starts, not coming from background
@@ -98,7 +84,6 @@ class AuthLoadingScreen extends Component {
   }
 
   componentWillUnmount() {
-    console.log('unmount auth loading screen, remove backhandler, netinfo, appstate listeners');
     this.backHandler.remove();
     NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -132,13 +117,10 @@ class AuthLoadingScreen extends Component {
   }
 
   handleAppStateChange = nextAppState => {
-    console.log(`old state: ${this.state.appState}`);
-    console.log(`new state: ${nextAppState}`);
     this.setState(() => ({ appState: nextAppState }));
   }
 
   handleConnectionChange = isConnected => {
-    console.log('auth loading screen handle connection change: ', isConnected);
     if (this.props.current_route === 'AuthLoading') {
       this.getLoginInfo(isConnected);
     } else if (!isConnected) {
