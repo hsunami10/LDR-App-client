@@ -47,7 +47,7 @@ export const waitUntilMinTime = (beforeReq, callback, param) => {
 export const showNoUserAlert = () => {
   Alert.alert(
     'User does not exist',
-    'This account, for some reason, does not exist. If this continues, please report this bug to the development team.',
+    'This account has been deleted. If this is not supposed to happen, please report this bug to the development team.',
     [{ text: 'Ok' }],
     { cancelable: false }
   );
@@ -56,7 +56,7 @@ export const showNoUserAlert = () => {
 // ========================================== Connection ==========================================
 export const showNoConnectionAlert = () => {
   Alert.alert(
-    'Oh no!',
+    'No Internet',
     'You do not have internet connection. Please connect to the internet and try again.',
     [
       { text: 'Ok', style: 'cancel' },

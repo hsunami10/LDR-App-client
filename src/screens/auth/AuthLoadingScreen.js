@@ -31,8 +31,6 @@ class AuthLoadingScreen extends Component {
         .then(connectionInfo => {
           this.getLoginInfo(connectionInfo.type !== 'none');
         });
-      // TODO: Run this.getLoginInfo()?
-      // Check connection here again
     }
 
     // NOTE: THis runs once by default when the app first starts, not coming from background

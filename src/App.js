@@ -21,7 +21,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(`render root app component: ${instructions}`);
     if (isIphoneX()) {
       return (
         <SafeAreaView style={{ flex: 1 }}>

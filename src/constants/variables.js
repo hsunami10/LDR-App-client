@@ -1,6 +1,5 @@
 import { Header } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { Platform } from 'react-native';
 
 /*
 Add IP address to Info.plist for iOS real device
@@ -9,7 +8,7 @@ Use the laptop's IP address and make sure the device is connected to the same wi
 export const ROOT_URL = (
   process.env.NODE_ENV === undefined ||
   process.env.NODE_ENV === 'development' ?
-  'http://192.168.0.189:3000' : 'http://192.168.0.189:3000');
+  'http://localhost:3000' : 'http://localhost:3000');
 
 export const MIN_LOADING_TIME = 1000; // Minimum time to show loading indicator
 

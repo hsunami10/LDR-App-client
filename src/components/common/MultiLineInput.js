@@ -12,8 +12,8 @@ export const MultiLineInput = props => {
     onChangeText,
     placeholder,
     secureTextEntry,
+    showBorder,
     borderColor,
-    borderWidth,
     onSubmitEditing,
     autoFocus,
     numberOfLines,
@@ -27,7 +27,7 @@ export const MultiLineInput = props => {
         {
           width,
           height,
-          borderWidth: borderWidth || 0,
+          borderWidth: showBorder ? 1 : 0,
           borderColor: borderColor || 'transparent'
         },
         containerStyle || {}
@@ -58,7 +58,7 @@ MultiLineInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
   secureTextEntry: PropTypes.bool,
   showLabel: PropTypes.bool,
-  borderWidth: PropTypes.number,
+  showBorder: PropTypes.bool,
   borderColor: PropTypes.string,
   onSubmitEditing: PropTypes.func,
   autoFocus: PropTypes.bool,

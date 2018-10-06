@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, BackHandler, Platform } from 'react-native';
+import { View, StyleSheet, BackHandler, Platform, Dimensions } from 'react-native';
 import { HeaderTitle } from 'react-navigation';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { MIN_HEADER_HEIGHT } from '../../constants/variables';
@@ -31,26 +31,6 @@ import { HeaderRight } from './HeaderRight';
  * @param {React}    [props.headerRight]                  Custom component for the header right.
  */
 export class StandardHeader extends Component {
-  // componentDidMount() {
-  //   if (this.props.disableBack) {
-  //     if (Platform.OS === 'android') {
-  //       console.log('add android handler');
-  //       BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-  //     }
-  //   }
-  // }
-  //
-  // componentWillUnmount() {
-  //   if (this.props.disableBack) {
-  //     if (Platform.OS === 'android') {
-  //       console.log('remove android handler');
-  //       BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  //     }
-  //   }
-  // }
-  //
-  // handleBackButton = () => true;
-
   render() {
     const height = this.props.height || MIN_HEADER_HEIGHT;
     const {
@@ -64,12 +44,13 @@ export class StandardHeader extends Component {
       headerLeft,
       headerRight,
       disableRight,
-      disableLeft
+      disableLeft,
+      tabTitleWidth
     } = this.props;
 
     let titleAlign = {};
     if (Platform.OS === 'ios' || typeof title !== 'string') titleAlign = { alignItems: 'center' };
-    else titleAlign = { marginLeft: this.props.disableBack ? 0 : MIN_HEADER_HEIGHT };
+    else if (typeof title === 'string') titleAlign = { marginLeft: this.props.disableBack ? 0 : MIN_HEADER_HEIGHT };
 
     return (
       <View style={[styles.containerStyle, { height }]}>
@@ -93,12 +74,19 @@ export class StandardHeader extends Component {
         </View>
 
         <View
-          pointerEvents="none"
+          pointerEvents={tabTitleWidth ? undefined : 'none'} // If there's a tab bar title, then allow clicks on view
           style={[
             styles.containerStyle,
             { height },
             styles.titleContainerStyle,
-            titleAlign]}
+            titleAlign,
+            (tabTitleWidth ? // If there's a tab bar title, then adjust the width so it won't block the left and right actions
+              {
+                left: (Dimensions.get('window').width - tabTitleWidth) / 2,
+                right: (Dimensions.get('window').width - tabTitleWidth) / 2
+              } :
+              {}
+            )]}
         >
           {typeof title === 'string' ?
           <HeaderTitle style={styles.headerTitleStyle}>{title}</HeaderTitle> :
@@ -125,7 +113,8 @@ StandardHeader.propTypes = {
   headerLeft: PropTypes.element,
   headerRight: PropTypes.element,
   disableRight: PropTypes.bool,
-  disableLeft: PropTypes.bool
+  disableLeft: PropTypes.bool,
+  tabTitleWidth: PropTypes.number // The width of the tab bar
 };
 
 const styles = StyleSheet.create({
@@ -142,11 +131,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0)'
+    backgroundColor: 'transparent'
   },
   titleContainerStyle: {
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0)',
+    backgroundColor: 'transparent',
     justifyContent: 'center'
   },
   headerTitleStyle: {
