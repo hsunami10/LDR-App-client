@@ -15,7 +15,6 @@ class ForgotPasswordScreen extends Component {
 
   componentWillUnmount() {
     if (this.props.current_route === 'ForgotPassword') {
-      this.setState(() => ({ email: '' }));
       this.props.goBackwardRoute();
       this.props.resetAuthErrors();
     }

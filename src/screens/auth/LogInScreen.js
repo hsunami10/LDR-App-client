@@ -15,7 +15,7 @@ import {
   logInWithUsernameAndPassword
 } from '../../actions/AuthActions';
 import { goBackwardRoute, pushRoute } from '../../actions/NavigationActions';
-import { isValidInput } from '../../assets/helpers';
+import { isValidCredentials } from '../../assets/helpers';
 import textStyles from '../../constants/styles/text';
 
 class LogInScreen extends Component {
@@ -61,8 +61,9 @@ class LogInScreen extends Component {
     const { username, password } = this.state;
     Keyboard.dismiss();
 
+    const { status } = isValidCredentials([username, password]);
     // Check spaces
-    if (isValidInput([username, password])) {
+    if (status) {
       this.props.resetAuthErrors();
       this.props.logInWithUsernameAndPassword(
         { username, password },

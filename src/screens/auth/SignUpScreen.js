@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import { isValidInput } from '../../assets/helpers';
+import { isValidCredentials } from '../../assets/helpers';
 import {
   setAuthErrors,
   resetAuthErrors,
@@ -60,8 +60,9 @@ class SignUpScreen extends Component {
     const { username, password, confirmPassword } = this.state;
     Keyboard.dismiss();
 
+    const { status, type, msg } = isValidCredentials([username, password, confirmPassword]);
     // Check spaces
-    if (isValidInput([username, password, confirmPassword])) {
+    if (status) {
       // Check password match
       if (password === confirmPassword) {
         // Check password length
@@ -79,7 +80,7 @@ class SignUpScreen extends Component {
         this.props.setAuthErrors('password', 'Passwords do not match');
       }
     } else {
-      this.props.setAuthErrors('', 'Invalid username or password');
+      this.props.setAuthErrors(type, msg);
     }
   }
 

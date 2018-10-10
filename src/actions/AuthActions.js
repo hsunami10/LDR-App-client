@@ -152,6 +152,7 @@ export const sendVerificationEmail = (id, email) => dispatch => {
     });
 };
 
+// ======================================== Create Profile ========================================
 const createProfileResponse = ({ dispatch, navigation, resetEverything }) => {
   dispatch(stopLoading());
   dispatch(pushRoute('VerifyEmail'));
@@ -164,8 +165,8 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   dispatch(startLoading());
 
   const data = new FormData();
-  data.append('id', dataObj.id);
-  data.append('type', dataObj.type);
+  data.append('user_id', dataObj.id);
+  data.append('type', 'profile');
   data.append('bio', dataObj.bio);
   data.append('clientImage', dataObj.clientImage);
 
@@ -184,6 +185,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
     });
 };
 
+// ========================================== Signing Up ==========================================
 const signUpUPResponse = ({ dispatch, response, navigation, resetEverything }) => {
   dispatch(stopLoading());
   if (response.data.msg) {

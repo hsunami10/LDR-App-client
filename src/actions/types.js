@@ -13,3 +13,8 @@ export const GO_BACKWARD_ROUTE = 'go_backward_route';
 export const POP_ROUTE = 'pop_route';
 export const REPLACE_CURRENT_ROUTE = 'replace_current_route';
 export const PUSH_ROUTE = 'push_route';
+
+// Topics
+export const CREATE_TOPIC = 'create_topic';
+export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topics, admins of groups cannot delete
+// TODO: Edit topic action types here

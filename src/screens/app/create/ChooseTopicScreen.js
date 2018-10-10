@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Keyboard, SectionList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 
-// TODO: Order everything alphabetically
+// TODO: Order everything alphabetically automatically
+// Don't use SearchHeader at top, have an actual header, then search header below it
+// NOTE: Have an option for "none"
 
 class ChooseTopicScreen extends Component {
   state = {

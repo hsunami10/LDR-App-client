@@ -45,12 +45,10 @@ class CreateProfileScreen extends Component {
   resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
 
   createProfile = () => {
-    console.log('create profile: ', this.state.image);
     Keyboard.dismiss();
     this.props.createProfile(
       {
         id: this.props.id,
-        type: 'profile',
         bio: this.state.bio === '' ? null : this.state.bio,
         clientImage: this.state.image || null
       },
@@ -63,10 +61,7 @@ class CreateProfileScreen extends Component {
 
   showActionSheet = () => this.ActionSheet.show()
 
-  ref = o => {
-    this.ActionSheet = o;
-    return this.ActionSheet;
-  }
+  ref = o => (this.ActionSheet = o)
 
   handleCheckPermission = (type, response) => {
     this.handlePermissionAction(type, response);
@@ -99,8 +94,8 @@ class CreateProfileScreen extends Component {
 
   openCamera = () => {
     ImagePicker.openCamera({
-      // width: 300,
-      // height: 300,
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').width,
       cropperToolbarTitle: 'Move and Scale',
       cropping: true
     }).then(image => {
@@ -108,7 +103,7 @@ class CreateProfileScreen extends Component {
         image: {
           uri: image.path,
           type: image.mime,
-          name: image.filename || `${shortid()}.JPG`
+          name: image.filename || `${shortid()}.${image.mime === 'image/jpeg' ? 'JPG' : 'PNG'}`
         }
       }));
     }).catch(err => {
@@ -127,7 +122,7 @@ class CreateProfileScreen extends Component {
         image: {
           uri: image.path,
           type: image.mime,
-          name: image.filename
+          name: image.filename || `${shortid()}.JPG`
         }
       }));
     }).catch(err => {

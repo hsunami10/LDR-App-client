@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Animat
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { SEARCH_HEADER_HEIGHT } from '../../constants/variables';
 
+// TODO: Figure out how to incorporate with other elements in header (left and right)
 export class SearchHeader extends Component {
   state = {
     screenWidth: Dimensions.get('window').width,
@@ -41,7 +42,7 @@ export class SearchHeader extends Component {
 
   render() {
     return (
-      <View style={styles.containerStyle}>
+      <View style={[styles.containerStyle, this.props.containerStyle || {}]}>
         <Animated.View style={styles.inputContainerStyle}>
           <TextInput
             placeholder={this.props.placeholder}
@@ -84,7 +85,8 @@ SearchHeader.propTypes = {
   onFocus: PropTypes.func,
   onCancelPress: PropTypes.func.isRequired,
   animationDuration: PropTypes.number,
-  returnKeyType: PropTypes.string
+  returnKeyType: PropTypes.string,
+  containerStyle: PropTypes.object
 };
 
 const styles = StyleSheet.create({

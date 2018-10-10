@@ -95,7 +95,7 @@ export default createStackNavigator(
     Create: {
       screen: CreateMainScreen,
       navigationOptions: {
-        gesturesEnabled: false
+        gesturesEnabled: true
       }
     },
     ChooseTopic: ChooseTopicScreen

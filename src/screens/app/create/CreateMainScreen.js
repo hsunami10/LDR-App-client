@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { popRoute } from '../../../actions/NavigationActions';
+import { goBackwardRoute } from '../../../actions/NavigationActions';
+import { createTopic } from '../../../actions/TopicActions';
 import { StandardHeader } from '../../../components/common';
+import { isValidName, hasTrailingSpaces } from '../../../assets/helpers';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
 
@@ -18,15 +19,17 @@ class CreateMainScreen extends Component {
         { key: 'topic', title: 'Topic' }
       ]
     },
+
     topic: 'Choose Topic',
     body: '',
-    name: '',
-    description: '',
-
     postError: {
       type: null,
       msg: ' '
     },
+
+    name: '',
+    description: '',
+    image: null,
     topicError: {
       type: null,
       msg: ' '
@@ -35,11 +38,12 @@ class CreateMainScreen extends Component {
 
   componentWillUnmount() {
     if (this.props.current_route === 'Create') {
-      this.props.popRoute(this.props.routes[this.props.routes.length - 2]);
+      this.props.goBackwardRoute();
     }
   }
 
   handleIndexChange = index => {
+    Keyboard.dismiss();
     this.setState((prevState) => {
       return {
         navigationState: { ...prevState.navigationState, index }
@@ -50,51 +54,73 @@ class CreateMainScreen extends Component {
   handleChangeBody = body => this.setState(() => ({ body }))
   handleChangeName = name => this.setState(() => ({ name }))
   handleChangeDescription = description => this.setState(() => ({ description }))
+  handleChangeImage = image => this.setState(() => ({ image }));
 
   handleSubmit = () => {
+    Keyboard.dismiss();
     if (this.state.navigationState.index === 0) {
-      if (this.state.body.trim() === '') {
-        this.setState(() => ({
-          postError: {
-            type: 'body',
-            msg: 'A body is required to create a post'
-          }
-        }));
-      } else {
-        this.setState(() => ({
-          postErrorMsg: {
-            type: null,
-            msg: ' '
-          }
-        }));
+      if (!isValidName(this.state.body)) {
+        this.handlePostError('body');
+      } else { // TODO: Check error for choosing a topic
+        this.handlePostError(null);
         console.log(`create post with topic: ${this.state.topic} and body: ${this.state.body}`);
-        this.props.navigation.navigate('Main');
+        // TODO: Show loading here while posting and update app state
+        // When finished, run this.props.navigation.goBack();
       }
-    } else if (this.state.name.trim() === '') {
-      this.setState(() => ({
-        topicError: {
-          type: 'name',
-          msg: 'A topic name is required to create a topic'
-        }
-      }));
-    } else if (this.state.description.trim() === '') {
-      this.setState(() => ({
-        topicError: {
-          type: 'description',
-          msg: 'A topic description is required to create a topic'
-        }
-      }));
+    } else if (!isValidName(this.state.name)) {
+      this.handleTopicError('name');
+    } else if (!isValidName(this.state.description)) {
+      this.handleTopicError('description');
+    } else if (!this.state.image) {
+      this.handleTopicError('image');
     } else {
-      this.setState(() => ({
-        topicError: {
-          type: null,
-          msg: ' '
-        }
-      }));
-      console.log(`create topic with name: ${this.state.name} and description: ${this.state.description}`);
-      this.props.navigation.navigate('Main');
+      this.handleTopicError(null);
+      this.props.createTopic({
+        user_id: this.props.id,
+        name: this.state.name,
+        description: this.state.description,
+        clientImage: this.state.image
+      },
+      this.props.navigation,
+      this.createTopicErrCb
+    );
     }
   }
+
+  handlePostError = type => {
+    let msg = ' ';
+    switch (type) {
+      case 'body':
+        msg = 'A body is required to create a post';
+        break;
+      default:
+        break;
+    }
+    this.setState(() => ({ postError: { type, msg } }));
+  }
+
+  handleTopicError = type => {
+    let msg = ' ';
+    switch (type) {
+      case 'name':
+        msg = 'A topic name is required to create a topic';
+        break;
+      case 'description':
+        msg = 'A topic description is required to create a topic';
+        break;
+      case 'image':
+        msg = 'An image is required to create a topic';
+        break;
+      default:
+        break;
+    }
+    if (hasTrailingSpaces([this.state.name, this.state.description])) {
+      msg = 'No trailing spaces';
+    }
+    this.setState(() => ({ topicError: { type, msg } }));
+  }
+
+  createTopicErrCb = msg => this.setState(() => ({ topicError: { type: null, msg } }))
 
   renderScene = ({ route }) => {
     switch (route.key) {
@@ -106,6 +132,7 @@ class CreateMainScreen extends Component {
             topic={this.state.topic}
             body={this.state.body}
             error={this.state.postError}
+            loading={this.props.loading}
           />
         );
       case 'topic':
@@ -113,9 +140,12 @@ class CreateMainScreen extends Component {
           <CreateTopicScreen
             handleChangeName={this.handleChangeName}
             handleChangeDescription={this.handleChangeDescription}
+            handleChangeImage={this.handleChangeImage}
             name={this.state.name}
             description={this.state.description}
+            image={this.state.image}
             error={this.state.topicError}
+            loading={this.props.loading}
           />
         );
       default:
@@ -145,7 +175,7 @@ class CreateMainScreen extends Component {
               }
               height={100}
               showRight
-              rightTitle={this.state.navigationState.index === 0 ? 'Post' : 'Request'}
+              rightTitle={this.state.navigationState.index === 0 ? 'Post' : 'Create'}
               onRightPress={this.handleSubmit}
               showLeft
               onLeftPress={() => this.props.navigation.goBack()}
@@ -161,9 +191,12 @@ class CreateMainScreen extends Component {
 }
 
 CreateMainScreen.propTypes = {
+  id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
   routes: PropTypes.array.isRequired,
-  popRoute: PropTypes.func.isRequired
+  goBackwardRoute: PropTypes.func.isRequired,
+  createTopic: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -178,8 +211,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  id: state.auth.id,
   current_route: state.navigation.current_route,
-  routes: state.navigation.routes
+  routes: state.navigation.routes,
+  loading: state.loading
 });
 
-export default connect(mapStateToProps, { popRoute })(CreateMainScreen);
+export default connect(mapStateToProps, {
+  goBackwardRoute,
+  createTopic
+})(CreateMainScreen);
