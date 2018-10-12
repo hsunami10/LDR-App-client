@@ -95,11 +95,6 @@ class AuthLoadingScreen extends Component {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
         console.log(credentials);
         if (credentials) {
-          // TODO: Check if user exists in database
-          // Get basic profile info (enough so it can show while offline), or show first before other info is loaded
-          // (username, profile picture, bio)
-          // If exists, then navigation to App
-          // Otherwise, show alert, remove Keychain credentials, then navigate to Auth
           checkUserExists(credentials, this.navToApp, this.navToAuth);
         } else {
           this.navToAuth();

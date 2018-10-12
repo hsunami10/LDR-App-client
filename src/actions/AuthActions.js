@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
+import { Alert } from 'react-native';
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
@@ -38,7 +39,13 @@ export const checkUserExists = (credentials, navToApp, navToAuth) => {
       } else { // If user does not exist in database
         removeCredentials()
           .then(() => {
-            navToAuth();
+            Alert.alert(
+              'Oh no!',
+              'Your account does not exist. If this persists, please contact the development team.',
+              {
+                text: 'OK', onPress: navToAuth()
+              }
+            );
           })
           .catch(error => {
             handleError(error);
