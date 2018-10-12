@@ -5,7 +5,8 @@ import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
   SET_USER_CREDENTIALS,
-  SET_NOT_FIRST_LOG_IN
+  SET_NOT_FIRST_LOG_IN,
+  STORE_USER_INFO
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -31,10 +32,13 @@ export const removeCredentials = async () => {
   }
 };
 
-export const checkUserExists = (credentials, navToApp, navToAuth) => {
+export const checkUserExists = (credentials, navToApp, navToAuth) => dispatch => {
+  console.log('check');
   axios.get(`${ROOT_URL}/api/user/check/${credentials.username}`)
     .then(response => {
-      if (response.data) { // If user exists in database
+      console.log(response.data);
+      if (response.data.success) { // If user exists in database
+        dispatch(storeUserInfo(response.data.user));
         navToApp(credentials);
       } else { // If user does not exist in database
         removeCredentials()
@@ -69,6 +73,12 @@ export const getUserInfo = (id, type) => dispatch => {
       console.log(`getUserInfo error: ${error}`);
     });
 };
+
+// Store user's profile information
+export const storeUserInfo = user => ({
+  type: STORE_USER_INFO,
+  payload: user
+});
 
 export const setAuthErrors = (errorField, errorMsg, success = false) => ({
   type: SET_AUTH_ERRORS,

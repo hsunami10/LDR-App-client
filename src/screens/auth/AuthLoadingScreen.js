@@ -95,7 +95,7 @@ class AuthLoadingScreen extends Component {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
         console.log(credentials);
         if (credentials) {
-          checkUserExists(credentials, this.navToApp, this.navToAuth);
+          this.props.checkUserExists(credentials, this.navToApp, this.navToAuth);
         } else {
           this.navToAuth();
         }
@@ -140,7 +140,8 @@ AuthLoadingScreen.propTypes = {
   routes: PropTypes.array.isRequired,
   pushRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
-  replaceCurrentRoute: PropTypes.func.isRequired
+  replaceCurrentRoute: PropTypes.func.isRequired,
+  checkUserExists: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -152,5 +153,6 @@ export default connect(mapStateToProps, {
   setUserCredentials,
   pushRoute,
   goBackwardRoute,
-  replaceCurrentRoute
+  replaceCurrentRoute,
+  checkUserExists
 })(AuthLoadingScreen);

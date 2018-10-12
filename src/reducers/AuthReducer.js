@@ -2,7 +2,8 @@ import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
   SET_USER_CREDENTIALS,
-  SET_NOT_FIRST_LOG_IN
+  SET_NOT_FIRST_LOG_IN,
+  STORE_USER_INFO
 } from '../actions/types';
 import { handleError } from '../assets/helpers';
 
@@ -19,6 +20,9 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case STORE_USER_INFO: {
+      return { ...state, user: action.payload };
+    }
     case SET_AUTH_ERRORS: {
       const { errorField, errorMsg, success } = action.payload;
       if (errorField === 'username' || errorField === 'password' || errorField === '') {
