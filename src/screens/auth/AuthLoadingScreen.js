@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive, setUserCredentials } from '../../actions/AuthActions';
+import { setActive, setUserCredentials, checkUserExists } from '../../actions/AuthActions';
 import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
@@ -100,13 +100,9 @@ class AuthLoadingScreen extends Component {
           // (username, profile picture, bio)
           // If exists, then navigation to App
           // Otherwise, show alert, remove Keychain credentials, then navigate to Auth
-          this.props.setUserCredentials(credentials.username, credentials.password === 'true');
-          this.props.pushRoute('Main');
-          setActive(credentials.username, true);
-          this.props.navigation.navigate('App');
+          checkUserExists(credentials, this.navToApp, this.navToAuth);
         } else {
-          this.props.pushRoute('Welcome');
-          this.props.navigation.navigate('Auth');
+          this.navToAuth();
         }
       } catch (e) {
         handleError(new Error(`Unable to access keychain. ${e.message}`), true);
@@ -124,6 +120,18 @@ class AuthLoadingScreen extends Component {
     } else if (!isConnected) {
       showNoConnectionAlert();
     }
+  }
+
+  navToApp = credentials => {
+    this.props.setUserCredentials(credentials.username, credentials.password === 'true');
+    this.props.pushRoute('Main');
+    setActive(credentials.username, true);
+    this.props.navigation.navigate('App');
+  }
+
+  navToAuth = () => {
+    this.props.pushRoute('Welcome');
+    this.props.navigation.navigate('Auth');
   }
 
   render() {

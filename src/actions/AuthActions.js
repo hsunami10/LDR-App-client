@@ -12,14 +12,43 @@ import { pushRoute } from './NavigationActions';
 import { handleError, waitUntilMinTime } from '../assets/helpers';
 
 // Only called when from log in / sign up screen
-const storeCredentials = (async id => {
+export const storeCredentials = async id => {
   try {
     await Keychain.setGenericPassword(id, 'true');
     return Promise.resolve(id);
   } catch (e) {
     return Promise.reject(e);
   }
-});
+};
+
+export const removeCredentials = async () => {
+  try {
+    await Keychain.resetGenericPassword();
+    return Promise.resolve();
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+export const checkUserExists = (credentials, navToApp, navToAuth) => {
+  axios.get(`${ROOT_URL}/api/user/check/${credentials.username}`)
+    .then(response => {
+      if (response.data) { // If user exists in database
+        navToApp(credentials);
+      } else { // If user does not exist in database
+        removeCredentials()
+          .then(() => {
+            navToAuth();
+          })
+          .catch(error => {
+            handleError(error);
+          });
+      }
+    })
+    .catch(error => {
+      handleError(error);
+    });
+};
 
 // Get public or private profile information
 // NOTE: Use this after valid keychain credentials or seeing public profiles

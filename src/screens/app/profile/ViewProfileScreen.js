@@ -6,7 +6,7 @@ import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
 import { StandardHeader } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive } from '../../../actions/AuthActions';
+import { setActive, removeCredentials } from '../../../actions/AuthActions';
 import { popRoute, pushRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
@@ -36,16 +36,17 @@ class ViewProfileScreen extends Component {
 
   showActionSheet = () => this.ActionSheet.show();
 
-  logOut = async () => {
-    try {
-      await Keychain.resetGenericPassword();
-      this.props.popRoute('AuthLoading');
-      this.props.pushRoute('Welcome');
-      this.props.navigation.navigate('Welcome');
-      setActive(this.props.id, false);
-    } catch (err) {
-      handleError(err);
-    }
+  logOut = () => {
+    removeCredentials()
+      .then(() => {
+        this.props.popRoute('AuthLoading');
+        this.props.pushRoute('Welcome');
+        this.props.navigation.navigate('Welcome');
+        setActive(this.props.id, false);
+      })
+      .catch(error => {
+        handleError(error);
+      });
   }
 
   ref = o => {

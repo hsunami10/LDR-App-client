@@ -14,21 +14,31 @@ export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 // TODO: Send report to development team
 export const handleError = (error, custom = false) => {
   console.log(error);
-  getConnectionInfo()
-    .then(isConnected => {
-      if (!isConnected) {
-        showNoConnectionAlert();
-      } else {
-        Alert.alert(
-            'Oops!',
-            (custom ? error.message : `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`),
-          [
-            { text: 'Restart', onPress: () => RNRestart.Restart() }
-          ],
-          { cancelable: false }
-        );
-      }
-    });
+  if (error.fk_error_msg) {
+    Alert.alert(
+        'Oh no!',
+        error.fk_error_msg,
+      [
+        { text: 'OK' }
+      ]
+    );
+  } else {
+    getConnectionInfo()
+      .then(isConnected => {
+        if (!isConnected) {
+          showNoConnectionAlert();
+        } else {
+          Alert.alert(
+              'Oops!',
+              (custom ? error.message : `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`),
+            [
+              { text: 'Restart', onPress: () => RNRestart.Restart() }
+            ],
+            { cancelable: false }
+          );
+        }
+      });
+  }
 };
 
 // Waits until MIN_LOADING_TIME is up (if quicker than MIN_LOADING_TIME)
