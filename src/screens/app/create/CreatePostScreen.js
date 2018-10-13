@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, Animated } from 'react-native';
-import { Button, MultiLineInput, SpinnerOverlay } from '../../../components/common';
+import { Button, MultiLineInput } from '../../../components/common';
 import { errorTextStyle } from '../../../constants/styles/text';
 
 class CreatePostScreen extends Component {
@@ -28,7 +28,6 @@ class CreatePostScreen extends Component {
             height={200}
           />
           <Text style={errorTextStyle}>{this.props.error.msg}</Text>
-          <SpinnerOverlay visible={this.props.loading} />
         </View>
       </Animated.ScrollView>
     );
@@ -39,8 +38,7 @@ CreatePostScreen.propTypes = {
   handleChangeBody: PropTypes.func.isRequired,
   body: PropTypes.string.isRequired,
   topic: PropTypes.string.isRequired,
-  error: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired
+  error: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

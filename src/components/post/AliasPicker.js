@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Picker } from 'react-native';
 
-// TODO: Finish post cards - to show in feed
+// TODO: Finish choosing aliases
 class AliasPicker extends Component {
   renderItems = () => {
 

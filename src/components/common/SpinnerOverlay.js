@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+// NOTE: Use this if you want the whole screen disabled when loading
 export const SpinnerOverlay = props => (
   <View style={{ flex: 1 }}>
     <Spinner

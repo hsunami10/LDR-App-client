@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
-import { DismissKeyboard, StandardHeader, Input, Button, SpinnerOverlay } from '../../components/common';
-import { isValidEmail } from '../../assets/helpers';
+import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } from '../../components/common';
+import { isValidEmail, handleError } from '../../assets/helpers';
 import {
   setAuthErrors,
   resetAuthErrors,
-  sendVerificationEmail
+  sendVerificationEmail,
+  removeCredentials,
+  getUserInfo
 } from '../../actions/AuthActions';
-import { pushRoute } from '../../actions/NavigationActions';
+import { pushRoute, popRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class VerifyEmailScreen extends Component {
-  state = { email: '' }
+  state = { email: '', width: 0, height: 0 }
 
   componentWillUnmount() {
     this.resetEverything();
@@ -25,12 +27,36 @@ class VerifyEmailScreen extends Component {
   }
 
   handleRightPress = () => {
+    this.props.getUserInfo(this.props.id, 'private', false, undefined, {
+      navToApp: this.navToApp,
+      navToAuth: this.navToAuth
+    });
+  }
+
+  navToApp = () => {
     this.props.pushRoute('Main');
     this.props.navigation.navigate('App');
     this.resetEverything();
   }
 
+  navToAuth = () => {
+    removeCredentials()
+      .then(() => {
+        this.props.popRoute('AuthLoading');
+        this.props.pushRoute('Welcome');
+        this.props.navigation.navigate('Welcome');
+      })
+      .catch(error => {
+        handleError(error);
+      });
+  }
+
   handleChangeText = email => this.setState(() => ({ email }))
+
+  handleLayout = e => {
+    const { width, height } = e.nativeEvent.layout;
+    this.setState(() => ({ width, height }));
+  }
 
   sendEmail = () => {
     Keyboard.dismiss();
@@ -54,7 +80,7 @@ class VerifyEmailScreen extends Component {
             disableBack
             disableRight={this.props.loading}
           />
-          <View style={styles.centerItems}>
+          <View style={styles.centerItems} onLayout={this.handleLayout}>
             <Input
               placeholder="Email (optional)"
               onChangeText={this.handleChangeText}
@@ -74,8 +100,8 @@ class VerifyEmailScreen extends Component {
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
             <Text>Verify your email to receive developer updates, polls, forgotten passwords, and send feedback, bug reports, user reports, new ideas, and topic requests</Text>
-            <SpinnerOverlay visible={this.props.loading} />
           </View>
+          <FullScreenLoading visible={this.props.loading && this.props.current_route === 'VerifyEmail'} />
         </View>
       </DismissKeyboard>
     );
@@ -91,7 +117,10 @@ VerifyEmailScreen.propTypes = {
   error_msg: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   success: PropTypes.bool.isRequired,
-  pushRoute: PropTypes.func.isRequired
+  pushRoute: PropTypes.func.isRequired,
+  popRoute: PropTypes.func.isRequired,
+  getUserInfo: PropTypes.func.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -106,12 +135,15 @@ const mapStateToProps = state => ({
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
   loading: state.loading,
-  success: state.auth.success
+  success: state.auth.success,
+  current_route: state.navigation.current_route
 });
 
 export default connect(mapStateToProps, {
   resetAuthErrors,
   setAuthErrors,
   sendVerificationEmail,
-  pushRoute
+  pushRoute,
+  popRoute,
+  getUserInfo
 })(VerifyEmailScreen);

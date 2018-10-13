@@ -46,7 +46,7 @@ isRefresh differentiates between first load and pull to refresh load
  */
 export const getUserInfo = (id, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
   // If not called from AuthLoading
-  if (!credentials && !callbacks) {
+  if (!credentials || !callbacks) {
     if (isRefresh) {
       dispatch(startUserLoading());
     } else {
@@ -65,9 +65,15 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       if (response.data.type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
-          if (callbacks && credentials) {
+          if (callbacks && credentials) { // AuthLoading screen only
             if (callbacks.navToApp) {
               callbacks.navToApp(credentials);
+            } else {
+              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'));
+            }
+          } else if (callbacks) {
+            if (callbacks.navToApp) {
+              callbacks.navToApp();
             } else {
               handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'));
             }
@@ -231,6 +237,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('type', 'profile');
   data.append('bio', dataObj.bio);
   data.append('clientImage', dataObj.clientImage);
+  console.log(data);
 
   axios.post(`${ROOT_URL}/api/create-profile`, data, {
     headers: { 'Content-Type': 'multipart/form-data' }

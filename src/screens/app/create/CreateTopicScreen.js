@@ -5,7 +5,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Permissions from 'react-native-permissions';
 import shortid from 'shortid';
-import { Input, MultiLineInput, ClickableImage, SpinnerOverlay } from '../../../components/common';
+import { Input, MultiLineInput, ClickableImage } from '../../../components/common';
 import textStyles from '../../../constants/styles/text';
 import { alertPermission, checkPermission } from '../../../assets/helpers';
 
@@ -135,7 +135,6 @@ class CreateTopicScreen extends Component {
             destructiveButtonIndex={this.props.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
-          <SpinnerOverlay visible={this.props.loading} />
         </View>
       </Animated.ScrollView>
     );
@@ -149,8 +148,7 @@ CreateTopicScreen.propTypes = {
   name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   image: PropTypes.object,
-  error: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired
+  error: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

@@ -10,7 +10,8 @@ import {
   StandardHeader,
   ClickableImage,
   MultiLineInput,
-  DismissKeyboard
+  DismissKeyboard,
+  SpinnerOverlay
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers';
 import { createProfile } from '../../actions/AuthActions';
@@ -52,7 +53,7 @@ class CreateProfileScreen extends Component {
     this.props.createProfile(
       {
         id: this.props.id,
-        bio: this.state.bio === '' ? null : this.state.bio,
+        bio: this.state.bio,
         clientImage: this.state.image || null
       },
       this.props.navigation,
@@ -169,6 +170,7 @@ class CreateProfileScreen extends Component {
             destructiveButtonIndex={this.state.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
+          <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'CreateProfile'} />
         </View>
       </DismissKeyboard>
     );
@@ -177,7 +179,9 @@ class CreateProfileScreen extends Component {
 
 CreateProfileScreen.propTypes = {
   createProfile: PropTypes.func.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -189,6 +193,10 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({ id: state.auth.id });
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  loading: state.loading,
+  current_route: state.navigation.current_route
+});
 
 export default connect(mapStateToProps, { createProfile })(CreateProfileScreen);

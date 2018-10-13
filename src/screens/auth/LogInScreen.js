@@ -104,7 +104,7 @@ class LogInScreen extends Component {
             <Button onPress={this.logIn}>Log In</Button>
             <Button onPress={this.forgotPassword}>Forgot Password?</Button>
           </View>
-          <SpinnerOverlay visible={this.props.loading} />
+          <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'LogIn'} />
         </View>
       </DismissKeyboard>
     );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Keychain from 'react-native-keychain';
-import { NetInfo, AppState, Platform, BackHandler } from 'react-native';
+import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setActive, setUserCredentials, getUserInfo } from '../../actions/AuthActions';
@@ -133,7 +133,14 @@ class AuthLoadingScreen extends Component {
   }
 
   render() {
-    return <FullScreenLoading text="Authenticating..." />;
+    return (
+      <FullScreenLoading
+        visible
+        width={Dimensions.get('window').width}
+        height={Dimensions.get('window').height}
+        text="Authenticating..."
+      />
+    );
   }
 }
 

@@ -24,8 +24,8 @@ export const handleError = (error, custom = false) => {
     );
   } else {
     getConnectionInfo()
-      .then(isConnected => {
-        if (!isConnected) {
+      .then(connectionInfo => {
+        if (connectionInfo.type === 'none') {
           showNoConnectionAlert();
         } else {
           Alert.alert(
@@ -63,15 +63,16 @@ export const showNoConnectionAlert = () => {
 };
 
 export const getConnectionInfo = async () => {
-  if (Platform.OS === 'ios') {
-    return new Promise((resolve, reject) => {
-      const connectionHandler = connectionInfo => {
-        NetInfo.removeEventListener('connectionChange', connectionHandler);
-        resolve(connectionInfo);
-      };
-      NetInfo.addEventListener('connectionChange', connectionHandler);
-    });
-  }
+  // QUESTION: Should this be uncommented? Removing and adding causes double error handling (multiple overlapping alerts)
+  // if (Platform.OS === 'ios') {
+  //   return new Promise((resolve, reject) => {
+  //     const connectionHandler = connectionInfo => {
+  //       NetInfo.removeEventListener('connectionChange', connectionHandler);
+  //       resolve(connectionInfo);
+  //     };
+  //     NetInfo.addEventListener('connectionChange', connectionHandler);
+  //   });
+  // }
 
   return NetInfo.getConnectionInfo();
 };

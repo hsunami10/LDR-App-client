@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Alert, Platform, BackHandler } from 'react-native';
+import { View, Alert, Platform } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';

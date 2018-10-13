@@ -5,7 +5,7 @@ import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { goBackwardRoute } from '../../../actions/NavigationActions';
 import { createTopic } from '../../../actions/TopicActions';
-import { StandardHeader } from '../../../components/common';
+import { StandardHeader, SpinnerOverlay } from '../../../components/common';
 import { isValidName, hasTrailingSpaces } from '../../../assets/helpers';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
@@ -132,7 +132,6 @@ class CreateMainScreen extends Component {
             topic={this.state.topic}
             body={this.state.body}
             error={this.state.postError}
-            loading={this.props.loading}
           />
         );
       case 'topic':
@@ -145,7 +144,6 @@ class CreateMainScreen extends Component {
             description={this.state.description}
             image={this.state.image}
             error={this.state.topicError}
-            loading={this.props.loading}
           />
         );
       default:
@@ -185,6 +183,7 @@ class CreateMainScreen extends Component {
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />
+        <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'Create'} />
       </View>
     );
   }

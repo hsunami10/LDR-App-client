@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Dimensions } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
-import { StandardHeader, SpinnerOverlay } from '../../../components/common';
+import { StandardHeader, SpinnerOverlay, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive, removeCredentials, getUserInfo } from '../../../actions/AuthActions';
 import { popRoute, pushRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
+  state = { width: 0, height: 0 }
   componentDidMount() {
     if (!this.props.private) {
       this.props.getUserInfo(this.props.selected_user.id, 'public', false);
@@ -38,7 +39,10 @@ class ViewProfileScreen extends Component {
 
   handleRefresh = () => {
     if (this.props.private) {
-      this.props.getUserInfo(this.props.id, 'private', true, undefined, { navToAuth: this.logOut });
+      this.props.getUserInfo(this.props.id, 'private', true, undefined, {
+        navToApp: () => null,
+        navToAuth: this.logOut
+      });
     } else {
       this.props.getUserInfo(this.props.selected_user.id, 'public', true);
     }
@@ -60,6 +64,11 @@ class ViewProfileScreen extends Component {
       });
   }
 
+  handleLayout = e => {
+    const { width, height } = e.nativeEvent.layout;
+    this.setState(() => ({ width, height }));
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -77,6 +86,8 @@ class ViewProfileScreen extends Component {
               onRefresh={this.handleRefresh}
             />
           }
+          onLayout={this.handleLayout}
+          scrollEnabled={!this.props.loading}
         >
           <Text>View Profile Screen!</Text>
           <ActionSheet
@@ -86,7 +97,11 @@ class ViewProfileScreen extends Component {
             destructiveButtonIndex={1}
             onPress={this.onPressAction}
           />
-          <SpinnerOverlay visible={this.props.loading} />
+          <FullScreenLoading
+            width={this.state.width}
+            height={this.state.height}
+            visible={this.props.loading}
+          />
         </ScrollView>
       </View>
     );

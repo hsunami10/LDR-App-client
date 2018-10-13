@@ -71,7 +71,7 @@ class ForgotPasswordScreen extends Component {
               {this.props.error_msg}
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
-            <SpinnerOverlay visible={this.props.loading} />
+            <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'ForgotPassword'} />
           </View>
         </View>
       </DismissKeyboard>
