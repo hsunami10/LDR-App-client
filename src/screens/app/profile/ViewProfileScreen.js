@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Dimensions } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
-import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';

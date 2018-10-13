@@ -170,7 +170,7 @@ class CreateProfileScreen extends Component {
             destructiveButtonIndex={this.state.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
-          <FullScreenLoading visible={this.props.loading && this.props.current_route === 'CreateProfile'} />
+          <FullScreenLoading visible={this.props.loading} />
         </View>
       </DismissKeyboard>
     );
@@ -180,8 +180,7 @@ class CreateProfileScreen extends Component {
 CreateProfileScreen.propTypes = {
   createProfile: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  current_route: PropTypes.string.isRequired
+  loading: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -195,8 +194,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.loading,
-  current_route: state.navigation.current_route
+  loading: state.loading
 });
 
 export default connect(mapStateToProps, { createProfile })(CreateProfileScreen);

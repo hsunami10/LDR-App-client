@@ -101,7 +101,7 @@ class VerifyEmailScreen extends Component {
             <Button onPress={this.sendEmail}>Send Email</Button>
             <Text>Verify your email to receive developer updates, polls, forgotten passwords, and send feedback, bug reports, user reports, new ideas, and topic requests</Text>
           </View>
-          <FullScreenLoading visible={this.props.loading && this.props.current_route === 'VerifyEmail'} />
+          <FullScreenLoading visible={this.props.loading} />
         </View>
       </DismissKeyboard>
     );
@@ -119,8 +119,7 @@ VerifyEmailScreen.propTypes = {
   success: PropTypes.bool.isRequired,
   pushRoute: PropTypes.func.isRequired,
   popRoute: PropTypes.func.isRequired,
-  getUserInfo: PropTypes.func.isRequired,
-  current_route: PropTypes.string.isRequired
+  getUserInfo: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -135,8 +134,7 @@ const mapStateToProps = state => ({
   error_field: state.auth.error_field,
   error_msg: state.auth.error_msg,
   loading: state.loading,
-  success: state.auth.success,
-  current_route: state.navigation.current_route
+  success: state.auth.success
 });
 
 export default connect(mapStateToProps, {

@@ -183,7 +183,7 @@ class CreateMainScreen extends Component {
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />
-        <FullScreenLoading visible={this.props.loading && this.props.current_route === 'Create'} />
+        <FullScreenLoading visible={this.props.loading} />
       </View>
     );
   }
