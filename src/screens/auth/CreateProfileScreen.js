@@ -11,7 +11,7 @@ import {
   ClickableImage,
   MultiLineInput,
   DismissKeyboard,
-  SpinnerOverlay
+  FullScreenLoading
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers';
 import { createProfile } from '../../actions/AuthActions';
@@ -170,7 +170,7 @@ class CreateProfileScreen extends Component {
             destructiveButtonIndex={this.state.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
-          <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'CreateProfile'} />
+          <FullScreenLoading visible={this.props.loading && this.props.current_route === 'CreateProfile'} />
         </View>
       </DismissKeyboard>
     );

@@ -4,7 +4,7 @@ import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Dimensions }
 import ActionSheet from 'react-native-actionsheet';
 import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
-import { StandardHeader, SpinnerOverlay, FullScreenLoading } from '../../../components/common';
+import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive, removeCredentials, getUserInfo } from '../../../actions/AuthActions';
 import { popRoute, pushRoute } from '../../../actions/NavigationActions';

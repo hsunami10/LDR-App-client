@@ -9,7 +9,7 @@ import {
   signUpWithUsernameAndPassword
 } from '../../actions/AuthActions';
 import {
-  SpinnerOverlay,
+  FullScreenLoading,
   Input,
   Button,
   StandardHeader,
@@ -121,7 +121,7 @@ class SignUpScreen extends Component {
             <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
             <Button onPress={this.signUp}>Sign Up</Button>
           </View>
-          <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'SignUp'} />
+          <FullScreenLoading visible={this.props.loading && this.props.current_route === 'SignUp'} />
         </View>
       </DismissKeyboard>
     );

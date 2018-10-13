@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet, Platform, TouchableOpacity, Keyboard, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { DismissKeyboard, StandardHeader, Input, Button, SpinnerOverlay } from '../../components/common';
+import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } from '../../components/common';
 import { isValidEmail } from '../../assets/helpers';
 import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 import { forgotPassword, resetAuthErrors, setAuthErrors } from '../../actions/AuthActions';
@@ -71,7 +71,7 @@ class ForgotPasswordScreen extends Component {
               {this.props.error_msg}
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
-            <SpinnerOverlay visible={this.props.loading && this.props.current_route === 'ForgotPassword'} />
+            <FullScreenLoading visible={this.props.loading && this.props.current_route === 'ForgotPassword'} />
           </View>
         </View>
       </DismissKeyboard>
