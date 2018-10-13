@@ -41,19 +41,6 @@ export const handleError = (error, custom = false) => {
   }
 };
 
-// Waits until MIN_LOADING_TIME is up (if quicker than MIN_LOADING_TIME)
-export const waitUntilMinTime = (beforeReq, callback, cbParam) => {
-  const diff = Date.now() - beforeReq;
-  if (diff < MIN_LOADING_TIME) {
-    setTimeout(
-      () => callback(cbParam),
-      MIN_LOADING_TIME - diff
-    );
-  } else {
-    callback(cbParam);
-  }
-};
-
 export const showNoUserAlert = () => {
   Alert.alert(
     'User does not exist',

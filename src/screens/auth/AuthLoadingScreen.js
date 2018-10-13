@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive, setUserCredentials, checkUserExists } from '../../actions/AuthActions';
+import { setActive, setUserCredentials, getUserInfo } from '../../actions/AuthActions';
 import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
@@ -95,7 +95,10 @@ class AuthLoadingScreen extends Component {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
         console.log(credentials);
         if (credentials) {
-          this.props.checkUserExists(credentials, this.navToApp, this.navToAuth);
+          this.props.getUserInfo(credentials.username, 'private', false, credentials, {
+            navToApp: this.navToApp,
+            navToAuth: this.navToAuth
+          });
         } else {
           this.navToAuth();
         }
@@ -141,7 +144,7 @@ AuthLoadingScreen.propTypes = {
   pushRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
   replaceCurrentRoute: PropTypes.func.isRequired,
-  checkUserExists: PropTypes.func.isRequired
+  getUserInfo: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -154,5 +157,5 @@ export default connect(mapStateToProps, {
   pushRoute,
   goBackwardRoute,
   replaceCurrentRoute,
-  checkUserExists
+  getUserInfo
 })(AuthLoadingScreen);

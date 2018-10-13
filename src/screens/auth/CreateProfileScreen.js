@@ -43,6 +43,9 @@ class CreateProfileScreen extends Component {
   }
 
   resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
+  handleChangeText = bio => this.setState(() => ({ bio }))
+  showActionSheet = () => this.ActionSheet.show()
+  ref = o => (this.ActionSheet = o)
 
   createProfile = () => {
     Keyboard.dismiss();
@@ -56,12 +59,6 @@ class CreateProfileScreen extends Component {
       this.resetEverything
     );
   }
-
-  handleChangeText = bio => this.setState(() => ({ bio }))
-
-  showActionSheet = () => this.ActionSheet.show()
-
-  ref = o => (this.ActionSheet = o)
 
   handleCheckPermission = (type, response) => {
     this.handlePermissionAction(type, response);

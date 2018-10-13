@@ -5,25 +5,10 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { pushRoute } from './NavigationActions';
-import { handleError, waitUntilMinTime } from '../assets/helpers';
+import { handleError } from '../assets/helpers';
 
 // ========================================= Create Topic =========================================
-const createTopicResponse = ({ dispatch, response, navigation, createTopicErrCb }) => {
-  dispatch(stopLoading());
-  if (response.data.success) {
-    dispatch({
-      type: CREATE_TOPIC,
-      payload: response.data
-    });
-    navigation.goBack();
-  } else {
-    createTopicErrCb(response.data.msg);
-  }
-};
-
 export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch => {
-  const beforeReq = Date.now();
   dispatch(startLoading());
 
   const data = new FormData();
@@ -37,11 +22,16 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
     headers: { 'Content-Type': 'multipart/form-data' }
   })
     .then(response => {
-      waitUntilMinTime(
-        beforeReq,
-        createTopicResponse,
-        { dispatch, response, navigation, createTopicErrCb }
-      );
+      dispatch(stopLoading());
+      if (response.data.success) {
+        dispatch({
+          type: CREATE_TOPIC,
+          payload: response.data
+        });
+        navigation.goBack();
+      } else {
+        createTopicErrCb(response.data.msg);
+      }
     })
     .catch(error => {
       handleError(error);

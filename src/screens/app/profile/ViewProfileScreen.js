@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import * as Keychain from 'react-native-keychain';
 import { connect } from 'react-redux';
-import { StandardHeader } from '../../../components/common';
+import { StandardHeader, SpinnerOverlay } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, removeCredentials } from '../../../actions/AuthActions';
+import { setActive, removeCredentials, getUserInfo } from '../../../actions/AuthActions';
 import { popRoute, pushRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
   componentDidMount() {
-    console.log(this.props.private);
+    if (!this.props.private) {
+      this.props.getUserInfo(this.props.selected_user.id, 'public', false);
+    }
   }
 
   onPressAction = index => {
@@ -34,7 +36,16 @@ class ViewProfileScreen extends Component {
     }
   }
 
+  handleRefresh = () => {
+    if (this.props.private) {
+      this.props.getUserInfo(this.props.id, 'private', true, undefined, { navToAuth: this.logOut });
+    } else {
+      this.props.getUserInfo(this.props.selected_user.id, 'public', true);
+    }
+  }
+
   showActionSheet = () => this.ActionSheet.show();
+  ref = o => (this.ActionSheet = o)
 
   logOut = () => {
     removeCredentials()
@@ -49,30 +60,34 @@ class ViewProfileScreen extends Component {
       });
   }
 
-  ref = o => {
-    this.ActionSheet = o;
-    return this.ActionSheet;
-  }
-
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <StandardHeader
           title="Your Profile"
           showRight
-          rightTitle="Settings" // TODO: Change to gear icon later
+          rightTitle={this.props.private ? 'Settings' : undefined} // TODO: Change to gear icon later
           onRightPress={this.showActionSheet}
         />
-        <View style={styles.centerItems}>
+        <ScrollView
+          scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.user_loading}
+              onRefresh={this.handleRefresh}
+            />
+          }
+        >
           <Text>View Profile Screen!</Text>
-        </View>
-        <ActionSheet
-          ref={this.ref}
-          options={['Edit Profile', 'Log Out', 'Cancel']}
-          cancelButtonIndex={2}
-          destructiveButtonIndex={1}
-          onPress={this.onPressAction}
-        />
+          <ActionSheet
+            ref={this.ref}
+            options={['Edit Profile', 'Log Out', 'Cancel']}
+            cancelButtonIndex={2}
+            destructiveButtonIndex={1}
+            onPress={this.onPressAction}
+          />
+          <SpinnerOverlay visible={this.props.loading} />
+        </ScrollView>
       </View>
     );
   }
@@ -82,13 +97,17 @@ ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   popRoute: PropTypes.func.isRequired,
   pushRoute: PropTypes.func.isRequired,
-  private: PropTypes.bool
+  private: PropTypes.bool,
+  loading: PropTypes.bool.isRequired,
+  user_loading: PropTypes.bool.isRequired,
+  getUserInfo: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  selected_user: PropTypes.object
 };
 
 const styles = StyleSheet.create({
   centerItems: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1
   },
   leftStyle: {
     color: '#007aff',
@@ -97,7 +116,15 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  id: state.auth.id
+  id: state.auth.id,
+  loading: state.loading,
+  user_loading: state.auth.loading,
+  user: state.auth.user,
+  selected_user: state.auth.selected_user
 });
 
-export default connect(mapStateToProps, { popRoute, pushRoute })(ViewProfileScreen);
+export default connect(mapStateToProps, {
+  popRoute,
+  pushRoute,
+  getUserInfo
+})(ViewProfileScreen);
