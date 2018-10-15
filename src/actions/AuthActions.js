@@ -45,13 +45,10 @@ credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
  */
 export const getUserInfo = (id, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
-  // If not called from AuthLoading
-  if (!credentials || !callbacks) {
-    if (isRefresh) {
-      dispatch(startUserLoading());
-    } else {
-      dispatch(startLoading());
-    }
+  if (isRefresh) {
+    dispatch(startUserLoading());
+  } else {
+    dispatch(startLoading());
   }
 
   axios.get(`${ROOT_URL}/api/user/${id}?type=${type}`)
@@ -65,13 +62,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       if (response.data.type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
-          if (callbacks && credentials) { // AuthLoading screen only
-            if (callbacks.navToApp) {
-              callbacks.navToApp(credentials);
-            } else {
-              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'));
-            }
-          } else if (callbacks) {
+          if (callbacks) {
             if (callbacks.navToApp) {
               callbacks.navToApp();
             } else {
@@ -192,10 +183,9 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
       if (response.data.msg) {
         dispatch(setAuthErrors('', response.data.msg)); // Invalid username or password
       } else {
-        storeCredentials(response.data.user.id)
+        storeCredentials(response.data.id)
           .then(id => {
             dispatch(setUserCredentials(id, true));
-            dispatch(storeUserInfo(response.data.user));
             dispatch(pushRoute('Main'));
             setActive(id, true);
             navigation.navigate('App');
@@ -239,7 +229,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('clientImage', dataObj.clientImage);
   console.log(data);
 
-  axios.post(`${ROOT_URL}/api/profile`, data, {
+  axios.put(`${ROOT_URL}/api/profile`, data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
     .then(() => {

@@ -4,7 +4,7 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive, setUserCredentials, getUserInfo } from '../../actions/AuthActions';
+import { setActive, setUserCredentials } from '../../actions/AuthActions';
 import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
@@ -93,14 +93,14 @@ class AuthLoadingScreen extends Component {
     } else {
       try {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
-        console.log(credentials);
         if (credentials) {
-          this.props.getUserInfo(credentials.username, 'private', false, credentials, {
-            navToApp: this.navToApp,
-            navToAuth: this.navToAuth
-          });
+          this.props.setUserCredentials(credentials.username, credentials.password === 'true');
+          this.props.pushRoute('Main');
+          setActive(credentials.username, true);
+          this.props.navigation.navigate('App');
         } else {
-          this.navToAuth();
+          this.props.pushRoute('Welcome');
+          this.props.navigation.navigate('Auth');
         }
       } catch (e) {
         handleError(new Error(`Unable to access keychain. ${e.message}`), true);
@@ -118,18 +118,6 @@ class AuthLoadingScreen extends Component {
     } else if (!isConnected) {
       showNoConnectionAlert();
     }
-  }
-
-  navToApp = credentials => {
-    this.props.setUserCredentials(credentials.username, credentials.password === 'true');
-    this.props.pushRoute('Main');
-    setActive(credentials.username, true);
-    this.props.navigation.navigate('App');
-  }
-
-  navToAuth = () => {
-    this.props.pushRoute('Welcome');
-    this.props.navigation.navigate('Auth');
   }
 
   render() {
@@ -150,8 +138,7 @@ AuthLoadingScreen.propTypes = {
   routes: PropTypes.array.isRequired,
   pushRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
-  replaceCurrentRoute: PropTypes.func.isRequired,
-  getUserInfo: PropTypes.func.isRequired
+  replaceCurrentRoute: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -163,6 +150,5 @@ export default connect(mapStateToProps, {
   setUserCredentials,
   pushRoute,
   goBackwardRoute,
-  replaceCurrentRoute,
-  getUserInfo
+  replaceCurrentRoute
 })(AuthLoadingScreen);

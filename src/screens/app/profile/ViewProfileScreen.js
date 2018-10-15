@@ -12,7 +12,12 @@ class ViewProfileScreen extends Component {
   state = { width: 0, height: 0 }
 
   componentDidMount() {
-    if (!this.props.private) {
+    if (this.props.private) {
+      this.props.getUserInfo(this.props.id, 'private', false, undefined, {
+        navToApp: () => null,
+        navToAuth: this.logOut
+      });
+    } else {
       this.props.getUserInfo(this.props.selected_user.id, 'public', false);
     }
   }
@@ -116,7 +121,6 @@ ViewProfileScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   user_loading: PropTypes.bool.isRequired,
   getUserInfo: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
   selected_user: PropTypes.object
 };
 
@@ -134,7 +138,6 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   loading: state.loading,
   user_loading: state.auth.loading,
-  user: state.auth.user,
   selected_user: state.auth.selected_user
 });
 

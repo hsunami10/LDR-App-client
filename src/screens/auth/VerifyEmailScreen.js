@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } from '../../components/common';
-import { isValidEmail, handleError } from '../../assets/helpers';
+import { isValidEmail } from '../../assets/helpers';
 import {
   setAuthErrors,
   resetAuthErrors,
-  sendVerificationEmail,
-  removeCredentials,
-  getUserInfo
+  sendVerificationEmail
 } from '../../actions/AuthActions';
 import { pushRoute, popRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
@@ -27,28 +25,9 @@ class VerifyEmailScreen extends Component {
   }
 
   handleRightPress = () => {
-    this.props.getUserInfo(this.props.id, 'private', false, undefined, {
-      navToApp: this.navToApp,
-      navToAuth: this.navToAuth
-    });
-  }
-
-  navToApp = () => {
     this.props.pushRoute('Main');
     this.props.navigation.navigate('App');
     this.resetEverything();
-  }
-
-  navToAuth = () => {
-    removeCredentials()
-      .then(() => {
-        this.props.popRoute('AuthLoading');
-        this.props.pushRoute('Welcome');
-        this.props.navigation.navigate('Welcome');
-      })
-      .catch(error => {
-        handleError(error);
-      });
   }
 
   handleChangeText = email => this.setState(() => ({ email }))
@@ -118,8 +97,7 @@ VerifyEmailScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   success: PropTypes.bool.isRequired,
   pushRoute: PropTypes.func.isRequired,
-  popRoute: PropTypes.func.isRequired,
-  getUserInfo: PropTypes.func.isRequired
+  popRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -142,6 +120,5 @@ export default connect(mapStateToProps, {
   setAuthErrors,
   sendVerificationEmail,
   pushRoute,
-  popRoute,
-  getUserInfo
+  popRoute
 })(VerifyEmailScreen);
