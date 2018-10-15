@@ -40,9 +40,10 @@ export const stopUserLoading = () => ({ type: STOP_USER_LOADING });
 
 /*
 Get public or private profile information
-type: private, public
+type: private, public, edit
 credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
+private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
 export const getUserInfo = (id, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
   if (isRefresh) {
@@ -100,6 +101,9 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
         } else { // If user does not exist
           dispatch(setSelectedUser(null));
         }
+      } else {
+        // TODO: Handle retriving data for editing profile
+        console.log('retrieve data to edit profile here');
       }
     })
     .catch(error => {

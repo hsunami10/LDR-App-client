@@ -2,7 +2,7 @@
 import { Alert, NetInfo, Platform } from 'react-native';
 import RNRestart from 'react-native-restart';
 import Permissions from 'react-native-permissions';
-import { MIN_LOADING_TIME } from '../../constants/variables';
+import { removeCredentials } from '../../actions/AuthActions';
 
 export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   if (contentOffset.y < 0) {
@@ -19,12 +19,27 @@ export const handleError = (error, fatal) => {
       if (connectionInfo.type === 'none') {
         showNoConnectionAlert();
       } else if (error.fk_error_msg) {
+        // Handle foreign key violation (insert, update)
+        // NOTE: Same as LDR_App_server helper/wrapper.js
+        // FK violation on users is a special case - log out user by restarting app
         Alert.alert(
             'Oh no!',
             error.fk_error_msg,
           [
-            { text: 'OK' }
-          ]
+            {
+              text: error.fk_error_type === 'users' ? 'Log Out' : 'OK',
+              onPress: () => {
+                if (error.fk_error_type === 'users') {
+                  removeCredentials()
+                    .then(() => RNRestart.Restart())
+                    .catch(error2 => {
+                      handleError(new Error(`Unable to access keychain. ${error2.message}`), false);
+                    });
+                }
+              }
+            }
+          ],
+          { cancelable: false }
         );
       } else if (fatal) {
         Alert.alert(
