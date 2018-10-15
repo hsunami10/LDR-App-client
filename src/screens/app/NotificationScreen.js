@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
 
 class NotificationScreen extends Component {
+  componentDidMount() {
+    console.log('grab notification feed here');
+  }
+
   render() {
     return (
       <View style={styles.centerItems}>

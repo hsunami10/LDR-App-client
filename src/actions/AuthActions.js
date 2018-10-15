@@ -239,7 +239,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('clientImage', dataObj.clientImage);
   console.log(data);
 
-  axios.post(`${ROOT_URL}/api/create-profile`, data, {
+  axios.post(`${ROOT_URL}/api/profile`, data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
     .then(() => {

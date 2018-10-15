@@ -17,7 +17,7 @@ class MainScreen extends Component {
   state = {
     navigationState: {
       index: 0, // NOTE: If this default index changes, change the "key" in AuthLoadingScreen, replaceCurrentRoute, where it handles android back press events
-      // NOTE: If changed, make sure to updated AuthLoadingScreen.js in componentDidMount and this componentDidUpdate
+      // NOTE: If changed, make sure to update AuthLoadingScreen.js in componentDidMount and this componentDidUpdate
       routes: [
         { key: 'feed', title: 'Feed' },
         { key: 'discover', title: 'Discover' },
@@ -25,6 +25,11 @@ class MainScreen extends Component {
         { key: 'notifications', title: 'Notifications' },
         { key: 'profile', title: 'Profile' }
       ]
+    },
+    mounted: {
+      discover: false,
+      notifications: false,
+      profile: false
     }
   }
 
@@ -105,6 +110,9 @@ class MainScreen extends Component {
         }
         break;
       case 'discover':
+        if (!this.state.mounted.discover) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, discover: true } }));
+        }
         if (this.props.current_route === 'discover') {
           console.log('scroll up discover');
         }
@@ -114,11 +122,17 @@ class MainScreen extends Component {
         this.props.navigation.navigate('Create');
         break;
       case 'notifications':
+        if (!this.state.mounted.notifications) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, notifications: true } }));
+        }
         if (this.props.current_route === 'notifications') {
           console.log('scroll up notifications');
         }
         break;
       case 'profile':
+        if (!this.state.mounted.profile) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, profile: true } }));
+        }
         if (this.props.current_route === 'profile') {
           console.log('scroll up profile');
         }
@@ -133,13 +147,22 @@ class MainScreen extends Component {
       case 'feed':
         return <FeedScreen navigation={this.props.navigation} />;
       case 'discover':
-        return <DiscoverScreen navigation={this.props.navigation} />;
+        if (this.state.mounted.discover) {
+          return <DiscoverScreen navigation={this.props.navigation} />;
+        }
+        break;
       case 'compose':
         break;
       case 'notifications':
-        return <NotificationScreen navigation={this.props.navigation} />;
+        if (this.state.mounted.notifications) {
+          return <NotificationScreen navigation={this.props.navigation} />;
+        }
+        break;
       case 'profile':
-        return <ViewProfileScreen private navigation={this.props.navigation} />;
+        if (this.state.mounted.profile) {
+          return <ViewProfileScreen private navigation={this.props.navigation} />;
+        }
+        break;
       default:
         return;
     }

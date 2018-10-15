@@ -1,27 +1,31 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Picker } from 'react-native';
+import { View, StyleSheet, Picker } from 'react-native';
 
 // TODO: Finish choosing aliases
-class AliasPicker extends Component {
-  renderItems = () => {
+// https://facebook.github.io/react-native/docs/picker
+const AliasPicker = props => (
+  <View style={styles.viewStyle}>
+    <Picker
+      selectedValue={props.alias}
+      onValueChange={props.handleAliasChange}
+    >
+      <Picker.Item label="none" value="None" />
+      {props.aliases.map(e => null)}
+    </Picker>
+  </View>
+);
 
-  }
-
-  render() {
-    return (
-      <View style={styles.viewStyle}>
-        <Text>Post Card!</Text>
-      </View>
-    );
-  }
-}
+AliasPicker.propTypes = {
+  alias: PropTypes.string.isRequired,
+  handleAliasChange: PropTypes.func.isRequired,
+  aliases: PropTypes.array.isRequired
+};
 
 const styles = StyleSheet.create({
   viewStyle: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'center'
   }
 });
 

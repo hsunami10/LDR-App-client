@@ -128,6 +128,10 @@ class DiscoverScreen extends Component {
     ]
   }
 
+  componentDidMount() {
+    console.log('grab discover feed here');
+  }
+
   searchResults = () => {
     console.log(`search up: ${this.state.search} in feed`);
     if (this.state.oldSearch !== this.state.search) {

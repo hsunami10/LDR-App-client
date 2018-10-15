@@ -10,6 +10,7 @@ import { popRoute, pushRoute } from '../../../actions/NavigationActions';
 
 class ViewProfileScreen extends Component {
   state = { width: 0, height: 0 }
+
   componentDidMount() {
     if (!this.props.private) {
       this.props.getUserInfo(this.props.selected_user.id, 'public', false);
