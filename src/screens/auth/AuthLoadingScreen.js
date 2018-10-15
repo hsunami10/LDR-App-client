@@ -103,7 +103,7 @@ class AuthLoadingScreen extends Component {
           this.props.navigation.navigate('Auth');
         }
       } catch (e) {
-        handleError(new Error(`Unable to access keychain. ${e.message}`), true);
+        handleError(new Error(`Unable to access keychain. ${e.message}`), false);
       }
     }
   }

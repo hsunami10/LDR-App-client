@@ -34,6 +34,6 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };

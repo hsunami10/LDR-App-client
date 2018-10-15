@@ -40,7 +40,7 @@ export default (state = INITIAL_STATE, action) => {
           success
         };
       }
-      handleError(new Error('Invalid field type in SET_AUTH_ERRORS'));
+      handleError(new Error('Invalid field type in SET_AUTH_ERRORS'), true);
       break;
     case RESET_AUTH_ERRORS:
       return { ...state, error_field: '', error_msg: ' ', success: false };

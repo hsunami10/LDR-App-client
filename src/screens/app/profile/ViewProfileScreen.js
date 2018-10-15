@@ -65,7 +65,7 @@ class ViewProfileScreen extends Component {
         setActive(this.props.id, false);
       })
       .catch(error => {
-        handleError(error);
+        handleError(new Error(`Unable to access keychain. ${error.message}`), false);
       });
   }
 

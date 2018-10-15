@@ -4,9 +4,9 @@ export const SET_AUTH_ERRORS = 'set_auth_errors';
 export const RESET_AUTH_ERRORS = 'reset_auth_errors';
 export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
 export const STORE_USER_INFO = 'store_user_info';
+export const SET_SELECTED_USER = 'set_selected_user';
 export const START_USER_LOADING = 'start_user_loading';
 export const STOP_USER_LOADING = 'stop_user_loading';
-export const SET_SELECTED_USER = 'set_selected_user';
 
 // Loading
 export const START_OVERLAY_LOADING = 'start_overlay_loading';

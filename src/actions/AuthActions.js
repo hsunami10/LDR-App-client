@@ -66,7 +66,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
             if (callbacks.navToApp) {
               callbacks.navToApp();
             } else {
-              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'));
+              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'), true);
             }
           }
         } else { // If own account does not exist in database, then log out to Welcome screen
@@ -82,7 +82,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
                       if (callbacks.navToAuth) {
                         callbacks.navToAuth();
                       } else {
-                        handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'));
+                        handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
                       }
                     }
                   }
@@ -91,7 +91,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
               );
             })
             .catch(error => {
-              handleError(error);
+              handleError(new Error(`Unable to access keychain. ${error.message}`), false);
             });
         }
       } else if (response.data.type === 'public') {
@@ -103,7 +103,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };
 
@@ -137,8 +137,8 @@ export const setNotFirstLogIn = id => dispatch => {
     } finally {
       dispatch({ type: SET_NOT_FIRST_LOG_IN });
     }
-  })().catch(err => {
-    handleError(err);
+  })().catch(error => {
+    handleError(new Error(`Unable to access keychain. ${error.message}`), false);
   });
 };
 
@@ -146,7 +146,7 @@ export const setNotFirstLogIn = id => dispatch => {
 export const setActive = (id, bool) => {
   axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
     .catch(err => {
-      handleError(err);
+      handleError(err, false);
     });
 };
 
@@ -169,7 +169,7 @@ export const forgotPassword = (email, navigation, clearInput) => dispatch => {
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };
 
@@ -191,13 +191,13 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
             navigation.navigate('App');
             resetEverything();
           })
-          .catch(err => {
-            handleError(err);
+          .catch(error => {
+            handleError(new Error(`Unable to access keychain. ${error.message}`), false);
           });
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };
 
@@ -214,7 +214,7 @@ export const sendVerificationEmail = (id, email) => dispatch => {
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };
 
@@ -239,7 +239,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
       resetEverything();
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };
 
@@ -259,12 +259,12 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
             navigation.navigate('CreateProfile');
             resetEverything();
           })
-          .catch(err => {
-            handleError(err);
+          .catch(error => {
+            handleError(new Error(`Unable to access keychain. ${error.message}`), false);
           });
       }
     })
     .catch(error => {
-      handleError(error);
+      handleError(error, false);
     });
 };

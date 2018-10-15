@@ -12,33 +12,35 @@ export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 // TODO: Send report to development team
-export const handleError = (error, custom = false) => {
+export const handleError = (error, fatal) => {
   console.log(error);
-  if (error.fk_error_msg) {
-    Alert.alert(
-        'Oh no!',
-        error.fk_error_msg,
-      [
-        { text: 'OK' }
-      ]
-    );
-  } else {
-    getConnectionInfo()
-      .then(connectionInfo => {
-        if (connectionInfo.type === 'none') {
-          showNoConnectionAlert();
-        } else {
-          Alert.alert(
-              'Oops!',
-              (custom ? error.message : `Fatal: ${error.message}.\n\nAn unexpected error occured. This should not have happened. A report will be sent, and we will get it fixed as soon as possible. We are sorry for the inconvenience. Please restart the app.`),
-            [
-              { text: 'Restart', onPress: () => RNRestart.Restart() }
-            ],
-            { cancelable: false }
-          );
-        }
-      });
-  }
+  getConnectionInfo()
+    .then(connectionInfo => {
+      if (connectionInfo.type === 'none') {
+        showNoConnectionAlert();
+      } else if (error.fk_error_msg) {
+        Alert.alert(
+            'Oh no!',
+            error.fk_error_msg,
+          [
+            { text: 'OK' }
+          ]
+        );
+      } else if (fatal) {
+        Alert.alert(
+            'Oops!',
+            `Fatal: ${error.message}\n\nAn unexpected error occured. This should not have happened. Please send a bug report, and we will get it fixed as soon as possible. We are sorry for the inconvenience.`,
+          [{ text: 'Restart', onPress: () => RNRestart.Restart() }],
+          { cancelable: false }
+        );
+      } else {
+        Alert.alert(
+          'Oh no!',
+          `Error: ${error.message}\n\nIf this keeps recurring, please send a bug report, and we will get it fixed as soon as possible.`,
+          [{ text: 'OK' }]
+        );
+      }
+    });
 };
 
 export const showNoUserAlert = () => {
