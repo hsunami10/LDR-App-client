@@ -52,7 +52,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
     dispatch(startLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/user/${id}?type=${type}`)
+  axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
     .then(response => {
       if (isRefresh) {
         dispatch(stopUserLoading());
@@ -233,7 +233,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('clientImage', dataObj.clientImage);
   console.log(data);
 
-  axios.put(`${ROOT_URL}/api/profile`, data, {
+  axios.put(`${ROOT_URL}/api/profile/create`, data, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
     .then(() => {

@@ -39,7 +39,7 @@ export const handleError = (error, fatal) => {
               }
             }
           ],
-          { cancelable: false }
+          { cancelable: error.fk_error_type !== 'users' }
         );
       } else if (fatal) {
         Alert.alert(
@@ -56,15 +56,6 @@ export const handleError = (error, fatal) => {
         );
       }
     });
-};
-
-export const showNoUserAlert = () => {
-  Alert.alert(
-    'User does not exist',
-    'This account has been deleted. If this is not supposed to happen, please report this bug to the development team.',
-    [{ text: 'Ok' }],
-    { cancelable: false }
-  );
 };
 
 // ========================================== Connection ==========================================
