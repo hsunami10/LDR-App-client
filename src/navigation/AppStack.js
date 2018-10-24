@@ -1,9 +1,9 @@
 import { createStackNavigator } from 'react-navigation';
 import MainScreen from '../screens/app/MainScreen';
-import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
 import ViewPostScreen from '../screens/app/social/ViewPostScreen';
 import CreateMainScreen from '../screens/app/create/CreateMainScreen';
 import ChooseTopicScreen from '../screens/app/create/ChooseTopicScreen';
+import EditProfileScreen from '../screens/app/profile/EditProfileScreen';
 
 /*
 // NOTE: Structure
@@ -57,6 +57,8 @@ export STACK (
 )
 */
 
+// Since this removes the tab bar on the bottom, only use it for:
+// ViewPostScreen,
 const CardStack = createStackNavigator(
   {
     // NOTE: Other screens with card transitions here
@@ -91,7 +93,7 @@ export default createStackNavigator(
     },
 
     // Modals
-    ViewProfile: ViewProfileScreen,
+    EditProfile: EditProfileScreen,
     Create: {
       screen: CreateMainScreen,
       navigationOptions: {

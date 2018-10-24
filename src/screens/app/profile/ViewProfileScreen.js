@@ -61,7 +61,7 @@ class ViewProfileScreen extends Component {
       .then(() => {
         this.props.popRoute('AuthLoading');
         this.props.pushRoute('Welcome');
-        this.props.navigation.navigate('Welcome');
+        this.props.screenProps.parentNavigation.navigate('Welcome');
         setActive(this.props.id, false);
       })
       .catch(error => {
@@ -121,7 +121,8 @@ ViewProfileScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   user_loading: PropTypes.bool.isRequired,
   getUserInfo: PropTypes.func.isRequired,
-  selected_user: PropTypes.object
+  selected_user: PropTypes.object,
+  screenProps: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

@@ -4,13 +4,13 @@ import { View, Alert, Platform } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
-import FeedScreen from './social/FeedScreen';
-import DiscoverScreen from './social/DiscoverScreen';
-import ViewProfileScreen from './profile/ViewProfileScreen';
-import NotificationScreen from './NotificationScreen';
 import { pushRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { checkPermission } from '../../assets/helpers';
+import FeedStack from '../../navigation/FeedStack';
+import DiscoverStack from '../../navigation/DiscoverStack';
+import NotificationStack from '../../navigation/NotificationStack';
+import ProfileStack from '../../navigation/ProfileStack';
 
 // NOTE: Permissions: camera, photo, location, notification
 class MainScreen extends Component {
@@ -142,25 +142,26 @@ class MainScreen extends Component {
     }
   }
 
+  // screenProps - allow to use parent navigation - this.props.screenProps
   renderScene = ({ route }) => {
     switch (route.key) {
       case 'feed':
-        return <FeedScreen navigation={this.props.navigation} />;
+        return <FeedStack screenProps={{ parentNavigation: this.props.navigation }} />;
       case 'discover':
         if (this.state.mounted.discover) {
-          return <DiscoverScreen navigation={this.props.navigation} />;
+          return <DiscoverStack screenProps={{ parentNavigation: this.props.navigation }} />;
         }
         break;
       case 'compose':
         break;
       case 'notifications':
         if (this.state.mounted.notifications) {
-          return <NotificationScreen navigation={this.props.navigation} />;
+          return <NotificationStack screenProps={{ parentNavigation: this.props.navigation }} />;
         }
         break;
       case 'profile':
         if (this.state.mounted.profile) {
-          return <ViewProfileScreen private navigation={this.props.navigation} />;
+          return <ProfileStack screenProps={{ parentNavigation: this.props.navigation }} />;
         }
         break;
       default:
