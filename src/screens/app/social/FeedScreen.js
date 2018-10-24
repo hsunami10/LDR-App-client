@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import GeneralSearchView from '../../../components/GeneralSearchView';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -37,12 +38,72 @@ Run loops to create the correct query string
 Apply those query strings to the inclusions
  */
 
+// NOTE: TODO: COPY SEARCH FUNCTIONALITY FROM DISCOVERSCREEN
+// OR HANDLE SEARCHES IN MAIN SCREEN
 class FeedScreen extends Component {
   state = {
     search: '',
+    oldSearch: '',
     typingTimeout: null,
+    opacity: new Animated.Value(0),
     refreshing: false,
+    display: 'none',
+    height: 0,
     posts: [
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+    ],
+    posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -98,12 +159,49 @@ class FeedScreen extends Component {
     ]
   }
 
+  handleScroll = () => Keyboard.dismiss()
+
+  handleEndReached = () => {
+    // TODO: Handle pagination here
+    // If no more old data, then don't do anything anymore
+    console.log('feed paginate for new data here');
+  };
+
+  searchResults = () => {
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+    if (this.state.oldSearch !== this.state.search) {
+      console.log(`search up: ${this.state.search} in general search`);
+      // TODO: Figure out how to query database
+      // Store search result in database - discover_searches
+    }
+    this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
+  }
+
+  handleSearchFocus = () => {
+    this.setState(() => ({ display: 'flex' }));
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+  }
+
   handleCancelPress = () => {
     Keyboard.dismiss();
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
     this.setState(() => ({ search: '', typingTimeout: null }));
+    Animated.timing(this.state.opacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => {
+      this.setState(() => ({ display: 'none' }));
+      // TODO: Reset search results - back to default animated view
+    });
   }
 
   handleChangeText = search => {
@@ -116,8 +214,8 @@ class FeedScreen extends Component {
       typingTimeout: setTimeout(() => {
         // TODO: Call action for API endpoint here
         // Query data from database here
-        if (this.state.search.length === 0) {
-          console.log(`search up ${this.state.search}`);
+        if (this.state.search.length !== 0) {
+          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
         }
       }, 1000)
     }));
@@ -129,13 +227,10 @@ class FeedScreen extends Component {
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
-  handleScroll = () => Keyboard.dismiss()
-
-  handleEndReached = () => {
-    // TODO: Handle pagination here
-    // If no more old data, then don't do anything anymore
-    console.log('paginate for new data here');
-  };
+  handleLayout = e => {
+    const height = e.nativeEvent.layout.height;
+    this.setState(() => ({ height }));
+  }
 
   renderItem = post => {
     return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
@@ -145,28 +240,49 @@ class FeedScreen extends Component {
     return (
       <View style={{ flex: 1 }}>
         <SearchHeader
-          placeholder="Search Feed..."
+          placeholder="Search..."
           value={this.state.search}
           onChangeText={this.handleChangeText}
+          onSubmitEditing={this.searchResults}
+          onFocus={this.handleSearchFocus}
           onCancelPress={this.handleCancelPress}
           animationDuration={200}
-          returnKeyType="done"
+          returnKeyType="search"
         />
-        <FlatList
-          data={this.state.posts}
-          renderItem={this.renderItem}
-          keyExtractor={post => post.id}
-          onEndReached={this.handleEndReached}
-          onEndReachedThreshold={0}
-          onScroll={this.handleScroll}
-          scrollEventThrottle={16}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.handleRefresh}
+        <View
+          style={{ flex: 1 }}
+          onLayout={this.handleLayout}
+        >
+          <FlatList
+            data={this.state.posts}
+            renderItem={this.renderItem}
+            keyExtractor={post => post.id}
+            onScroll={this.handleScroll}
+            scrollEventThrottle={16}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.handleRefresh}
+              />
+            }
+            onEndReached={this.handleEndReached}
+            onEndReachedThreshold={0}
+          />
+          <Animated.View
+            style={[styles.searchViewStyle, {
+              display: this.state.display,
+              opacity: this.state.opacity,
+              height: this.state.height
+            }]}
+          >
+            <GeneralSearchView
+              display={this.state.display}
+              opacity={this.state.opacity}
+              height={this.state.height}
+              results={this.state.posts2}
             />
-          }
-        />
+          </Animated.View>
+        </View>
       </View>
     );
   }

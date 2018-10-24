@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Animated, Keyboard, Dimensions, RefreshControl, FlatList } from 'react-native';
+import { View, Text, Animated, Keyboard, RefreshControl, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import GeneralSearchView from '../../../components/GeneralSearchView';
 
 // TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics - default to middle "Posts"
 // When search is clicked, show animated view with top 10 popular search terms of all time (grabbed from database)
-// When the user starts typing, show the top 10 popular search terms for the keyword
+// When the user starts typing, show the top 5 popular search terms of all for the keyword OR trending searches today (top 5 searches made today)
 // When the user clicks enter or scrolls, then search up data in database
 
 class DiscoverScreen extends Component {
   state = {
     search: '',
     oldSearch: '',
+    typingTimeout: null,
     opacity: new Animated.Value(0),
     refreshing: false,
     display: 'none',
     height: 0,
-    keyboardShown: false,
     posts: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -129,20 +130,29 @@ class DiscoverScreen extends Component {
   }
 
   componentDidMount() {
-    console.log('grab discover feed here');
+    console.log('grab discover feed here with api endpoint');
   }
 
+  handleEndReached = () => {
+    // TODO: Handle pagination here
+    // If no more old data, then don't do anything anymore
+    console.log('discover paginate for more data here');
+  };
+
   searchResults = () => {
-    console.log(`search up: ${this.state.search} in feed`);
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
     if (this.state.oldSearch !== this.state.search) {
+      console.log(`search up: ${this.state.search} in general search`);
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
     }
-    this.setState(() => ({ oldSearch: this.state.search, keyboardShown: false }));
+    this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
   }
 
   handleSearchFocus = () => {
-    this.setState(() => ({ display: 'flex', keyboardShown: true }));
+    this.setState(() => ({ display: 'flex' }));
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -152,19 +162,36 @@ class DiscoverScreen extends Component {
 
   handleCancelPress = () => {
     Keyboard.dismiss();
-    this.setState(() => ({ search: '', keyboardShown: false }));
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+    this.setState(() => ({ search: '', typingTimeout: null }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
       duration: 200,
       useNativeDriver: true
     }).start(() => {
-      this.animList.scrollToOffset({ x: 0, y: 0, animated: false });
       this.setState(() => ({ display: 'none' }));
       // TODO: Reset search results - back to default animated view
     });
   }
 
-  handleChangeText = search => this.setState(() => ({ search }))
+  handleChangeText = search => {
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+
+    this.setState(() => ({
+      search,
+      typingTimeout: setTimeout(() => {
+        // TODO: Call action for API endpoint here
+        // Query data from database here
+        if (this.state.search.length !== 0) {
+          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
+        }
+      }, 1000)
+    }));
+  }
 
   handleRefresh = () => {
     this.setState(() => ({ refreshing: true }));
@@ -172,27 +199,20 @@ class DiscoverScreen extends Component {
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
-  handleAnimScroll = () => {
-    if (this.state.keyboardShown) {
-      Keyboard.dismiss();
-      this.searchResults();
-    }
-  }
-
   handleLayout = e => {
     const height = e.nativeEvent.layout.height;
     this.setState(() => ({ height }));
   }
 
-  renderItem = post => {
-    return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
+  renderItem = data => {
+    return <Text style={{ alignSelf: 'center' }}>{data.item.text}</Text>;
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <SearchHeader
-          placeholder="Search Discover..."
+          placeholder="Search..."
           value={this.state.search}
           onChangeText={this.handleChangeText}
           onSubmitEditing={this.searchResults}
@@ -216,43 +236,19 @@ class DiscoverScreen extends Component {
                 onRefresh={this.handleRefresh}
               />
             }
-            onEndReached={() => console.log('paginate here')} // TODO: Paginate here
+            onEndReached={this.handleEndReached} // TODO: Paginate here
             onEndReachedThreshold={0}
           />
-          <Animated.View
-            style={[styles.searchViewStyle, {
-              display: this.state.display,
-              opacity: this.state.opacity,
-              height: this.state.height
-            }]}
-          >
-            <FlatList
-              ref={o => (this.animList = o)}
-              data={this.state.posts2}
-              renderItem={this.renderItem}
-              keyExtractor={post => post.id}
-              onScroll={this.handleAnimScroll}
-              scrollEventThrottle={16}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.handleRefresh}
-                />
-              }
-            />
-          </Animated.View>
+          <GeneralSearchView
+            display={this.state.display}
+            opacity={this.state.opacity}
+            height={this.state.height}
+            results={this.state.posts2}
+          />
         </View>
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  searchViewStyle: {
-    backgroundColor: 'blue',
-    position: 'absolute',
-    width: Dimensions.get('window').width
-  }
-});
 
 export default DiscoverScreen;

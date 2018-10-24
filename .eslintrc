@@ -5,6 +5,7 @@
     "max-len": 0,
     "no-case-declarations": 0,
     "no-underscore-dangle": 0,
+    "one-var-declaration-per-line": 0,
     "react/prop-types": ["error", { "ignore": ["navigation"] }]
   }
 }

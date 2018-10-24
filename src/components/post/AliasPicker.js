@@ -10,7 +10,7 @@ const AliasPicker = props => (
       selectedValue={props.alias}
       onValueChange={props.handleAliasChange}
     >
-      <Picker.Item label="none" value="None" />
+      <Picker.Item label="None" value="none" />
       {props.aliases.map(e => null)}
     </Picker>
   </View>
