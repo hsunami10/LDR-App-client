@@ -5,7 +5,8 @@ import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, removeCredentials, getUserInfo, logOutUser, } from '../../../actions/AuthActions';
+import { setActive, getUserInfo } from '../../../actions/UserActions';
+import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 
 class ViewProfileScreen extends Component {
   state = { width: 0, height: 0 }
@@ -138,8 +139,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   id: state.auth.id,
   loading: state.loading,
-  user_loading: state.auth.loading,
-  user: state.auth.user,
+  user_loading: state.user.loading,
+  user: state.user,
   selected_user: state.auth.selected_user
 });
 

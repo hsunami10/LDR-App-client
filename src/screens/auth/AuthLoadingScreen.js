@@ -4,7 +4,8 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setActive, setUserCredentials } from '../../actions/AuthActions';
+import { setUserCredentials } from '../../actions/AuthActions';
+import { setActive } from '../../actions/UserActions';
 import { pushRoute, goBackwardRoute, replaceCurrentRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 

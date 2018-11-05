@@ -26,6 +26,7 @@ const CreatePostScreen = props => (
         width={Dimensions.get('window').width - 40}
         height={200}
       />
+      <Text>Choose an Alias (optional)</Text>
       <AliasPicker
         selectedAlias={props.selectedAlias}
         handleAliasChange={props.handleAliasChange}
@@ -49,7 +50,7 @@ CreatePostScreen.propTypes = {
 const styles = StyleSheet.create({
   centerItems: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center' // NOTE: Uncommenting this makes alias picker disappear
   }
 });
 

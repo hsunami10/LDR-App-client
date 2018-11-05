@@ -5,6 +5,7 @@ import FeedReducer from './FeedReducer';
 import LoadingReducer from './LoadingReducer';
 import NavigationReducer from './NavigationReducer';
 import TopicReducer from './TopicReducer';
+import UserReducer from './UserReducer';
 
 export default combineReducers({
   auth: AuthReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   feed: FeedReducer,
   loading: LoadingReducer,
   navigation: NavigationReducer,
-  topics: TopicReducer
+  topics: TopicReducer,
+  user: UserReducer
 });

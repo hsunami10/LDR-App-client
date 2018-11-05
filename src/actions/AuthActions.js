@@ -1,19 +1,15 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
-import { Alert } from 'react-native';
 import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
-  SET_USER_CREDENTIALS,
+  LOG_OUT_USER,
   SET_NOT_FIRST_LOG_IN,
-  STORE_USER_INFO,
-  START_USER_LOADING,
-  STOP_USER_LOADING,
-  SET_SELECTED_USER,
-  LOG_OUT_USER
+  SET_USER_CREDENTIALS
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
+import { setActive } from './UserActions';
 import { pushRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
@@ -39,103 +35,9 @@ export const removeCredentials = async () => {
 // Resets all app state to initial states
 export const logOutUser = () => ({ type: LOG_OUT_USER });
 
-export const startUserLoading = () => ({ type: START_USER_LOADING });
-export const stopUserLoading = () => ({ type: STOP_USER_LOADING });
-
-/*
-Get public or private profile information
-type: private, public, edit, partner
-credentials and callbacks are only BOTH defined when called in AuthLoading
-isRefresh differentiates between first load and pull to refresh load
-private - must have callbacks.navToApp and callbacks.navToAuth defined
- */
-export const getUserInfo = (id, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
-  if (isRefresh) {
-    dispatch(startUserLoading());
-  } else {
-    dispatch(startLoading());
-  }
-
-  axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
-    .then(response => {
-      if (isRefresh) {
-        dispatch(stopUserLoading());
-      } else {
-        dispatch(stopLoading());
-      }
-
-      if (response.data.type === 'private') {
-        if (response.data.success) { // If own account exists in database
-          dispatch(storeUserInfo(response.data.user));
-          if (callbacks) {
-            if (callbacks.navToApp) {
-              callbacks.navToApp();
-            } else {
-              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'), true);
-            }
-          }
-        } else { // If own account does not exist in database, then log out to Welcome screen
-          removeCredentials()
-            .then(() => {
-              Alert.alert(
-                'Oh no!',
-                'Your account does not exist. If this persists, please contact the development team.',
-                [{
-                  text: 'OK',
-                  onPress: () => {
-                    if (callbacks) {
-                      if (callbacks.navToAuth) {
-                        callbacks.navToAuth();
-                      } else {
-                        handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
-                      }
-                    }
-                  }
-                }],
-                { cancelable: false }
-              );
-            })
-            .catch(error => {
-              handleError(new Error(`Unable to access keychain. ${error.message}`), false);
-            });
-        }
-      } else if (response.data.type === 'public') {
-        if (response.data.success) { // If user does exist
-          dispatch(setSelectedUser(response.data.user));
-        } else { // If user does not exist
-          dispatch(setSelectedUser(null));
-        }
-      } else {
-        // TODO: Handle retriving data for editing profile
-        console.log('retrieve data to edit profile here');
-      }
-    })
-    .catch(error => {
-      handleError(error, false);
-    });
-};
-
-// Store user's profile information
-export const storeUserInfo = user => ({
-  type: STORE_USER_INFO,
-  payload: user
-});
-
 export const setAuthErrors = (errorField, errorMsg, success = false) => ({
   type: SET_AUTH_ERRORS,
   payload: { errorField, errorMsg, success }
-});
-
-export const resetAuthErrors = () => ({ type: RESET_AUTH_ERRORS });
-
-export const setUserCredentials = (id, firstLogin) => ({
-  type: SET_USER_CREDENTIALS,
-  payload: { id, firstLogin }
-});
-
-export const setSelectedUser = user => ({
-  type: SET_SELECTED_USER,
-  payload: user
 });
 
 export const setNotFirstLogIn = id => dispatch => {
@@ -150,13 +52,12 @@ export const setNotFirstLogIn = id => dispatch => {
   });
 };
 
-// obj: { id, bool }
-export const setActive = (id, bool) => {
-  axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
-    .catch(err => {
-      handleError(err, false);
-    });
-};
+export const setUserCredentials = (id, firstLogin) => ({
+  type: SET_USER_CREDENTIALS,
+  payload: { id, firstLogin }
+});
+
+export const resetAuthErrors = () => ({ type: RESET_AUTH_ERRORS });
 
 // ======================================== Forgot Password ========================================
 export const forgotPassword = (email, navigation, clearInput) => dispatch => {

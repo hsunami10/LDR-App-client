@@ -27,7 +27,7 @@ class CreateMainScreen extends Component {
       type: null,
       msg: ' '
     },
-    selectedAlias: -1,
+    selectedAliasIndex: -1,
 
     // Create Topic
     name: '',
@@ -54,10 +54,7 @@ class CreateMainScreen extends Component {
     });
   }
 
-  handleAliasChange = alias => {
-    console.log(alias);
-  }
-
+  handleAliasChange = alias => this.setState({ selectedAliasIndex: alias })
   handleChangeBody = body => this.setState(() => ({ body }))
   handleChangeName = name => this.setState(() => ({ name }))
   handleChangeDescription = description => this.setState(() => ({ description }))
@@ -140,7 +137,7 @@ class CreateMainScreen extends Component {
             body={this.state.body}
             error={this.state.postError}
             aliases={this.props.aliases}
-            selectedAlias={this.state.selectedAlias}
+            selectedAlias={this.state.selectedAliasIndex}
             handleAliasChange={this.handleAliasChange}
           />
         );
@@ -224,7 +221,7 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   current_route: state.navigation.current_route,
   routes: state.navigation.routes,
-  aliases: state.auth.user.aliases,
+  aliases: state.user.aliases,
   loading: state.loading
 });
 
