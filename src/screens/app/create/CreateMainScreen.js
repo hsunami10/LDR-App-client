@@ -20,13 +20,16 @@ class CreateMainScreen extends Component {
       ]
     },
 
+    // Create Post
     topic: 'Choose Topic',
     body: '',
     postError: {
       type: null,
       msg: ' '
     },
+    selectedAlias: -1,
 
+    // Create Topic
     name: '',
     description: '',
     image: null,
@@ -49,6 +52,10 @@ class CreateMainScreen extends Component {
         navigationState: { ...prevState.navigationState, index }
       };
     });
+  }
+
+  handleAliasChange = alias => {
+    console.log(alias);
   }
 
   handleChangeBody = body => this.setState(() => ({ body }))
@@ -132,6 +139,9 @@ class CreateMainScreen extends Component {
             topic={this.state.topic}
             body={this.state.body}
             error={this.state.postError}
+            aliases={this.props.aliases}
+            selectedAlias={this.state.selectedAlias}
+            handleAliasChange={this.handleAliasChange}
           />
         );
       case 'topic':
@@ -195,6 +205,7 @@ CreateMainScreen.propTypes = {
   routes: PropTypes.array.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
   createTopic: PropTypes.func.isRequired,
+  aliases: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired
 };
 
@@ -213,6 +224,7 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   current_route: state.navigation.current_route,
   routes: state.navigation.routes,
+  aliases: state.auth.user.aliases,
   loading: state.loading
 });
 

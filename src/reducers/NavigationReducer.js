@@ -1,8 +1,8 @@
 import {
+  LOG_OUT_USER,
   PUSH_ROUTE,
   GO_BACKWARD_ROUTE,
-  POP_ROUTE,
-  // REPLACE_CURRENT_ROUTE
+  POP_ROUTE
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,8 +13,12 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   const copyRoutes = [...state.routes];
   switch (action.type) {
+    case LOG_OUT_USER:
+      return {
+        ...INITIAL_STATE,
+        routes: [...INITIAL_STATE.routes, 'Welcome']
+      };
     case PUSH_ROUTE:
-      // NOTE: This always adds the route (mainly for android hardware back button)
       return {
         ...state,
         current_route: action.payload,
@@ -35,13 +39,6 @@ export default (state = INITIAL_STATE, action) => {
         current_route: action.payload,
         routes: state.routes.slice(0, state.routes.indexOf(action.payload) + 1)
       };
-    // case REPLACE_CURRENT_ROUTE:
-    //   copyRoutes[copyRoutes.length - 1] = action.payload;
-    //   return {
-    //     ...state,
-    //     current_route: action.payload,
-    //     routes: copyRoutes
-    //   };
     default:
       return state;
   }

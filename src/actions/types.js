@@ -7,6 +7,7 @@ export const STORE_USER_INFO = 'store_user_info';
 export const SET_SELECTED_USER = 'set_selected_user';
 export const START_USER_LOADING = 'start_user_loading';
 export const STOP_USER_LOADING = 'stop_user_loading';
+export const LOG_OUT_USER = 'log_out_user';
 
 // Loading
 export const START_OVERLAY_LOADING = 'start_overlay_loading';
@@ -22,3 +23,6 @@ export const PUSH_ROUTE = 'push_route';
 export const CREATE_TOPIC = 'create_topic';
 export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topics, admins of groups cannot delete
 // TODO: Edit topic action types here
+
+// Posts
+export const CREATE_POST = 'create_post';

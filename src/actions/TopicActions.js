@@ -5,6 +5,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
+import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
 // ========================================= Create Topic =========================================
@@ -28,6 +29,8 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
           type: CREATE_TOPIC,
           payload: response.data
         });
+        // QUESTION: Navigate to topic screen?
+        dispatch(goBackwardRoute());
         navigation.goBack();
       } else {
         createTopicErrCb(response.data.msg);

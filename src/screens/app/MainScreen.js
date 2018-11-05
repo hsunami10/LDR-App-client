@@ -102,6 +102,7 @@ class MainScreen extends Component {
   }
 
   // TODO: Handle scrolling up - check routes to see if it's on the same route
+  // If on a subroute, then navigate back to the parent tab (like reddit)
   handleTabPress = ({ route }) => {
     switch (route.key) {
       case 'feed':

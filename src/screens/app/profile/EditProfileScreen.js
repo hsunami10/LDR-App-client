@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
 
+// Get user info api point - type: edit
 class EditProfileScreen extends Component {
   render() {
     return (

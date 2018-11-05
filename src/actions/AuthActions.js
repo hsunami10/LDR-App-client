@@ -9,7 +9,8 @@ import {
   STORE_USER_INFO,
   START_USER_LOADING,
   STOP_USER_LOADING,
-  SET_SELECTED_USER
+  SET_SELECTED_USER,
+  LOG_OUT_USER
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -31,16 +32,19 @@ export const removeCredentials = async () => {
     await Keychain.resetGenericPassword();
     return Promise.resolve();
   } catch (e) {
-    return Promise.reject(e);
+    return Promise.reject(`Unable to access keychain. ${e.message}`);
   }
 };
+
+// Resets all app state to initial states
+export const logOutUser = () => ({ type: LOG_OUT_USER });
 
 export const startUserLoading = () => ({ type: START_USER_LOADING });
 export const stopUserLoading = () => ({ type: STOP_USER_LOADING });
 
 /*
 Get public or private profile information
-type: private, public, edit
+type: private, public, edit, partner
 credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined

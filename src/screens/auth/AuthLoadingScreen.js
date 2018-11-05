@@ -60,15 +60,15 @@ class AuthLoadingScreen extends Component {
         const length = this.props.routes.length;
         if (this.props.current_route === 'Welcome' || this.props.routes[length - 2] === 'Main') {
           if (this.props.current_route === 'Welcome') {
-            this.props.goBackwardRoute(); // Reset current_route to AuthLoading
+            this.props.goBackwardRoute(); // Reset current_route to AuthLoading (when logged out)
           } else {
             // NOTE: If the default main tab screen changes, change this too
-            this.props.replaceCurrentRoute('feed'); // Set default screen to be "feed"
+            this.props.replaceCurrentRoute('feed'); // Set default screen to be "feed" (when logged in)
           }
           BackHandler.exitApp();
           return true;
         } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
-          return true;
+          return true; // Disable back button on routes
         } else if (
           mainScreenTabKeys[this.props.current_route] !== undefined &&
           mainScreenTabKeys[this.props.routes[length - 2]] !== undefined

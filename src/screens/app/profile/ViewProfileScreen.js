@@ -5,20 +5,22 @@ import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, removeCredentials, getUserInfo } from '../../../actions/AuthActions';
-import { popRoute, pushRoute } from '../../../actions/NavigationActions';
+import { setActive, removeCredentials, getUserInfo, logOutUser, } from '../../../actions/AuthActions';
 
 class ViewProfileScreen extends Component {
   state = { width: 0, height: 0 }
 
   componentDidMount() {
-    if (this.props.private) {
+    const type = this.props.navigation.getParam('type', 'public');
+    if (this.props.private) { // Only defined when type = 'private'
       this.props.getUserInfo(this.props.id, 'private', false, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
       });
     } else {
-      this.props.getUserInfo(this.props.selected_user.id, 'public', false);
+      // NOTE: Selected user cannot be null, must update app state before this is run
+      // type: 'partner', 'public'
+      this.props.getUserInfo(this.props.selected_user.id, type, false);
     }
   }
 
@@ -59,8 +61,7 @@ class ViewProfileScreen extends Component {
   logOut = () => {
     removeCredentials()
       .then(() => {
-        this.props.popRoute('AuthLoading');
-        this.props.pushRoute('Welcome');
+        this.props.logOutUser();
         this.props.screenProps.parentNavigation.navigate('Welcome');
         setActive(this.props.id, false);
       })
@@ -115,14 +116,13 @@ class ViewProfileScreen extends Component {
 
 ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  popRoute: PropTypes.func.isRequired,
-  pushRoute: PropTypes.func.isRequired,
   private: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
   user_loading: PropTypes.bool.isRequired,
   getUserInfo: PropTypes.func.isRequired,
   selected_user: PropTypes.object,
-  screenProps: PropTypes.object.isRequired
+  screenProps: PropTypes.object.isRequired,
+  logOutUser: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -139,11 +139,11 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   loading: state.loading,
   user_loading: state.auth.loading,
+  user: state.auth.user,
   selected_user: state.auth.selected_user
 });
 
 export default connect(mapStateToProps, {
-  popRoute,
-  pushRoute,
-  getUserInfo
+  getUserInfo,
+  logOutUser
 })(ViewProfileScreen);

@@ -7,17 +7,17 @@ import { View, StyleSheet, Picker } from 'react-native';
 const AliasPicker = props => (
   <View style={styles.viewStyle}>
     <Picker
-      selectedValue={props.alias}
+      selectedValue={props.selectedAlias}
       onValueChange={props.handleAliasChange}
     >
-      <Picker.Item label="None" value="none" />
-      {props.aliases.map(e => null)}
+      <Picker.Item label="None" value={-1} />
+      {props.aliases.map((e, i) => <Picker.Item label={e.alias} value={i} />)}
     </Picker>
   </View>
 );
 
 AliasPicker.propTypes = {
-  alias: PropTypes.string.isRequired,
+  selectedAlias: PropTypes.string.isRequired,
   handleAliasChange: PropTypes.func.isRequired,
   aliases: PropTypes.array.isRequired
 };

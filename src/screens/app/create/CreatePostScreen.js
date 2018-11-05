@@ -1,44 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, Animated } from 'react-native';
 import { Button, MultiLineInput } from '../../../components/common';
+import AliasPicker from '../../../components/post/AliasPicker';
 import { errorTextStyle } from '../../../constants/styles/text';
 
-class CreatePostScreen extends Component {
-  render() {
-    return (
-      <Animated.ScrollView
-        scrollEventThrottle={16}
-        keyboardShouldPersistTaps="always"
-      >
-        <View style={styles.centerItems}>
-          <Button onPress={() => this.props.navigation.navigate('ChooseTopic')}>
-            <Text>{this.props.topic}</Text>
-          </Button>
-          <Button onPress={() => console.log('enable location')}>
-            <Text>{'Enable Location (optional)'}</Text>
-          </Button>
-          <MultiLineInput
-            placeholder="Body"
-            value={this.props.body}
-            onChangeText={this.props.handleChangeBody}
-            showBorder={this.props.error.type === 'body'}
-            borderColor="red"
-            width={Dimensions.get('window').width - 40}
-            height={200}
-          />
-          <Text style={errorTextStyle}>{this.props.error.msg}</Text>
-        </View>
-      </Animated.ScrollView>
-    );
-  }
-}
+const CreatePostScreen = props => (
+  <Animated.ScrollView
+    scrollEventThrottle={16}
+    keyboardShouldPersistTaps="always"
+  >
+    <View style={styles.centerItems}>
+      <Button onPress={() => props.navigation.navigate('ChooseTopic')}>
+        <Text>{props.topic}</Text>
+      </Button>
+      <Button onPress={() => console.log('enable location')}>
+        <Text>{'Enable Location (optional)'}</Text>
+      </Button>
+      <MultiLineInput
+        placeholder="Body"
+        value={props.body}
+        onChangeText={props.handleChangeBody}
+        showBorder={props.error.type === 'body'}
+        borderColor="red"
+        width={Dimensions.get('window').width - 40}
+        height={200}
+      />
+      <AliasPicker
+        selectedAlias={props.selectedAlias}
+        handleAliasChange={props.handleAliasChange}
+        aliases={props.aliases}
+      />
+      <Text style={errorTextStyle}>{props.error.msg}</Text>
+    </View>
+  </Animated.ScrollView>
+);
 
 CreatePostScreen.propTypes = {
   handleChangeBody: PropTypes.func.isRequired,
   body: PropTypes.string.isRequired,
   topic: PropTypes.string.isRequired,
-  error: PropTypes.object.isRequired
+  error: PropTypes.object.isRequired,
+  selectedAlias: PropTypes.number.isRequired,
+  handleAliasChange: PropTypes.func.isRequired,
+  aliases: PropTypes.array.isRequired
 };
 
 const styles = StyleSheet.create({

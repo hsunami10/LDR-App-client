@@ -16,7 +16,7 @@ export const goBackwardRoute = () => ({ type: GO_BACKWARD_ROUTE });
 
 // This action should only be called on navigation.pop() or navigation.popToTop();
 // Needs a "pop to" route name (destination route)
-// Removes all routes from the end of the array to the destination route
+// Removes all routes from the end of the array to the destination route (finds first match from start)
 export const popRoute = routeName => ({
   type: POP_ROUTE,
   payload: routeName
