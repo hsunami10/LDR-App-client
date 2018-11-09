@@ -15,7 +15,6 @@ const INITIAL_STATE = {
     offset: 0,
     data: []
   },
-  coordinates: null,
   partner: null,
   selected_user: null,
   loading: false
@@ -38,7 +37,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         posts: {
-          offset: state.posts.offset + 1,
+          offset: state.user.posts.offset + 1,
           data: [action.payload, ...state.posts.data]
         }
       };

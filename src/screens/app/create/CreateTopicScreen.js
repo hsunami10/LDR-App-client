@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Dimensions, Animated, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Animated } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Permissions from 'react-native-permissions';
@@ -9,7 +9,6 @@ import { Input, MultiLineInput, ClickableImage } from '../../../components/commo
 import textStyles from '../../../constants/styles/text';
 import { alertPermission, checkPermission } from '../../../assets/helpers';
 
-// TODO: Handle animating height with keyboard
 class CreateTopicScreen extends Component {
   onPressAction = index => {
     switch (index) {
@@ -99,7 +98,6 @@ class CreateTopicScreen extends Component {
     return (
       <Animated.ScrollView
         scrollEventThrottle={16}
-        onScroll={() => Keyboard.dismiss()}
         keyboardShouldPersistTaps="always"
       >
         <View style={styles.centerItems}>

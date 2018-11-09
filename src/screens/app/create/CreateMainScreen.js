@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import { View, StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { goBackwardRoute } from '../../../actions/NavigationActions';
-import { createPost } from '../../../actions/PostActions';
 import { createTopic } from '../../../actions/TopicActions';
-import { stopLoading } from '../../../actions/LoadingActions';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { isValidName, hasTrailingSpaces } from '../../../assets/helpers';
 import CreatePostScreen from './CreatePostScreen';
@@ -44,10 +42,6 @@ class CreateMainScreen extends Component {
   componentWillUnmount() {
     if (this.props.current_route === 'Create') {
       this.props.goBackwardRoute();
-
-      if (this.props.loading) { // Stop loading if the user cancels transaction
-        this.props.stopLoading();
-      }
     }
   }
 
@@ -71,15 +65,11 @@ class CreateMainScreen extends Component {
     if (this.state.navigationState.index === 0) {
       if (!isValidName(this.state.body)) {
         this.handlePostError('body');
-      } else {
+      } else { // TODO: Check error for choosing a topic
         this.handlePostError(null);
-        this.props.createPost({
-          user_id: this.props.id,
-          topic_id: '', // TODO: Get topic id (if chosen) here
-          alias_id: this.state.selectedAliasIndex < 0 ? '' : this.props.user.aliases[this.state.selectedAliasIndex].id,
-          body: this.state.body,
-          coordinates: this.props.user.coordinates
-        }, this.props.navigation);
+        console.log(`create post with topic: ${this.state.topic} and body: ${this.state.body}`);
+        // TODO: Show loading here while posting and update app state
+        // When finished, run this.props.navigation.goBack();
       }
     } else if (!isValidName(this.state.name)) {
       this.handleTopicError('name');
@@ -146,7 +136,7 @@ class CreateMainScreen extends Component {
             topic={this.state.topic}
             body={this.state.body}
             error={this.state.postError}
-            aliases={this.props.user.aliases}
+            aliases={this.props.aliases}
             selectedAlias={this.state.selectedAliasIndex}
             handleAliasChange={this.handleAliasChange}
           />
@@ -200,7 +190,7 @@ class CreateMainScreen extends Component {
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />
-        <FullScreenLoading loading={this.props.loading} allowTouchThrough />
+        <FullScreenLoading loading={this.props.loading} />
       </View>
     );
   }
@@ -212,10 +202,8 @@ CreateMainScreen.propTypes = {
   routes: PropTypes.array.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
   createTopic: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
-  stopLoading: PropTypes.func.isRequired,
-  createPost: PropTypes.func.isRequired
+  aliases: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -231,15 +219,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  user: state.user,
   current_route: state.navigation.current_route,
   routes: state.navigation.routes,
+  aliases: state.user.aliases,
   loading: state.loading
 });
 
 export default connect(mapStateToProps, {
   goBackwardRoute,
-  createPost,
-  createTopic,
-  stopLoading
+  createTopic
 })(CreateMainScreen);

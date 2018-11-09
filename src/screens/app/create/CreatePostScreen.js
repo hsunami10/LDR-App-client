@@ -1,23 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Dimensions, Animated, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Animated } from 'react-native';
 import { Button, MultiLineInput } from '../../../components/common';
 import AliasPicker from '../../../components/post/AliasPicker';
 import { errorTextStyle } from '../../../constants/styles/text';
 
-// TODO: Location
-// TODO: Handle animating height with keyboard
 const CreatePostScreen = props => (
   <Animated.ScrollView
     scrollEventThrottle={16}
-    onScroll={() => Keyboard.dismiss()}
     keyboardShouldPersistTaps="always"
   >
     <View style={styles.centerItems}>
       <Button onPress={() => props.navigation.navigate('ChooseTopic')}>
         <Text>{props.topic}</Text>
       </Button>
-      <Button onPress={() => console.log('enable location and get long lat coordinates')}>
+      <Button onPress={() => console.log('enable location')}>
         <Text>{'Enable Location (optional)'}</Text>
       </Button>
       <MultiLineInput
