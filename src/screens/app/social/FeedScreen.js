@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import GeneralSearchView from '../../../components/GeneralSearchView';
+import GeneralSearchScreen from '../GeneralSearchScreen';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -275,7 +275,7 @@ class FeedScreen extends Component {
               height: this.state.height
             }]}
           >
-            <GeneralSearchView
+            <GeneralSearchScreen
               display={this.state.display}
               opacity={this.state.opacity}
               height={this.state.height}
