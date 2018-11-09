@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { View, ActivityIndicator, Text, StyleSheet, Dimensions } from 'react-native';
 
 // NOTE: Use this if you do not want the whole screen disabled when loading
-export const FullScreenLoading = ({ text, size, loading, style, width, height, overlayColor }) => (
+export const FullScreenLoading = ({ text, size, loading, style, width, height, overlayColor, allowTouchThrough }) => (
   <View
+    pointerEvents={allowTouchThrough ? 'none' : 'auto'}
     style={[styles.centerItems, {
       display: loading ? 'flex' : 'none',
       width: width || Dimensions.get('window').width,
@@ -24,7 +25,8 @@ FullScreenLoading.propTypes = {
   style: PropTypes.object,
   width: PropTypes.number,
   height: PropTypes.number,
-  overlayColor: PropTypes.string
+  overlayColor: PropTypes.string,
+  allowTouchThrough: PropTypes.bool
 };
 
 const styles = StyleSheet.create({

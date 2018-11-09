@@ -6,7 +6,7 @@ import { FlatList, Animated, StyleSheet, RefreshControl, Text, Dimensions, Keybo
 // Connect to redux to handle pagination and refresh
 // Fix pagination to only happen when on search results, not search suggestions
 // When showing popular search suggestings, have a "search up" clickable at the bottom (like reddit app)
-class GeneralSearchView extends Component {
+class GeneralSearchScreen extends Component {
   state = { refreshing: false }
 
   componentDidUpdate(prevProps) {
@@ -64,7 +64,7 @@ class GeneralSearchView extends Component {
   }
 }
 
-GeneralSearchView.propTypes = {
+GeneralSearchScreen.propTypes = {
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default GeneralSearchView;
+export default GeneralSearchScreen;
