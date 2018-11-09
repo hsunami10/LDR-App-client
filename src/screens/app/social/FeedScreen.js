@@ -42,68 +42,8 @@ Apply those query strings to the inclusions
 // OR HANDLE SEARCHES IN MAIN SCREEN
 class FeedScreen extends Component {
   state = {
-    search: '',
-    oldSearch: '',
-    typingTimeout: null,
-    opacity: new Animated.Value(0),
     refreshing: false,
-    display: 'none',
-    height: 0,
     posts: [
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-    ],
-    posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -167,69 +107,16 @@ class FeedScreen extends Component {
     console.log('feed paginate for new data here');
   };
 
-  searchResults = () => {
-    if (this.state.typingTimeout) {
-      clearTimeout(this.state.typingTimeout);
-    }
-    if (this.state.oldSearch !== this.state.search) {
-      console.log(`search up: ${this.state.search} in general search`);
-      // TODO: Figure out how to query database
-      // Store search result in database - discover_searches
-    }
-    this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
-  }
-
-  handleSearchFocus = () => {
-    this.setState(() => ({ display: 'flex' }));
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true
-    }).start();
-  }
-
-  handleCancelPress = () => {
-    Keyboard.dismiss();
-    if (this.state.typingTimeout) {
-      clearTimeout(this.state.typingTimeout);
-    }
-    this.setState(() => ({ search: '', typingTimeout: null }));
-    Animated.timing(this.state.opacity, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true
-    }).start(() => {
-      this.setState(() => ({ display: 'none' }));
-      // TODO: Reset search results - back to default animated view
-    });
-  }
-
-  handleChangeText = search => {
-    if (this.state.typingTimeout) {
-      clearTimeout(this.state.typingTimeout);
-    }
-
-    this.setState(() => ({
-      search,
-      typingTimeout: setTimeout(() => {
-        // TODO: Call action for API endpoint here
-        // Query data from database here
-        if (this.state.search.length !== 0) {
-          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
-        }
-      }, 1000)
-    }));
-  }
-
   handleRefresh = () => {
     this.setState(() => ({ refreshing: true }));
     // TODO: Grab new data from database again here, and set refreshing to false
     setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
   }
 
+  // screenProps - allow to use parent navigation - this.props.screenProps
   handleLayout = e => {
     const height = e.nativeEvent.layout.height;
-    this.setState(() => ({ height }));
+    this.props.screenProps.handleContentLayout(height);
   }
 
   renderItem = post => {
@@ -281,12 +168,18 @@ class FeedScreen extends Component {
               height={this.state.height}
               results={this.state.posts2}
             />
-          </Animated.View>
-        </View>
+          }
+          onEndReached={this.handleEndReached}
+          onEndReachedThreshold={0}
+        />
       </View>
     );
   }
 }
+
+FeedScreen.propTypes = {
+  screenProps: PropTypes.object.isRequired
+};
 
 const styles = StyleSheet.create({
   centerItems: {
