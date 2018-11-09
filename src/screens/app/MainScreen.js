@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Alert, Platform } from 'react-native';
+import shortid from 'shortid';
+import { View, Alert, Platform, Animated, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
@@ -8,7 +9,8 @@ import { pushRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { fetchAliases } from '../../actions/UserActions';
 import { checkPermission } from '../../assets/helpers';
-import { FullScreenLoading } from '../../components/common';
+import { FullScreenLoading, SearchHeader } from '../../components/common';
+import GeneralSearchScreen from './GeneralSearchScreen';
 import FeedStack from '../../navigation/FeedStack';
 import DiscoverStack from '../../navigation/DiscoverStack';
 import NotificationStack from '../../navigation/NotificationStack';
@@ -32,7 +34,70 @@ class MainScreen extends Component {
       discover: false,
       notifications: false,
       profile: false
-    }
+    },
+
+    // Handle SearchHeader and GeneralSearchScreen
+    height: 0, // Height of animated screen calculated from onLayout
+    search: '',
+    oldSearch: '',
+    typingTimeout: null,
+    opacity: new Animated.Value(0),
+    display: 'none',
+
+    posts: [
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+      { id: shortid(), text: `Text Here + ${shortid()}` },
+    ]
   }
 
   componentDidMount() {
@@ -67,6 +132,62 @@ class MainScreen extends Component {
         }
       }
     }
+  }
+
+  handleContentLayout = height => this.setState({ height })
+
+  searchResults = () => {
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+    if (this.state.oldSearch !== this.state.search) {
+      console.log(`search up: ${this.state.search} in general search`);
+      // TODO: Figure out how to query database
+      // Store search result in database - discover_searches
+    }
+    this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
+  }
+
+  handleSearchFocus = () => {
+    this.setState(() => ({ display: 'flex' }));
+    Animated.timing(this.state.opacity, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+  }
+
+  handleCancelPress = () => {
+    Keyboard.dismiss();
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+    this.setState(() => ({ search: '', typingTimeout: null }));
+    Animated.timing(this.state.opacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => {
+      this.setState(() => ({ display: 'none' }));
+      // TODO: Reset search results - back to default animated view
+    });
+  }
+
+  handleChangeText = search => {
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+
+    this.setState(() => ({
+      search,
+      typingTimeout: setTimeout(() => {
+        // TODO: Call action for API endpoint here
+        // Query data from database here
+        if (this.state.search.length !== 0) {
+          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
+        }
+      }, 1000)
+    }));
   }
 
   handleCheckPermission = (type, response) => {
@@ -149,17 +270,46 @@ class MainScreen extends Component {
     }
   }
 
-  // screenProps - allow to use parent navigation - this.props.screenProps
-  renderScene = ({ route }) => {
+  renderHeader = route => {
+    if (route.key === 'feed' || route.key === 'discover') {
+      return (
+        <SearchHeader
+          placeholder="Search..."
+          value={this.state.search}
+          onChangeText={this.handleChangeText}
+          onSubmitEditing={this.searchResults}
+          onFocus={this.handleSearchFocus}
+          onCancelPress={this.handleCancelPress}
+          animationDuration={200}
+          returnKeyType="search"
+        />
+      );
+    }
+    return null;
+  }
+
+  renderScene = ({ route }) => (
+    <View style={{ flex: 1 }}>
+      {this.renderHeader(route)}
+      {this.renderSceneContent(route)}
+    </View>
+  )
+
+  renderSceneContent = route => {
     switch (route.key) {
       case 'feed':
-        return <FeedStack screenProps={{ parentNavigation: this.props.navigation }} />;
+        return (
+          <FeedStack
+            screenProps={{
+              parentNavigation: this.props.navigation,
+              handleContentLayout: this.handleContentLayout
+            }}
+          />
+        );
       case 'discover':
         if (this.state.mounted.discover) {
           return <DiscoverStack screenProps={{ parentNavigation: this.props.navigation }} />;
         }
-        break;
-      case 'compose':
         break;
       case 'notifications':
         if (this.state.mounted.notifications) {
@@ -172,7 +322,7 @@ class MainScreen extends Component {
         }
         break;
       default:
-        return;
+        return null;
     }
   }
 
@@ -195,6 +345,12 @@ class MainScreen extends Component {
           animationEnabled={false}
           onIndexChange={this.handleIndexChange}
           useNativeDriver
+        />
+        <GeneralSearchScreen
+          display={this.state.display}
+          opacity={this.state.opacity}
+          height={this.state.height}
+          results={this.state.posts}
         />
         <FullScreenLoading loading={this.props.loading} />
       </View>

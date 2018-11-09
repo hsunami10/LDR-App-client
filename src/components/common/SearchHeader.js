@@ -42,7 +42,10 @@ export class SearchHeader extends Component {
 
   render() {
     return (
-      <View style={[styles.containerStyle, this.props.containerStyle || {}]}>
+      <View
+        style={[styles.containerStyle, this.props.containerStyle || {}]}
+        onLayout={this.props.handleLayout || null}
+      >
         <Animated.View style={styles.inputContainerStyle}>
           <TextInput
             placeholder={this.props.placeholder}
@@ -86,7 +89,8 @@ SearchHeader.propTypes = {
   onCancelPress: PropTypes.func.isRequired,
   animationDuration: PropTypes.number,
   returnKeyType: PropTypes.string,
-  containerStyle: PropTypes.object
+  containerStyle: PropTypes.object,
+  handleLayout: PropTypes.func
 };
 
 const styles = StyleSheet.create({

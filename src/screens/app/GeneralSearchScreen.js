@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, Animated, StyleSheet, RefreshControl, Text, Dimensions, Keyboard } from 'react-native';
+import { SEARCH_HEADER_HEIGHT } from '../../constants/variables';
 
 // TODO: Add tab view later
 // Connect to redux to handle pagination and refresh
 // Fix pagination to only happen when on search results, not search suggestions
 // When showing popular search suggestings, have a "search up" clickable at the bottom (like reddit app)
-class GeneralSearchView extends Component {
+class GeneralSearchScreen extends Component {
   state = { refreshing: false }
 
   componentDidUpdate(prevProps) {
@@ -64,7 +65,7 @@ class GeneralSearchView extends Component {
   }
 }
 
-GeneralSearchView.propTypes = {
+GeneralSearchScreen.propTypes = {
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
@@ -73,10 +74,11 @@ GeneralSearchView.propTypes = {
 
 const styles = StyleSheet.create({
   searchViewStyle: {
+    top: SEARCH_HEADER_HEIGHT,
     backgroundColor: 'blue',
     position: 'absolute',
     width: Dimensions.get('window').width
   }
 });
 
-export default GeneralSearchView;
+export default GeneralSearchScreen;
