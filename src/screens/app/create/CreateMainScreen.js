@@ -183,14 +183,14 @@ class CreateMainScreen extends Component {
               rightTitle={this.state.navigationState.index === 0 ? 'Post' : 'Create'}
               onRightPress={this.handleSubmit}
               showLeft
-              onLeftPress={() => this.props.navigation.goBack()}
+              onLeftPress={() => this.props.navigation.popToTop()}
               tabTitleWidth={200}
             />
           }
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />
-        <FullScreenLoading visible={this.props.loading} />
+        <FullScreenLoading loading={this.props.loading} />
       </View>
     );
   }

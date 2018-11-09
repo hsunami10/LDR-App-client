@@ -80,7 +80,7 @@ class VerifyEmailScreen extends Component {
             <Button onPress={this.sendEmail}>Send Email</Button>
             <Text>Verify your email to receive developer updates, polls, forgotten passwords, and send feedback, bug reports, user reports, new ideas, and topic requests</Text>
           </View>
-          <FullScreenLoading visible={this.props.loading} />
+          <FullScreenLoading loading={this.props.loading} />
         </View>
       </DismissKeyboard>
     );

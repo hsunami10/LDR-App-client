@@ -4,18 +4,21 @@ import {
   START_USER_LOADING,
   STOP_USER_LOADING,
   SET_SELECTED_USER,
-  STORE_USER_INFO
+  STORE_USER_INFO,
+  FETCH_ALIASES
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { removeCredentials } from './AuthActions';
+import { pushRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
-export const startUserLoading = () => ({ type: START_USER_LOADING });
-export const stopUserLoading = () => ({ type: STOP_USER_LOADING });
+// Loading only for profile screens and anything user-related
+const startUserLoading = () => ({ type: START_USER_LOADING });
+const stopUserLoading = () => ({ type: STOP_USER_LOADING });
 
 /*
-Get public or private profile information
+Get public or private user information
 type: private, public, edit, partner
 credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
@@ -28,7 +31,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
     dispatch(startLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/user/${id}/${type}`)
+  axios.get(`${ROOT_URL}/api/user/${id}?type=${type}`)
     .then(response => {
       if (isRefresh) {
         dispatch(stopUserLoading());
@@ -88,8 +91,8 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
 // obj: { id, bool }
 export const setActive = (id, bool) => {
   axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
-    .catch(err => {
-      handleError(err, false);
+    .catch(error => {
+      handleError(error, false);
     });
 };
 
@@ -103,3 +106,22 @@ export const setSelectedUser = user => ({
   type: SET_SELECTED_USER,
   payload: user
 });
+
+// Navigate to CreateMainScreen after aliases are loaded
+export const fetchAliases = (id, navigation) => dispatch => {
+  dispatch(startLoading());
+
+  axios.get(`${ROOT_URL}/api/user/alias/${id}`)
+    .then(response => {
+      dispatch(stopLoading());
+      dispatch({
+        type: FETCH_ALIASES,
+        payload: response.data
+      });
+      dispatch(pushRoute('Create'));
+      navigation.navigate('Create');
+    })
+    .catch(error => {
+      handleError(error, false);
+    });
+};

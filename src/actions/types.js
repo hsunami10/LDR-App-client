@@ -1,13 +1,16 @@
-// Authentication / User
+// Authentication
 export const SET_USER_CREDENTIALS = 'set_user_credentials';
 export const SET_AUTH_ERRORS = 'set_auth_errors';
 export const RESET_AUTH_ERRORS = 'reset_auth_errors';
 export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
+
+// User
 export const STORE_USER_INFO = 'store_user_info';
 export const SET_SELECTED_USER = 'set_selected_user';
 export const START_USER_LOADING = 'start_user_loading';
 export const STOP_USER_LOADING = 'stop_user_loading';
 export const LOG_OUT_USER = 'log_out_user';
+export const FETCH_ALIASES = 'fetch_aliases';
 
 // Loading
 export const START_OVERLAY_LOADING = 'start_overlay_loading';

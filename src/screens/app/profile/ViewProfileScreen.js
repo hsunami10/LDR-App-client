@@ -107,7 +107,7 @@ class ViewProfileScreen extends Component {
           <FullScreenLoading
             width={this.state.width}
             height={this.state.height}
-            visible={this.props.loading}
+            loading={this.props.loading}
           />
         </ScrollView>
       </View>

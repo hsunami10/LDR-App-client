@@ -55,6 +55,7 @@ class AuthLoadingScreen extends Component {
           - current_route === 'Welcome'
           - routes[routes.length - 2] === 'Main'
 
+        TODO: Change back button behavior to expected - pop to top of navigation
         Override back button behavior by going back tabs when:
           - current_route is a tab key in MainScreen.js AND previous route is a tab key in MainScreen.js
          */
@@ -63,7 +64,7 @@ class AuthLoadingScreen extends Component {
           if (this.props.current_route === 'Welcome') {
             this.props.goBackwardRoute(); // Reset current_route to AuthLoading (when logged out)
           } else {
-            // NOTE: If the default main tab screen changes, change this too
+            // If the default main tab screen changes, change this too
             this.props.replaceCurrentRoute('feed'); // Set default screen to be "feed" (when logged in)
           }
           BackHandler.exitApp();
@@ -124,7 +125,7 @@ class AuthLoadingScreen extends Component {
   render() {
     return (
       <FullScreenLoading
-        visible
+        loading
         width={Dimensions.get('window').width}
         height={Dimensions.get('window').height}
         text="Authenticating..."

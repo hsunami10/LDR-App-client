@@ -170,7 +170,7 @@ class CreateProfileScreen extends Component {
             destructiveButtonIndex={this.state.image ? 2 : undefined}
             onPress={this.onPressAction}
           />
-          <FullScreenLoading visible={this.props.loading} />
+          <FullScreenLoading loading={this.props.loading} />
         </View>
       </DismissKeyboard>
     );

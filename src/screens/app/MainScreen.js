@@ -6,7 +6,9 @@ import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import { pushRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
+import { fetchAliases } from '../../actions/UserActions';
 import { checkPermission } from '../../assets/helpers';
+import { FullScreenLoading } from '../../components/common';
 import FeedStack from '../../navigation/FeedStack';
 import DiscoverStack from '../../navigation/DiscoverStack';
 import NotificationStack from '../../navigation/NotificationStack';
@@ -119,8 +121,12 @@ class MainScreen extends Component {
         }
         break;
       case 'compose':
-        this.props.pushRoute('Create');
-        this.props.navigation.navigate('Create');
+        if (this.props.alias_fetched) {
+          this.props.pushRoute('Create');
+          this.props.navigation.navigate('Create');
+        } else {
+          this.props.fetchAliases(this.props.id, this.props.navigation);
+        }
         break;
       case 'notifications':
         if (!this.state.mounted.notifications) {
@@ -190,6 +196,7 @@ class MainScreen extends Component {
           onIndexChange={this.handleIndexChange}
           useNativeDriver
         />
+        <FullScreenLoading loading={this.props.loading} />
       </View>
     );
   }
@@ -201,17 +208,23 @@ MainScreen.propTypes = {
   first_login: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
   routes: PropTypes.array.isRequired,
-  pushRoute: PropTypes.func.isRequired
+  pushRoute: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  alias_fetched: PropTypes.bool.isRequired,
+  fetchAliases: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
+  alias_fetched: state.user.alias_fetched, // Check if aliases have already been fetched
   first_login: state.auth.first_login,
   current_route: state.navigation.current_route,
-  routes: state.navigation.routes
+  routes: state.navigation.routes,
+  loading: state.loading
 });
 
 export default connect(mapStateToProps, {
   pushRoute,
-  setNotFirstLogIn
+  setNotFirstLogIn,
+  fetchAliases
 })(MainScreen);

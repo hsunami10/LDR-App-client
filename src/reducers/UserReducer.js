@@ -4,11 +4,13 @@ import {
   LOG_OUT_USER,
   STORE_USER_INFO,
   START_USER_LOADING,
-  STOP_USER_LOADING
+  STOP_USER_LOADING,
+  FETCH_ALIASES
 } from '../actions/types';
 
 const INITIAL_STATE = {
   aliases: [],
+  alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
   posts: {
     offset: 0,
     data: []
@@ -30,7 +32,7 @@ export default (state = INITIAL_STATE, action) => {
       return INITIAL_STATE;
 
     case STORE_USER_INFO:
-      return { ...state, ...action.payload };
+      return { ...state, ...action.payload, alias_fetched: true };
     case CREATE_POST:
       return {
         ...state,
@@ -41,6 +43,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     case SET_SELECTED_USER:
       return { ...state, selected_user: action.payload };
+    case FETCH_ALIASES:
+      return { ...state, aliases: action.payload, alias_fetched: true };
     default:
       return state;
   }

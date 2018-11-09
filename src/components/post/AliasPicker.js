@@ -10,19 +10,14 @@ const AliasPicker = props => (
       selectedValue={props.selectedAlias}
       onValueChange={props.handleAliasChange}
     >
-      <Picker.Item label="None" value={-1} />
-      <Picker.Item label="None1" value={-16} />
-      <Picker.Item label="None2" value={-15} />
-      <Picker.Item label="None3" value={-14} />
-      <Picker.Item label="None4" value={-13} />
-      <Picker.Item label="None5" value={-12} />
-      {props.aliases.map((e, i) => <Picker.Item label={e.alias} value={i} />)}
+      <Picker.Item key={-1} label="None" value={-1} />
+      {props.aliases.map((e, i) => <Picker.Item key={i} label={e.alias} value={i} />)}
     </Picker>
   </View>
 );
 
 AliasPicker.propTypes = {
-  selectedAlias: PropTypes.string.isRequired,
+  selectedAlias: PropTypes.number.isRequired,
   handleAliasChange: PropTypes.func.isRequired,
   aliases: PropTypes.array.isRequired
 };

@@ -121,7 +121,7 @@ class SignUpScreen extends Component {
             <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
             <Button onPress={this.signUp}>Sign Up</Button>
           </View>
-          <FullScreenLoading visible={this.props.loading} />
+          <FullScreenLoading loading={this.props.loading} />
         </View>
       </DismissKeyboard>
     );

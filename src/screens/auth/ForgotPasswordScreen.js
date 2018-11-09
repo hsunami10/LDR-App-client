@@ -71,7 +71,7 @@ class ForgotPasswordScreen extends Component {
               {this.props.error_msg}
             </Text>
             <Button onPress={this.sendEmail}>Send Email</Button>
-            <FullScreenLoading visible={this.props.loading} />
+            <FullScreenLoading loading={this.props.loading} />
           </View>
         </View>
       </DismissKeyboard>
