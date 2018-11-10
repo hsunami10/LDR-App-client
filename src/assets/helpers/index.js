@@ -18,9 +18,9 @@ export const handleError = (error, fatal) => {
     .then(connectionInfo => {
       if (connectionInfo.type === 'none') {
         showNoConnectionAlert();
-      } else if (error.fk_error_msg) {
+      } else if (error.fk_error_msg !== undefined) {
         // Handle foreign key violation (insert, update)
-        // NOTE: Same as LDR_App_server helper/wrapper.js
+        // NOTE: Same as LDR_App_server helpers/wrapper.js
         // FK violation on users is a special case - log out user by restarting app
         Alert.alert(
             'Oh no!',

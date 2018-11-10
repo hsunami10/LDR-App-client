@@ -37,6 +37,11 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
       }
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };

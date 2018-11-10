@@ -78,7 +78,12 @@ export const forgotPassword = (email, navigation, clearInput) => dispatch => {
       }
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -106,7 +111,12 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
       }
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -123,7 +133,12 @@ export const sendVerificationEmail = (id, email) => dispatch => {
       }
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -148,7 +163,12 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
       resetEverything();
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -174,6 +194,11 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
       }
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };

@@ -22,7 +22,12 @@ export const createPost = (postObj, navigation) => dispatch => {
       navigation.goBack();
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 

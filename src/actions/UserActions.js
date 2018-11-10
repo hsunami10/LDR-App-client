@@ -9,7 +9,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { removeCredentials } from './AuthActions';
+import { removeCredentials, logOutUser } from './AuthActions';
 import { pushRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
@@ -60,8 +60,10 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
                   onPress: () => {
                     if (callbacks) {
                       if (callbacks.navToAuth) {
+                        dispatch(logOutUser());
                         callbacks.navToAuth();
                       } else {
+                        // NOTE: This should never run
                         handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
                       }
                     }
@@ -84,7 +86,16 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       }
     })
     .catch(error => {
-      handleError(error, false);
+      if (isRefresh) {
+        dispatch(stopUserLoading());
+      } else {
+        dispatch(stopLoading());
+      }
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -92,7 +103,11 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
 export const setActive = (id, bool) => {
   axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
     .catch(error => {
-      handleError(error, false);
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
 
@@ -122,6 +137,11 @@ export const fetchAliases = (id, navigation) => dispatch => {
       navigation.navigate('Create');
     })
     .catch(error => {
-      handleError(error, false);
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
     });
 };
