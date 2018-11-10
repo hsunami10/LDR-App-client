@@ -3,11 +3,14 @@ import {
   STOP_FEED_LOADING,
   LOG_OUT_USER,
   GET_USER_FEED,
-  SORT_FEED
+  SORT_FEED,
+  START_INITIAL_FEED_LOADING,
+  STOP_INITIAL_FEED_LOADING,
 } from '../actions/types';
 
 const INITIAL_STATE = {
   loading: false,
+  initial_loading: false,
   message: '',
   offset: 0,
   posts: []
@@ -22,6 +25,10 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: true };
     case STOP_FEED_LOADING:
       return { ...state, loading: false };
+    case START_INITIAL_FEED_LOADING:
+      return { ...state, initial_loading: true };
+    case STOP_INITIAL_FEED_LOADING:
+      return { ...state, initial_loading: false };
     case GET_USER_FEED:
       let message = '';
       if (action.payload.length === 0) {

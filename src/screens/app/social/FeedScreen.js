@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
-import { SearchHeader } from '../../../components/common';
+import { SearchHeader, FullScreenLoading } from '../../../components/common';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
 
@@ -107,11 +107,11 @@ class FeedScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserFeed(this.props.id);
+    this.props.getUserFeed(this.props.id, this.props.offset, true);
   }
 
   handleScroll = () => Keyboard.dismiss()
-  handleRefresh = () => this.props.getUserFeed(this.props.id, this.props.offset)
+  handleRefresh = () => this.props.getUserFeed(this.props.id, this.props.offset, false)
 
   handleEndReached = () => {
     // TODO: Handle pagination here
@@ -182,6 +182,32 @@ class FeedScreen extends Component {
   renderPosts = post => <Text style={{ alignSelf: 'center' }}>{post.item.body}</Text>
   renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
 
+  renderBody = () => {
+    if (this.state.height === 0) { // Get rid of small jump in spinning icon
+      return null;
+    } else if (this.props.initial_loading) { // Runs on componentDidMount (once) only
+      // BUG: Setting height to state height might be a bit buggy - might re-render too slowly and jump spinning icon
+      return <FullScreenLoading height={this.state.height} loading />;
+    }
+    return (
+      <FlatList
+        data={this.props.posts}
+        renderItem={this.props.message === '' ? this.renderPosts : this.renderMessage}
+        keyExtractor={post => post.id}
+        onScroll={this.handleScroll}
+        scrollEventThrottle={16}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.loading}
+            onRefresh={this.handleRefresh}
+          />
+        }
+        onEndReached={this.handleEndReached}
+        onEndReachedThreshold={0}
+      />
+    );
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -199,21 +225,7 @@ class FeedScreen extends Component {
           style={{ flex: 1 }}
           onLayout={this.handleLayout}
         >
-          <FlatList
-            data={this.props.posts}
-            renderItem={this.props.message === '' ? this.renderPosts : this.renderMessage}
-            keyExtractor={post => post.id}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.props.loading}
-                onRefresh={this.handleRefresh}
-              />
-            }
-            onEndReached={this.handleEndReached}
-            onEndReachedThreshold={0}
-          />
+          {this.renderBody()}
           <Animated.View
             style={[styles.searchViewStyle, {
               display: this.state.display,
@@ -237,6 +249,7 @@ class FeedScreen extends Component {
 FeedScreen.propTypes = {
   id: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
+  initial_loading: PropTypes.bool.isRequired,
   posts: PropTypes.array.isRequired,
   getUserFeed: PropTypes.func.isRequired,
   offset: PropTypes.number.isRequired,
@@ -265,6 +278,7 @@ const mapStateToProps = state => {
   return {
     id: state.auth.id,
     loading: state.feed.loading,
+    initial_loading: state.feed.initial_loading,
     offset: state.feed.offset,
     message: state.feed.message,
     posts
