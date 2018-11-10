@@ -1,16 +1,40 @@
 import {
+  START_FEED_LOADING,
+  STOP_FEED_LOADING,
   LOG_OUT_USER,
-  CREATE_POST
+  GET_USER_FEED,
+  SORT_FEED
 } from '../actions/types';
 
-const INITIAL_STATE = [];
+const INITIAL_STATE = {
+  loading: false,
+  message: '',
+  offset: 0,
+  posts: []
+};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case START_FEED_LOADING:
+      return { ...state, loading: true };
+    case STOP_FEED_LOADING:
+      return { ...state, loading: false };
     case LOG_OUT_USER:
       return INITIAL_STATE;
-    case CREATE_POST:
-      return [action.payload, ...state];
+    case GET_USER_FEED:
+      let message = '';
+      if (action.payload.length === 0) {
+        message = 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.';
+      }
+      return {
+        ...state,
+        message,
+        posts: action.payload,
+        offset: state.offset + action.payload.length
+      };
+    case SORT_FEED:
+      // TODO: Sort feed action here later
+      return state;
     default:
       return state;
   }

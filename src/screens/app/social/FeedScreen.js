@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import GeneralSearchScreen from '../../../components/GeneralSearchScreen';
+import { getUserFeed } from '../../../actions/FeedActions';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -46,63 +48,8 @@ class FeedScreen extends Component {
     oldSearch: '',
     typingTimeout: null,
     opacity: new Animated.Value(0),
-    refreshing: false,
     display: 'none',
     height: 0,
-    posts: [
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-    ],
     posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -159,7 +106,12 @@ class FeedScreen extends Component {
     ]
   }
 
+  componentDidMount() {
+    this.props.getUserFeed(this.props.id);
+  }
+
   handleScroll = () => Keyboard.dismiss()
+  handleRefresh = () => this.props.getUserFeed(this.props.id, this.props.offset)
 
   handleEndReached = () => {
     // TODO: Handle pagination here
@@ -221,20 +173,14 @@ class FeedScreen extends Component {
     }));
   }
 
-  handleRefresh = () => {
-    this.setState(() => ({ refreshing: true }));
-    // TODO: Grab new data from database again here, and set refreshing to false
-    setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
-  }
-
   handleLayout = e => {
     const height = e.nativeEvent.layout.height;
     this.setState(() => ({ height }));
   }
 
-  renderItem = post => {
-    return <Text style={{ alignSelf: 'center' }}>{post.item.text}</Text>;
-  }
+  // TODO: Render actual posts later - post / card component
+  renderPosts = post => <Text style={{ alignSelf: 'center' }}>{post.item.body}</Text>
+  renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
 
   render() {
     return (
@@ -254,14 +200,14 @@ class FeedScreen extends Component {
           onLayout={this.handleLayout}
         >
           <FlatList
-            data={this.state.posts}
-            renderItem={this.renderItem}
+            data={this.props.posts}
+            renderItem={this.props.message === '' ? this.renderPosts : this.renderMessage}
             keyExtractor={post => post.id}
             onScroll={this.handleScroll}
             scrollEventThrottle={16}
             refreshControl={
               <RefreshControl
-                refreshing={this.state.refreshing}
+                refreshing={this.props.loading}
                 onRefresh={this.handleRefresh}
               />
             }
@@ -288,6 +234,15 @@ class FeedScreen extends Component {
   }
 }
 
+FeedScreen.propTypes = {
+  id: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  posts: PropTypes.array.isRequired,
+  getUserFeed: PropTypes.func.isRequired,
+  offset: PropTypes.number.isRequired,
+  message: PropTypes.string.isRequired
+};
+
 const styles = StyleSheet.create({
   centerItems: {
     flex: 1,
@@ -301,4 +256,19 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FeedScreen;
+const mapStateToProps = state => {
+  // Pre-process posts if there are none to see
+  let posts = state.feed.posts;
+  if (posts.length === 0) {
+    posts = [{ id: '0', text: state.feed.message }];
+  }
+  return {
+    id: state.auth.id,
+    loading: state.feed.loading,
+    offset: state.feed.offset,
+    message: state.feed.message,
+    posts
+  };
+};
+
+export default connect(mapStateToProps, { getUserFeed })(FeedScreen);

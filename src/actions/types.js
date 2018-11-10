@@ -29,3 +29,11 @@ export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topic
 
 // Posts
 export const CREATE_POST = 'create_post';
+export const DELETE_POST = 'delete_post';
+export const EDIT_POST = 'edit_post';
+
+// Feed
+export const START_FEED_LOADING = 'start_feed_loading';
+export const STOP_FEED_LOADING = 'stop_feed_loading';
+export const GET_USER_FEED = 'get_user_feed';
+export const SORT_FEED = 'sort_feed';
