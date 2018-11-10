@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import GeneralSearchScreen from '../../../components/GeneralSearchScreen';
+import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
 
 /*

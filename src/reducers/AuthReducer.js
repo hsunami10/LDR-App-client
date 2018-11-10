@@ -3,12 +3,7 @@ import {
   SET_AUTH_ERRORS,
   RESET_AUTH_ERRORS,
   SET_USER_CREDENTIALS,
-  SET_NOT_FIRST_LOG_IN,
-  STORE_USER_INFO,
-  START_USER_LOADING,
-  STOP_USER_LOADING,
-  SET_SELECTED_USER,
-  CREATE_POST
+  SET_NOT_FIRST_LOG_IN
 } from '../actions/types';
 import { handleError } from '../assets/helpers';
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { View, Text, Animated, Keyboard, RefreshControl, FlatList } from 'react-native';
 import { SearchHeader } from '../../../components/common';
-import GeneralSearchScreen from '../../../components/GeneralSearchScreen';
+import GeneralSearchScreen from '../GeneralSearchScreen';
 
 // TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics - default to middle "Posts"
 // When search is clicked, show animated view with top 10 popular search terms of all time (grabbed from database)
