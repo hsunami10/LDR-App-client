@@ -30,9 +30,8 @@ Things to keep in mind:
     - blocked users
   Include:
     - topics subscribed to
-    - users subscribed to
     - friends' posts
-    - posts you made
+    - your posts
 Order from: (top to bottom) most recent to oldest
 
 First get data for exclusions
@@ -107,15 +106,16 @@ class FeedScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserFeed(this.props.id, this.props.offset, true);
+    this.props.getUserFeed(this.props.id, 0, true);
   }
 
   handleScroll = () => Keyboard.dismiss()
-  handleRefresh = () => this.props.getUserFeed(this.props.id, this.props.offset, false)
+  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false)
 
   handleEndReached = () => {
     // TODO: Handle pagination here
     // If no more old data, then don't do anything anymore
+    // Take contentSize into account - if contentSize is smaller than height, then this is triggered automatically, which we don't want
     console.log('feed paginate for new data here');
   };
 

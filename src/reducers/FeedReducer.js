@@ -37,8 +37,8 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         message,
-        posts: action.payload,
-        offset: state.offset + action.payload.length
+        posts: action.payload.posts,
+        offset: action.payload.offset
       };
     case SORT_FEED:
       // TODO: Sort feed action here later
