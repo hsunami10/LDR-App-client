@@ -19,6 +19,7 @@ class DiscoverScreen extends Component {
     refreshing: false,
     display: 'none',
     height: 0,
+    canPaginate: false,
     posts: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -133,6 +134,12 @@ class DiscoverScreen extends Component {
     console.log('grab discover feed here with api endpoint');
   }
 
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.setState(prevState => ({
+      canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
+    }));
+  }
+
   handleEndReached = () => {
     // TODO: Handle pagination here
     // If no more old data, then don't do anything anymore
@@ -236,6 +243,7 @@ class DiscoverScreen extends Component {
                 onRefresh={this.handleRefresh}
               />
             }
+            onContentSizeChange={this.handleContentSizeChange}
             onEndReached={this.handleEndReached} // TODO: Paginate here
             onEndReachedThreshold={0}
           />

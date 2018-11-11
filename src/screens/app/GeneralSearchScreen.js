@@ -7,7 +7,10 @@ import { FlatList, Animated, StyleSheet, RefreshControl, Text, Dimensions, Keybo
 // Fix pagination to only happen when on search results, not search suggestions
 // When showing popular search suggestings, have a "search up" clickable at the bottom (like reddit app)
 class GeneralSearchScreen extends Component {
-  state = { refreshing: false }
+  state = {
+    refreshing: false,
+    canPaginate: false
+  }
 
   componentDidUpdate(prevProps) {
     // Scroll back to top if hidden
@@ -17,6 +20,12 @@ class GeneralSearchScreen extends Component {
   }
 
   handleScroll = () => Keyboard.dismiss()
+
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.setState(() => ({
+      canPaginate: contentHeight > this.props.height
+    }));
+  }
 
   handleRefresh = () => {
     this.setState(() => ({ refreshing: true }));
@@ -56,6 +65,7 @@ class GeneralSearchScreen extends Component {
               onRefresh={this.handleRefresh}
             />
           }
+          onContentSizeChange={this.handleContentSizeChange}
           onEndReached={this.handleEndReached}
           onEndReachedThreshold={0}
         />

@@ -8,6 +8,7 @@ import { handleError } from '../../../assets/helpers/index';
 import { setActive, getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 
+// NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
 class ViewProfileScreen extends Component {
   state = { width: 0, height: 0 }
 

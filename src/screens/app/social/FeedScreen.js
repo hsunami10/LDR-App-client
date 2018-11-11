@@ -49,6 +49,7 @@ class FeedScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
+    canPaginate: false,
     posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -111,12 +112,19 @@ class FeedScreen extends Component {
 
   handleScroll = () => Keyboard.dismiss()
   handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false)
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.setState(prevState => ({
+      canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
+    }));
+  }
 
   handleEndReached = () => {
     // TODO: Handle pagination here
     // If no more old data, then don't do anything anymore
     // Take contentSize into account - if contentSize is smaller than height, then this is triggered automatically, which we don't want
-    console.log('feed paginate for new data here');
+    if (this.state.canPaginate) {
+      console.log('feed paginate for new data here');
+    }
   };
 
   searchResults = () => {
@@ -202,6 +210,7 @@ class FeedScreen extends Component {
             onRefresh={this.handleRefresh}
           />
         }
+        onContentSizeChange={this.handleContentSizeChange}
         onEndReached={this.handleEndReached}
         onEndReachedThreshold={0}
       />
