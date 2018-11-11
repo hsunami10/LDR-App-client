@@ -32,7 +32,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, initial_loading: false };
     case GET_USER_FEED:
       let message = '';
-      if (action.payload.length === 0) {
+      // Only show message when there is absolutely nothing
+      if (action.payload.posts.length === 0 && state.posts.length === 0) {
         message = 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.';
       }
       return {
