@@ -7,7 +7,7 @@ import { ROOT_URL } from '../../constants/variables';
 import { ClickableImage } from '../../components/common';
 
 // TODO: Finish post cards - to show in feed
-const PostCard = ({ post, viewProfile }) => (
+const PostCard = ({ userID, post, viewProfile }) => (
   <View style={styles.viewStyle}>
     <View style={styles.postHeaderStyle}>
       <ClickableImage
@@ -23,7 +23,8 @@ const PostCard = ({ post, viewProfile }) => (
           style={{ fontWeight: 'bold' }}
           onPress={() => viewProfile(post.author_id)}
         >
-          {post.username}
+          {/* Only show the real username if there's an alias OR if you're the author */}
+          {post.alias_id === '' || post.author_id === userID ? post.username : post.alias}
         </Text>
         <Text style={{ fontSize: 12 }}>{post.topic_id === '' ? 'Global' : post.name}</Text>
       </View>
@@ -58,6 +59,7 @@ const PostCard = ({ post, viewProfile }) => (
 );
 
 PostCard.propTypes = {
+  userID: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   viewProfile: PropTypes.func.isRequired
 };
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
   viewStyle: {
     flexDirection: 'column',
     width: Dimensions.get('window').width,
-    height: 125,
+    // height: 125,
     borderColor: '#C1C7C9',
     borderTopWidth: 1,
     borderBottomWidth: 1

@@ -205,7 +205,7 @@ class FeedScreen extends Component {
   }
 
   // TODO: Render actual posts later - post / card component
-  renderPosts = post => <PostCard post={post.item} viewProfile={this.viewProfile} />
+  renderPosts = post => <PostCard userID={this.props.id} post={post.item} viewProfile={this.viewProfile} />
   renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
 
   renderBody = () => {
