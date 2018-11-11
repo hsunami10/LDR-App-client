@@ -105,9 +105,15 @@ StandardHeader.propTypes = {
   title: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.element
-  ]).isRequired,
-  leftTitle: PropTypes.string,
-  rightTitle: PropTypes.string,
+  ]),
+  leftTitle: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
+  rightTitle: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
   showLeft: PropTypes.bool,
   showRight: PropTypes.bool,
   headerLeft: PropTypes.element,

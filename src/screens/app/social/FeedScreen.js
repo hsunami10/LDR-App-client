@@ -5,8 +5,13 @@ import moment from 'moment';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader, FullScreenLoading } from '../../../components/common';
+import PostCard from '../../../components/post/PostCard';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
+import { pushRoute } from '../../../actions/NavigationActions';
+import { setSelectedUser } from '../../../actions/UserActions';
+
+// TODO: Add 3 tabs later - Feed, Topics, Friends
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -189,19 +194,24 @@ class FeedScreen extends Component {
   }
 
   handleLayout = e => {
-    const height = e.nativeEvent.layout.height;
+    const { height } = e.nativeEvent.layout;
     this.setState(() => ({ height }));
   }
 
+  viewProfile = id => {
+    this.props.setSelectedUser({ id });
+    this.props.pushRoute('ViewProfile');
+    this.props.navigation.navigate('ViewProfile');
+  }
+
   // TODO: Render actual posts later - post / card component
-  renderPosts = post => <Text style={{ height: 100, alignSelf: 'center' }}>{post.item.body}</Text>
+  renderPosts = post => <PostCard post={post.item} viewProfile={this.viewProfile} />
   renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
 
   renderBody = () => {
     if (this.state.height === 0) { // Get rid of small jump in spinning icon
       return null;
-    } else if (this.props.initial_loading) { // Runs on componentDidMount (once) only
-      // BUG: Setting height to state height might be a bit buggy - might re-render too slowly and jump spinning icon
+    } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
     }
     return (
@@ -242,20 +252,12 @@ class FeedScreen extends Component {
           onLayout={this.handleLayout}
         >
           {this.renderBody()}
-          <Animated.View
-            style={[styles.searchViewStyle, {
-              display: this.state.display,
-              opacity: this.state.opacity,
-              height: this.state.height
-            }]}
-          >
-            <GeneralSearchScreen
-              display={this.state.display}
-              opacity={this.state.opacity}
-              height={this.state.height}
-              results={this.state.posts2}
-            />
-          </Animated.View>
+          <GeneralSearchScreen
+            display={this.state.display}
+            opacity={this.state.opacity}
+            height={this.state.height}
+            results={this.state.posts2}
+          />
         </View>
       </View>
     );
@@ -270,7 +272,9 @@ FeedScreen.propTypes = {
   getUserFeed: PropTypes.func.isRequired,
   offset: PropTypes.number.isRequired,
   message: PropTypes.string.isRequired,
-  keepPaging: PropTypes.bool.isRequired
+  keepPaging: PropTypes.bool.isRequired,
+  pushRoute: PropTypes.func.isRequired,
+  setSelectedUser: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -303,4 +307,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, { getUserFeed })(FeedScreen);
+export default connect(mapStateToProps, {
+  getUserFeed,
+  pushRoute,
+  setSelectedUser
+})(FeedScreen);

@@ -6,6 +6,8 @@ export const STORE_USER_INFO = 'store_user_info';
 export const SET_SELECTED_USER = 'set_selected_user';
 export const START_USER_LOADING = 'start_user_loading';
 export const STOP_USER_LOADING = 'stop_user_loading';
+export const START_INITIAL_USER_LOADING = 'start_initial_user_loading';
+export const STOP_INITIAL_USER_LOADING = 'stop_initial_user_loading';
 export const FETCH_ALIASES = 'fetch_aliases';
 
 // Authentication

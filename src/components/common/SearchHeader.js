@@ -14,7 +14,7 @@ export class SearchHeader extends Component {
   }
 
   handleLayout = e => {
-    const width = e.nativeEvent.layout.width;
+    const { width } = e.nativeEvent.layout;
     // Run once
     if (width !== 0 && this.state.fullCancelWidth === 0) {
       this.setState(() => ({ fullCancelWidth: width, inAnimation: false }));

@@ -92,6 +92,7 @@ class MainScreen extends Component {
   }
 
   handleIndexChange = index => {
+    console.log('index change to: ' + index)
     // Don't change scenes if compose tab is clicked
     if (index !== 2) {
       this.setState((prevState) => {
@@ -103,9 +104,19 @@ class MainScreen extends Component {
     }
   }
 
-  // TODO: Handle scrolling up - check routes to see if it's on the same route
-  // If on a subroute, then navigate back to the parent tab (like reddit)
+  /*
+  TODO: Correctly handle tab presses
+
+  On same tab - check state.navigationState.index value
+  On route - check props.current_route
+
+  2 cases to handle for each tab press:
+    - if previous tab and current tab are different, then don't do anything - default switch tabs action
+    - else if tab and current route are the same, then scroll up
+    - else if tab and current route are different, then pop to top of the nested stack navigator (FeedStack, DiscoverStack, NotificationStack, ProfileStack)
+   */
   handleTabPress = ({ route }) => {
+    console.log('tab press');
     switch (route.key) {
       case 'feed':
         if (this.props.current_route === 'feed') {

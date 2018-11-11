@@ -5,20 +5,21 @@ import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 
 export const HeaderRight = props => (
   <View style={styles.rightContainerStyle}>
-    {props.headerRight ||
-      <TouchableOpacity
-        onPress={props.onRightPress}
-        disabled={props.disableRight}
-      >
-        <Text style={styles.rightTextStyle}>{props.rightTitle || 'Submit'}</Text>
-      </TouchableOpacity>
-    }
+    <TouchableOpacity
+      onPress={props.onRightPress}
+      disabled={props.disableRight}
+    >
+      {props.headerRight || <Text style={styles.rightTextStyle}>{props.rightTitle || 'Submit'}</Text>}
+    </TouchableOpacity>
   </View>
 );
 
 HeaderRight.propTypes = {
   onRightPress: PropTypes.func,
-  rightTitle: PropTypes.string,
+  rightTitle: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
   headerRight: PropTypes.element,
   disableRight: PropTypes.bool,
 };

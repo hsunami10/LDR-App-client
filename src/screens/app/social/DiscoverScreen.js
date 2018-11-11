@@ -207,7 +207,7 @@ class DiscoverScreen extends Component {
   }
 
   handleLayout = e => {
-    const height = e.nativeEvent.layout.height;
+    const { height } = e.nativeEvent.layout;
     this.setState(() => ({ height }));
   }
 

@@ -6,18 +6,19 @@ import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 
 export const HeaderLeft = props => (
   <View style={styles.leftContainerStyle}>
-    {props.headerLeft ||
-      <HeaderBackButton
-        title={props.leftTitle || null}
-        onPress={props.onLeftPress}
-        disabled={props.disableLeft}
-      />
-    }
+    <HeaderBackButton
+      title={props.headerLeft || props.leftTitle}
+      onPress={props.onLeftPress}
+      disabled={props.disableLeft}
+    />
   </View>
 );
 
 HeaderLeft.propTypes = {
-  leftTitle: PropTypes.string,
+  leftTitle: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.element
+  ]),
   onLeftPress: PropTypes.func,
   headerLeft: PropTypes.element,
   disableLeft: PropTypes.bool

@@ -8,30 +8,30 @@ import {
 } from 'react-native';
 import NoImage from '../../assets/images/no_image.jpg';
 
-export const ClickableImage = ({ width, height, onPress, image, type }) => {
+export const ClickableImage = ({ width, height, onPress, image, type, style }) => {
   if (type === 'opacity') {
     return (
-      <TouchableOpacity style={{ width, height }} onPress={onPress}>
+      <TouchableOpacity style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
-          style={{ width, height }}
+          style={[{ width, height }, style || {}]}
           source={image || NoImage}
         />
       </TouchableOpacity>
     );
   } else if (type === 'highlight') {
     return (
-      <TouchableHighlight style={{ width, height }} onPress={onPress}>
+      <TouchableHighlight style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
-          style={{ width, height }}
+          style={[{ width, height }, style || {}]}
           source={image || NoImage}
         />
       </TouchableHighlight>
     );
   } else if (type === 'none') {
     return (
-      <TouchableWithoutFeedback style={{ width, height }} onPress={onPress}>
+      <TouchableWithoutFeedback style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
-          style={{ width, height }}
+          style={[{ width, height }, style || {}]}
           source={image || NoImage}
         />
       </TouchableWithoutFeedback>
@@ -45,5 +45,6 @@ ClickableImage.propTypes = {
   height: PropTypes.number.isRequired,
   onPress: PropTypes.func.isRequired,
   image: Image.propTypes.source,
-  type: PropTypes.oneOf(['opacity', 'highlight', 'none'])
+  type: PropTypes.oneOf(['opacity', 'highlight', 'none']).isRequired,
+  style: PropTypes.object
 };

@@ -17,9 +17,9 @@ const CreatePostScreen = props => (
       <Button onPress={() => props.navigation.navigate('ChooseTopic')}>
         <Text>{props.topic}</Text>
       </Button>
-      <Button onPress={() => console.log('enable location and get long lat coordinates')}>
+      {/* <Button onPress={() => console.log('enable location and get coordinates - long lat format for postgis')}>
         <Text>{'Enable Location (optional)'}</Text>
-      </Button>
+      </Button> */}
       <MultiLineInput
         placeholder="Body"
         value={props.body}

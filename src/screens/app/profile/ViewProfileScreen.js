@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Platform } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive, getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
+// Show user's own profile if - this.props.private OR this.props.selected_user.id === this.props.id
 class ViewProfileScreen extends Component {
-  state = { width: 0, height: 0 }
+  state = { height: 0 }
 
   componentDidMount() {
     const type = this.props.navigation.getParam('type', 'public');
-    if (this.props.private) { // Only defined when type = 'private'
+    if (this.props.private || this.props.selected_user.id === this.props.id) {
       this.props.getUserInfo(this.props.id, 'private', false, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
@@ -24,6 +26,10 @@ class ViewProfileScreen extends Component {
       // type: 'partner', 'public'
       this.props.getUserInfo(this.props.selected_user.id, type, false);
     }
+  }
+
+  componentWillUnmount() {
+
   }
 
   onPressAction = index => {
@@ -47,7 +53,7 @@ class ViewProfileScreen extends Component {
   }
 
   handleRefresh = () => {
-    if (this.props.private) {
+    if (this.props.private || this.props.selected_user.id === this.props.id) {
       this.props.getUserInfo(this.props.id, 'private', true, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
@@ -73,42 +79,55 @@ class ViewProfileScreen extends Component {
   }
 
   handleLayout = e => {
-    const { width, height } = e.nativeEvent.layout;
-    this.setState(() => ({ width, height }));
+    const { height } = e.nativeEvent.layout;
+    this.setState(() => ({ height }));
+  }
+
+  renderBody = () => {
+    if (this.state.height === 0) {
+      return null;
+    } else if (this.props.initial_loading) {
+      return <FullScreenLoading height={this.state.height} loading />;
+    }
+    return <Text>View Profile Screen!</Text>;
+  }
+
+  renderHeaderTitle = () => {
+    if (this.props.private || this.props.selected_user.id === this.props.id) {
+      return this.props.user.username;
+    }
+    return this.props.selected_user.username;
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <StandardHeader
-          title="Your Profile"
+          title={this.renderHeaderTitle()}
           showRight
-          rightTitle={this.props.private ? 'Settings' : undefined} // TODO: Change to gear icon later
+          headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
           onRightPress={this.showActionSheet}
+          showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
+          onLeftPress={() => null} // TODO: Unmount, update navigation app state
         />
         <ScrollView
           scrollEventThrottle={16}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.user_loading}
+              refreshing={this.props.loading}
               onRefresh={this.handleRefresh}
             />
           }
           onLayout={this.handleLayout}
           scrollEnabled={!this.props.loading}
         >
-          <Text>View Profile Screen!</Text>
+          {this.renderBody()}
           <ActionSheet
             ref={this.ref}
             options={['Edit Profile', 'Log Out', 'Cancel']}
             cancelButtonIndex={2}
             destructiveButtonIndex={1}
             onPress={this.onPressAction}
-          />
-          <FullScreenLoading
-            width={this.state.width}
-            height={this.state.height}
-            loading={this.props.loading}
           />
         </ScrollView>
       </View>
@@ -120,11 +139,12 @@ ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   private: PropTypes.bool,
   loading: PropTypes.bool.isRequired,
-  user_loading: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
   getUserInfo: PropTypes.func.isRequired,
   selected_user: PropTypes.object,
   screenProps: PropTypes.object.isRequired,
-  logOutUser: PropTypes.func.isRequired
+  logOutUser: PropTypes.func.isRequired,
+  initial_loading: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -139,10 +159,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.loading,
-  user_loading: state.user.loading,
   user: state.user,
-  selected_user: state.auth.selected_user
+  loading: state.user.loading,
+  initial_loading: state.user.initial_loading,
+  selected_user: state.user.selected_user
 });
 
 export default connect(mapStateToProps, {

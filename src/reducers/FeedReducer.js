@@ -30,6 +30,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, initial_loading: true };
     case STOP_INITIAL_FEED_LOADING:
       return { ...state, initial_loading: false };
+
     case GET_USER_FEED:
       let message = '';
       // Only show message when there is absolutely nothing

@@ -3,6 +3,8 @@ import { Alert } from 'react-native';
 import {
   START_USER_LOADING,
   STOP_USER_LOADING,
+  START_INITIAL_USER_LOADING,
+  STOP_INITIAL_USER_LOADING,
   SET_SELECTED_USER,
   STORE_USER_INFO,
   FETCH_ALIASES
@@ -13,9 +15,13 @@ import { removeCredentials, logOutUser } from './AuthActions';
 import { pushRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
-// Loading only for profile screens and anything user-related
+// Loading only for profile screens and anything user-related - refreshing
 const startUserLoading = () => ({ type: START_USER_LOADING });
 const stopUserLoading = () => ({ type: STOP_USER_LOADING });
+
+// Dispatched only on first user load
+export const startInitialUserLoading = () => ({ type: START_INITIAL_USER_LOADING });
+export const stopInitialUserLoading = () => ({ type: STOP_INITIAL_USER_LOADING });
 
 /*
 Get public or private user information
@@ -28,7 +34,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
   if (isRefresh) {
     dispatch(startUserLoading());
   } else {
-    dispatch(startLoading());
+    dispatch(startInitialUserLoading());
   }
 
   axios.get(`${ROOT_URL}/api/user/${id}?type=${type}`)
@@ -36,7 +42,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       if (isRefresh) {
         dispatch(stopUserLoading());
       } else {
-        dispatch(stopLoading());
+        dispatch(stopInitialUserLoading());
       }
 
       if (response.data.type === 'private') {
@@ -89,7 +95,7 @@ export const getUserInfo = (id, type, isRefresh, credentials = undefined, callba
       if (isRefresh) {
         dispatch(stopUserLoading());
       } else {
-        dispatch(stopLoading());
+        dispatch(stopInitialUserLoading());
       }
       if (error.response) {
         handleError(error.response.data, false);
