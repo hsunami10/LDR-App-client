@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   initial_loading: false,
   message: '',
   offset: 0,
+  keepPaging: true, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts: []
 };
 
@@ -38,7 +39,8 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         message,
         posts: action.payload.replace ? action.payload.posts : [...state.posts, ...action.payload.posts],
-        offset: action.payload.offset
+        offset: action.payload.offset,
+        keepPaging: action.payload.posts.length !== 0 // Continue paging only when there is data retrieved
       };
     case SORT_FEED:
       // TODO: Sort feed action here later

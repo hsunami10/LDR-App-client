@@ -123,7 +123,7 @@ class FeedScreen extends Component {
     // TODO: Handle pagination here
     // If no more old data, then don't do anything anymore
     // Take contentSize into account - if contentSize is smaller than height, then this is triggered automatically, which we don't want
-    if (this.state.canPaginate) {
+    if (this.state.canPaginate && this.props.keepPaging) {
       this.props.getUserFeed(
         this.props.id,
         this.props.offset,
@@ -270,7 +270,8 @@ FeedScreen.propTypes = {
   posts: PropTypes.array.isRequired,
   getUserFeed: PropTypes.func.isRequired,
   offset: PropTypes.number.isRequired,
-  message: PropTypes.string.isRequired
+  message: PropTypes.string.isRequired,
+  keepPaging: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -298,7 +299,8 @@ const mapStateToProps = state => {
     initial_loading: state.feed.initial_loading,
     offset: state.feed.offset,
     message: state.feed.message,
-    posts
+    posts,
+    keepPaging: state.feed.keepPaging
   };
 };
 
