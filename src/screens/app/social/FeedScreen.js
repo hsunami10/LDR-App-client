@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader, FullScreenLoading } from '../../../components/common';
@@ -107,11 +108,11 @@ class FeedScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserFeed(this.props.id, 0, true);
+    this.props.getUserFeed(this.props.id, 0, true, 'date_posted', 'DESC', moment().unix());
   }
 
   handleScroll = () => Keyboard.dismiss()
-  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false)
+  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false, 'date_posted', 'DESC', moment().unix())
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.setState(prevState => ({
       canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
@@ -123,7 +124,14 @@ class FeedScreen extends Component {
     // If no more old data, then don't do anything anymore
     // Take contentSize into account - if contentSize is smaller than height, then this is triggered automatically, which we don't want
     if (this.state.canPaginate) {
-      console.log('feed paginate for new data here');
+      this.props.getUserFeed(
+        this.props.id,
+        this.props.offset,
+        null,
+        'date_posted',
+        'DESC',
+        parseInt(this.props.posts[0].date_posted, 10) // Ignore newer posts when paging
+      );
     }
   };
 
@@ -187,7 +195,7 @@ class FeedScreen extends Component {
   }
 
   // TODO: Render actual posts later - post / card component
-  renderPosts = post => <Text style={{ alignSelf: 'center' }}>{post.item.body}</Text>
+  renderPosts = post => <Text style={{ height: 100, alignSelf: 'center' }}>{post.item.body}</Text>
   renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
 
   renderBody = () => {

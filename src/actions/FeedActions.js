@@ -17,36 +17,35 @@ export const stopFeedLoading = () => ({ type: STOP_FEED_LOADING });
 export const startInitialFeedLoading = () => ({ type: START_INITIAL_FEED_LOADING });
 export const stopInitialFeedLoading = () => ({ type: STOP_INITIAL_FEED_LOADING });
 
-export const getUserFeed = (id, offset, initialFetch) => dispatch => {
-  if (initialFetch) {
+export const getUserFeed = (id, offset, initialFetch, order, direction, latestDate) => dispatch => {
+  if (initialFetch === true) {
     dispatch(startInitialFeedLoading());
-  } else {
+  } else if (initialFetch === false) {
     dispatch(startFeedLoading());
   }
+  // If initialFetch === null, then don't load (only when paging)
 
-  const direction = 'DESC';
-  const order = 'date_posted';
-  const latestDate = Math.floor(Date.now() / 1000); // TODO: Change this into a parameter passed down of the date_posted of topmost post
   // TODO: Change order and direction according to sort by action - instead of hardcoding
   axios.get(`${ROOT_URL}/api/feed/${id}?offset=${offset}&order=${order}&direction=${direction}&latestDate=${latestDate}`)
     .then(response => {
-      if (initialFetch) {
+      if (initialFetch === true) {
         dispatch(stopInitialFeedLoading());
-      } else {
+      } else if (initialFetch === false) {
         dispatch(stopFeedLoading());
       }
       dispatch({
         type: GET_USER_FEED,
         payload: {
           offset: offset === 0 ? response.data.length : offset + response.data.length,
-          posts: response.data
+          posts: response.data,
+          replace: offset === 0 // Flag: replace or add to posts array
         }
       });
     })
     .catch(error => {
-      if (initialFetch) {
+      if (initialFetch === true) {
         dispatch(stopInitialFeedLoading());
-      } else {
+      } else if (initialFetch === false) {
         dispatch(stopFeedLoading());
       }
       if (error.response) {

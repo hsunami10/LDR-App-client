@@ -37,7 +37,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         message,
-        posts: action.payload.posts,
+        posts: action.payload.replace ? action.payload.posts : [...state.posts, ...action.payload.posts],
         offset: action.payload.offset
       };
     case SORT_FEED:
