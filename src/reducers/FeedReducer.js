@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   initial_loading: false,
   message: '',
   offset: 0,
-  keepPaging: true, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
+  keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts: []
 };
 

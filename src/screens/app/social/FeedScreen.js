@@ -120,9 +120,8 @@ class FeedScreen extends Component {
   }
 
   handleEndReached = () => {
-    // TODO: Handle pagination here
-    // If no more old data, then don't do anything anymore
-    // Take contentSize into account - if contentSize is smaller than height, then this is triggered automatically, which we don't want
+    // canPaginate - true ONLY when content is overflowing
+    // keepPaging - true ONLY when there is more data to retrieve
     if (this.state.canPaginate && this.props.keepPaging) {
       this.props.getUserFeed(
         this.props.id,
