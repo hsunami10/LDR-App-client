@@ -52,16 +52,22 @@ export default (state = INITIAL_STATE, action) => {
           data: [action.payload, ...state.posts.data]
         }
       };
-    case SET_SELECTED_USER:
+    case SET_SELECTED_USER: // BUG: Will break if you visit a user in one tab, then visit a user in another tab
       return { ...state, selected_user: action.payload };
     case FETCH_ALIASES:
       return { ...state, aliases: action.payload, alias_fetched: true };
 
     case EDIT_POST:
       const copyPostsData = [...state.posts.data];
+      const copyPostLikes = { ...state.posts.post_likes };
       for (let i = 0, len = copyPostsData.length; i < len; i++) {
         if (copyPostsData[i].id === action.payload.post.id) {
           copyPostsData[i] = action.payload.post;
+          if (copyPostLikes[action.payload.post.id]) {
+            delete copyPostLikes[action.payload.post.id];
+          } else {
+            copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
+          }
           break;
         }
       }
@@ -69,7 +75,8 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         posts: {
           ...state.posts,
-          data: copyPostsData
+          data: copyPostsData,
+          post_likes: copyPostLikes
         }
       };
     default:

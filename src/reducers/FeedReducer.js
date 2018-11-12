@@ -55,7 +55,7 @@ export default (state = INITIAL_STATE, action) => {
       const copyPosts = [...state.posts];
       const copyPostLikes = { ...state.post_likes };
       copyPosts[action.payload.index] = action.payload.post;
-      if (action.payload.post.id in copyPostLikes) {
+      if (copyPostLikes[action.payload.post.id]) {
         delete copyPostLikes[action.payload.post.id];
       } else {
         copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
