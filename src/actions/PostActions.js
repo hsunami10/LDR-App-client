@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   CREATE_POST,
-  EDIT_POST,
+  EDIT_POST_FEED,
   DELETE_POST
 } from './types';
 import { ROOT_URL } from '../constants/variables';
@@ -38,7 +38,7 @@ export const editPost = obj => dispatch => {
   const { post, type, data, userID } = obj;
   post[type] = data;
   dispatch({
-    type: EDIT_POST,
+    type: EDIT_POST_FEED,
     payload: {
       ...obj,
       post

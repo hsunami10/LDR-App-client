@@ -36,7 +36,7 @@ export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topic
 // Posts
 export const CREATE_POST = 'create_post';
 export const DELETE_POST = 'delete_post';
-export const EDIT_POST = 'edit_post';
+export const EDIT_POST_FEED = 'edit_post_feed';
 
 // Feed
 export const START_FEED_LOADING = 'start_feed_loading';

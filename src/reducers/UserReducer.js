@@ -8,7 +8,7 @@ import {
   START_INITIAL_USER_LOADING,
   STOP_INITIAL_USER_LOADING,
   FETCH_ALIASES,
-  EDIT_POST
+  EDIT_POST_FEED
 } from '../actions/types';
 
 // TODO: Add default values for subscribers && friends later
@@ -57,28 +57,6 @@ export default (state = INITIAL_STATE, action) => {
     case FETCH_ALIASES:
       return { ...state, aliases: action.payload, alias_fetched: true };
 
-    case EDIT_POST:
-      const copyPostsData = [...state.posts.data];
-      const copyPostLikes = { ...state.posts.post_likes };
-      for (let i = 0, len = copyPostsData.length; i < len; i++) {
-        if (copyPostsData[i].id === action.payload.post.id) {
-          copyPostsData[i] = action.payload.post;
-          if (copyPostLikes[action.payload.post.id]) {
-            delete copyPostLikes[action.payload.post.id];
-          } else {
-            copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
-          }
-          break;
-        }
-      }
-      return {
-        ...state,
-        posts: {
-          ...state.posts,
-          data: copyPostsData,
-          post_likes: copyPostLikes
-        }
-      };
     default:
       return state;
   }

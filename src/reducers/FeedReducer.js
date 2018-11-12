@@ -6,7 +6,7 @@ import {
   SORT_FEED,
   START_INITIAL_FEED_LOADING,
   STOP_INITIAL_FEED_LOADING,
-  EDIT_POST
+  EDIT_POST_FEED
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -51,10 +51,20 @@ export default (state = INITIAL_STATE, action) => {
       // TODO: Sort feed action here later
       return state;
 
-    case EDIT_POST:
+    case EDIT_POST_FEED:
       const copyPosts = [...state.posts];
       const copyPostLikes = { ...state.post_likes };
-      copyPosts[action.payload.index] = action.payload.post;
+
+      if (copyPosts[action.payload.index] === undefined || copyPosts[action.payload.index].id !== action.payload.post.id) {
+        for (let i = 0, len = copyPosts.length; i < len; i++) {
+          if (copyPosts[i].id === action.payload.post.id) {
+            copyPosts[i] = action.payload.post;
+            break;
+          }
+        }
+      } else {
+        copyPosts[action.payload.index] = action.payload.post;
+      }
       if (copyPostLikes[action.payload.post.id]) {
         delete copyPostLikes[action.payload.post.id];
       } else {
