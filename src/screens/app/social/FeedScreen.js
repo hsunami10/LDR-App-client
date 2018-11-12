@@ -8,7 +8,7 @@ import { SearchHeader, FullScreenLoading } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
-import { pushRoute } from '../../../actions/NavigationActions';
+import { pushTabRoute } from '../../../actions/NavigationActions';
 import { setSelectedUser } from '../../../actions/UserActions';
 
 // TODO: Add 3 tabs later - Feed, Topics, Friends
@@ -113,11 +113,14 @@ class FeedScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getUserFeed(this.props.id, 0, true, 'date_posted', 'DESC', moment().unix());
+    if (this.props.current_route === 'feed') {
+      this.props.getUserFeed(this.props.id, 0, true, 'date_posted', 'DESC', moment().unix());
+    }
   }
 
   handleScroll = () => Keyboard.dismiss()
   handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false, 'date_posted', 'DESC', moment().unix())
+
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.setState(prevState => ({
       canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
@@ -200,7 +203,7 @@ class FeedScreen extends Component {
 
   viewProfile = id => {
     this.props.setSelectedUser({ id });
-    this.props.pushRoute('ViewProfile');
+    this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.navigate('ViewProfile');
   }
 
@@ -273,8 +276,10 @@ FeedScreen.propTypes = {
   offset: PropTypes.number.isRequired,
   message: PropTypes.string.isRequired,
   keepPaging: PropTypes.bool.isRequired,
-  pushRoute: PropTypes.func.isRequired,
-  setSelectedUser: PropTypes.func.isRequired
+  pushTabRoute: PropTypes.func.isRequired,
+  setSelectedUser: PropTypes.func.isRequired,
+  current_route: PropTypes.string.isRequired,
+  current_tab: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -300,6 +305,8 @@ const mapStateToProps = state => {
     id: state.auth.id,
     loading: state.feed.loading,
     initial_loading: state.feed.initial_loading,
+    current_route: state.navigation.current_route,
+    current_tab: state.navigation.current_tab,
     offset: state.feed.offset,
     message: state.feed.message,
     posts,
@@ -309,6 +316,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   getUserFeed,
-  pushRoute,
+  pushTabRoute,
   setSelectedUser
 })(FeedScreen);

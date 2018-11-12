@@ -10,7 +10,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { setActive } from './UserActions';
-import { pushRoute } from './NavigationActions';
+import { navigateToRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
 // Only called when from log in / sign up screen
@@ -100,7 +100,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
         storeCredentials(response.data.id)
           .then(id => {
             dispatch(setUserCredentials(id, true));
-            dispatch(pushRoute('Main'));
+            dispatch(navigateToRoute('feed'));
             setActive(id, true);
             navigation.navigate('App');
             resetEverything();
@@ -158,7 +158,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   })
     .then(() => {
       dispatch(stopLoading());
-      dispatch(pushRoute('VerifyEmail'));
+      dispatch(navigateToRoute('VerifyEmail'));
       navigation.navigate('VerifyEmail');
       resetEverything();
     })
@@ -184,7 +184,7 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
         storeCredentials(response.data.id)
           .then(id => {
             dispatch(setUserCredentials(id, true));
-            dispatch(pushRoute('CreateProfile'));
+            dispatch(navigateToRoute('CreateProfile'));
             navigation.navigate('CreateProfile');
             resetEverything();
           })

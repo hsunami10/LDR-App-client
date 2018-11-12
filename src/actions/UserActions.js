@@ -12,7 +12,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { removeCredentials, logOutUser } from './AuthActions';
-import { pushRoute } from './NavigationActions';
+import { navigateToRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
 // Loading only for profile screens and anything user-related - refreshing
@@ -139,7 +139,7 @@ export const fetchAliases = (id, navigation) => dispatch => {
         type: FETCH_ALIASES,
         payload: response.data
       });
-      dispatch(pushRoute('Create'));
+      dispatch(navigateToRoute('Create'));
       navigation.navigate('Create');
     })
     .catch(error => {

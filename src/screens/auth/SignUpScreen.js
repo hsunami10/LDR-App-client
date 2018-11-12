@@ -15,7 +15,7 @@ import {
   StandardHeader,
   DismissKeyboard
 } from '../../components/common';
-import { goBackwardRoute } from '../../actions/NavigationActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class SignUpScreen extends Component {
@@ -27,7 +27,7 @@ class SignUpScreen extends Component {
 
   componentWillUnmount() {
     if (this.props.current_route === 'SignUp') {
-      this.props.goBackwardRoute();
+      this.props.navigateToRoute('Welcome');
       this.resetEverything();
     }
   }
@@ -132,7 +132,7 @@ SignUpScreen.propTypes = {
   resetAuthErrors: PropTypes.func.isRequired,
   signUpWithUsernameAndPassword: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
-  goBackwardRoute: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
   error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
@@ -157,5 +157,5 @@ export default connect(mapStateToProps, {
   setAuthErrors,
   resetAuthErrors,
   signUpWithUsernameAndPassword,
-  goBackwardRoute
+  navigateToRoute
 })(SignUpScreen);

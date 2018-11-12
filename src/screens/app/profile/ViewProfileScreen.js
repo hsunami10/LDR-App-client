@@ -8,6 +8,7 @@ import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
 import { setActive, getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
+import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
 // Show user's own profile if - this.props.private OR this.props.selected_user.id === this.props.id
@@ -29,7 +30,7 @@ class ViewProfileScreen extends Component {
   }
 
   componentWillUnmount() {
-
+    this.props.goBackwardTabRoute();
   }
 
   onPressAction = index => {
@@ -70,6 +71,7 @@ class ViewProfileScreen extends Component {
     removeCredentials()
       .then(() => {
         this.props.logOutUser();
+        this.props.navigateToRoute('Welcome');
         this.props.screenProps.parentNavigation.navigate('Welcome');
         setActive(this.props.id, false);
       })
@@ -108,7 +110,7 @@ class ViewProfileScreen extends Component {
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
           onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
-          onLeftPress={() => null} // TODO: Unmount, update navigation app state
+          onLeftPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
           scrollEventThrottle={16}
@@ -144,7 +146,9 @@ ViewProfileScreen.propTypes = {
   selected_user: PropTypes.object,
   screenProps: PropTypes.object.isRequired,
   logOutUser: PropTypes.func.isRequired,
-  initial_loading: PropTypes.bool.isRequired
+  initial_loading: PropTypes.bool.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  goBackwardTabRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -167,5 +171,7 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   getUserInfo,
-  logOutUser
+  logOutUser,
+  navigateToRoute,
+  goBackwardTabRoute
 })(ViewProfileScreen);

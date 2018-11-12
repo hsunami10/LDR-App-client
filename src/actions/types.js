@@ -22,9 +22,11 @@ export const STOP_OVERLAY_LOADING = 'stop_overlay_loading';
 
 // Navigation
 export const GO_BACKWARD_ROUTE = 'go_backward_route';
-export const POP_ROUTE = 'pop_route';
+export const GO_BACKWARD_TAB_ROUTE = 'go_backward_tab_route';
 export const REPLACE_CURRENT_ROUTE = 'replace_current_route';
-export const PUSH_ROUTE = 'push_route';
+export const NAVIGATE_TO_ROUTE = 'navigate_to_route';
+export const PUSH_TAB_ROUTE = 'push_tab_route';
+export const SWITCH_TABS = 'switch_tabs';
 
 // Topics
 export const CREATE_TOPIC = 'create_topic';

@@ -1,8 +1,9 @@
 import {
   LOG_OUT_USER,
-  PUSH_ROUTE,
-  GO_BACKWARD_ROUTE,
-  POP_ROUTE
+  PUSH_TAB_ROUTE,
+  NAVIGATE_TO_ROUTE,
+  GO_BACKWARD_TAB_ROUTE,
+  GO_BACKWARD_ROUTE
 } from '../actions/types';
 
 /*
@@ -22,43 +23,75 @@ Add:
 
 const INITIAL_STATE = {
   current_route: 'AuthLoading',
-  tab_indices: {
-    feed: 0,
-    discover: 1,
-    notifications: 3,
-    profile: 4
+  current_tab: '',
+  past_route: '',
+  tab_indices: { // For handling tab presses
+    feed: {
+      index: 0,
+      routes: []
+    },
+    discover: {
+      index: 1,
+      routes: []
+    },
+    notifications: {
+      index: 3,
+      routes: []
+    },
+    profile: {
+      index: 4,
+      routes: []
+    }
   },
-  routes: ['AuthLoading']
+  routes: [] // TODO: Remove this later
 };
 
 export default (state = INITIAL_STATE, action) => {
-  const copyRoutes = [...state.routes];
   switch (action.type) {
     case LOG_OUT_USER:
+      return INITIAL_STATE;
+
+    case PUSH_TAB_ROUTE:
+      const addObj = { ...state.tab_indices[action.payload.tabName] };
+      if (action.payload.routeName) {
+        addObj.routes.push(action.payload.routeName);
+      }
+      const addLen = addObj.routes.length;
       return {
-        ...INITIAL_STATE,
-        routes: [...INITIAL_STATE.routes, 'Welcome']
+        ...state,
+        current_route: action.payload.routeName || (addLen > 0 ? addObj.routes[addLen - 1] : action.payload.tabName),
+        current_tab: action.payload.tabName,
+        past_route: state.current_route,
+        tab_indices: {
+          ...state.tab_indices,
+          [action.payload.tabName]: addObj
+        }
       };
-    case PUSH_ROUTE:
+    case GO_BACKWARD_TAB_ROUTE:
+      const removeObj = { ...state.tab_indices[state.current_tab] };
+      removeObj.routes.pop();
+      const removeLen = removeObj.routes.length;
+      return {
+        ...state,
+        current_route: removeLen > 0 ? removeObj.routes[removeLen - 1] : state.current_tab, // If empty array, then at root of tab stack
+        past_route: state.current_route,
+        tab_indices: {
+          ...state.tab_indices,
+          [state.current_tab]: removeObj
+        }
+      };
+
+    case NAVIGATE_TO_ROUTE:
       return {
         ...state,
         current_route: action.payload,
-        routes: [...state.routes, action.payload]
+        past_route: state.current_route
       };
     case GO_BACKWARD_ROUTE:
-      if (copyRoutes.length > 1) {
-        copyRoutes.pop();
-      }
       return {
         ...state,
-        current_route: copyRoutes[copyRoutes.length - 1],
-        routes: copyRoutes
-      };
-    case POP_ROUTE:
-      return {
-        ...state,
-        current_route: action.payload,
-        routes: state.routes.slice(0, state.routes.indexOf(action.payload) + 1)
+        current_route: state.past_route,
+        past_route: state.current_route
       };
     default:
       return state;

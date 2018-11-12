@@ -12,6 +12,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOG_OUT_USER:
       return INITIAL_STATE;
+
     case CREATE_TOPIC:
       return {
         ...state,

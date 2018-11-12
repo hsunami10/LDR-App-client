@@ -4,7 +4,7 @@ import { View, Alert, Platform } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
-import { pushRoute } from '../../actions/NavigationActions';
+import { navigateToRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { fetchAliases } from '../../actions/UserActions';
 import { checkPermission } from '../../assets/helpers';
@@ -41,31 +41,30 @@ class MainScreen extends Component {
     if (this.props.first_login) {
       checkPermission('notification', this.handleCheckPermission);
     }
-    this.props.pushRoute('feed'); // FeedScreen is the default screen
   }
 
   // Handle hardware back button press on android
   componentDidUpdate(prevProps) {
     if (Platform.OS === 'android') {
       // If "going back" - current routes array is smaller than the previous one
-      if (this.props.routes.length < prevProps.routes.length) {
-        // NOTE: Make sure it's exactly the same as the one in MainScreen.js
-        // Make sure values correspond with indices in array
-        // If both are tab routes
-        if (
-          this.props.tab_indices[prevProps.current_route] !== undefined &&
-          this.props.tab_indices[this.props.current_route] !== undefined
-        ) {
-          // setState here doesn't trigger infinite updates because
-          // the length check will not pass a second time
-          this.setState((prevState) => ({
-            navigationState: {
-              ...prevState.navigationState,
-              index: this.props.tab_indices[this.props.current_route]
-            }
-          }));
-        }
-      }
+      // if (this.props.routes.length < prevProps.routes.length) {
+      //   // NOTE: Make sure it's exactly the same as the one in MainScreen.js
+      //   // Make sure values correspond with indices in array
+      //   // If both are tab routes
+      //   if (
+      //     this.props.tab_indices[prevProps.current_route] !== undefined &&
+      //     this.props.tab_indices[this.props.current_route] !== undefined
+      //   ) {
+      //     // setState here doesn't trigger infinite updates because
+      //     // the length check will not pass a second time
+      //     this.setState((prevState) => ({
+      //       navigationState: {
+      //         ...prevState.navigationState,
+      //         index: this.props.tab_indices[this.props.current_route]
+      //       }
+      //     }));
+      //   }
+      // }
     }
   }
 
@@ -92,11 +91,10 @@ class MainScreen extends Component {
   }
 
   handleIndexChange = index => {
-    console.log('index change to: ' + index)
     // Don't change scenes if compose tab is clicked
-    if (index !== 2) {
+    if (index !== 2 && index !== this.state.index) {
       this.setState((prevState) => {
-        this.props.pushRoute(prevState.navigationState.routes[index].key);
+        this.props.pushTabRoute(prevState.navigationState.routes[index].key, null);
         return {
           navigationState: { ...prevState.navigationState, index }
         };
@@ -105,10 +103,12 @@ class MainScreen extends Component {
   }
 
   /*
-  TODO: Correctly handle tab presses
+  TODO: Correctly handle tab presses - called before handleIndexChange
 
   On same tab - check state.navigationState.index value
   On route - check props.current_route
+
+  If props.navigation.current_route === props.navigation.current_tab, then you're at the root of the tab stack
 
   3 cases to handle for each tab press:
     - if previous tab and current tab are different, then don't do anything - default switch tabs action
@@ -116,11 +116,12 @@ class MainScreen extends Component {
     - else if tab and current route are different, then pop to top of the nested stack navigator (FeedStack, DiscoverStack, NotificationStack, ProfileStack)
    */
   handleTabPress = ({ route }) => {
-    console.log('tab press');
     switch (route.key) {
       case 'feed':
         if (this.props.current_route === 'feed') {
           console.log('scroll up feed');
+        } else if (this.props.current_tab === 'feed') {
+          console.log('navigate to the top of the feed stack');
         }
         break;
       case 'discover':
@@ -129,11 +130,13 @@ class MainScreen extends Component {
         }
         if (this.props.current_route === 'discover') {
           console.log('scroll up discover');
+        } else if (this.props.current_tab === 'discover') {
+          console.log('navigate to the top of the discover stack');
         }
         break;
       case 'compose':
         if (this.props.alias_fetched) {
-          this.props.pushRoute('Create');
+          this.props.navigateToRoute('Create');
           this.props.navigation.navigate('Create');
         } else {
           this.props.fetchAliases(this.props.id, this.props.navigation);
@@ -219,11 +222,13 @@ MainScreen.propTypes = {
   first_login: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
   routes: PropTypes.array.isRequired,
-  pushRoute: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  pushTabRoute: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
   fetchAliases: PropTypes.func.isRequired,
-  tab_indices: PropTypes.object.isRequired
+  tab_indices: PropTypes.object.isRequired,
+  current_tab: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -231,13 +236,15 @@ const mapStateToProps = state => ({
   alias_fetched: state.user.alias_fetched, // Check if aliases have already been fetched
   first_login: state.auth.first_login,
   current_route: state.navigation.current_route,
+  current_tab: state.navigation.current_tab,
   routes: state.navigation.routes,
   loading: state.loading,
   tab_indices: state.navigation.tab_indices
 });
 
 export default connect(mapStateToProps, {
-  pushRoute,
+  navigateToRoute,
   setNotFirstLogIn,
-  fetchAliases
+  fetchAliases,
+  pushTabRoute
 })(MainScreen);

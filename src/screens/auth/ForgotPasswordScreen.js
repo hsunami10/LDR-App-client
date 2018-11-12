@@ -7,7 +7,7 @@ import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } fro
 import { isValidEmail } from '../../assets/helpers';
 import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 import { forgotPassword, resetAuthErrors, setAuthErrors } from '../../actions/AuthActions';
-import { goBackwardRoute } from '../../actions/NavigationActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
 class ForgotPasswordScreen extends Component {
@@ -15,7 +15,7 @@ class ForgotPasswordScreen extends Component {
 
   componentWillUnmount() {
     if (this.props.current_route === 'ForgotPassword') {
-      this.props.goBackwardRoute();
+      this.props.navigateToRoute('LogIn');
       this.props.resetAuthErrors();
     }
   }
@@ -84,7 +84,7 @@ ForgotPasswordScreen.propTypes = {
   forgotPassword: PropTypes.func.isRequired,
   setAuthErrors: PropTypes.func.isRequired,
   resetAuthErrors: PropTypes.func.isRequired,
-  goBackwardRoute: PropTypes.func.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
   success: PropTypes.bool.isRequired,
   error_msg: PropTypes.string.isRequired,
   error_field: PropTypes.string.isRequired,
@@ -115,5 +115,5 @@ export default connect(mapStateToProps, {
   forgotPassword,
   setAuthErrors,
   resetAuthErrors,
-  goBackwardRoute
+  navigateToRoute
 })(ForgotPasswordScreen);

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Button, Image, BackHandler, Platform } from 'react-native';
+import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { ROOT_URL } from '../../constants/variables';
-import { pushRoute } from '../../actions/NavigationActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
 
 class WelcomeScreen extends Component {
   // NOTE: Testing moment unix timestamps, remove this later
@@ -25,7 +25,7 @@ class WelcomeScreen extends Component {
   }
 
   handlePress = route => {
-    this.props.pushRoute(route);
+    this.props.navigateToRoute(route);
     this.props.navigation.navigate(route);
   }
 
@@ -54,7 +54,7 @@ class WelcomeScreen extends Component {
 }
 
 WelcomeScreen.propTypes = {
-  pushRoute: PropTypes.func.isRequired
+  navigateToRoute: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(null, { pushRoute })(WelcomeScreen);
+export default connect(null, { navigateToRoute })(WelcomeScreen);
