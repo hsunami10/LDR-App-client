@@ -5,8 +5,29 @@ import {
   POP_ROUTE
 } from '../actions/types';
 
+/*
+TODO
+
+Need a revamp to correctly handle tab presses - MainScreen.js
+More organized
+
+Android Back Button pops to top of stack, unless it's a modal.
+Handle back button like Vent or Reddit
+
+Add:
+  - current_tab - string of 'tab_indices keys'
+  - object that maps from route.key to index
+  - current tab - routes (4 arrays for each tab)
+ */
+
 const INITIAL_STATE = {
   current_route: 'AuthLoading',
+  tab_indices: {
+    feed: 0,
+    discover: 1,
+    notifications: 3,
+    profile: 4
+  },
   routes: ['AuthLoading']
 };
 

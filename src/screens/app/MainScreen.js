@@ -44,6 +44,7 @@ class MainScreen extends Component {
     this.props.pushRoute('feed'); // FeedScreen is the default screen
   }
 
+  // Handle hardware back button press on android
   componentDidUpdate(prevProps) {
     if (Platform.OS === 'android') {
       // If "going back" - current routes array is smaller than the previous one
@@ -51,17 +52,16 @@ class MainScreen extends Component {
         // NOTE: Make sure it's exactly the same as the one in MainScreen.js
         // Make sure values correspond with indices in array
         // If both are tab routes
-        const mainScreenTabKeys = { feed: 0, discover: 1, notifications: 3, profile: 4 };
         if (
-          mainScreenTabKeys[prevProps.current_route] !== undefined &&
-          mainScreenTabKeys[this.props.current_route] !== undefined
+          this.props.tab_indices[prevProps.current_route] !== undefined &&
+          this.props.tab_indices[this.props.current_route] !== undefined
         ) {
           // setState here doesn't trigger infinite updates because
           // the length check will not pass a second time
           this.setState((prevState) => ({
             navigationState: {
               ...prevState.navigationState,
-              index: mainScreenTabKeys[this.props.current_route]
+              index: this.props.tab_indices[this.props.current_route]
             }
           }));
         }
@@ -110,7 +110,7 @@ class MainScreen extends Component {
   On same tab - check state.navigationState.index value
   On route - check props.current_route
 
-  2 cases to handle for each tab press:
+  3 cases to handle for each tab press:
     - if previous tab and current tab are different, then don't do anything - default switch tabs action
     - else if tab and current route are the same, then scroll up
     - else if tab and current route are different, then pop to top of the nested stack navigator (FeedStack, DiscoverStack, NotificationStack, ProfileStack)
@@ -222,7 +222,8 @@ MainScreen.propTypes = {
   pushRoute: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
-  fetchAliases: PropTypes.func.isRequired
+  fetchAliases: PropTypes.func.isRequired,
+  tab_indices: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -231,7 +232,8 @@ const mapStateToProps = state => ({
   first_login: state.auth.first_login,
   current_route: state.navigation.current_route,
   routes: state.navigation.routes,
-  loading: state.loading
+  loading: state.loading,
+  tab_indices: state.navigation.tab_indices
 });
 
 export default connect(mapStateToProps, {

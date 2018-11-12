@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ROOT_URL } from '../../constants/variables';
+import { ROOT_URL, MAX_POST_BODY_LINES } from '../../constants/variables';
 import { ClickableImage } from '../../components/common';
 
 // TODO: Finish post cards - to show in feed
@@ -33,12 +33,15 @@ const PostCard = ({ userID, post, viewProfile }) => (
       </View>
     </View>
 
-    <View style={{ flex: 1, justifyContent: 'center', padding: 5 }}>
-      <Text>{post.body}</Text>
+    <View style={{ flex: 1, justifyContent: 'center', padding: 5, margin: 5 }}>
+      <Text>
+        {/* TODO: Find number of lines, truncate according to those lines */}
+        {post.body}
+      </Text>
     </View>
 
     <View>
-
+      {/* TODO: Find number of lines, show if greater than max lines */}
     </View>
 
     <View style={{ flexDirection: 'row', borderColor: 'white', borderWidth: 1, height: 40, alignItems: 'center' }}>

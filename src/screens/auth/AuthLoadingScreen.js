@@ -41,7 +41,6 @@ class AuthLoadingScreen extends Component {
     if (Platform.OS === 'android') {
       // NOTE: Make sure these keys are the same as the keys in MainScreen.js - state.routes array
       // Also make sure it's exactly the same as the one in MainScreen.js
-      const mainScreenTabKeys = { feed: 0, discover: 1, notifications: 3, profile: 4 };
       this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
         /*
         When android hardware back button is pressed:
@@ -72,8 +71,8 @@ class AuthLoadingScreen extends Component {
         } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
           return true; // Disable back button on routes
         } else if (
-          mainScreenTabKeys[this.props.current_route] !== undefined &&
-          mainScreenTabKeys[this.props.routes[length - 2]] !== undefined
+          this.props.tab_indices[this.props.current_route] !== undefined &&
+          this.props.tab_indices[this.props.routes[length - 2]] !== undefined
         ) {
           this.props.goBackwardRoute();
           return true;
@@ -140,12 +139,14 @@ AuthLoadingScreen.propTypes = {
   routes: PropTypes.array.isRequired,
   pushRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
-  replaceCurrentRoute: PropTypes.func.isRequired
+  replaceCurrentRoute: PropTypes.func.isRequired,
+  tab_indices: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   current_route: state.navigation.current_route,
-  routes: state.navigation.routes
+  routes: state.navigation.routes,
+  tab_indices: state.navigation.tab_indices
 });
 
 export default connect(mapStateToProps, {

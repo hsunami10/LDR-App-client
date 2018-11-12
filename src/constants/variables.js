@@ -10,8 +10,7 @@ export const ROOT_URL = (
   process.env.NODE_ENV === 'development' ?
   'http://localhost:3000' : 'http://localhost:3000');
 
-export const MIN_POST_HEIGHT = 125;
-export const MAX_POST_HEIGHT = 225;
+export const MAX_POST_BODY_LINES = 6;
 
 export const MIN_HEADER_HEIGHT = Header.HEIGHT; // Minimum header height (including status bar)
 export const MIN_HEADER_HEIGHT_NO_STATUS_BAR = MIN_HEADER_HEIGHT - getStatusBarHeight(true);
