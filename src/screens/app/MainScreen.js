@@ -52,15 +52,15 @@ class MainScreen extends Component {
       //   // Make sure values correspond with indices in array
       //   // If both are tab routes
       //   if (
-      //     this.props.tab_indices[prevProps.current_route] !== undefined &&
-      //     this.props.tab_indices[this.props.current_route] !== undefined
+      //     this.props.tab_routes[prevProps.current_route] !== undefined &&
+      //     this.props.tab_routes[this.props.current_route] !== undefined
       //   ) {
       //     // setState here doesn't trigger infinite updates because
       //     // the length check will not pass a second time
       //     this.setState((prevState) => ({
       //       navigationState: {
       //         ...prevState.navigationState,
-      //         index: this.props.tab_indices[this.props.current_route]
+      //         index: this.props.tab_routes[this.props.current_route]
       //       }
       //     }));
       //   }
@@ -148,6 +148,8 @@ class MainScreen extends Component {
         }
         if (this.props.current_route === 'notifications') {
           console.log('scroll up notifications');
+        } else if (this.props.current_tab === 'notifications') {
+          console.log('navigate to the top of the notifications stack');
         }
         break;
       case 'profile':
@@ -156,6 +158,8 @@ class MainScreen extends Component {
         }
         if (this.props.current_route === 'profile') {
           console.log('scroll up profile');
+        } else if (this.props.current_tab === 'profile') {
+          console.log('navigate to the top of the profile stack');
         }
         break;
       default:
@@ -227,7 +231,7 @@ MainScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
   fetchAliases: PropTypes.func.isRequired,
-  tab_indices: PropTypes.object.isRequired,
+  tab_routes: PropTypes.object.isRequired,
   current_tab: PropTypes.string.isRequired
 };
 
@@ -239,7 +243,7 @@ const mapStateToProps = state => ({
   current_tab: state.navigation.current_tab,
   routes: state.navigation.routes,
   loading: state.loading,
-  tab_indices: state.navigation.tab_indices
+  tab_routes: state.navigation.tab_routes
 });
 
 export default connect(mapStateToProps, {

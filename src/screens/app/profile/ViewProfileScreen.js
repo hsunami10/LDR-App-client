@@ -18,14 +18,14 @@ class ViewProfileScreen extends Component {
   componentDidMount() {
     const type = this.props.navigation.getParam('type', 'public');
     if (this.props.private || this.props.selected_user.id === this.props.id) {
-      this.props.getUserInfo(this.props.id, 'private', false, undefined, {
+      this.props.getUserInfo(this.props.id, this.props.id, 'private', false, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
       });
     } else {
       // NOTE: Selected user cannot be null, must update app state before this is run
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.selected_user.id, type, false);
+      this.props.getUserInfo(this.props.id, this.props.selected_user.id, type, false);
     }
   }
 
@@ -55,12 +55,12 @@ class ViewProfileScreen extends Component {
 
   handleRefresh = () => {
     if (this.props.private || this.props.selected_user.id === this.props.id) {
-      this.props.getUserInfo(this.props.id, 'private', true, undefined, {
+      this.props.getUserInfo(this.props.id, this.props.id, 'private', true, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
       });
     } else {
-      this.props.getUserInfo(this.props.selected_user.id, 'public', true);
+      this.props.getUserInfo(this.props.id, this.props.selected_user.id, 'public', true);
     }
   }
 
@@ -110,7 +110,7 @@ class ViewProfileScreen extends Component {
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
           onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
-          onLeftPress={() => this.props.navigation.goBack()}
+          onLeftPress={() => this.props.navigation.pop()}
         />
         <ScrollView
           scrollEventThrottle={16}

@@ -60,7 +60,7 @@ class CreateMainScreen extends Component {
     });
   }
 
-  handleAliasChange = alias => this.setState({ selectedAliasIndex: alias })
+  handleAliasChange = alias => this.setState(() => ({ selectedAliasIndex: alias }))
   handleChangeBody = body => this.setState(() => ({ body }))
   handleChangeName = name => this.setState(() => ({ name }))
   handleChangeDescription = description => this.setState(() => ({ description }))

@@ -30,14 +30,15 @@ credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
-export const getUserInfo = (id, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
+export const getUserInfo = (userID, targetID, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
   if (isRefresh) {
     dispatch(startUserLoading());
   } else {
     dispatch(startInitialUserLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/user/${id}?type=${type}`)
+  // userID used for getting liked posts
+  axios.get(`${ROOT_URL}/api/user/${targetID}?type=${type}&user_id=${userID}`)
     .then(response => {
       if (isRefresh) {
         dispatch(stopUserLoading());

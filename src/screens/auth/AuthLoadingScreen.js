@@ -4,9 +4,9 @@ import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
-import { setUserCredentials } from '../../actions/AuthActions';
+import { setUserCredentials, logOutUser } from '../../actions/AuthActions';
 import { setActive } from '../../actions/UserActions';
-import { navigateToRoute, goBackwardRoute, replaceCurrentRoute, pushTabRoute } from '../../actions/NavigationActions';
+import { navigateToRoute, goBackwardRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
 class AuthLoadingScreen extends Component {
@@ -60,22 +60,25 @@ class AuthLoadingScreen extends Component {
 
         TODO TODO TODO TODO TODO TODO TODO Fix this with new navigator - don't use this.props.routes anymore
          */
-        // if (this.props.current_route === 'Welcome' || this.props.current_route === 'feed') {
-        //   if (this.props.current_route === 'Welcome') {
-        //     this.props.navigateToRoute('AuthLoading'); // Reset current_route to AuthLoading (when logged out)
-        //   } else {
-        //     // If the default main tab screen changes, change this too
-        //     this.props.replaceCurrentRoute('feed'); // Set default screen to be "feed" (when logged in)
-        //   }
-        //   BackHandler.exitApp();
-        //   return true;
-        // }
-
-        // } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
-        //   return true; // Disable back button on routes
-        // } else if (
-        //   this.props.tab_indices[this.props.current_route] !== undefined &&
-        //   this.props.tab_indices[this.props.routes[length - 2]] !== undefined
+        if (
+          this.props.current_route === 'Welcome' ||
+          ((this.props.current_route === 'feed' && this.props.current_tab === this.props.current_route))
+        ) {
+          this.props.logOutUser(); // Reset app state
+          // if (this.props.current_route === 'Welcome') {
+          //   this.props.navigateToRoute('AuthLoading'); // Reset current_route to AuthLoading (when logged out)
+          // } else {
+          //   // If the default main tab screen changes, change this too
+          //   this.props.navigateToRoute('feed'); // Set default screen to be "feed" (when logged in)
+          // }
+          BackHandler.exitApp();
+          return true;
+        } else if (this.props.current_route === 'CreateProfile' || this.props.current_route === 'VerifyEmail') {
+          return true; // Disable back button on these routes
+        }
+        // else if (
+        //   this.props.tab_routes[this.props.current_route] !== undefined &&
+        //   this.props.tab_routes[this.props.routes[length - 2]] !== undefined
         // ) {
         //   this.props.goBackwardRoute();
         //   return true;
@@ -99,7 +102,7 @@ class AuthLoadingScreen extends Component {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
         if (credentials) {
           this.props.setUserCredentials(credentials.username, credentials.password === 'true');
-          this.props.pushTabRoute('feed');
+          this.props.pushTabRoute('feed', null);
           setActive(credentials.username, true);
           this.props.navigation.navigate('App');
         } else {
@@ -139,22 +142,24 @@ class AuthLoadingScreen extends Component {
 AuthLoadingScreen.propTypes = {
   setUserCredentials: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired,
+  current_tab: PropTypes.string.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
-  replaceCurrentRoute: PropTypes.func.isRequired,
-  tab_indices: PropTypes.object.isRequired,
-  pushTabRoute: PropTypes.func.isRequired
+  tab_routes: PropTypes.object.isRequired,
+  pushTabRoute: PropTypes.func.isRequired,
+  logOutUser: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   current_route: state.navigation.current_route,
-  tab_indices: state.navigation.tab_indices
+  current_tab: state.navigation.current_tab,
+  tab_routes: state.navigation.tab_routes
 });
 
 export default connect(mapStateToProps, {
   setUserCredentials,
   navigateToRoute,
   goBackwardRoute,
-  replaceCurrentRoute,
-  pushTabRoute
+  pushTabRoute,
+  logOutUser
 })(AuthLoadingScreen);

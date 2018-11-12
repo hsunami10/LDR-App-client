@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import moment from 'moment';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ROOT_URL, MAX_POST_BODY_LINES } from '../../constants/variables';
 import { ClickableImage } from '../../components/common';
+import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
-const PostCard = ({ userID, post, viewProfile }) => (
+const PostCard = ({ index, userID, post, viewProfile, postLikes }) => (
   <View style={styles.viewStyle}>
     <View style={styles.postHeaderStyle}>
       <ClickableImage
@@ -24,7 +24,7 @@ const PostCard = ({ userID, post, viewProfile }) => (
           onPress={() => viewProfile(post.author_id)}
         >
           {/* Only show the real username if there's an alias OR if you're the author */}
-          {post.alias_id === '' || post.author_id === userID ? post.username : post.alias}
+          {(post.alias_id === '' || post.author_id === userID) ? post.username : post.alias}
         </Text>
         <Text style={{ fontSize: 12 }}>{post.topic_id === '' ? 'Global' : post.name}</Text>
       </View>
@@ -44,27 +44,16 @@ const PostCard = ({ userID, post, viewProfile }) => (
       {/* TODO: Find number of lines, show if greater than max lines */}
     </View>
 
-    <View style={{ flexDirection: 'row', borderColor: 'white', borderWidth: 1, height: 40, alignItems: 'center' }}>
-      <Text
-        style={{ marginLeft: 10 }}
-        onPress={() => console.log('increase num_likes of post id: ' + post.id)}
-      >
-        {/*TODO: Do heart buttom for interaction / liking later - FIX DESIGN*/}
-        {`${post.num_likes} Likes`}
-      </Text>
-      <View style={{ height: 40, marginLeft: 10, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
-      <Text onPress={() => console.log('go to comments at post id: ' + post.id)}>
-        Comment
-      </Text>
-      <Ionicons onPress={() => console.log('handle post actions for post id: ' + post.id)} style={{ marginLeft: 'auto', marginRight: 10 }} name={`${Platform.OS}-more`} size={35} color="gray" />
-    </View>
+    <PostCardFooter postLikes={postLikes} index={index} post={post} />
   </View>
 );
 
 PostCard.propTypes = {
   userID: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   post: PropTypes.object.isRequired,
-  viewProfile: PropTypes.func.isRequired
+  viewProfile: PropTypes.func.isRequired,
+  postLikes: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

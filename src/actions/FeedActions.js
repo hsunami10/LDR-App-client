@@ -36,8 +36,9 @@ export const getUserFeed = (id, offset, initialFetch, order, direction, latestDa
       dispatch({
         type: GET_USER_FEED,
         payload: {
-          offset: offset === 0 ? response.data.length : offset + response.data.length,
-          posts: response.data,
+          offset: offset === 0 ? response.data.posts.length : offset + response.data.posts.length,
+          post_likes: response.data.post_likes,
+          posts: response.data.posts,
           replace: offset === 0 // Flag: replace or add to posts array
         }
       });

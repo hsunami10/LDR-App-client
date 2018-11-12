@@ -31,7 +31,7 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
         });
         // QUESTION: Navigate to topic screen?
         dispatch(goBackwardRoute());
-        navigation.goBack();
+        navigation.pop();
       } else {
         createTopicErrCb(response.data.msg);
       }

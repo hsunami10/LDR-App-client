@@ -16,7 +16,7 @@ Android Back Button pops to top of stack, unless it's a modal.
 Handle back button like Vent or Reddit
 
 Add:
-  - current_tab - string of 'tab_indices keys'
+  - current_tab - string of 'tab_routes keys'
   - object that maps from route.key to index
   - current tab - routes (4 arrays for each tab)
  */
@@ -25,7 +25,7 @@ const INITIAL_STATE = {
   current_route: 'AuthLoading',
   current_tab: '',
   past_route: '',
-  tab_indices: { // For handling tab presses
+  tab_routes: { // For handling tab presses
     feed: {
       index: 0,
       routes: []
@@ -52,31 +52,35 @@ export default (state = INITIAL_STATE, action) => {
       return INITIAL_STATE;
 
     case PUSH_TAB_ROUTE:
-      const addObj = { ...state.tab_indices[action.payload.tabName] };
+      const addObj = { ...state.tab_routes[action.payload.tabName] };
       if (action.payload.routeName) {
         addObj.routes.push(action.payload.routeName);
       }
       const addLen = addObj.routes.length;
       return {
         ...state,
-        current_route: action.payload.routeName || (addLen > 0 ? addObj.routes[addLen - 1] : action.payload.tabName),
+        current_route: (
+          action.payload.routeName || // Null only when switching tabs
+          (addLen > 0 ? addObj.routes[addLen - 1] : action.payload.tabName) // If tab routes array is empty, then at root of tab stack
+        ),
         current_tab: action.payload.tabName,
         past_route: state.current_route,
-        tab_indices: {
-          ...state.tab_indices,
+        tab_routes: {
+          ...state.tab_routes,
           [action.payload.tabName]: addObj
         }
       };
     case GO_BACKWARD_TAB_ROUTE:
-      const removeObj = { ...state.tab_indices[state.current_tab] };
+      if (state.current_tab === '') return state;
+      const removeObj = { ...state.tab_routes[state.current_tab] };
       removeObj.routes.pop();
       const removeLen = removeObj.routes.length;
       return {
         ...state,
         current_route: removeLen > 0 ? removeObj.routes[removeLen - 1] : state.current_tab, // If empty array, then at root of tab stack
         past_route: state.current_route,
-        tab_indices: {
-          ...state.tab_indices,
+        tab_routes: {
+          ...state.tab_routes,
           [state.current_tab]: removeObj
         }
       };

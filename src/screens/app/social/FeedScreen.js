@@ -204,12 +204,21 @@ class FeedScreen extends Component {
   viewProfile = id => {
     this.props.setSelectedUser({ id });
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.navigate('ViewProfile');
+    this.props.navigation.push('ViewProfile');
   }
 
-  // TODO: Render actual posts later - post / card component
-  renderPosts = post => <PostCard userID={this.props.id} post={post.item} viewProfile={this.viewProfile} />
-  renderMessage = message => <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
+  renderPosts = ({ item, index }) => (
+    <PostCard
+      index={index}
+      userID={this.props.id}
+      post={item}
+      viewProfile={this.viewProfile}
+      postLikes={this.props.post_likes}
+    />
+  )
+  renderMessage = message => (
+    <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
+  )
 
   renderBody = () => {
     if (this.state.height === 0) { // Get rid of small jump in spinning icon
@@ -217,6 +226,7 @@ class FeedScreen extends Component {
     } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
     }
+    // Only updates root components (PostCard), so remember to force re-render nested components by changing state
     return (
       <FlatList
         data={this.props.posts}
@@ -279,7 +289,8 @@ FeedScreen.propTypes = {
   pushTabRoute: PropTypes.func.isRequired,
   setSelectedUser: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired,
-  current_tab: PropTypes.string.isRequired
+  current_tab: PropTypes.string.isRequired,
+  post_likes: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -310,7 +321,8 @@ const mapStateToProps = state => {
     offset: state.feed.offset,
     message: state.feed.message,
     posts,
-    keepPaging: state.feed.keepPaging
+    keepPaging: state.feed.keepPaging,
+    post_likes: state.feed.post_likes
   };
 };
 

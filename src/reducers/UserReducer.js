@@ -7,7 +7,8 @@ import {
   STOP_USER_LOADING,
   START_INITIAL_USER_LOADING,
   STOP_INITIAL_USER_LOADING,
-  FETCH_ALIASES
+  FETCH_ALIASES,
+  EDIT_POST
 } from '../actions/types';
 
 // TODO: Add default values for subscribers && friends later
@@ -16,7 +17,8 @@ const INITIAL_STATE = {
   alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
   posts: {
     offset: 0,
-    data: []
+    data: [],
+    post_likes: {}
   },
   coordinates: null,
   partner: null,
@@ -54,6 +56,22 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, selected_user: action.payload };
     case FETCH_ALIASES:
       return { ...state, aliases: action.payload, alias_fetched: true };
+
+    case EDIT_POST:
+      const copyPostsData = [...state.posts.data];
+      for (let i = 0, len = copyPostsData.length; i < len; i++) {
+        if (copyPostsData[i].id === action.payload.post.id) {
+          copyPostsData[i] = action.payload.post;
+          break;
+        }
+      }
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          data: copyPostsData
+        }
+      };
     default:
       return state;
   }

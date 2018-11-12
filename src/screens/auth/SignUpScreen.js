@@ -38,7 +38,7 @@ class SignUpScreen extends Component {
     this.props.resetAuthErrors();
   }
 
-  handleLeftPress = () => this.props.navigation.goBack()
+  handleLeftPress = () => this.props.navigation.pop()
 
   handleChangeText = (text, id) => {
     switch (id) {

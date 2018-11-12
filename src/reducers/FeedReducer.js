@@ -6,6 +6,7 @@ import {
   SORT_FEED,
   START_INITIAL_FEED_LOADING,
   STOP_INITIAL_FEED_LOADING,
+  EDIT_POST
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -14,7 +15,8 @@ const INITIAL_STATE = {
   message: '',
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
-  posts: []
+  posts: [],
+  post_likes: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -41,12 +43,28 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         message,
         posts: action.payload.replace ? action.payload.posts : [...state.posts, ...action.payload.posts],
+        post_likes: action.payload.replace ? action.payload.post_likes : { ...state.post_likes, ...action.payload.post_likes },
         offset: action.payload.offset,
         keepPaging: action.payload.posts.length !== 0 // Continue paging only when there is data retrieved
       };
     case SORT_FEED:
       // TODO: Sort feed action here later
       return state;
+
+    case EDIT_POST:
+      const copyPosts = [...state.posts];
+      const copyPostLikes = { ...state.post_likes };
+      copyPosts[action.payload.index] = action.payload.post;
+      if (action.payload.post.id in copyPostLikes) {
+        delete copyPostLikes[action.payload.post.id];
+      } else {
+        copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
+      }
+      return {
+        ...state,
+        posts: copyPosts,
+        post_likes: copyPostLikes
+      };
     default:
       return state;
   }

@@ -10,7 +10,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { setActive } from './UserActions';
-import { navigateToRoute } from './NavigationActions';
+import { navigateToRoute, pushTabRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
 // Only called when from log in / sign up screen
@@ -100,7 +100,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
         storeCredentials(response.data.id)
           .then(id => {
             dispatch(setUserCredentials(id, true));
-            dispatch(navigateToRoute('feed'));
+            dispatch(pushTabRoute('feed', null));
             setActive(id, true);
             navigation.navigate('App');
             resetEverything();
