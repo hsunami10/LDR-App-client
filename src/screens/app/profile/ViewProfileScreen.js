@@ -28,6 +28,7 @@ class ViewProfileScreen extends Component {
   }
 
   shouldComponentUpdate(newProps, newState) {
+    // Don't update / re-render if already have a user
     if (this.state.targetUser && newState.targetUser) {
       return false;
     }
@@ -38,6 +39,7 @@ class ViewProfileScreen extends Component {
     // This works because setting selected_user to null stops from running the second time
     // Only runs once - unless refreshing
     if (!prevProps.selected_user && this.props.selected_user) {
+      console.log('target user: ', this.props.selected_user);
       this.setState(() => ({ targetUser: this.props.selected_user }));
       this.props.setSelectedUser(null);
     }
@@ -68,7 +70,7 @@ class ViewProfileScreen extends Component {
   }
 
   handleFirstLoad = () => {
-    this.setState(() => ({ targetUser: null }));
+    this.setState(() => ({ targetUser: null })); // Make sure to update
     this.props.setSelectedUser(null);
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
@@ -132,8 +134,8 @@ class ViewProfileScreen extends Component {
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later
-          // onRightPress={this.showActionSheet}
+          // onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later - for testing only
+          onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
         />
