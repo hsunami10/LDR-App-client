@@ -52,7 +52,16 @@ export default (state = INITIAL_STATE, action) => {
           data: [action.payload, ...state.posts.data]
         }
       };
-    case SET_SELECTED_USER: // BUG: Will break if you visit a user in one tab, then visit a user in another tab
+    /*
+    BUG: Will break if you visit a user in one tab, then visit a user in another tab
+
+    Maybe for each tab, have an array of objects of selected users
+    So every time you view a profile, it adds the user object to the array, which keeps track of it
+
+    OR NOTE: DO THIS - change "selected user" to local state instead - use screenProps to pass down the selected user id
+    Remove all selected user actions, action types, and redux state
+     */
+    case SET_SELECTED_USER:
       return { ...state, selected_user: action.payload };
     case FETCH_ALIASES:
       return { ...state, aliases: action.payload, alias_fetched: true };

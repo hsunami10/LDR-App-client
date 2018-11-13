@@ -26,7 +26,9 @@ class PostCardFooter extends Component {
   handleOptionsAction = () => {
     console.log('handle post actions of post id ' + this.props.post.id);
     if (this.props.id === this.props.post.author_id) {
-      console.log('show an options to edit post body and delete post');
+      console.log('show options to edit post body and delete post');
+    } else {
+      console.log('show options to block / report')
     }
   }
 

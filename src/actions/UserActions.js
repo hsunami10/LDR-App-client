@@ -49,6 +49,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
       if (response.data.type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
+          dispatch(setSelectedUser(response.data.user));
           if (callbacks) {
             if (callbacks.navToApp) {
               callbacks.navToApp();
@@ -86,7 +87,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
       } else if (response.data.type === 'edit') {
         // TODO: Handle retriving data for editing profile
         console.log('retrieve data to edit profile here');
-      } else if (response.data.success) { // User does exist - type: public / partner
+      } else if (response.data.type === 'public' || response.data.type === 'partner') { // User does exist - type: public / partner
         dispatch(setSelectedUser(response.data.user));
       } else { // User does not exist - type: public / partner
         dispatch(setSelectedUser(null));

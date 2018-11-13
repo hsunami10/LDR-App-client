@@ -202,9 +202,11 @@ class FeedScreen extends Component {
   }
 
   viewProfile = id => {
-    this.props.setSelectedUser({ id });
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.push('ViewProfile');
+    this.props.navigation.push('ViewProfile', {
+      type: 'public',
+      id
+    });
   }
 
   renderPosts = ({ item, index }) => (

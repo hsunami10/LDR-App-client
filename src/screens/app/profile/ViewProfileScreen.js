@@ -6,26 +6,40 @@ import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, getUserInfo } from '../../../actions/UserActions';
+import { setActive, getUserInfo, setSelectedUser } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
-// Show user's own profile if - this.props.private OR this.props.selected_user.id === this.props.id
+// Show user's own profile if: this.props.private OR this.props.selected_user.id === this.props.id
+
+/*
+Everytime the user visits a profile screen:
+  - Retrieve profile data from database
+  - Store in app state
+  - Get data from app state and store in local state
+  - Remove from app state
+ */
 class ViewProfileScreen extends Component {
-  state = { height: 0 }
+  state = { height: 0, targetUser: null }
 
   componentDidMount() {
-    const type = this.props.navigation.getParam('type', 'public');
-    if (this.props.private || this.props.selected_user.id === this.props.id) {
-      this.props.getUserInfo(this.props.id, this.props.id, 'private', false, undefined, {
-        navToApp: () => null,
-        navToAuth: this.logOut
-      });
-    } else {
-      // NOTE: Selected user cannot be null, must update app state before this is run
-      // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, this.props.selected_user.id, type, false);
+    this.handleFirstLoad();
+  }
+
+  shouldComponentUpdate(newProps, newState) {
+    if (this.state.targetUser && newState.targetUser) {
+      return false;
+    }
+    return true;
+   }
+
+  componentDidUpdate(prevProps) {
+    // This works because setting selected_user to null stops from running the second time
+    // Only runs once - unless refreshing
+    if (!prevProps.selected_user && this.props.selected_user) {
+      this.setState(() => ({ targetUser: this.props.selected_user }));
+      this.props.setSelectedUser(null);
     }
   }
 
@@ -53,16 +67,23 @@ class ViewProfileScreen extends Component {
     }
   }
 
-  handleRefresh = () => {
-    if (this.props.private || this.props.selected_user.id === this.props.id) {
-      this.props.getUserInfo(this.props.id, this.props.id, 'private', true, undefined, {
+  handleFirstLoad = () => {
+    this.setState(() => ({ targetUser: null }));
+    this.props.setSelectedUser(null);
+    const type = this.props.navigation.getParam('type', 'public');
+    const targetID = this.props.navigation.getParam('id', this.props.id);
+    if (this.props.private || targetID === this.props.id) {
+      this.props.getUserInfo(this.props.id, this.props.id, 'private', false, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
       });
     } else {
-      this.props.getUserInfo(this.props.id, this.props.selected_user.id, 'public', true);
+      // type: 'partner', 'public'
+      this.props.getUserInfo(this.props.id, targetID, type, false);
     }
   }
+
+  handleRefresh = () => this.handleFirstLoad()
 
   showActionSheet = () => this.ActionSheet.show();
   ref = o => (this.ActionSheet = o)
@@ -86,19 +107,22 @@ class ViewProfileScreen extends Component {
   }
 
   renderBody = () => {
+    // BUG: Why is targetUser null here the second time?
+    console.log(this.state.targetUser);
     if (this.state.height === 0) {
       return null;
-    } else if (this.props.initial_loading) {
+    } else if (this.props.initial_loading || !this.state.targetUser) {
       return <FullScreenLoading height={this.state.height} loading />;
     }
-    return <Text>View Profile Screen!</Text>;
+    return <Text>{this.state.targetUser.username}</Text>;
   }
 
   renderHeaderTitle = () => {
-    if (this.props.private || this.props.selected_user.id === this.props.id) {
+    const targetID = this.props.navigation.getParam('id', this.props.id);
+    if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
     }
-    return this.props.selected_user.username;
+    return this.state.targetUser.username;
   }
 
   render() {
@@ -108,7 +132,8 @@ class ViewProfileScreen extends Component {
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          onRightPress={this.showActionSheet}
+          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later
+          // onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
         />
@@ -148,7 +173,8 @@ ViewProfileScreen.propTypes = {
   logOutUser: PropTypes.func.isRequired,
   initial_loading: PropTypes.bool.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
-  goBackwardTabRoute: PropTypes.func.isRequired
+  goBackwardTabRoute: PropTypes.func.isRequired,
+  setSelectedUser: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -173,5 +199,6 @@ export default connect(mapStateToProps, {
   getUserInfo,
   logOutUser,
   navigateToRoute,
-  goBackwardTabRoute
+  goBackwardTabRoute,
+  setSelectedUser
 })(ViewProfileScreen);
