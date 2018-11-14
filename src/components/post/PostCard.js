@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
-import moment from 'moment';
-import { MAX_POST_BODY_LINES } from '../../constants/variables';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import PostCardHeader from './PostCardHeader';
 import PostCardBody from './PostCardBody';
 import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
+// Handle clicking on post cards
 const PostCard = ({ index, userID, post, viewProfile, postLikes }) => (
   <View style={styles.viewStyle}>
     <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />

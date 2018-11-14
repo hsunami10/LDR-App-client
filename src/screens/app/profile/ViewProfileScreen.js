@@ -19,29 +19,39 @@ Everytime the user visits a profile screen:
   - Store in app state
   - Get data from app state and store in local state
   - Remove from app state
+
+QUESTION: What to do if something is edited?
  */
 class ViewProfileScreen extends Component {
-  state = { height: 0, targetUser: null }
-
-  componentDidMount() {
-    this.handleFirstLoad();
+  state = {
+    height: 0,
+    prevUser: null,
+    targetUser: null,
+    flag: false
   }
 
+  componentDidMount() {
+    this.handleFirstLoad(false);
+  }
+
+  // Only look at local state to determine to re-render
+  // Because you do not want it to be affected by other screens
   shouldComponentUpdate(newProps, newState) {
-    // Don't update / re-render if already have a user
-    if (this.state.targetUser && newState.targetUser) {
+    if (this.state.flag !== newState.flag) {
+      return true;
+    } else if (this.state.targetUser && newState.targetUser) { // Don't update / re-render if already retrieved user data
+      console.log('don\'t update');
       return false;
     }
     return true;
    }
 
   componentDidUpdate(prevProps) {
-    // This works because setting selected_user to null stops from running the second time
-    // Only runs once - unless refreshing
+    // Must set selected_user to null to stop this from running infinitely
     if (!prevProps.selected_user && this.props.selected_user) {
-      console.log('target user: ', this.props.selected_user);
-      this.setState(() => ({ targetUser: this.props.selected_user }));
-      this.props.setSelectedUser(null);
+      console.log('set target user: ', this.props.selected_user);
+      this.setState(() => ({ targetUser: this.props.selected_user, prevUser: null }));
+      this.props.setSelectedUser(null); // Reset selected user
     }
   }
 
@@ -69,23 +79,26 @@ class ViewProfileScreen extends Component {
     }
   }
 
-  handleFirstLoad = () => {
-    this.setState(() => ({ targetUser: null })); // Make sure to update
-    this.props.setSelectedUser(null);
+  rerenderComponent = () => this.setState(prevState => ({ flag: !prevState.flag }))
+
+  handleFirstLoad = refresh => {
+    // Mark as null so the component will re-render
+    // Save the user so data will still be displayed even when reloading
+    this.setState(prevState => ({ targetUser: null, prevUser: prevState.targetUser }));
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
-      this.props.getUserInfo(this.props.id, this.props.id, 'private', false, undefined, {
+      this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
       });
     } else {
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, false);
+      this.props.getUserInfo(this.props.id, targetID, type, refresh);
     }
   }
 
-  handleRefresh = () => this.handleFirstLoad()
+  handleRefresh = () => this.handleFirstLoad(true)
 
   showActionSheet = () => this.ActionSheet.show();
   ref = o => (this.ActionSheet = o)
@@ -109,14 +122,12 @@ class ViewProfileScreen extends Component {
   }
 
   renderBody = () => {
-    // BUG: Why is targetUser null here the second time?
-    console.log(this.state.targetUser);
     if (this.state.height === 0) {
       return null;
-    } else if (this.props.initial_loading || !this.state.targetUser) {
+    } else if (this.props.initial_loading || (!this.state.targetUser && !this.state.prevUser)) {
       return <FullScreenLoading height={this.state.height} loading />;
     }
-    return <Text>{this.state.targetUser.username}</Text>;
+    return <Text>{this.state.targetUser ? this.state.targetUser.username : this.state.prevUser.username}</Text>;
   }
 
   renderHeaderTitle = () => {
@@ -124,18 +135,19 @@ class ViewProfileScreen extends Component {
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
     }
-    return this.state.targetUser.username;
+    return this.state.targetUser ? this.state.targetUser.username : this.state.prevUser.username;
   }
 
   render() {
+    console.log('re-render', this.state);
     return (
       <View style={{ flex: 1 }}>
         <StandardHeader
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          // onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later - for testing only
-          onRightPress={this.showActionSheet}
+          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later - for testing only
+          // onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
         />

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
+import { MAX_POST_BODY_LINES } from '../../constants/variables';
 
 const PostCardBody = ({ post }) => (
   <View style={styles.viewStyle}>
