@@ -8,7 +8,7 @@ import {
   START_INITIAL_USER_LOADING,
   STOP_INITIAL_USER_LOADING,
   FETCH_ALIASES,
-  EDIT_POST_FEED
+  EDIT_POST
 } from '../actions/types';
 
 // TODO: Add default values for subscribers && friends later
@@ -17,7 +17,8 @@ const INITIAL_STATE = {
   alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
   posts: {
     offset: 0,
-    data: [],
+    data: {},
+    order: [],
     post_likes: {}
   },
   coordinates: null,
@@ -45,22 +46,43 @@ export default (state = INITIAL_STATE, action) => {
     case STORE_USER_INFO:
       return { ...state, ...action.payload, alias_fetched: true };
     case CREATE_POST:
+      const copyPosts = { ...state.posts.data };
+      copyPosts[action.payload.id] = action.payload;
       return {
         ...state,
         posts: {
+          ...state.posts,
           offset: state.posts.offset + 1,
-          data: [action.payload, ...state.posts.data]
+          data: copyPosts,
+          order: [action.payload.id, ...state.posts.order]
         }
       };
-    /*
-    BUG: Will break if you visit a user in one tab, then visit a user in another tab
+    case EDIT_POST:
+      // TODO: Finish this later
+      // const copyPosts = { ...state.posts };
+      // const copyPostLikes = { ...state.post_likes };
+      //
+      // // Update posts object
+      // if (copyPosts[action.payload.post.id]) {
+      //   copyPosts[action.payload.post.id] = action.payload.post;
+      // }
+      //
+      // // Update post_likes object if necessary
+      // if (action.payload.type === 'num_likes') {
+      //   if (copyPostLikes[action.payload.post.id]) {
+      //     delete copyPostLikes[action.payload.post.id];
+      //   } else {
+      //     copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
+      //   }
+      // }
+      //
+      // return {
+      //   ...state,
+      //   posts: copyPosts,
+      //   post_likes: copyPostLikes
+      // };
+      return state;
 
-    Maybe for each tab, have an array of objects of selected users
-    So every time you view a profile, it adds the user object to the array, which keeps track of it
-
-    OR NOTE: DO THIS - change "selected user" to local state instead - use screenProps to pass down the selected user id
-    Remove all selected user actions, action types, and redux state
-     */
     case SET_SELECTED_USER:
       return { ...state, selected_user: action.payload };
     case FETCH_ALIASES:

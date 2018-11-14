@@ -20,7 +20,8 @@ Everytime the user visits a profile screen:
   - Get data from app state and store in local state
   - Remove from app state
 
-QUESTION: What to do if something is edited?
+QUESTION: What to do if posts is changed?
+TODO: Handle these cases - update whenever posts are edited (body, num_likes), added, and deleted
  */
 class ViewProfileScreen extends Component {
   state = {

@@ -6,7 +6,8 @@ import {
   SORT_FEED,
   START_INITIAL_FEED_LOADING,
   STOP_INITIAL_FEED_LOADING,
-  EDIT_POST_FEED
+  EDIT_POST,
+  DELETE_POST
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -15,7 +16,8 @@ const INITIAL_STATE = {
   message: '',
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
-  posts: [],
+  posts: {}, // Increase performance
+  posts_order: [], // Stores ordering of posts
   post_likes: {}
 };
 
@@ -42,39 +44,42 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         message,
-        posts: action.payload.replace ? action.payload.posts : [...state.posts, ...action.payload.posts],
+        posts: action.payload.replace ? action.payload.posts : { ...state.posts, ...action.payload.posts },
+        posts_order: action.payload.replace ? action.payload.posts_order : [...state.posts_order, ...action.payload.posts_order],
         post_likes: action.payload.replace ? action.payload.post_likes : { ...state.post_likes, ...action.payload.post_likes },
         offset: action.payload.offset,
-        keepPaging: action.payload.posts.length !== 0 // Continue paging only when there is data retrieved
+        keepPaging: action.payload.posts_order.length !== 0 // Continue paging only when there is data retrieved
       };
     case SORT_FEED:
       // TODO: Sort feed action here later
       return state;
 
-    case EDIT_POST_FEED:
-      const copyPosts = [...state.posts];
+    case EDIT_POST:
+      const copyPosts = { ...state.posts };
       const copyPostLikes = { ...state.post_likes };
 
-      if (copyPosts[action.payload.index] === undefined || copyPosts[action.payload.index].id !== action.payload.post.id) {
-        for (let i = 0, len = copyPosts.length; i < len; i++) {
-          if (copyPosts[i].id === action.payload.post.id) {
-            copyPosts[i] = action.payload.post;
-            break;
-          }
+      // Update posts object
+      if (copyPosts[action.payload.post.id]) {
+        copyPosts[action.payload.post.id] = action.payload.post;
+      }
+
+      // Update post_likes object if necessary
+      if (action.payload.type === 'num_likes') {
+        if (copyPostLikes[action.payload.post.id]) {
+          delete copyPostLikes[action.payload.post.id];
+        } else {
+          copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
         }
-      } else {
-        copyPosts[action.payload.index] = action.payload.post;
       }
-      if (copyPostLikes[action.payload.post.id]) {
-        delete copyPostLikes[action.payload.post.id];
-      } else {
-        copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
-      }
+
       return {
         ...state,
         posts: copyPosts,
         post_likes: copyPostLikes
       };
+    case DELETE_POST:
+      // TODO: Finish this later
+      return state;
     default:
       return state;
   }

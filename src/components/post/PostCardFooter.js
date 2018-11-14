@@ -14,7 +14,6 @@ class PostCardFooter extends Component {
 
   handleLikeAction = () => {
     this.props.editPost({
-      index: this.props.index,
       post: this.props.post,
       type: 'num_likes',
       data: this.props.postLikes[this.props.post.id] ? this.props.post.num_likes - 1 : this.props.post.num_likes + 1,
@@ -54,7 +53,6 @@ class PostCardFooter extends Component {
 
 PostCardFooter.propTypes = {
   id: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
   post: PropTypes.object.isRequired,
   editPost: PropTypes.func.isRequired,
   postLikes: PropTypes.object.isRequired // Depends on -

@@ -7,17 +7,16 @@ import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
 // Handle clicking on post cards
-const PostCard = ({ index, userID, post, viewProfile, postLikes }) => (
+const PostCard = ({ userID, post, viewProfile, postLikes }) => (
   <View style={styles.viewStyle}>
     <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
     <PostCardBody post={post} />
-    <PostCardFooter postLikes={postLikes} index={index} post={post} />
+    <PostCardFooter postLikes={postLikes} post={post} />
   </View>
 );
 
 PostCard.propTypes = {
   userID: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
   post: PropTypes.object.isRequired,
   viewProfile: PropTypes.func.isRequired,
   postLikes: PropTypes.object.isRequired

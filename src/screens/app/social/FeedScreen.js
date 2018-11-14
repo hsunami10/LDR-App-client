@@ -43,10 +43,10 @@ Order from: (top to bottom) most recent to oldest
 First get data for exclusions
 Run loops to create the correct query string
 Apply those query strings to the inclusions
+
+TODO: Update when posts are edited (body, num_likes) and deleted, but NOT added
  */
 
-// NOTE: TODO: COPY SEARCH FUNCTIONALITY FROM DISCOVERSCREEN
-// OR HANDLE SEARCHES IN MAIN SCREEN
 class FeedScreen extends Component {
   state = {
     search: '',
@@ -209,9 +209,8 @@ class FeedScreen extends Component {
     });
   }
 
-  renderPosts = ({ item, index }) => (
+  renderPosts = ({ item }) => (
     <PostCard
-      index={index}
       userID={this.props.id}
       post={item}
       viewProfile={this.viewProfile}
@@ -309,11 +308,17 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  // Pre-process posts if there are none to see
-  let posts = state.feed.posts;
-  if (posts.length === 0) {
+  // Pre-process posts - convert from an object of objects to an array of objects
+  const postsOrder = state.feed.posts_order;
+  let posts = new Array(postsOrder.length);
+  if (Object.keys(state.feed.posts).length === 0) {
     posts = [{ id: '0', text: state.feed.message }];
+  } else {
+    for (let i = 0; i < postsOrder.length; i++) {
+      posts[i] = state.feed.posts[postsOrder[i]];
+    }
   }
+
   return {
     id: state.auth.id,
     loading: state.feed.loading,
