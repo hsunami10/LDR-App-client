@@ -36,9 +36,9 @@ export const getUserFeed = (id, offset, initialFetch, order, direction, latestDa
       dispatch({
         type: GET_USER_FEED,
         payload: {
-          offset: offset === 0 ? response.data.posts_order.length : offset + response.data.posts_order.length,
+          offset: offset === 0 ? response.data.order.length : offset + response.data.order.length,
           post_likes: response.data.post_likes,
-          posts_order: response.data.posts_order,
+          order: response.data.order,
           posts: response.data.posts,
           replace: offset === 0 // Flag: replace or add to posts array
         }

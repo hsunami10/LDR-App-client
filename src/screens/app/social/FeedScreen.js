@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   // Pre-process posts - convert from an object of objects to an array of objects
-  const postsOrder = state.feed.posts_order;
+  const postsOrder = state.feed.order;
   let posts = new Array(postsOrder.length);
   if (Object.keys(state.feed.posts).length === 0) {
     posts = [{ id: '0', text: state.feed.message }];

@@ -17,7 +17,7 @@ const INITIAL_STATE = {
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts: {}, // Increase performance
-  posts_order: [], // Stores ordering of posts
+  order: [], // Stores ordering of posts
   post_likes: {}
 };
 
@@ -45,10 +45,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         message,
         posts: action.payload.replace ? action.payload.posts : { ...state.posts, ...action.payload.posts },
-        posts_order: action.payload.replace ? action.payload.posts_order : [...state.posts_order, ...action.payload.posts_order],
+        order: action.payload.replace ? action.payload.order : [...state.order, ...action.payload.order],
         post_likes: action.payload.replace ? action.payload.post_likes : { ...state.post_likes, ...action.payload.post_likes },
         offset: action.payload.offset,
-        keepPaging: action.payload.posts_order.length !== 0 // Continue paging only when there is data retrieved
+        keepPaging: action.payload.order.length !== 0 // Continue paging only when there is data retrieved
       };
     case SORT_FEED:
       // TODO: Sort feed action here later
@@ -78,7 +78,21 @@ export default (state = INITIAL_STATE, action) => {
         post_likes: copyPostLikes
       };
     case DELETE_POST:
-      // TODO: Finish this later
+      const copyPosts2 = { ...state.posts };
+      const copyPostLikes2 = { ...state.post_likes };
+      const copyOrder = [...state.order];
+      const index = copyOrder.indexOf(action.payload.postID);
+      if (index >= 0) {
+        delete copyPosts2[action.payload.postID];
+        delete copyPostLikes2[action.payload.postID];
+        copyOrder.splice(index, 1);
+        return {
+          ...state,
+          offset: state.offset - 1,
+          posts: copyPosts2,
+          order: copyOrder
+        };
+      }
       return state;
     default:
       return state;

@@ -54,4 +54,23 @@ export const editPost = obj => dispatch => {
       }
     });
 };
-// TODO: Delete post, update / edit post, get post (+ post comments and everything) - for view post screen
+
+export const deletePost = (userID, postID) => dispatch => {
+  dispatch(startLoading());
+  axios.delete(`${ROOT_URL}/api/posts/${postID}`)
+    .then(() => {
+      dispatch(stopLoading());
+      dispatch({
+        type: DELETE_POST,
+        payload: { userID, postID }
+      });
+    })
+    .catch(error => {
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};

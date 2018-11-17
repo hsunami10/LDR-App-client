@@ -30,6 +30,14 @@ class ViewProfileScreen extends Component {
   }
 
   onPressAction = index => {
+    if (this.props.private) {
+      this.handleOwnActions(index);
+    } else {
+      this.handleOtherActions(index);
+    }
+  }
+
+  handleOwnActions = index => {
     switch (index) {
       case 0:
         console.log('edit profile');
@@ -43,6 +51,16 @@ class ViewProfileScreen extends Component {
             { text: 'Log Out', onPress: this.logOut }
           ]
         );
+        break;
+      default:
+        return;
+    }
+  }
+
+  handleOtherActions = index => {
+    switch (index) {
+      case 0:
+        console.log('block user');
         break;
       default:
         return;
@@ -92,8 +110,9 @@ class ViewProfileScreen extends Component {
       return null;
     } else if (this.props.initial_loading) {
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.data[this.state.user_id] && this.props.data[this.state.user_id][this.state.screen_id]) {
-      return <Text>{this.props.data[this.state.user_id][this.state.screen_id].username}</Text>;
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
+      // TODO: Display actual information here
+      return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
     }
     return null;
   }
@@ -102,8 +121,8 @@ class ViewProfileScreen extends Component {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
-    } else if (this.props.data[this.state.user_id] && this.props.data[this.state.user_id][this.state.screen_id]) {
-      return this.props.data[this.state.user_id][this.state.screen_id].username;
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
+      return this.props.profile[this.state.user_id][this.state.screen_id].username;
     }
     return '';
   }
@@ -115,8 +134,8 @@ class ViewProfileScreen extends Component {
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.user_id })} // TODO: Remove this later - for testing only
-          // onRightPress={this.showActionSheet}
+          // onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.user_id })} // TODO: Remove this later - for testing only
+          onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
         />
@@ -134,9 +153,9 @@ class ViewProfileScreen extends Component {
           {this.renderBody()}
           <ActionSheet
             ref={this.ref}
-            options={['Edit Profile', 'Log Out', 'Cancel']}
-            cancelButtonIndex={2}
-            destructiveButtonIndex={1}
+            options={this.props.private ? ['Edit Profile', 'Log Out', 'Cancel'] : ['Block', 'Report', 'Cancel']}
+            cancelButtonIndex={this.props.private ? 2 : null}
+            destructiveButtonIndex={this.props.private ? 1 : null}
             onPress={this.onPressAction}
           />
         </ScrollView>
@@ -157,7 +176,7 @@ ViewProfileScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -175,7 +194,7 @@ const mapStateToProps = state => ({
   user: state.user,
   loading: state.user.loading,
   initial_loading: state.user.initial_loading,
-  data: state.screens.profile,
+  profile: state.screens.profile,
 });
 
 export default connect(mapStateToProps, {

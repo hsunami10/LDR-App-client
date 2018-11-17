@@ -3,12 +3,14 @@ import {
   STORE_USER_SCREEN_INFO,
   REMOVE_USER_SCREEN_INFO,
   CREATE_POST,
-  EDIT_POST
+  EDIT_POST,
+  DELETE_POST
 } from '../actions/types';
 
+// TODO: Handle some action types with search.feed and search.discover
 const INITIAL_STATE = {
   profile: { // key: user_id, value: object of (key: shortid - local state, value: screen user data - object)
-    none_msg: 'This account does not exist or has been deleted.',
+    none_msg: 'This account does not exist or has been deleted.'
   },
   search: {
     feed: {},
@@ -40,9 +42,9 @@ export default (state = INITIAL_STATE, action) => {
       const copyProfile3 = { ...state.profile };
       const userScreens = copyProfile3[action.payload.author_id];
       if (userScreens) {
-        for (const key in userScreens) {
-          if (Object.prototype.hasOwnProperty.call(userScreens, key)) {
-            const posts = userScreens[key].posts;
+        for (const screenID in userScreens) {
+          if (Object.prototype.hasOwnProperty.call(userScreens, screenID)) {
+            const posts = userScreens[screenID].posts;
             posts.data[action.payload.id] = action.payload;
             posts.offset++;
             posts.order = [action.payload.id, ...posts.order];
@@ -55,10 +57,10 @@ export default (state = INITIAL_STATE, action) => {
       const copyProfile4 = { ...state.profile };
       const userScreens2 = copyProfile4[action.payload.post.author_id];
       if (userScreens2) {
-        for (const key in userScreens2) {
-          if (Object.prototype.hasOwnProperty.call(userScreens2, key)) {
-            const postData = userScreens2[key].posts.data;
-            const postLikes = userScreens2[key].posts.post_likes;
+        for (const screenID in userScreens2) {
+          if (Object.prototype.hasOwnProperty.call(userScreens2, screenID)) {
+            const postData = userScreens2[screenID].posts.data;
+            const postLikes = userScreens2[screenID].posts.post_likes;
 
             // Update post
             if (postData[action.payload.post.id]) {
@@ -74,6 +76,26 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
         return { ...state, profile: copyProfile4 };
+      }
+      return state;
+    case DELETE_POST:
+      const copyProfile5 = { ...state.profile };
+      const userScreens3 = copyProfile5[action.payload.userID];
+      if (userScreens3) {
+        for (const screenID in userScreens3) {
+          if (Object.prototype.hasOwnProperty.call(userScreens3, screenID)) {
+            const posts = userScreens3[screenID].posts;
+            const index = posts.order.indexOf(action.payload.postID);
+
+            if (index >= 0) {
+              delete posts.data[action.payload.postID];
+              delete posts.post_likes[action.payload.postID];
+              posts.order.splice(index, 1);
+              posts.offset--;
+            }
+          }
+        }
+        return { ...state, profile: copyProfile5 };
       }
       return state;
     default:

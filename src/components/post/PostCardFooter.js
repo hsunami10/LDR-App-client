@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Platform, Text } from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { editPost } from '../../actions/PostActions';
+import { editPost, deletePost } from '../../actions/PostActions';
 
 class PostCardFooter extends Component {
   state = { flag: false } // Force re-render to see updated post
@@ -22,14 +23,39 @@ class PostCardFooter extends Component {
     this.setState(prevState => ({ flag: !prevState.flag }));
   }
 
-  handleOptionsAction = () => {
-    console.log('handle post actions of post id ' + this.props.post.id);
-    if (this.props.id === this.props.post.author_id) {
-      console.log('show options to edit post body and delete post');
-    } else {
-      console.log('show options to block / report')
+  handleOwnActions = index => {
+    switch (index) {
+      case 0:
+        console.log('edit post body');
+        break;
+      case 1:
+        this.props.deletePost(this.props.id, this.props.post.id);
+        break;
+      default:
+        return;
     }
   }
+
+  handleOtherActions = index => {
+    switch (index) {
+      case 0:
+        console.log('report post');
+        break;
+      default:
+        return;
+    }
+  }
+
+  onPressAction = index => {
+    if (this.props.id === this.props.post.author_id) {
+      this.handleOwnActions(index);
+    } else {
+      this.handleOtherActions(index);
+    }
+  }
+
+  showActionSheet = () => this.ActionSheet.show();
+  ref = o => (this.ActionSheet = o)
 
   render() {
     return (
@@ -45,7 +71,14 @@ class PostCardFooter extends Component {
         <Text onPress={this.handleCommentAction}>
           Comment
         </Text>
-        <Ionicons onPress={this.handleOptionsAction} style={{ marginLeft: 'auto', marginRight: 10 }} name={`${Platform.OS}-more`} size={35} color="gray" />
+        <Ionicons onPress={this.showActionSheet} style={{ marginLeft: 'auto', marginRight: 10 }} name={`${Platform.OS}-more`} size={35} color="gray" />
+        <ActionSheet
+          ref={this.ref}
+          options={this.props.id === this.props.post.author_id ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel']}
+          cancelButtonIndex={this.props.id === this.props.post.author_id ? 2 : null}
+          destructiveButtonIndex={this.props.id === this.props.post.author_id ? 1 : null}
+          onPress={this.onPressAction}
+        />
       </View>
     );
   }
@@ -55,9 +88,13 @@ PostCardFooter.propTypes = {
   id: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   editPost: PropTypes.func.isRequired,
-  postLikes: PropTypes.object.isRequired // Depends on -
+  postLikes: PropTypes.object.isRequired,
+  deletePost: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({ id: state.auth.id });
 
-export default connect(mapStateToProps, { editPost })(PostCardFooter);
+export default connect(mapStateToProps, {
+  editPost,
+  deletePost
+})(PostCardFooter);
