@@ -3,61 +3,30 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Platform } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, getUserInfo, setSelectedUser } from '../../../actions/UserActions';
+import { setActive, getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
+import { removeUserScreenInfo } from '../../../actions/ScreenActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
-// Show user's own profile if: this.props.private OR this.props.selected_user.id === this.props.id
-
-/*
-Everytime the user visits a profile screen:
-  - Retrieve profile data from database
-  - Store in app state
-  - Get data from app state and store in local state
-  - Remove from app state
-
-QUESTION: What to do if posts is changed?
-TODO: Handle these cases - update whenever posts are edited (body, num_likes), added, and deleted
- */
 class ViewProfileScreen extends Component {
   state = {
     height: 0,
-    prevUser: null,
-    targetUser: null,
-    flag: false
+    screen_id: shortid(),
+    user_id: ''
   }
 
   componentDidMount() {
     this.handleFirstLoad(false);
   }
 
-  // Only look at local state to determine to re-render
-  // Because you do not want it to be affected by other screens
-  shouldComponentUpdate(newProps, newState) {
-    if (this.state.flag !== newState.flag) {
-      return true;
-    } else if (this.state.targetUser && newState.targetUser) { // Don't update / re-render if already retrieved user data
-      console.log('don\'t update');
-      return false;
-    }
-    return true;
-   }
-
-  componentDidUpdate(prevProps) {
-    // Must set selected_user to null to stop this from running infinitely
-    if (!prevProps.selected_user && this.props.selected_user) {
-      console.log('set target user: ', this.props.selected_user);
-      this.setState(() => ({ targetUser: this.props.selected_user, prevUser: null }));
-      this.props.setSelectedUser(null); // Reset selected user
-    }
-  }
-
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
+    this.props.removeUserScreenInfo(this.state.user_id, this.state.screen_id);
   }
 
   onPressAction = index => {
@@ -80,22 +49,18 @@ class ViewProfileScreen extends Component {
     }
   }
 
-  rerenderComponent = () => this.setState(prevState => ({ flag: !prevState.flag }))
-
   handleFirstLoad = refresh => {
-    // Mark as null so the component will re-render
-    // Save the user so data will still be displayed even when reloading
-    this.setState(prevState => ({ targetUser: null, prevUser: prevState.targetUser }));
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
+    this.setState(() => ({ user_id: targetID }));
     if (this.props.private || targetID === this.props.id) {
       this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
-      });
+      }, this.state.screen_id);
     } else {
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh);
+      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.state.screen_id);
     }
   }
 
@@ -125,29 +90,32 @@ class ViewProfileScreen extends Component {
   renderBody = () => {
     if (this.state.height === 0) {
       return null;
-    } else if (this.props.initial_loading || (!this.state.targetUser && !this.state.prevUser)) {
+    } else if (this.props.initial_loading) {
       return <FullScreenLoading height={this.state.height} loading />;
+    } else if (this.props.data[this.state.user_id] && this.props.data[this.state.user_id][this.state.screen_id]) {
+      return <Text>{this.props.data[this.state.user_id][this.state.screen_id].username}</Text>;
     }
-    return <Text>{this.state.targetUser ? this.state.targetUser.username : this.state.prevUser.username}</Text>;
+    return null;
   }
 
   renderHeaderTitle = () => {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
+    } else if (this.props.data[this.state.user_id] && this.props.data[this.state.user_id][this.state.screen_id]) {
+      return this.props.data[this.state.user_id][this.state.screen_id].username;
     }
-    return this.state.targetUser ? this.state.targetUser.username : this.state.prevUser.username;
+    return '';
   }
 
   render() {
-    console.log('re-render', this.state);
     return (
       <View style={{ flex: 1 }}>
         <StandardHeader
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.targetUser.id })} // TODO: Remove this later - for testing only
+          onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.user_id })} // TODO: Remove this later - for testing only
           // onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
@@ -183,13 +151,13 @@ ViewProfileScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
   getUserInfo: PropTypes.func.isRequired,
-  selected_user: PropTypes.object,
   screenProps: PropTypes.object.isRequired,
   logOutUser: PropTypes.func.isRequired,
   initial_loading: PropTypes.bool.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
-  setSelectedUser: PropTypes.func.isRequired
+  removeUserScreenInfo: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -207,7 +175,7 @@ const mapStateToProps = state => ({
   user: state.user,
   loading: state.user.loading,
   initial_loading: state.user.initial_loading,
-  selected_user: state.user.selected_user
+  data: state.screens.profile,
 });
 
 export default connect(mapStateToProps, {
@@ -215,5 +183,5 @@ export default connect(mapStateToProps, {
   logOutUser,
   navigateToRoute,
   goBackwardTabRoute,
-  setSelectedUser
+  removeUserScreenInfo
 })(ViewProfileScreen);

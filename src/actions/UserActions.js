@@ -5,7 +5,6 @@ import {
   STOP_USER_LOADING,
   START_INITIAL_USER_LOADING,
   STOP_INITIAL_USER_LOADING,
-  SET_SELECTED_USER,
   STORE_USER_INFO,
   FETCH_ALIASES
 } from './types';
@@ -13,6 +12,7 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { removeCredentials, logOutUser } from './AuthActions';
 import { navigateToRoute } from './NavigationActions';
+import { storeUserScreenInfo } from './ScreenActions';
 import { handleError } from '../assets/helpers';
 
 // Loading only for profile screens and anything user-related - refreshing
@@ -30,7 +30,7 @@ credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
-export const getUserInfo = (userID, targetID, type, isRefresh, credentials = undefined, callbacks = undefined) => dispatch => {
+export const getUserInfo = (userID, targetID, type, isRefresh, credentials = undefined, callbacks = undefined, screenID) => dispatch => {
   if (isRefresh) {
     dispatch(startUserLoading());
   } else {
@@ -49,7 +49,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
       if (response.data.type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
-          dispatch(setSelectedUser(response.data.user));
+          dispatch(storeUserScreenInfo(response.data.user, screenID));
           if (callbacks) {
             if (callbacks.navToApp) {
               callbacks.navToApp();
@@ -88,9 +88,9 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
         // TODO: Handle retriving data for editing profile
         console.log('retrieve data to edit profile here');
       } else if (response.data.type === 'public' || response.data.type === 'partner') { // User does exist - type: public / partner
-        dispatch(setSelectedUser(response.data.user));
+        dispatch(storeUserScreenInfo(response.data.user, screenID));
       } else { // User does not exist - type: public / partner
-        dispatch(setSelectedUser(null));
+        dispatch(storeUserScreenInfo(null, screenID));
       }
     })
     .catch(error => {
@@ -122,11 +122,6 @@ export const setActive = (id, bool) => {
 // Store user's profile information
 export const storeUserInfo = user => ({
   type: STORE_USER_INFO,
-  payload: user
-});
-
-export const setSelectedUser = user => ({
-  type: SET_SELECTED_USER,
   payload: user
 });
 

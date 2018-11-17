@@ -9,7 +9,6 @@ import PostCard from '../../../components/post/PostCard';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
-import { setSelectedUser } from '../../../actions/UserActions';
 
 // TODO: Add 3 tabs later - Feed, Topics, Friends
 
@@ -288,7 +287,6 @@ FeedScreen.propTypes = {
   message: PropTypes.string.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
-  setSelectedUser: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
   post_likes: PropTypes.object.isRequired
@@ -335,6 +333,5 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   getUserFeed,
-  pushTabRoute,
-  setSelectedUser
+  pushTabRoute
 })(FeedScreen);
