@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import AuthReducer from './AuthReducer';
-import CreateReducer from './CreateReducer';
+import ScreenReducer from './ScreenReducer';
 import FeedReducer from './FeedReducer';
 import LoadingReducer from './LoadingReducer';
 import NavigationReducer from './NavigationReducer';
@@ -9,7 +9,7 @@ import UserReducer from './UserReducer';
 
 export default combineReducers({
   auth: AuthReducer,
-  create: CreateReducer,
+  screens: ScreenReducer,
   feed: FeedReducer,
   loading: LoadingReducer,
   navigation: NavigationReducer,

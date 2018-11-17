@@ -59,29 +59,32 @@ export default (state = INITIAL_STATE, action) => {
       };
     case EDIT_POST:
       // TODO: Finish this later
-      // const copyPosts = { ...state.posts };
-      // const copyPostLikes = { ...state.post_likes };
-      //
-      // // Update posts object
-      // if (copyPosts[action.payload.post.id]) {
-      //   copyPosts[action.payload.post.id] = action.payload.post;
-      // }
-      //
-      // // Update post_likes object if necessary
-      // if (action.payload.type === 'num_likes') {
-      //   if (copyPostLikes[action.payload.post.id]) {
-      //     delete copyPostLikes[action.payload.post.id];
-      //   } else {
-      //     copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
-      //   }
-      // }
-      //
-      // return {
-      //   ...state,
-      //   posts: copyPosts,
-      //   post_likes: copyPostLikes
-      // };
-      return state;
+      const editPosts = { ...state.posts.data };
+      const copyPostLikes = { ...state.posts.post_likes };
+
+      // Update posts object
+      if (editPosts[action.payload.post.id]) {
+        editPosts[action.payload.post.id] = action.payload.post;
+      }
+
+      // Update post_likes object if necessary
+      if (action.payload.type === 'num_likes') {
+        if (copyPostLikes[action.payload.post.id]) {
+          delete copyPostLikes[action.payload.post.id];
+        } else {
+          copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
+        }
+      }
+
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          data: editPosts,
+          post_likes: copyPostLikes
+        }
+      };
+      // return state;
 
     case SET_SELECTED_USER:
       return { ...state, selected_user: action.payload };

@@ -4,6 +4,18 @@ import RNRestart from 'react-native-restart';
 import Permissions from 'react-native-permissions';
 import { removeCredentials } from '../../actions/AuthActions';
 
+export const isDiffObj = (o1, o2) => {
+  if (Object.keys(o1).length !== Object.keys(o2).length) {
+    return true;
+  }
+  for (const key in o1) {
+    if (o1[key] !== o2[key]) {
+      return true;
+    }
+  }
+  return false;
+};
+
 export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   if (contentOffset.y < 0) {
     console.log('content smaller than view');
