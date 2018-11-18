@@ -5,6 +5,8 @@ import { View, Platform, Text } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { editPost, deletePost } from '../../actions/PostActions';
+import { navigateToRoute } from '../../actions/NavigationActions';
+import { fetchAliases } from '../../actions/UserActions';
 
 class PostCardFooter extends Component {
   state = { flag: false } // Force re-render to see updated post
@@ -26,7 +28,12 @@ class PostCardFooter extends Component {
   handleOwnActions = index => {
     switch (index) {
       case 0:
-        console.log('edit post body');
+        if (this.props.alias_fetched) {
+          this.props.navigateToRoute('EditPost');
+          this.props.parentNavigation.navigate('EditPost', { post: this.props.post });
+        } else {
+          this.props.fetchAliases(this.props.id, this.props.parentNavigation, 'EditPost', { post: this.props.post });
+        }
         break;
       case 1:
         this.props.deletePost(this.props.id, this.props.post.id);
@@ -89,12 +96,22 @@ PostCardFooter.propTypes = {
   post: PropTypes.object.isRequired,
   editPost: PropTypes.func.isRequired,
   postLikes: PropTypes.object.isRequired,
-  deletePost: PropTypes.func.isRequired
+  deletePost: PropTypes.func.isRequired,
+  alias_fetched: PropTypes.bool.isRequired,
+  navigation: PropTypes.object.isRequired,
+  navigateToRoute: PropTypes.func.isRequired,
+  fetchAliases: PropTypes.func.isRequired,
+  parentNavigation: PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({ id: state.auth.id });
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  alias_fetched: state.user.alias_fetched
+});
 
 export default connect(mapStateToProps, {
   editPost,
-  deletePost
+  deletePost,
+  navigateToRoute,
+  fetchAliases
 })(PostCardFooter);

@@ -7,11 +7,11 @@ import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
 // Handle clicking on post cards
-const PostCard = ({ userID, post, viewProfile, postLikes }) => (
+const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavigation }) => (
   <View style={styles.viewStyle}>
     <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
     <PostCardBody post={post} />
-    <PostCardFooter post={post} postLikes={postLikes} />
+    <PostCardFooter post={post} postLikes={postLikes} navigation={navigation} parentNavigation={parentNavigation} />
   </View>
 );
 
@@ -19,7 +19,9 @@ PostCard.propTypes = {
   userID: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   viewProfile: PropTypes.func.isRequired,
-  postLikes: PropTypes.object.isRequired
+  postLikes: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  parentNavigation: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

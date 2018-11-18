@@ -126,7 +126,7 @@ export const storeUserInfo = user => ({
 });
 
 // Navigate to CreateMainScreen after aliases are loaded
-export const fetchAliases = (id, navigation) => dispatch => {
+export const fetchAliases = (id, navigation, afterFetchRoute, navParams = null) => dispatch => {
   dispatch(startLoading());
 
   axios.get(`${ROOT_URL}/api/user/alias/${id}`)
@@ -136,8 +136,8 @@ export const fetchAliases = (id, navigation) => dispatch => {
         type: FETCH_ALIASES,
         payload: response.data
       });
-      dispatch(navigateToRoute('Create'));
-      navigation.navigate('Create');
+      dispatch(navigateToRoute(afterFetchRoute));
+      navigation.navigate(afterFetchRoute, navParams);
     })
     .catch(error => {
       dispatch(stopLoading());

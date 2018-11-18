@@ -139,7 +139,7 @@ class MainScreen extends Component {
           this.props.navigateToRoute('Create');
           this.props.navigation.navigate('Create');
         } else {
-          this.props.fetchAliases(this.props.id, this.props.navigation);
+          this.props.fetchAliases(this.props.id, this.props.navigation, 'Create');
         }
         break;
       case 'notifications':

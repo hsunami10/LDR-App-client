@@ -4,6 +4,7 @@ import ViewPostScreen from '../screens/app/social/ViewPostScreen';
 import CreateMainScreen from '../screens/app/create/CreateMainScreen';
 import ChooseTopicScreen from '../screens/app/create/ChooseTopicScreen';
 import EditProfileScreen from '../screens/app/profile/EditProfileScreen';
+import EditPostScreen from '../screens/app/social/EditPostScreen';
 
 /*
 // NOTE: Structure
@@ -100,7 +101,8 @@ export default createStackNavigator(
         gesturesEnabled: true
       }
     },
-    ChooseTopic: ChooseTopicScreen
+    ChooseTopic: ChooseTopicScreen,
+    EditPost: EditPostScreen
   },
   {
     initialRouteName: 'AppMainStack',

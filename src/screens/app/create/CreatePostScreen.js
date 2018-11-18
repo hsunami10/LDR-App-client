@@ -47,7 +47,8 @@ CreatePostScreen.propTypes = {
   error: PropTypes.object.isRequired,
   selectedAlias: PropTypes.number.isRequired,
   handleAliasChange: PropTypes.func.isRequired,
-  aliases: PropTypes.array.isRequired
+  aliases: PropTypes.array.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

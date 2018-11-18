@@ -40,6 +40,8 @@ class PostsList extends Component {
       post={item}
       viewProfile={this.viewProfile}
       postLikes={this.props.post_likes}
+      navigation={this.props.navigation}
+      parentNavigation={this.props.parentNavigation}
     />
   )
 
@@ -50,7 +52,7 @@ class PostsList extends Component {
   render() {
     return (
       <FlatList
-        data={this.props.data}
+        data={this.props.empty ? [{ id: 'foo', text: this.props.message }] : this.props.data}
         renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
         keyExtractor={post => post.id}
         onScroll={this.props.handleScroll || this.handleScroll}
@@ -83,6 +85,8 @@ PostsList.propTypes = {
   paginateData: PropTypes.func.isRequired,
   keepPaging: PropTypes.bool.isRequired, // False only when there is no more data to retrieve
   navigation: PropTypes.object.isRequired,
+  parentNavigation: PropTypes.object.isRequired,
+  message: PropTypes.string.isRequired,
 
   handleScroll: PropTypes.func,
   scrollEventThrottle: PropTypes.number

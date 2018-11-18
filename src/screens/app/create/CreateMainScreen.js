@@ -23,7 +23,7 @@ class CreateMainScreen extends Component {
     },
 
     // Create Post
-    topic: 'Choose Topic',
+    topic: 'Global', // NOTE: Make sure it's the same as the default topic
     body: '',
     postError: {
       type: null,
@@ -192,8 +192,9 @@ class CreateMainScreen extends Component {
               showRight
               rightTitle={this.state.navigationState.index === 0 ? 'Post' : 'Create'}
               onRightPress={this.handleSubmit}
+              disableRight={this.props.loading}
               showLeft
-              onLeftPress={() => this.props.navigation.popToTop()}
+              onLeftPress={() => this.props.navigation.pop()}
               tabTitleWidth={200}
             />
           }

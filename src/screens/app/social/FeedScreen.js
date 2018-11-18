@@ -200,13 +200,15 @@ class FeedScreen extends Component {
       <PostsList
         data={this.props.posts}
         post_likes={this.props.post_likes}
-        empty={this.props.posts[0].id === 'foo'}
+        empty={this.props.posts.length === 0}
+        message="Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed."
         height={this.state.height}
         refreshing={this.props.loading}
         handleRefresh={this.handleRefresh}
         paginateData={this.paginateData}
         keepPaging={this.props.keepPaging}
         navigation={this.props.navigation}
+        parentNavigation={this.props.screenProps.parentNavigation}
       />
     );
   }
@@ -250,7 +252,8 @@ FeedScreen.propTypes = {
   offset: PropTypes.number.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
-  post_likes: PropTypes.object.isRequired
+  post_likes: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -269,16 +272,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   // Pre-process posts - convert from an object of objects to an array of objects
   const postsOrder = state.feed.order;
-  let posts = new Array(postsOrder.length);
-  if (postsOrder.length === 0) {
-    posts = [{
-      id: 'foo',
-      text: 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.'
-    }];
-  } else {
-    for (let i = 0; i < postsOrder.length; i++) {
-      posts[i] = state.feed.posts[postsOrder[i]];
-    }
+  const posts = new Array(postsOrder.length);
+  for (let i = 0; i < postsOrder.length; i++) {
+    posts[i] = state.feed.posts[postsOrder[i]];
   }
 
   return {
