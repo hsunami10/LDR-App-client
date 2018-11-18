@@ -9,12 +9,21 @@ import {
 import NoImage from '../../assets/images/no_image.jpg';
 
 export const ClickableImage = ({ width, height, onPress, image, type, style }) => {
+  let source;
+  if (!image) {
+    source = NoImage;
+  } else if (typeof image === 'string') {
+    source = { uri: image };
+  } else if (typeof image === 'object') {
+    source = image;
+  }
+
   if (type === 'opacity') {
     return (
       <TouchableOpacity style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image ? { uri: image } : NoImage}
+          source={source}
         />
       </TouchableOpacity>
     );
@@ -23,7 +32,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
       <TouchableHighlight style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image ? { uri: image } : NoImage}
+          source={source}
         />
       </TouchableHighlight>
     );
@@ -32,7 +41,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
       <TouchableWithoutFeedback style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image ? { uri: image } : NoImage}
+          source={source}
         />
       </TouchableWithoutFeedback>
     );
@@ -44,7 +53,10 @@ ClickableImage.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   onPress: PropTypes.func.isRequired,
-  image: PropTypes.string,
+  image: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object
+  ]),
   type: PropTypes.oneOf(['opacity', 'highlight', 'none']).isRequired,
   style: PropTypes.object
 };
