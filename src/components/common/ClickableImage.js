@@ -14,7 +14,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
       <TouchableOpacity style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image || NoImage}
+          source={image ? { uri: image } : NoImage}
         />
       </TouchableOpacity>
     );
@@ -23,7 +23,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
       <TouchableHighlight style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image || NoImage}
+          source={image ? { uri: image } : NoImage}
         />
       </TouchableHighlight>
     );
@@ -32,7 +32,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
       <TouchableWithoutFeedback style={[{ width, height }, style || {}]} onPress={onPress}>
         <Image
           style={[{ width, height }, style || {}]}
-          source={image || NoImage}
+          source={image ? { uri: image } : NoImage}
         />
       </TouchableWithoutFeedback>
     );
@@ -44,7 +44,7 @@ ClickableImage.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   onPress: PropTypes.func.isRequired,
-  image: Image.propTypes.source,
+  image: PropTypes.string,
   type: PropTypes.oneOf(['opacity', 'highlight', 'none']).isRequired,
   style: PropTypes.object
 };

@@ -6,6 +6,7 @@ import shortid from 'shortid';
 import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
 import { SearchHeader, FullScreenLoading } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
+import PostsList from '../../../components/post/PostsList';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
@@ -54,7 +55,6 @@ class FeedScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
-    canPaginate: false,
     posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -119,27 +119,16 @@ class FeedScreen extends Component {
 
   handleScroll = () => Keyboard.dismiss()
   handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false, 'date_posted', 'DESC', moment().unix())
-
-  handleContentSizeChange = (contentWidth, contentHeight) => {
-    this.setState(prevState => ({
-      canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
-    }));
+  paginateData = () => {
+    this.props.getUserFeed(
+      this.props.id,
+      this.props.offset,
+      null,
+      'date_posted',
+      'DESC',
+      parseInt(this.props.posts[0].date_posted, 10) // Ignore newer posts when paging
+    );
   }
-
-  handleEndReached = () => {
-    // canPaginate - true ONLY when content is overflowing
-    // keepPaging - true ONLY when there is more data to retrieve
-    if (this.state.canPaginate && this.props.keepPaging) {
-      this.props.getUserFeed(
-        this.props.id,
-        this.props.offset,
-        null,
-        'date_posted',
-        'DESC',
-        parseInt(this.props.posts[0].date_posted, 10) // Ignore newer posts when paging
-      );
-    }
-  };
 
   searchResults = () => {
     if (this.state.typingTimeout) {
@@ -200,26 +189,6 @@ class FeedScreen extends Component {
     this.setState(() => ({ height }));
   }
 
-  viewProfile = id => {
-    this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.push('ViewProfile', {
-      type: 'public',
-      id
-    });
-  }
-
-  renderPosts = ({ item }) => (
-    <PostCard
-      userID={this.props.id}
-      post={item}
-      viewProfile={this.viewProfile}
-      postLikes={this.props.post_likes}
-    />
-  )
-  renderMessage = message => (
-    <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{message.item.text}</Text>
-  )
-
   renderBody = () => {
     if (this.state.height === 0) { // Get rid of small jump in spinning icon
       return null;
@@ -228,21 +197,16 @@ class FeedScreen extends Component {
     }
     // Only updates root components (PostCard), so remember to force re-render nested components by changing state
     return (
-      <FlatList
+      <PostsList
         data={this.props.posts}
-        renderItem={this.props.message === '' ? this.renderPosts : this.renderMessage}
-        keyExtractor={post => post.id}
-        onScroll={this.handleScroll}
-        scrollEventThrottle={16}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.loading}
-            onRefresh={this.handleRefresh}
-          />
-        }
-        onContentSizeChange={this.handleContentSizeChange}
-        onEndReached={this.handleEndReached}
-        onEndReachedThreshold={0}
+        post_likes={this.props.post_likes}
+        empty={this.props.posts[0].id === 'foo'}
+        height={this.state.height}
+        refreshing={this.props.loading}
+        handleRefresh={this.handleRefresh}
+        paginateData={this.paginateData}
+        keepPaging={this.props.keepPaging}
+        navigation={this.props.navigation}
       />
     );
   }
@@ -284,11 +248,8 @@ FeedScreen.propTypes = {
   posts: PropTypes.array.isRequired,
   getUserFeed: PropTypes.func.isRequired,
   offset: PropTypes.number.isRequired,
-  message: PropTypes.string.isRequired,
   keepPaging: PropTypes.bool.isRequired,
-  pushTabRoute: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired,
-  current_tab: PropTypes.string.isRequired,
   post_likes: PropTypes.object.isRequired
 };
 
@@ -309,8 +270,11 @@ const mapStateToProps = state => {
   // Pre-process posts - convert from an object of objects to an array of objects
   const postsOrder = state.feed.order;
   let posts = new Array(postsOrder.length);
-  if (Object.keys(state.feed.posts).length === 0) {
-    posts = [{ id: '0', text: state.feed.message }];
+  if (postsOrder.length === 0) {
+    posts = [{
+      id: 'foo',
+      text: 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.'
+    }];
   } else {
     for (let i = 0; i < postsOrder.length; i++) {
       posts[i] = state.feed.posts[postsOrder[i]];
@@ -322,9 +286,7 @@ const mapStateToProps = state => {
     loading: state.feed.loading,
     initial_loading: state.feed.initial_loading,
     current_route: state.navigation.current_route,
-    current_tab: state.navigation.current_tab,
     offset: state.feed.offset,
-    message: state.feed.message,
     posts,
     keepPaging: state.feed.keepPaging,
     post_likes: state.feed.post_likes

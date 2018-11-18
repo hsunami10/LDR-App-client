@@ -13,7 +13,6 @@ import {
 const INITIAL_STATE = {
   loading: false,
   initial_loading: false,
-  message: '',
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts: {}, // Increase performance
@@ -36,14 +35,8 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, initial_loading: false };
 
     case GET_USER_FEED:
-      let message = '';
-      // Only show message when there is absolutely nothing
-      if (action.payload.posts.length === 0 && state.posts.length === 0) {
-        message = 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.';
-      }
       return {
         ...state,
-        message,
         posts: action.payload.replace ? action.payload.posts : { ...state.posts, ...action.payload.posts },
         order: action.payload.replace ? action.payload.order : [...state.order, ...action.payload.order],
         post_likes: action.payload.replace ? action.payload.post_likes : { ...state.post_likes, ...action.payload.post_likes },

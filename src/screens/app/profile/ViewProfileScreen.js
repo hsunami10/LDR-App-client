@@ -30,7 +30,7 @@ class ViewProfileScreen extends Component {
   }
 
   onPressAction = index => {
-    if (this.props.private) {
+    if (this.state.user_id === this.props.id) {
       this.handleOwnActions(index);
     } else {
       this.handleOtherActions(index);
@@ -153,9 +153,9 @@ class ViewProfileScreen extends Component {
           {this.renderBody()}
           <ActionSheet
             ref={this.ref}
-            options={this.props.private ? ['Edit Profile', 'Log Out', 'Cancel'] : ['Block', 'Report', 'Cancel']}
-            cancelButtonIndex={this.props.private ? 2 : null}
-            destructiveButtonIndex={this.props.private ? 1 : null}
+            options={this.state.user_id === this.props.id ? ['Edit Profile', 'Log Out', 'Cancel'] : ['Block', 'Report', 'Cancel']}
+            cancelButtonIndex={2}
+            destructiveButtonIndex={this.state.user_id === this.props.id ? 1 : undefined}
             onPress={this.onPressAction}
           />
         </ScrollView>

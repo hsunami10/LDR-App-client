@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import PostCardHeader from './PostCardHeader';
@@ -11,7 +11,7 @@ const PostCard = ({ userID, post, viewProfile, postLikes }) => (
   <View style={styles.viewStyle}>
     <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
     <PostCardBody post={post} />
-    <PostCardFooter postLikes={postLikes} post={post} />
+    <PostCardFooter post={post} postLikes={postLikes} />
   </View>
 );
 
