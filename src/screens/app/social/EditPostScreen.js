@@ -8,7 +8,7 @@ import { goBackwardRoute } from '../../../actions/NavigationActions';
 import { stopLoading } from '../../../actions/LoadingActions';
 import { editPost } from '../../../actions/PostActions';
 
-// QUESTION: How to get the current user's alias - index in alias array?
+// TODO: Handle errors in handleSubmit before submitting
 class EditPostScreen extends Component {
   state = {
     post: null,
@@ -98,7 +98,10 @@ class EditPostScreen extends Component {
         {this.state.post ?
           <CreatePostScreen
             body={this.state.post.body}
-            topic={this.state.post.name}
+            topic={{
+              id: this.state.post.topic_id,
+              name: this.state.post.name
+            }}
             handleChangeBody={this.handleChangeBody}
             handleAliasChange={this.handleAliasChange}
             aliases={this.props.aliases}

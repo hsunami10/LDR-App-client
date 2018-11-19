@@ -23,7 +23,10 @@ class CreateMainScreen extends Component {
     },
 
     // Create Post
-    topic: 'Global', // NOTE: Make sure it's the same as the default topic
+    topic: { // NOTE: Make sure it's the same as the default topic
+      id: '',
+      name: 'Global'
+    },
     body: '',
     postError: {
       type: null,
@@ -75,7 +78,7 @@ class CreateMainScreen extends Component {
         this.handlePostError(null);
         this.props.createPost({
           user_id: this.props.id,
-          topic_id: '', // TODO: Get topic id (if chosen) here
+          topic_id: this.props.post_topic.id,
           alias_id: this.state.selectedAliasIndex < 0 ? '' : this.props.user.aliases[this.state.selectedAliasIndex].id,
           body: this.state.body,
           coordinates: this.props.user.coordinates
@@ -215,7 +218,8 @@ CreateMainScreen.propTypes = {
   user: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   stopLoading: PropTypes.func.isRequired,
-  createPost: PropTypes.func.isRequired
+  createPost: PropTypes.func.isRequired,
+  post_topic: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -233,7 +237,8 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   user: state.user,
   current_route: state.navigation.current_route,
-  loading: state.loading
+  loading: state.loading,
+  post_topic: state.topics.post_topic
 });
 
 export default connect(mapStateToProps, {

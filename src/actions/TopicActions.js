@@ -1,7 +1,8 @@
 import axios from 'axios';
 import uuidv4 from 'uuid/v4';
 import {
-  CREATE_TOPIC
+  CREATE_TOPIC,
+  CHOOSE_POST_TOPIC
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -45,3 +46,8 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
       }
     });
 };
+
+export const choosePostTopic = topic => ({
+  type: CHOOSE_POST_TOPIC,
+  payload: topic
+});

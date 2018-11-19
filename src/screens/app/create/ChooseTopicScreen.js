@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { StandardHeader } from '../../../components/common';
 import TopicsList from '../../../components/topic/TopicsList';
+import { choosePostTopic } from '../../../actions/TopicActions';
 
 const subscribedTopics = [
   {
@@ -42,11 +43,15 @@ const subscribedTopics = [
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {
+    // TODO: Get subscribed topics from database here
     // this.props.getSubscribedTopics(this.props.id);
   }
 
+  // No handle for navigation in componentWillUnmount because there was no change navigating here
+
   handleTopicSelect = topic => {
-    console.log('selected topic: ' + topic.name)
+    this.props.choosePostTopic(topic);
+    this.props.navigation.pop();
   }
 
   render() {
@@ -69,12 +74,14 @@ class ChooseTopicScreen extends Component {
 
 ChooseTopicScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  choosePostTopic: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.topics.loading
+  loading: state.topics.loading,
+  post_topic: state.topics.post_topic
 });
 
-export default connect(mapStateToProps, null)(ChooseTopicScreen);
+export default connect(mapStateToProps, { choosePostTopic })(ChooseTopicScreen);

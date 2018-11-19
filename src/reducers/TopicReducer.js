@@ -2,11 +2,15 @@ import {
   LOG_OUT_USER,
   CREATE_TOPIC,
   START_TOPIC_LOADING,
-  STOP_TOPIC_LOADING
+  STOP_TOPIC_LOADING,
+  CHOOSE_POST_TOPIC
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  post_topic_id: '', // Topic chosen for creating / editing post - reset this when finished
+  post_topic: {
+    id: '',
+    name: ''
+  }, // Topic chosen for creating / editing post
   current_topic: {},
   current_topic_subscribers: [],
   loading: false
@@ -28,6 +32,8 @@ export default (state = INITIAL_STATE, action) => {
         current_topic: action.payload.topic,
         current_topic_subscribers: [action.payload.subscriber]
       };
+    case CHOOSE_POST_TOPIC:
+      return { ...state, post_topic: action.payload };
     default:
       return state;
   }

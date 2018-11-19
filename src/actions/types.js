@@ -36,6 +36,7 @@ export const CREATE_TOPIC = 'create_topic';
 export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topics, admins of groups cannot delete
 export const START_TOPIC_LOADING = 'start_topic_loading';
 export const STOP_TOPIC_LOADING = 'stop_topic_loading';
+export const CHOOSE_POST_TOPIC = 'choose_post_topic';
 
 // Posts
 export const CREATE_POST = 'create_post';
