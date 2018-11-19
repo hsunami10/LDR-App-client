@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
 import { ClickableImage } from '../common';
+import { ROOT_URL } from '../../constants/variables';
 
 // TODO: Finish post cards - to show in feed
 const TopicCard = ({ topic, onPress }) => (
@@ -12,7 +13,7 @@ const TopicCard = ({ topic, onPress }) => (
     <View style={styles.viewStyle}>
       <ClickableImage
         type="none"
-        image={topic.topic_pic}
+        image={topic.topic_pic ? `${ROOT_URL}/${topic.topic_pic}` : null}
         onPress={() => null}
         width={35}
         height={35}

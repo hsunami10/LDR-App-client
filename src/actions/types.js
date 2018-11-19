@@ -37,6 +37,7 @@ export const DELETE_TOPIC = 'delete_topic'; // only admin users can delete topic
 export const START_TOPIC_LOADING = 'start_topic_loading';
 export const STOP_TOPIC_LOADING = 'stop_topic_loading';
 export const CHOOSE_POST_TOPIC = 'choose_post_topic';
+export const GET_SUBSCRIBED_TOPICS = 'get_subscribed_topics';
 
 // Posts
 export const CREATE_POST = 'create_post';

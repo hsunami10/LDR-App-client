@@ -3,17 +3,19 @@ import {
   CREATE_TOPIC,
   START_TOPIC_LOADING,
   STOP_TOPIC_LOADING,
-  CHOOSE_POST_TOPIC
+  CHOOSE_POST_TOPIC,
+  GET_SUBSCRIBED_TOPICS
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  post_topic: {
+  post_topic: { // Topic chosen for creating / editing post
     id: '',
     name: ''
-  }, // Topic chosen for creating / editing post
-  current_topic: {},
-  current_topic_subscribers: [],
-  loading: false
+  },
+  subscribed: [], // List of objects (subcribed topics)
+  sub_fetched: false, // Flags unnecessary fetches
+  current_topic: {}, // NOTE: Might have to put it in ScreenReducer, because can have multiple screens of different / same topics w/ diff data
+  loading: false // For refreshing current topic screen
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -25,6 +27,9 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: true };
     case STOP_TOPIC_LOADING:
       return { ...state, loading: false };
+
+    case GET_SUBSCRIBED_TOPICS:
+      return { ...state, subscribed: action.payload, sub_fetched: true };
 
     case CREATE_TOPIC: // TODO: Change this later
       return {

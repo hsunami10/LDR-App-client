@@ -2,52 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
-import { StandardHeader } from '../../../components/common';
+import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import TopicsList from '../../../components/topic/TopicsList';
-import { choosePostTopic } from '../../../actions/TopicActions';
-
-const subscribedTopics = [
-  {
-    id: 'kjsadflkjasfd',
-    name: 'First Dates',
-    topic_pic: null,
-    // description: 'First dates are stressful. Share your experiences and advice here!',
-    // date_created: Date.now(),
-    num_subscribers: 39
-  },
-  {
-    id: 'asdkfjalskfd',
-    name: 'Gifts',
-    topic_pic: null,
-    // description: 'Gifts are very important for spicing up relationships. Share gift ideas and ask for advice here!',
-    // date_created: Date.now(),
-    num_subscribers: 26
-  },
-  {
-    id: 'oijfeifjsaldkfsd',
-    name: 'Online',
-    topic_pic: null,
-    // description: 'Online dating is becoming more and more prevalent. Feel free to ask for advice here!',
-    // date_created: Date.now(),
-    num_subscribers: 14
-  },
-  {
-    id: 'soeiwfjdisfsd',
-    name: 'Vacations',
-    topic_pic: null,
-    // description: 'You can find many vacation ideas and advice giving here!',
-    // date_created: Date.now(),
-    num_subscribers: 482
-  }
-];
+import { getSubscribedTopics, choosePostTopic } from '../../../actions/TopicActions';
+import { stopLoading } from '../../../actions/LoadingActions';
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {
-    // TODO: Get subscribed topics from database here
-    // this.props.getSubscribedTopics(this.props.id);
+    this.props.getSubscribedTopics(this.props.id);
   }
 
   // No handle for navigation in componentWillUnmount because there was no change navigating here
+  componentWillUnmount() {
+    if (this.props.loading) {
+      this.props.stopLoading();
+    }
+  }
 
   handleTopicSelect = topic => {
     this.props.choosePostTopic(topic);
@@ -65,8 +35,10 @@ class ChooseTopicScreen extends Component {
         <TopicsList
           onTopicSelect={this.handleTopicSelect}
           sectionTitles={['Subscribed Topics']}
-          sectionData={[subscribedTopics]}
+          sectionData={[this.props.subscribed]}
+          emptyMessages={['You are not currently subscribed to any topics.']}
         />
+        <FullScreenLoading loading={this.props.loading} allowTouchThrough />
       </View>
     );
   }
@@ -75,13 +47,21 @@ class ChooseTopicScreen extends Component {
 ChooseTopicScreen.propTypes = {
   id: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  choosePostTopic: PropTypes.func.isRequired
+  getSubscribedTopics: PropTypes.func.isRequired,
+  choosePostTopic: PropTypes.func.isRequired,
+  subscribed: PropTypes.array.isRequired,
+  stopLoading: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.topics.loading,
-  post_topic: state.topics.post_topic
+  loading: state.loading,
+  post_topic: state.topics.post_topic,
+  subscribed: state.topics.subscribed
 });
 
-export default connect(mapStateToProps, { choosePostTopic })(ChooseTopicScreen);
+export default connect(mapStateToProps, {
+  getSubscribedTopics,
+  choosePostTopic,
+  stopLoading
+})(ChooseTopicScreen);

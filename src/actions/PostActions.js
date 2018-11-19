@@ -32,15 +32,25 @@ export const createPost = (postObj, navigation) => dispatch => {
     });
 };
 
-// obj - { post, type, data, userID }
-// type: 'num_likes', 'body' - only 2 ways to edit post
-// navigation = not null ONLY if type is 'body'
+/*
+obj - { post, type, data, userID }
+type: 'num_likes', 'body' - only 2 ways to edit post
+navigation = not null ONLY if type is 'body'
+data:
+  - number if type = num_likes
+  - object if type = body: { topic, body }
+ */
 export const editPost = (obj, navigation = null) => dispatch => {
   const { post, type, data, userID } = obj;
-  post[type] = data;
-  if (type === 'body') {
+  if (type === 'body' && typeof data === 'object') {
+    post[type] = data.body;
+    post.topic_id = data.topic.id;
+    post.name = data.topic.name;
     dispatch(startLoading());
+  } else {
+    post[type] = data;
   }
+
   dispatch({
     type: EDIT_POST,
     payload: {
@@ -48,7 +58,7 @@ export const editPost = (obj, navigation = null) => dispatch => {
       post
     }
   });
-  axios.put(`${ROOT_URL}/api/posts/${userID}`, { post, type, data, post_id: post.id })
+  axios.put(`${ROOT_URL}/api/posts/${userID}`, { post, type })
     .then(() => {
       if (type === 'body') {
         dispatch(stopLoading());

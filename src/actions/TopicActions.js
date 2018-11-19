@@ -2,7 +2,8 @@ import axios from 'axios';
 import uuidv4 from 'uuid/v4';
 import {
   CREATE_TOPIC,
-  CHOOSE_POST_TOPIC
+  CHOOSE_POST_TOPIC,
+  GET_SUBSCRIBED_TOPICS
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -36,6 +37,27 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
       } else {
         createTopicErrCb(response.data.msg);
       }
+    })
+    .catch(error => {
+      dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+export const getSubscribedTopics = id => dispatch => {
+  dispatch(startLoading());
+
+  axios.get(`${ROOT_URL}/api/subscribed-topics/${id}`)
+    .then(response => {
+      dispatch(stopLoading());
+      dispatch({
+        type: GET_SUBSCRIBED_TOPICS,
+        payload: response.data
+      });
     })
     .catch(error => {
       dispatch(stopLoading());

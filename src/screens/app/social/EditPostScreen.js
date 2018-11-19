@@ -72,11 +72,15 @@ class EditPostScreen extends Component {
   }
 
   handleSubmit = () => {
+    console.log('change to topic: ' + this.props.post_topic.name);
     this.props.editPost(
       {
         post: this.state.post,
         type: 'body',
-        data: this.state.post.body,
+        data: {
+          body: this.state.post.body,
+          topic: this.props.post_topic
+        },
         userID: this.props.id
       },
       this.props.navigation
@@ -123,14 +127,16 @@ EditPostScreen.propTypes = {
   stopLoading: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
   current_route: PropTypes.string.isRequired,
-  editPost: PropTypes.func.isRequired
+  editPost: PropTypes.func.isRequired,
+  post_topic: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
   aliases: state.user.aliases,
   loading: state.loading,
-  current_route: state.navigation.current_route
+  current_route: state.navigation.current_route,
+  post_topic: state.topics.post_topic
 });
 
 export default connect(mapStateToProps, {
