@@ -26,7 +26,6 @@ class TopicsList extends Component {
         data: this.props.sectionData[i].length === 0 ? [this.props.emptyMessages[i]] : this.props.sectionData[i]
       };
     }
-    console.log(result);
     return result;
   }
 

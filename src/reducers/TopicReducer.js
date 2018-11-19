@@ -29,7 +29,11 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: false };
 
     case GET_SUBSCRIBED_TOPICS:
-      return { ...state, subscribed: action.payload, sub_fetched: true };
+      return {
+        ...state,
+        subscribed: action.payload,
+        sub_fetched: true
+      };
 
     case CREATE_TOPIC: // TODO: Change this later
       return {

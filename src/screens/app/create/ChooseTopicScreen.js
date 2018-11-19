@@ -9,7 +9,9 @@ import { stopLoading } from '../../../actions/LoadingActions';
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {
-    this.props.getSubscribedTopics(this.props.id);
+    if (!this.props.sub_fetched) {
+      this.props.getSubscribedTopics(this.props.id);
+    }
   }
 
   // No handle for navigation in componentWillUnmount because there was no change navigating here
@@ -50,14 +52,16 @@ ChooseTopicScreen.propTypes = {
   getSubscribedTopics: PropTypes.func.isRequired,
   choosePostTopic: PropTypes.func.isRequired,
   subscribed: PropTypes.array.isRequired,
-  stopLoading: PropTypes.func.isRequired
+  stopLoading: PropTypes.func.isRequired,
+  sub_fetched: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
   loading: state.loading,
   post_topic: state.topics.post_topic,
-  subscribed: state.topics.subscribed
+  subscribed: state.topics.subscribed,
+  sub_fetched: state.topics.sub_fetched
 });
 
 export default connect(mapStateToProps, {
