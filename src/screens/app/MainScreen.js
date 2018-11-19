@@ -225,7 +225,6 @@ MainScreen.propTypes = {
   setNotFirstLogIn: PropTypes.func.isRequired,
   first_login: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
-  routes: PropTypes.array.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
@@ -241,7 +240,6 @@ const mapStateToProps = state => ({
   first_login: state.auth.first_login,
   current_route: state.navigation.current_route,
   current_tab: state.navigation.current_tab,
-  routes: state.navigation.routes,
   loading: state.loading,
   tab_routes: state.navigation.tab_routes
 });

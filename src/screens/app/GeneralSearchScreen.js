@@ -78,7 +78,7 @@ GeneralSearchScreen.propTypes = {
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
-  results: PropTypes.array.isRequired
+  results: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 const styles = StyleSheet.create({

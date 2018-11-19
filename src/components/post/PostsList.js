@@ -75,7 +75,7 @@ PostsList.propTypes = {
   id: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
 
-  data: PropTypes.array.isRequired, // Array of 1 object with { id, text } if no posts to show
+  data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
   post_likes: PropTypes.object.isRequired,
   empty: PropTypes.bool.isRequired,
   height: PropTypes.number.isRequired,

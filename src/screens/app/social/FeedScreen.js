@@ -247,7 +247,7 @@ FeedScreen.propTypes = {
   id: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
-  posts: PropTypes.array.isRequired,
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   getUserFeed: PropTypes.func.isRequired,
   offset: PropTypes.number.isRequired,
   keepPaging: PropTypes.bool.isRequired,

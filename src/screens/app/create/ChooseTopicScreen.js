@@ -1,68 +1,80 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet, Keyboard, SectionList } from 'react-native';
-import { SearchHeader } from '../../../components/common';
+import { connect } from 'react-redux';
+import { View } from 'react-native';
+import { StandardHeader } from '../../../components/common';
+import TopicsList from '../../../components/topic/TopicsList';
 
-// TODO: Order everything alphabetically automatically
-// Don't use SearchHeader at top, have an actual header, then search header below it
-// NOTE: Have an option for "none"
+const subscribedTopics = [
+  {
+    id: 'kjsadflkjasfd',
+    name: 'First Dates',
+    topic_pic: null,
+    // description: 'First dates are stressful. Share your experiences and advice here!',
+    // date_created: Date.now(),
+    num_subscribers: 39
+  },
+  {
+    id: 'asdkfjalskfd',
+    name: 'Gifts',
+    topic_pic: null,
+    // description: 'Gifts are very important for spicing up relationships. Share gift ideas and ask for advice here!',
+    // date_created: Date.now(),
+    num_subscribers: 26
+  },
+  {
+    id: 'oijfeifjsaldkfsd',
+    name: 'Online',
+    topic_pic: null,
+    // description: 'Online dating is becoming more and more prevalent. Feel free to ask for advice here!',
+    // date_created: Date.now(),
+    num_subscribers: 14
+  },
+  {
+    id: 'soeiwfjdisfsd',
+    name: 'Vacations',
+    topic_pic: null,
+    // description: 'You can find many vacation ideas and advice giving here!',
+    // date_created: Date.now(),
+    num_subscribers: 482
+  }
+];
 
 class ChooseTopicScreen extends Component {
-  state = {
-    search: ''
+  componentDidMount() {
+    // this.props.getSubscribedTopics(this.props.id);
   }
 
-  handleCancelPress = () => {
-    Keyboard.dismiss();
-    this.setState(() => ({ search: '' }));
+  handleTopicSelect = topic => {
+    console.log('selected topic: ' + topic.name)
   }
-
-  handleChangeText = search => this.setState(() => ({ search }))
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <SearchHeader
-          placeholder="Search Topics..."
-          value={this.state.search}
-          onChangeText={this.handleChangeText}
-          onCancelPress={this.handleCancelPress}
-          animationDuration={200}
-          returnKeyType="search"
+        <StandardHeader
+          title="Choose a Topic"
+          showLeft
+          onLeftPress={() => this.props.navigation.pop()}
         />
-        <SectionList
-          renderItem={
-            ({ item, index, section }) =>
-            <Text
-              key={index}
-              onPress={() => {
-                // TODO: Update global state to pass the topic name to CreateMainScreen
-                console.log(item);
-              }}
-            >
-              {item}
-            </Text>
-          }
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={{ fontWeight: 'bold', fontSize: 24 }}>{title}</Text>
-          )}
-          sections={[
-            { title: <Text style={{ backgroundColor: 'white' }}>Your Topics</Text>, data: ['Your Topic 1', 'Your Topic 2', 'Your Topic 3'] },
-            { title: <Text style={{ backgroundColor: 'white' }}>All Topics</Text>, data: ['All Topic 1', 'All Topic 2'] }
-          ]}
-          keyExtractor={(item, index) => item + index}
+        <TopicsList
+          onTopicSelect={this.handleTopicSelect}
+          sectionTitles={['Subscribed Topics']}
+          sectionData={[subscribedTopics]}
         />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  centerItems: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+ChooseTopicScreen.propTypes = {
+  id: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired
+};
+
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  loading: state.topics.loading
 });
 
-export default ChooseTopicScreen;
+export default connect(mapStateToProps, null)(ChooseTopicScreen);

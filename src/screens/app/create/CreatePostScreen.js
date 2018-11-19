@@ -47,7 +47,7 @@ CreatePostScreen.propTypes = {
   error: PropTypes.object.isRequired,
   selectedAlias: PropTypes.number.isRequired,
   handleAliasChange: PropTypes.func.isRequired,
-  aliases: PropTypes.array.isRequired,
+  aliases: PropTypes.arrayOf(PropTypes.object).isRequired,
   navigation: PropTypes.object.isRequired
 };
 

@@ -19,7 +19,7 @@ const AliasPicker = props => (
 AliasPicker.propTypes = {
   selectedAlias: PropTypes.number.isRequired,
   handleAliasChange: PropTypes.func.isRequired,
-  aliases: PropTypes.array.isRequired
+  aliases: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 const styles = StyleSheet.create({

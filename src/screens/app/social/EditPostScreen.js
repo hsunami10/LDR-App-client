@@ -115,7 +115,7 @@ class EditPostScreen extends Component {
 
 EditPostScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  aliases: PropTypes.array.isRequired,
+  aliases: PropTypes.arrayOf(PropTypes.object).isRequired,
   loading: PropTypes.bool.isRequired,
   stopLoading: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,

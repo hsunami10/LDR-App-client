@@ -210,7 +210,6 @@ class CreateMainScreen extends Component {
 CreateMainScreen.propTypes = {
   id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
-  routes: PropTypes.array.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
   createTopic: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
@@ -234,7 +233,6 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   user: state.user,
   current_route: state.navigation.current_route,
-  routes: state.navigation.routes,
   loading: state.loading
 });
 

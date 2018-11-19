@@ -1,23 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
+import { ClickableImage } from '../common';
 
 // TODO: Finish post cards - to show in feed
-class TopicCard extends Component {
-  render() {
-    return (
-      <View style={styles.viewStyle}>
-        <Text>Topic Card!</Text>
+const TopicCard = ({ topic, onPress }) => (
+  <TouchableHighlight
+    onPress={onPress}
+    underlayColor="rgba(0,0,0,0.4)"
+  >
+    <View style={styles.viewStyle}>
+      <ClickableImage
+        type="none"
+        image={topic.topic_pic}
+        onPress={() => null}
+        width={35}
+        height={35}
+        style={{ alignSelf: 'center', marginLeft: 5, marginRight: 5 }}
+      />
+      <View style={styles.textViewStyle}>
+        <Text style={{ fontWeight: 'bold', fontSize: 14 }}>{topic.name}</Text>
+        <Text style={{ fontWeight: '500', fontSize: 12 }}>{topic.num_subscribers} subscribers</Text>
       </View>
-    );
-  }
-}
+    </View>
+  </TouchableHighlight>
+);
+
+TopicCard.propTypes = {
+  topic: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired
+};
 
 const styles = StyleSheet.create({
   viewStyle: {
+    flexDirection: 'row',
+    width: Dimensions.get('window').width,
+    height: 45,
+    borderWidth: 1,
+    borderColor: 'gray'
+  },
+  textViewStyle: {
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-start',
   }
 });
 
