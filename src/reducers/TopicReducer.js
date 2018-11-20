@@ -8,9 +8,9 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  post_topic: { // Topic chosen for creating / editing post
+  post_topic: { // NOTE: Make sure it's the same as the CreateMainScreen state
     id: '',
-    name: ''
+    name: 'Choose a Topic'
   },
   subscribed: [], // List of objects (subcribed topics)
   sub_fetched: false, // Flags unnecessary fetches
@@ -18,7 +18,7 @@ const INITIAL_STATE = {
   loading: false // For refreshing current topic screen
 };
 
-const sortTopicsAlpha = (t1, t2) => t1.lowercase_name.localeCompare(t2.lowercase_name);
+const sortTopicsAlpha = (t1, t2) => t1.lowercase_name.localeCompare(t2.lowercase_name); // Sort alphabetically by locale
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {

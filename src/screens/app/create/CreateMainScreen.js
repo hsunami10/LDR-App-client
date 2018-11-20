@@ -23,9 +23,9 @@ class CreateMainScreen extends Component {
     },
 
     // Create Post
-    topic: { // NOTE: Make sure it's the same as the default topic
+    topic: { // NOTE: Make sure it's the same as the default topic in app state - state.topics.post_topic
       id: '',
-      name: 'Global'
+      name: 'Choose a Topic'
     },
     body: '',
     postError: {
@@ -72,7 +72,9 @@ class CreateMainScreen extends Component {
   handleSubmit = () => {
     Keyboard.dismiss();
     if (this.state.navigationState.index === 0) {
-      if (!isValidName(this.state.body)) {
+      if (this.props.post_topic.id === '') {
+        this.handlePostError('topic');
+      } else if (!isValidName(this.state.body)) {
         this.handlePostError('body');
       } else {
         this.handlePostError(null);
@@ -107,6 +109,9 @@ class CreateMainScreen extends Component {
   handlePostError = type => {
     let msg = ' ';
     switch (type) {
+      case 'topic':
+        msg = 'A topic is required to create a post';
+        break;
       case 'body':
         msg = 'A body is required to create a post';
         break;
