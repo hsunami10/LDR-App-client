@@ -7,19 +7,15 @@ import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
 // Handle clicking on post cards
-const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavigation, restrictBodySize }) => (
+const PostCard = ({ userID, post, viewProfile, viewPost, parentNavigation, restrictBodySize }) => (
   <TouchableHighlight
-    onPress={() => {
-      // TODO: Finish navigating - update app state if needed
-      console.log('TODO: update app state if needed for navigating to ViewPostScreen');
-      parentNavigation.push('ViewPost', { post });
-    }}
+    onPress={() => viewPost(post, false)}
     underlayColor="rgba(0,0,0,0.4)"
   >
     <View style={styles.viewStyle}>
       <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
       <PostCardBody restrictBodySize={restrictBodySize} post={post} />
-      <PostCardFooter post={post} postLikes={postLikes} navigation={navigation} parentNavigation={parentNavigation} />
+      <PostCardFooter post={post} viewPost={viewPost} parentNavigation={parentNavigation} />
     </View>
   </TouchableHighlight>
 );
@@ -28,8 +24,7 @@ PostCard.propTypes = {
   userID: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   viewProfile: PropTypes.func.isRequired,
-  postLikes: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
+  viewPost: PropTypes.func.isRequired,
   parentNavigation: PropTypes.object.isRequired,
   restrictBodySize: PropTypes.bool
 };

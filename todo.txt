@@ -1,0 +1,1 @@
+- get rid of all num"..." in tables, use SELECT COUNT(*) instead

@@ -18,6 +18,11 @@ class PostsList extends Component {
     });
   }
 
+  viewPost = (post, showKeyboard) => {
+    this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
+    this.props.navigation.push('ViewPost', { post, showKeyboard });
+  }
+
   handleScroll = () => Keyboard.dismiss()
 
   handleContentSizeChange = (contentWidth, contentHeight) => {
@@ -39,7 +44,7 @@ class PostsList extends Component {
       userID={this.props.id}
       post={item}
       viewProfile={this.viewProfile}
-      postLikes={this.props.post_likes}
+      viewPost={this.viewPost}
       navigation={this.props.navigation}
       parentNavigation={this.props.parentNavigation}
       restrictBodySize
@@ -77,7 +82,6 @@ PostsList.propTypes = {
   current_tab: PropTypes.string.isRequired,
 
   data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
-  post_likes: PropTypes.object.isRequired,
   empty: PropTypes.bool.isRequired,
   height: PropTypes.number.isRequired,
   refreshing: PropTypes.bool.isRequired,

@@ -12,7 +12,7 @@ import {
 const INITIAL_STATE = {
   aliases: [],
   alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
-  posts: {
+  posts: { // NOTE: Not used
     offset: 0,
     data: {},
     order: [],

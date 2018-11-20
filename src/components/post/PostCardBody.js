@@ -12,7 +12,7 @@ class PostCardBody extends Component {
 
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
-    console.log(height);
+    // console.log(height);
     this.setState(() => ({ height }));
   }
 

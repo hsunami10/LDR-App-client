@@ -39,7 +39,6 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         posts: action.payload.replace ? action.payload.posts : { ...state.posts, ...action.payload.posts },
         order: action.payload.replace ? action.payload.order : [...state.order, ...action.payload.order],
-        post_likes: action.payload.replace ? action.payload.post_likes : { ...state.post_likes, ...action.payload.post_likes },
         offset: action.payload.offset,
         keepPaging: action.payload.order.length !== 0 // Continue paging only when there is data retrieved
       };
@@ -49,27 +48,11 @@ export default (state = INITIAL_STATE, action) => {
 
     case EDIT_POST:
       const copyPosts = { ...state.posts };
-      const copyPostLikes = { ...state.post_likes };
-
       // Update posts object
       if (copyPosts[action.payload.post.id]) {
         copyPosts[action.payload.post.id] = action.payload.post;
       }
-
-      // Update post_likes object if necessary
-      if (action.payload.type === 'num_likes') {
-        if (copyPostLikes[action.payload.post.id]) {
-          delete copyPostLikes[action.payload.post.id];
-        } else {
-          copyPostLikes[action.payload.post.id] = { post_id: action.payload.post.id };
-        }
-      }
-
-      return {
-        ...state,
-        posts: copyPosts,
-        post_likes: copyPostLikes
-      };
+      return { ...state, posts: copyPosts };
     case DELETE_POST:
       const copyPosts2 = { ...state.posts };
       const copyPostLikes2 = { ...state.post_likes };

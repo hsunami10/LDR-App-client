@@ -199,7 +199,6 @@ class FeedScreen extends Component {
     return (
       <PostsList
         data={this.props.posts}
-        post_likes={this.props.post_likes}
         empty={this.props.posts.length === 0}
         message="Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed."
         height={this.state.height}
@@ -252,7 +251,6 @@ FeedScreen.propTypes = {
   offset: PropTypes.number.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
-  post_likes: PropTypes.object.isRequired,
   screenProps: PropTypes.object.isRequired
 };
 
@@ -284,8 +282,7 @@ const mapStateToProps = state => {
     current_route: state.navigation.current_route,
     offset: state.feed.offset,
     posts,
-    keepPaging: state.feed.keepPaging,
-    post_likes: state.feed.post_likes
+    keepPaging: state.feed.keepPaging
   };
 };
 

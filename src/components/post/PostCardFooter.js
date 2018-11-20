@@ -11,9 +11,18 @@ import { fetchAliases } from '../../actions/UserActions';
 class PostCardFooter extends Component {
   state = { flag: false } // Force re-render to see updated post
 
-  handleCommentAction = () => {
-    console.log('go to post comments of post id ' + this.props.post.id);
+  onPressAction = index => {
+    if (this.props.id === this.props.post.author_id) {
+      this.handleOwnActions(index);
+    } else {
+      this.handleOtherActions(index);
+    }
   }
+
+  showActionSheet = () => this.ActionSheet.show();
+  ref = o => (this.ActionSheet = o)
+
+  handleCommentAction = () => this.props.viewPost(this.props.post, true)
 
   handleLikeAction = () => {
     this.props.editPost({
@@ -53,17 +62,6 @@ class PostCardFooter extends Component {
     }
   }
 
-  onPressAction = index => {
-    if (this.props.id === this.props.post.author_id) {
-      this.handleOwnActions(index);
-    } else {
-      this.handleOtherActions(index);
-    }
-  }
-
-  showActionSheet = () => this.ActionSheet.show();
-  ref = o => (this.ActionSheet = o)
-
   render() {
     return (
       <View style={{ flexDirection: 'row', borderColor: 'white', borderWidth: 1, height: 40, alignItems: 'center' }}>
@@ -98,7 +96,7 @@ PostCardFooter.propTypes = {
   postLikes: PropTypes.object.isRequired,
   deletePost: PropTypes.func.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
-  navigation: PropTypes.object.isRequired,
+  viewPost: PropTypes.func.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   fetchAliases: PropTypes.func.isRequired,
   parentNavigation: PropTypes.object.isRequired
@@ -106,7 +104,8 @@ PostCardFooter.propTypes = {
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  alias_fetched: state.user.alias_fetched
+  alias_fetched: state.user.alias_fetched,
+  postLikes: state.screens.posts.post_likes
 });
 
 export default connect(mapStateToProps, {

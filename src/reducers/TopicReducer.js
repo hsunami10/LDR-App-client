@@ -13,7 +13,6 @@ const INITIAL_STATE = {
     name: 'Choose a Topic'
   },
   subscribed: [], // List of objects (subcribed topics)
-  sub_fetched: false, // Flags unnecessary fetches
   current_topic: {}, // NOTE: Might have to put it in ScreenReducer, because can have multiple screens of different / same topics w/ diff data
   loading: false // For refreshing current topic screen
 };
@@ -31,21 +30,14 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, loading: false };
 
     case GET_SUBSCRIBED_TOPICS:
-      return {
-        ...state,
-        subscribed: action.payload,
-        sub_fetched: true
-      };
+      return { ...state, subscribed: action.payload };
 
     case CREATE_TOPIC:
       // Add to subscribed topics list
       const copySub = [...state.subscribed];
       copySub.push(action.payload);
       copySub.sort(sortTopicsAlpha);
-      return {
-        ...state,
-        subscribed: copySub
-      };
+      return { ...state, subscribed: copySub };
     case CHOOSE_POST_TOPIC:
       return { ...state, post_topic: action.payload };
     default:

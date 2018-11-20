@@ -4,7 +4,8 @@ import {
   REMOVE_USER_SCREEN_INFO,
   CREATE_POST,
   EDIT_POST,
-  DELETE_POST
+  DELETE_POST,
+  GET_USER_FEED
 } from '../actions/types';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
@@ -18,7 +19,8 @@ const INITIAL_STATE = {
     feed: {},
     discover: {}
   },
-  post: { // key: post_id, value: object of (key: screen_id (shortid, local state), value: screen post data - object)
+  posts: { // key: post_id, value: object of (key: screen_id (shortid, local state), value: screen post data - object)
+    post_likes: {}, // Global tracking - likes are reflected in all posts on every screen
     none_msg: 'This post does not exist or has been deleted.'
   }
 };
@@ -30,11 +32,19 @@ export default (state = INITIAL_STATE, action) => {
 
     case STORE_USER_SCREEN_INFO:
       const copyProfile = { ...state.profile };
+      const copyPostLikes = { ...state.posts.post_likes, ...action.payload.user.posts.post_likes }; // Add to object to track
       copyProfile[action.payload.user.id] = {
         ...copyProfile[action.payload.user.id],
         [action.payload.screenID]: action.payload.user
       };
-      return { ...state, profile: copyProfile };
+      return {
+        ...state,
+        profile: copyProfile,
+        posts: {
+          ...state.posts,
+          post_likes: copyPostLikes
+        }
+      };
     case REMOVE_USER_SCREEN_INFO:
       const copyProfile2 = { ...state.profile };
       delete copyProfile2[action.payload.userID][action.payload.screenID];
@@ -60,29 +70,34 @@ export default (state = INITIAL_STATE, action) => {
       return state;
     case EDIT_POST:
       const copyProfile4 = { ...state.profile };
+      const copyPostLikes2 = { ...state.posts.post_likes };
       const userScreens2 = copyProfile4[action.payload.post.author_id];
       if (userScreens2) {
         for (const screenID in userScreens2) {
           if (Object.prototype.hasOwnProperty.call(userScreens2, screenID)) {
             const postData = userScreens2[screenID].posts.data;
-            const postLikes = userScreens2[screenID].posts.post_likes;
-
             // Update post
             if (postData[action.payload.post.id]) {
               postData[action.payload.post.id] = action.payload.post;
             }
-            if (action.payload.type === 'num_likes') {
-              if (postLikes[action.payload.post.id]) {
-                delete postLikes[action.payload.post.id];
-              } else {
-                postLikes[action.payload.post.id] = { post_id: action.payload.post.id };
-              }
-            }
           }
         }
-        return { ...state, profile: copyProfile4 };
       }
-      return state;
+      if (action.payload.type === 'num_likes') {
+        if (copyPostLikes2[action.payload.post.id]) {
+          delete copyPostLikes2[action.payload.post.id];
+        } else {
+          copyPostLikes2[action.payload.post.id] = true;
+        }
+      }
+      return {
+        ...state,
+        profile: copyProfile4,
+        posts: {
+          ...state.posts,
+          post_likes: copyPostLikes2
+        }
+      };
     case DELETE_POST:
       const copyProfile5 = { ...state.profile };
       const userScreens3 = copyProfile5[action.payload.userID];
@@ -100,9 +115,20 @@ export default (state = INITIAL_STATE, action) => {
             }
           }
         }
-        return { ...state, profile: copyProfile5 };
       }
-      return state;
+      return { ...state, profile: copyProfile5 };
+
+    case GET_USER_FEED:
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          post_likes: {
+            ...state.posts.post_likes,
+            ...action.payload.post_likes
+          }
+        }
+      };
     default:
       return state;
   }

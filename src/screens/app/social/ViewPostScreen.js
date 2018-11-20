@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
+import { connect } from 'react-redux';
 import { View, Text, StyleSheet } from 'react-native';
 import { StandardHeader } from '../../../components/common';
+import PostCard from '../../../components/post/PostCard';
 
 // TODO: componentDidMount / reload, store in app state screens - like ViewProfileScreen
-// QUESTION: How to navigate to another copy of MainScreen, with exactly the same state as the original one
-// except starting tab and screen is different
 class ViewPostScreen extends Component {
   state = {
     screen_id: shortid(),
@@ -14,8 +14,21 @@ class ViewPostScreen extends Component {
   }
 
   componentDidMount() {
-    console.log('grab post comments for post', this.props.navigation.getParam('post', {}));
+    const post = this.props.navigation.getParam('post', {});
+    const showKeyboard = this.props.navigation.getParam('showKeyboard', false);
+
+    console.log('grab post comments for post', post);
     console.log('should look exactly the same as PostCard, but body is not line restricted');
+    console.log('show keyboard: ' + showKeyboard);
+    console.log(this.props.screenProps);
+  }
+
+  viewProfile = id => {
+    this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
+    this.props.navigation.push('ViewProfile', {
+      type: 'public',
+      id
+    });
   }
 
   handleLeftPress = () => {
@@ -31,19 +44,25 @@ class ViewPostScreen extends Component {
           showLeft
           onLeftPress={this.handleLeftPress}
         />
-        {/* <PostCard
+        <PostCard
           userID={this.props.id}
           post={item}
           viewProfile={this.viewProfile}
+          viewPost={() => null}
           postLikes={this.props.post_likes}
           navigation={this.props.navigation}
-          parentNavigation={this.props.parentNavigation}
-        /> */}
+          parentNavigation={this.props.screenProps.parentNavigation}
+        />
         <Text>No comments available</Text>
       </View>
     );
   }
 }
+
+ViewPostScreen.propTypes = {
+  id: PropTypes.string.isRequired,
+  screenProps: PropTypes.object.isRequired
+};
 
 const styles = StyleSheet.create({
   centerItems: {
@@ -51,4 +70,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ViewPostScreen;
+const mapStateToProps = state => ({
+  id: state.auth.id
+});
+
+export default connect(mapStateToProps, null)(ViewPostScreen);
