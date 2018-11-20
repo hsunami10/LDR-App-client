@@ -7,6 +7,8 @@ import {
   DELETE_POST
 } from '../actions/types';
 
+// NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
+
 // TODO: Handle some action types with search.feed and search.discover
 const INITIAL_STATE = {
   profile: { // key: user_id, value: object of (key: screen_id (shortid, local state), value: screen user data - object)

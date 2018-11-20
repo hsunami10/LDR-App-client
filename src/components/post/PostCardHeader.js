@@ -8,10 +8,9 @@ import { ClickableImage } from '../../components/common';
 const PostCardHeader = ({ post, viewProfile, userID }) => (
   <View style={styles.viewStyle}>
     <ClickableImage
-      style={{ marginLeft: 10 }}
       width={40}
       height={40}
-      type="none"
+      type="opacity"
       onPress={() => viewProfile(post.author_id)}
       image={post.profile_pic ? `${ROOT_URL}/${post.profile_pic}` : null}
     />
@@ -23,7 +22,11 @@ const PostCardHeader = ({ post, viewProfile, userID }) => (
         {/* Only show the real username if there's an alias OR if you're the author */}
         {(post.alias_id === '' || post.author_id === userID) ? post.username : post.alias}
       </Text>
-      <Text style={{ fontSize: 12 }}>{post.name}</Text>
+      <Text
+        style={{ fontSize: 12 }}
+        onPress={() => console.log('view topic screen with id: ' + post.topic_id)}
+        // suppressHighlighting
+      >{post.name}</Text>
     </View>
     <View style={styles.dateStyle}>
       <Text>{`${moment(moment.unix(parseInt(post.date_posted, 10))).fromNow(true)} ago`}</Text>
@@ -42,14 +45,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 40,
-    marginTop: 10
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10
   },
   middleStyle: {
     marginLeft: 10
   },
   dateStyle: {
     marginLeft: 'auto',
-    marginRight: 10
+    marginRight: 0
   }
 });
 

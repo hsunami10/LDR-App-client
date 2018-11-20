@@ -42,6 +42,7 @@ class PostsList extends Component {
       postLikes={this.props.post_likes}
       navigation={this.props.navigation}
       parentNavigation={this.props.parentNavigation}
+      restrictBodySize
     />
   )
 

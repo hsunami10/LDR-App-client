@@ -12,6 +12,7 @@ import {
 import { pushTabRoute } from '../../actions/NavigationActions';
 import textStyles from '../../constants/styles/text';
 
+// TODO: Stop users from spamming "send email"
 class VerifyEmailScreen extends Component {
   state = { email: '', width: 0, height: 0 }
 

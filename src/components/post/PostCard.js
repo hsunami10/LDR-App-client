@@ -7,7 +7,7 @@ import PostCardFooter from './PostCardFooter';
 
 // TODO: Finish post cards - to show in feed
 // Handle clicking on post cards
-const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavigation }) => (
+const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavigation, restrictBodySize }) => (
   <TouchableHighlight
     onPress={() => {
       // TODO: Finish navigating - update app state if needed
@@ -18,7 +18,7 @@ const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavi
   >
     <View style={styles.viewStyle}>
       <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
-      <PostCardBody post={post} />
+      <PostCardBody restrictBodySize={restrictBodySize} post={post} />
       <PostCardFooter post={post} postLikes={postLikes} navigation={navigation} parentNavigation={parentNavigation} />
     </View>
   </TouchableHighlight>
@@ -30,7 +30,8 @@ PostCard.propTypes = {
   viewProfile: PropTypes.func.isRequired,
   postLikes: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
-  parentNavigation: PropTypes.object.isRequired
+  parentNavigation: PropTypes.object.isRequired,
+  restrictBodySize: PropTypes.bool
 };
 
 const styles = StyleSheet.create({
