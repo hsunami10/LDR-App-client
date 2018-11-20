@@ -18,6 +18,8 @@ const INITIAL_STATE = {
   loading: false // For refreshing current topic screen
 };
 
+const sortTopicsAlpha = (t1, t2) => t1.lowercase_name.localeCompare(t2.lowercase_name);
+
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOG_OUT_USER:
@@ -35,11 +37,14 @@ export default (state = INITIAL_STATE, action) => {
         sub_fetched: true
       };
 
-    case CREATE_TOPIC: // TODO: Change this later
+    case CREATE_TOPIC:
+      // Add to subscribed topics list
+      const copySub = [...state.subscribed];
+      copySub.push(action.payload);
+      copySub.sort(sortTopicsAlpha);
       return {
         ...state,
-        current_topic: action.payload.topic,
-        current_topic_subscribers: [action.payload.subscriber]
+        subscribed: copySub
       };
     case CHOOSE_POST_TOPIC:
       return { ...state, post_topic: action.payload };

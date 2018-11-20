@@ -29,7 +29,7 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
       if (response.data.success) {
         dispatch({
           type: CREATE_TOPIC,
-          payload: response.data
+          payload: response.data.topic
         });
         // QUESTION: Navigate to topic screen?
         dispatch(goBackwardRoute());
