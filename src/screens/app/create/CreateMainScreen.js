@@ -23,10 +23,6 @@ class CreateMainScreen extends Component {
     },
 
     // Create Post
-    topic: { // NOTE: Make sure it's the same as the default topic in app state - state.topics.post_topic
-      id: '',
-      name: 'Choose a Topic'
-    },
     body: '',
     postError: {
       type: null,
@@ -151,7 +147,10 @@ class CreateMainScreen extends Component {
           <CreatePostScreen
             navigation={this.props.navigation}
             handleChangeBody={this.handleChangeBody}
-            topic={this.state.topic}
+            topic={{ // NOTE: Make sure it's the same as the default topic in app state - state.topics.post_topic
+              id: '',
+              name: 'Choose a Topic'
+            }}
             body={this.state.body}
             error={this.state.postError}
             aliases={this.props.user.aliases}

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
 import PostCardHeader from './PostCardHeader';
 import PostCardBody from './PostCardBody';
 import PostCardFooter from './PostCardFooter';
@@ -8,11 +8,20 @@ import PostCardFooter from './PostCardFooter';
 // TODO: Finish post cards - to show in feed
 // Handle clicking on post cards
 const PostCard = ({ userID, post, viewProfile, postLikes, navigation, parentNavigation }) => (
-  <View style={styles.viewStyle}>
-    <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
-    <PostCardBody post={post} />
-    <PostCardFooter post={post} postLikes={postLikes} navigation={navigation} parentNavigation={parentNavigation} />
-  </View>
+  <TouchableHighlight
+    onPress={() => {
+      // TODO: Finish navigating - update app state if needed
+      console.log('TODO: update app state if needed for navigating to ViewPostScreen');
+      parentNavigation.push('ViewPost', { post });
+    }}
+    underlayColor="rgba(0,0,0,0.4)"
+  >
+    <View style={styles.viewStyle}>
+      <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
+      <PostCardBody post={post} />
+      <PostCardFooter post={post} postLikes={postLikes} navigation={navigation} parentNavigation={parentNavigation} />
+    </View>
+  </TouchableHighlight>
 );
 
 PostCard.propTypes = {
@@ -28,7 +37,6 @@ const styles = StyleSheet.create({
   viewStyle: {
     flexDirection: 'column',
     width: Dimensions.get('window').width,
-    // height: 125,
     borderColor: '#C1C7C9',
     borderTopWidth: 1,
     borderBottomWidth: 1

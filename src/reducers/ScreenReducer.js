@@ -9,12 +9,15 @@ import {
 
 // TODO: Handle some action types with search.feed and search.discover
 const INITIAL_STATE = {
-  profile: { // key: user_id, value: object of (key: shortid - local state, value: screen user data - object)
+  profile: { // key: user_id, value: object of (key: screen_id (shortid, local state), value: screen user data - object)
     none_msg: 'This account does not exist or has been deleted.'
   },
   search: {
     feed: {},
     discover: {}
+  },
+  post: { // key: post_id, value: object of (key: screen_id (shortid, local state), value: screen post data - object)
+    none_msg: 'This post does not exist or has been deleted.'
   }
 };
 

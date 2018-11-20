@@ -59,7 +59,8 @@ CreatePostScreen.propTypes = {
   handleAliasChange: PropTypes.func.isRequired,
   aliases: PropTypes.arrayOf(PropTypes.object).isRequired,
   navigation: PropTypes.object.isRequired,
-  choosePostTopic: PropTypes.func.isRequired
+  choosePostTopic: PropTypes.func.isRequired,
+  post_topic: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
