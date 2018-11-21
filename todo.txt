@@ -1,1 +1,10 @@
-- get rid of all num"..." in tables, use SELECT COUNT(*) instead
+URGENT - figure out how to handle initial_loading and refresh loading for all different types of screens in ScreenReducer
+
+- implement getting post's comments for both frontend and backend
+  - get comments for post w/ database
+  - comments: { order - array, data - object of comment_id -> comment obj, offset - number }
+- utilize none_msg in ScreenReducer
+
+Future ideas:
+  - realtime comments on posts
+  -

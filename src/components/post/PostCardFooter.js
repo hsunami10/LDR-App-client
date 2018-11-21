@@ -22,7 +22,13 @@ class PostCardFooter extends Component {
   showActionSheet = () => this.ActionSheet.show();
   ref = o => (this.ActionSheet = o)
 
-  handleCommentAction = () => this.props.viewPost(this.props.post, true)
+  handleCommentAction = () => {
+    if (this.props.viewing) {
+      console.log('open keyboard to create comment');
+    } else {
+      this.props.viewPost(this.props.post);
+    }
+  }
 
   handleLikeAction = () => {
     this.props.editPost({
@@ -96,10 +102,11 @@ PostCardFooter.propTypes = {
   postLikes: PropTypes.object.isRequired,
   deletePost: PropTypes.func.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
-  viewPost: PropTypes.func.isRequired,
+  viewPost: PropTypes.func,
   navigateToRoute: PropTypes.func.isRequired,
   fetchAliases: PropTypes.func.isRequired,
-  parentNavigation: PropTypes.object.isRequired
+  parentNavigation: PropTypes.object.isRequired,
+  viewing: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

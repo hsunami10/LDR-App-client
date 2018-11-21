@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Keyboard, RefreshControl, Dimensions, FlatList, Animated } from 'react-native';
+import { View, Text, StyleSheet, Keyboard, Dimensions, Animated } from 'react-native';
 import { SearchHeader, FullScreenLoading } from '../../../components/common';
-import PostCard from '../../../components/post/PostCard';
 import PostsList from '../../../components/post/PostsList';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
@@ -43,8 +42,6 @@ Order from: (top to bottom) most recent to oldest
 First get data for exclusions
 Run loops to create the correct query string
 Apply those query strings to the inclusions
-
-TODO: Update when posts are edited (body, num_likes) and deleted, but NOT added
  */
 
 class FeedScreen extends Component {

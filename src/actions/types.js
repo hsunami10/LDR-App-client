@@ -18,6 +18,8 @@ export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
 // Screens
 export const STORE_USER_SCREEN_INFO = 'store_user_screen_info';
 export const REMOVE_USER_SCREEN_INFO = 'remove_user_screen_info';
+export const STORE_POST_SCREEN_INFO = 'store_post_screen_info';
+export const REMOVE_POST_SCREEN_INFO = 'remove_post_screen_info';
 
 // Loading
 export const START_OVERLAY_LOADING = 'start_overlay_loading';

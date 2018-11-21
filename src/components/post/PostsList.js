@@ -18,9 +18,9 @@ class PostsList extends Component {
     });
   }
 
-  viewPost = (post, showKeyboard) => {
+  viewPost = post => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
-    this.props.navigation.push('ViewPost', { post, showKeyboard });
+    this.props.navigation.push('ViewPost', { post });
   }
 
   handleScroll = () => Keyboard.dismiss()
@@ -47,7 +47,6 @@ class PostsList extends Component {
       viewPost={this.viewPost}
       navigation={this.props.navigation}
       parentNavigation={this.props.parentNavigation}
-      restrictBodySize
     />
   )
 

@@ -2,25 +2,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { StandardHeader } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
+import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
+import { removePostScreenInfo } from '../../../actions/ScreenActions';
+import { getPostComments } from '../../../actions/PostActions';
 
 // TODO: componentDidMount / reload, store in app state screens - like ViewProfileScreen
 class ViewPostScreen extends Component {
   state = {
+    height: 0,
     screen_id: shortid(),
     post_id: ''
   }
 
   componentDidMount() {
-    const post = this.props.navigation.getParam('post', {});
-    const showKeyboard = this.props.navigation.getParam('showKeyboard', false);
+    this.handleFirstLoad(false);
+  }
 
-    console.log('grab post comments for post', post);
-    console.log('should look exactly the same as PostCard, but body is not line restricted');
-    console.log('show keyboard: ' + showKeyboard);
-    console.log(this.props.screenProps);
+  componentWillUnmount() {
+    this.props.goBackwardTabRoute();
+    this.props.removePostScreenInfo(this.state.post_id, this.state.screen_id);
   }
 
   viewProfile = id => {
@@ -31,9 +34,38 @@ class ViewPostScreen extends Component {
     });
   }
 
+  handleLayout = e => {
+    const { height } = e.nativeEvent.layout;
+    this.setState(() => ({ height }));
+  }
+
+  handleFirstLoad = refresh => {
+    const post = this.props.navigation.getParam('post', {});
+    this.setState(() => ({ post_id: post.id }));
+    // TODO: Implement this function later
+    this.props.getPostComments(post, this.state.screen_id);
+  }
+
   handleLeftPress = () => {
     // TODO: Update app state if needed
     this.props.navigation.pop();
+  }
+
+  renderBody = () => {
+    return (
+      <View>
+        <PostCard
+          userID={this.props.id}
+          post={this.props.navigation.getParam('post', {})}
+          viewProfile={this.viewProfile}
+          postLikes={this.props.post_likes}
+          navigation={this.props.navigation}
+          parentNavigation={this.props.screenProps.parentNavigation}
+          viewing
+        />
+        <Text>No comments available</Text>
+      </View>
+    );
   }
 
   render() {
@@ -44,16 +76,18 @@ class ViewPostScreen extends Component {
           showLeft
           onLeftPress={this.handleLeftPress}
         />
-        <PostCard
-          userID={this.props.id}
-          post={item}
-          viewProfile={this.viewProfile}
-          viewPost={() => null}
-          postLikes={this.props.post_likes}
-          navigation={this.props.navigation}
-          parentNavigation={this.props.screenProps.parentNavigation}
-        />
-        <Text>No comments available</Text>
+        <ScrollView
+          scrollEventThrottle={16}
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={this.props.loading}
+          //     onRefresh={this.handleRefresh}
+          //   />
+          // }
+          onLayout={this.handleLayout}
+        >
+          {this.renderBody()}
+        </ScrollView>
       </View>
     );
   }
@@ -61,7 +95,13 @@ class ViewPostScreen extends Component {
 
 ViewPostScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  screenProps: PropTypes.object.isRequired
+  screenProps: PropTypes.object.isRequired,
+  current_tab: PropTypes.string.isRequired,
+  pushTabRoute: PropTypes.func.isRequired,
+  post_likes: PropTypes.object.isRequired,
+  goBackwardTabRoute: PropTypes.func.isRequired,
+  removePostScreenInfo: PropTypes.func.isRequired,
+  getPostComments: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -71,7 +111,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  id: state.auth.id
+  id: state.auth.id,
+  current_tab: state.navigation.current_tab,
+  post_likes: state.screens.posts.post_likes
 });
 
-export default connect(mapStateToProps, null)(ViewPostScreen);
+export default connect(mapStateToProps, {
+  pushTabRoute,
+  goBackwardTabRoute,
+  removePostScreenInfo,
+  getPostComments
+})(ViewPostScreen);

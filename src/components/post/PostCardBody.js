@@ -12,12 +12,13 @@ class PostCardBody extends Component {
 
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
-    // console.log(height);
     this.setState(() => ({ height }));
   }
 
+  handleMorePress = () => this.props.viewPost(this.props.post)
+
   renderBody = () => {
-    if (this.props.restrictBodySize) { // Only true when NOT on ViewPostScreen
+    if (!this.props.viewing) { // Only true when NOT on ViewPostScreen
       return (
         <View style={{ flex: 1 }}>
           <Text
@@ -28,7 +29,11 @@ class PostCardBody extends Component {
           >
             {this.props.post.body}
           </Text>
-          {this.state.height > 80 ? <Text style={styles.moreTextStyle}>More</Text> : null}
+          {
+            this.state.height > 80 ?
+            <Text onPress={this.handleMorePress} style={styles.moreTextStyle}>More</Text> :
+            null
+          }
         </View>
       );
     }
@@ -46,7 +51,8 @@ class PostCardBody extends Component {
 
 PostCardBody.propTypes = {
   post: PropTypes.object.isRequired,
-  restrictBodySize: PropTypes.bool
+  viewing: PropTypes.bool,
+  viewPost: PropTypes.func
 };
 
 const styles = StyleSheet.create({

@@ -148,7 +148,6 @@ class ViewProfileScreen extends Component {
             />
           }
           onLayout={this.handleLayout}
-          scrollEnabled={!this.props.loading}
         >
           {this.renderBody()}
           <ActionSheet

@@ -2,6 +2,8 @@ import {
   LOG_OUT_USER,
   STORE_USER_SCREEN_INFO,
   REMOVE_USER_SCREEN_INFO,
+  STORE_POST_SCREEN_INFO,
+  REMOVE_POST_SCREEN_INFO,
   CREATE_POST,
   EDIT_POST,
   DELETE_POST,
@@ -9,19 +11,19 @@ import {
 } from '../actions/types';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
+// Or if it would be the same for all screens (ex: post likes - posts.post_likes)
 
-// TODO: Handle some action types with search.feed and search.discover
 const INITIAL_STATE = {
   profile: { // key: user_id, value: object of (key: screen_id (shortid, local state), value: screen user data - object)
     none_msg: 'This account does not exist or has been deleted.'
   },
-  search: {
-    feed: {},
-    discover: {}
-  },
   posts: { // key: post_id, value: object of (key: screen_id (shortid, local state), value: screen post data - object)
     post_likes: {}, // Global tracking - likes are reflected in all posts on every screen
     none_msg: 'This post does not exist or has been deleted.'
+  },
+  comments: { // Same format as posts, make it more neat and less nested
+    comment_likes: {},
+    none_msg: 'There are no comments for this post.'
   }
 };
 
@@ -52,6 +54,39 @@ export default (state = INITIAL_STATE, action) => {
         delete copyProfile2[action.payload.userID];
       }
       return { ...state, profile: copyProfile2 };
+
+    case STORE_POST_SCREEN_INFO:
+      const copyPosts = { ...state.posts };
+      const copyComments = { ...state.comments };
+      copyPosts[action.payload.post.id] = {
+        ...copyPosts[action.payload.post.id],
+        [action.payload.screenID]: action.payload.post
+      };
+      copyComments[action.payload.post.id] = {
+        ...copyComments[action.payload.post.id],
+        [action.payload.screenID]: action.payload.comments
+      };
+      return {
+        ...state,
+        posts: copyPosts,
+        comments: copyComments
+      };
+    case REMOVE_POST_SCREEN_INFO:
+      const copyPosts2 = { ...state.posts };
+      const copyComments2 = { ...state.comments };
+      delete copyPosts2[action.payload.postID][action.payload.screenID];
+      if (Object.keys(copyPosts2[action.payload.postID]).length === 0) {
+        delete copyPosts2[action.payload.postID];
+      }
+      delete copyComments2[action.payload.postID][action.payload.screenID];
+      if (Object.keys(copyComments2[action.payload.postID]).length === 0) {
+        delete copyComments2[action.payload.postID];
+      }
+      return {
+        ...state,
+        posts: copyPosts2,
+        comments: copyComments2
+      };
 
     case CREATE_POST:
       const copyProfile3 = { ...state.profile };

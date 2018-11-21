@@ -8,6 +8,12 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
+import { storePostScreenInfo } from './ScreenActions';
+
+export const getPostComments = (post, screenID) => dispatch => {
+  // TODO: Finish getting post comments with axios
+  dispatch(storePostScreenInfo(post, {}, screenID));
+};
 
 export const createPost = (postObj, navigation) => dispatch => {
   // postObj - { user_id, topic_id, alias_id, body, coordinates }
