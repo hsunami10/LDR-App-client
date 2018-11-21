@@ -9,6 +9,12 @@ import { removePostScreenInfo } from '../../../actions/ScreenActions';
 import { getPostComments } from '../../../actions/PostActions';
 
 // TODO: componentDidMount / reload, store in app state screens - like ViewProfileScreen
+// 3 types of loading:
+//  - on mount, initial_loading for comments, get /api/posts/comments/, offset = 0
+//  - on refresh, update post and comments, get /api/posts/
+//  - view previous comments, get /api/posts/comments/, offset > 0
+// If no comments, then show "no comments" message and DO NOT allow "view previous comments"
+// Hide "view previous comments" if number of comments fetched is < limit (5)
 class ViewPostScreen extends Component {
   state = {
     height: 0,
@@ -61,7 +67,7 @@ class ViewPostScreen extends Component {
           parentNavigation={this.props.screenProps.parentNavigation}
           viewing
         />
-        <Text>No comments available</Text>
+        <Text>{this.props.none_msg}</Text>
       </View>
     );
   }
@@ -100,7 +106,8 @@ ViewPostScreen.propTypes = {
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
   getPostComments: PropTypes.func.isRequired,
-  screenID: PropTypes.string.isRequired
+  screenID: PropTypes.string.isRequired,
+  none_msg: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -116,7 +123,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     id: state.auth.id,
     current_tab: state.navigation.current_tab,
-    post_likes: state.screens.posts.post_likes
+    post_likes: state.screens.posts.post_likes,
+    none_msg: state.screens.comments.none_msg
   };
 };
 

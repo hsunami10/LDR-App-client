@@ -10,14 +10,9 @@ import {
 
 // TODO: Add default values for subscribers && friends later
 const INITIAL_STATE = {
+  id: '',
   aliases: [],
   alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
-  posts: { // NOTE: Not used
-    offset: 0,
-    data: {},
-    order: [],
-    post_likes: {}
-  },
   coordinates: null,
   partner: null,
   initial_loading: false,

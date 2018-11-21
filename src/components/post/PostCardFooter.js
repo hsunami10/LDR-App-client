@@ -80,7 +80,7 @@ class PostCardFooter extends Component {
         </Text>
         <View style={{ height: 40, marginLeft: 10, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
         <Text onPress={this.handleCommentAction}>
-          Comment
+          Comment ({this.props.post.num_comments})
         </Text>
         <Ionicons onPress={this.showActionSheet} style={{ marginLeft: 'auto', marginRight: 10 }} name={`${Platform.OS}-more`} size={35} color="gray" />
         <ActionSheet

@@ -16,8 +16,7 @@ const INITIAL_STATE = {
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts: {}, // Increase performance
-  order: [], // Stores ordering of posts
-  post_likes: {}
+  order: [] // Stores ordering of posts
 };
 
 export default (state = INITIAL_STATE, action) => {
