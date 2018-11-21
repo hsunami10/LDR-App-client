@@ -113,7 +113,7 @@ PostCardFooter.propTypes = {
 const mapStateToProps = state => ({
   id: state.auth.id,
   alias_fetched: state.user.alias_fetched,
-  postLikes: state.screens.posts.post_likes
+  postLikes: state.posts.post_likes
 });
 
 export default connect(mapStateToProps, {

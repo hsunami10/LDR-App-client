@@ -6,7 +6,6 @@ import {
   SORT_FEED,
   START_INITIAL_FEED_LOADING,
   STOP_INITIAL_FEED_LOADING,
-  EDIT_POST,
   DELETE_POST
 } from '../actions/types';
 
@@ -15,8 +14,7 @@ const INITIAL_STATE = {
   initial_loading: false,
   offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
-  posts: {}, // Increase performance
-  order: [] // Stores ordering of posts
+  posts_order: [] // Stores order of posts
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -36,8 +34,7 @@ export default (state = INITIAL_STATE, action) => {
     case GET_USER_FEED:
       return {
         ...state,
-        posts: action.payload.replace ? action.payload.posts : { ...state.posts, ...action.payload.posts },
-        order: action.payload.replace ? action.payload.order : [...state.order, ...action.payload.order],
+        posts_order: action.payload.replace ? action.payload.order : [...state.posts_order, ...action.payload.order],
         offset: action.payload.offset,
         keepPaging: action.payload.order.length !== 0 // Continue paging only when there is data retrieved
       };
@@ -45,27 +42,15 @@ export default (state = INITIAL_STATE, action) => {
       // TODO: Sort feed action here later
       return state;
 
-    case EDIT_POST:
-      const copyPosts = { ...state.posts };
-      // Update posts object
-      if (copyPosts[action.payload.post.id]) {
-        copyPosts[action.payload.post.id] = action.payload.post;
-      }
-      return { ...state, posts: copyPosts };
     case DELETE_POST:
-      const copyPosts2 = { ...state.posts };
-      const copyPostLikes2 = { ...state.post_likes };
-      const copyOrder = [...state.order];
+      const copyOrder = [...state.posts_order];
       const index = copyOrder.indexOf(action.payload.postID);
       if (index >= 0) {
-        delete copyPosts2[action.payload.postID];
-        delete copyPostLikes2[action.payload.postID];
         copyOrder.splice(index, 1);
         return {
           ...state,
           offset: state.offset - 1,
-          posts: copyPosts2,
-          order: copyOrder
+          posts_order: copyOrder
         };
       }
       return state;

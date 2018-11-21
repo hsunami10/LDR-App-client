@@ -123,8 +123,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     id: state.auth.id,
     current_tab: state.navigation.current_tab,
-    post_likes: state.screens.posts.post_likes,
-    none_msg: state.screens.comments.none_msg
+    post_likes: state.posts.post_likes,
+    none_msg: state.posts.none_msg
   };
 };
 

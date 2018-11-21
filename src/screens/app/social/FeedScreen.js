@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import shortid from 'shortid';
-import { View, Text, StyleSheet, Keyboard, Dimensions, Animated } from 'react-native';
+import { View, StyleSheet, Keyboard, Dimensions, Animated } from 'react-native';
 import { SearchHeader, FullScreenLoading } from '../../../components/common';
 import PostsList from '../../../components/post/PostsList';
 import GeneralSearchScreen from '../GeneralSearchScreen';
@@ -266,10 +266,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   // Pre-process posts - convert from an object of objects to an array of objects
-  const postsOrder = state.feed.order;
+  const postsOrder = state.feed.posts_order;
   const posts = new Array(postsOrder.length);
   for (let i = 0; i < postsOrder.length; i++) {
-    posts[i] = state.feed.posts[postsOrder[i]];
+    if (state.posts.all_posts[postsOrder[i]]) {
+      posts[i] = state.posts.all_posts[postsOrder[i]];
+    }
   }
 
   return {
