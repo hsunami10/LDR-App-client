@@ -51,7 +51,7 @@ class PostCardFooter extends Component {
         }
         break;
       case 1:
-        this.props.deletePost(this.props.id, this.props.post.id);
+        this.props.deletePost(this.props.id, this.props.post.id, this.props.navigation);
         break;
       default:
         return;
@@ -105,6 +105,7 @@ PostCardFooter.propTypes = {
   viewPost: PropTypes.func,
   navigateToRoute: PropTypes.func.isRequired,
   fetchAliases: PropTypes.func.isRequired,
+  navigation: PropTypes.object,
   parentNavigation: PropTypes.object.isRequired,
   viewing: PropTypes.bool
 };

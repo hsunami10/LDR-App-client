@@ -5,18 +5,30 @@ import PostCardHeader from './PostCardHeader';
 import PostCardBody from './PostCardBody';
 import PostCardFooter from './PostCardFooter';
 
-// TODO: Finish post cards - to show in feed
-// Handle clicking on post cards
-const PostCard = ({ userID, post, viewProfile, viewPost, parentNavigation, viewing }) => (
+const PostCard = ({ userID, post, viewProfile, viewPost, navigation, parentNavigation, viewing }) => (
   <TouchableHighlight
     onPress={() => viewPost(post)}
     disabled={viewing}
     underlayColor="rgba(0,0,0,0.4)"
   >
     <View style={styles.viewStyle}>
-      <PostCardHeader post={post} viewProfile={viewProfile} userID={userID} />
-      <PostCardBody viewing={viewing} post={post} viewPost={viewPost} />
-      <PostCardFooter viewing={viewing} post={post} viewPost={viewPost} parentNavigation={parentNavigation} />
+      <PostCardHeader
+        post={post}
+        viewProfile={viewProfile}
+        userID={userID}
+      />
+      <PostCardBody
+        viewing={viewing}
+        post={post}
+        viewPost={viewPost}
+      />
+      <PostCardFooter
+        viewing={viewing}
+        post={post}
+        viewPost={viewPost}
+        navigation={navigation}
+        parentNavigation={parentNavigation}
+      />
     </View>
   </TouchableHighlight>
 );
@@ -26,6 +38,7 @@ PostCard.propTypes = {
   post: PropTypes.object.isRequired,
   viewProfile: PropTypes.func.isRequired,
   viewPost: PropTypes.func,
+  navigation: PropTypes.object, // Only not null if in ViewPostScreen
   parentNavigation: PropTypes.object.isRequired,
   viewing: PropTypes.bool
 };

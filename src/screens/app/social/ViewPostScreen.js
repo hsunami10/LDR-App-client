@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { StandardHeader } from '../../../components/common';
@@ -52,7 +51,7 @@ class ViewPostScreen extends Component {
 
   renderBody = () => {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <PostCard
           userID={this.props.id}
           post={this.props.navigation.getParam('post', {})}

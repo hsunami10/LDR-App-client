@@ -83,7 +83,7 @@ export const editPost = (obj, navigation = null) => dispatch => {
     });
 };
 
-export const deletePost = (userID, postID) => dispatch => {
+export const deletePost = (userID, postID, navigation = null) => dispatch => {
   dispatch(startLoading());
   axios.delete(`${ROOT_URL}/api/posts/${postID}`)
     .then(() => {
@@ -92,6 +92,9 @@ export const deletePost = (userID, postID) => dispatch => {
         type: DELETE_POST,
         payload: { userID, postID }
       });
+      if (navigation) {
+        navigation.pop();
+      }
     })
     .catch(error => {
       dispatch(stopLoading());

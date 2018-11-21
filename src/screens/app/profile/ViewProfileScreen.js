@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Platform } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
-import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
@@ -174,7 +173,8 @@ ViewProfileScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
+  screenID: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
