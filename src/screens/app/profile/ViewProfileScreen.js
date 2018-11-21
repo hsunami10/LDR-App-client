@@ -12,19 +12,35 @@ import { navigateToRoute, goBackwardTabRoute } from '../../../actions/Navigation
 import { removeUserScreenInfo } from '../../../actions/ScreenActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
+/*
+2 types of loading:
+  - on mount, initial_loading
+  - refreshing
+Other types are handled by subtabs
+ */
+// NOTE: Only use this.props.screenID in this.handleFirstLoad, use this.state.screen_id everywhere else
+// BUG: Passing screenID as props complicates things, because it changes with every re-render, every time the route changes
+// FIX: Maybe pass screen_id down from navigation params (ViewPostScreen) or screen props (ViewProfileScreen)
 class ViewProfileScreen extends Component {
   state = {
     height: 0,
+    screen_id: '',
     user_id: ''
   }
 
   componentDidMount() {
+    const targetID = this.props.navigation.getParam('id', this.props.id);
+    const screenID = this.props.navigation.getParam('screenID', null) || this.props.screenProps.screenID;
+    this.setState(() => ({
+      user_id: targetID,
+      screen_id: screenID
+    }));
     this.handleFirstLoad(false);
   }
 
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
-    this.props.removeUserScreenInfo(this.state.user_id, this.props.screenID);
+    this.props.removeUserScreenInfo(this.state.user_id, this.state.screen_id);
   }
 
   onPressAction = index => {
@@ -65,18 +81,19 @@ class ViewProfileScreen extends Component {
     }
   }
 
+  // For some reason, this.props.screenID changes 3 times
   handleFirstLoad = refresh => {
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
-    this.setState(() => ({ user_id: targetID }));
+    const screenID = this.props.navigation.getParam('screenID', null) || this.props.screenProps.screenID;
     if (this.props.private || targetID === this.props.id) {
       this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
-      }, this.props.screenID);
+      }, screenID);
     } else {
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.props.screenID);
+      this.props.getUserInfo(this.props.id, targetID, type, refresh, screenID);
     }
   }
 
@@ -108,9 +125,9 @@ class ViewProfileScreen extends Component {
       return null;
     } else if (this.props.initial_loading) {
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.props.screenID]) {
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
       // TODO: Display actual information here
-      return <Text>{this.props.profile[this.state.user_id][this.props.screenID].username}</Text>;
+      return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
     }
     return null;
   }
@@ -119,8 +136,8 @@ class ViewProfileScreen extends Component {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.props.screenID]) {
-      return this.props.profile[this.state.user_id][this.props.screenID].username;
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
+      return this.props.profile[this.state.user_id][this.state.screen_id].username;
     }
     return '';
   }
@@ -173,8 +190,7 @@ ViewProfileScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
-  screenID: PropTypes.string.isRequired
+  profile: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

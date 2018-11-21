@@ -34,7 +34,7 @@ class PostCardFooter extends Component {
     this.props.editPost({
       post: this.props.post,
       type: 'num_likes',
-      data: this.props.postLikes[this.props.post.id] ? this.props.post.num_likes - 1 : this.props.post.num_likes + 1,
+      data: this.props.postLikes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
       userID: this.props.id
     });
     this.setState(prevState => ({ flag: !prevState.flag }));

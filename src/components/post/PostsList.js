@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 import { Text, FlatList, RefreshControl, Keyboard } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from './PostCard';
@@ -14,13 +15,14 @@ class PostsList extends Component {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id
+      id,
+      screenID: shortid()
     });
   }
 
   viewPost = post => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
-    this.props.navigation.push('ViewPost', { post });
+    this.props.navigation.push('ViewPost', { post, screenID: shortid() });
   }
 
   handleScroll = () => Keyboard.dismiss()

@@ -4,6 +4,7 @@ import { View, Alert, Platform } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
+import shortid from 'shortid';
 import { navigateToRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { fetchAliases } from '../../actions/UserActions';
@@ -32,7 +33,8 @@ class MainScreen extends Component {
       discover: false,
       notifications: false,
       profile: false
-    }
+    },
+    profile_screen_id: shortid()
   }
 
   componentDidMount() {
@@ -186,7 +188,14 @@ class MainScreen extends Component {
         break;
       case 'profile':
         if (this.state.mounted.profile) {
-          return <ProfileStack screenProps={{ parentNavigation: this.props.navigation }} />;
+          return (
+            <ProfileStack
+              screenProps={{
+                parentNavigation: this.props.navigation,
+                screenID: this.state.profile_screen_id
+              }}
+            />
+          );
         }
         break;
       default:

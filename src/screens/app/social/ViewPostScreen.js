@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import shortid from 'shortid';
 import { StandardHeader } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
@@ -18,6 +19,7 @@ import { getPostComments } from '../../../actions/PostActions';
 class ViewPostScreen extends Component {
   state = {
     height: 0,
+    screen_id: '',
     post_id: ''
   }
 
@@ -27,14 +29,15 @@ class ViewPostScreen extends Component {
 
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
-    this.props.removePostScreenInfo(this.state.post_id, this.props.screenID);
+    this.props.removePostScreenInfo(this.state.post_id, this.state.screen_id);
   }
 
   viewProfile = id => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id
+      id,
+      screenID: shortid()
     });
   }
 
@@ -45,15 +48,16 @@ class ViewPostScreen extends Component {
 
   handleFirstLoad = refresh => {
     const post = this.props.navigation.getParam('post', {});
-    this.setState(() => ({ post_id: post.id }));
+    const screenID = this.props.navigation.getParam('screenID', '');
+    this.setState(() => ({
+      post_id: post.id,
+      screen_id: screenID
+    }));
     // TODO: Implement this function later
-    this.props.getPostComments(post, this.props.screenID);
+    this.props.getPostComments(post, screenID);
   }
 
-  handleLeftPress = () => {
-    // TODO: Update app state if needed
-    this.props.navigation.pop();
-  }
+  handleLeftPress = () => this.props.navigation.pop()
 
   renderBody = () => {
     return (
@@ -106,7 +110,6 @@ ViewPostScreen.propTypes = {
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
   getPostComments: PropTypes.func.isRequired,
-  screenID: PropTypes.string.isRequired,
   none_msg: PropTypes.string.isRequired
 };
 
@@ -124,7 +127,7 @@ const mapStateToProps = (state, ownProps) => {
     id: state.auth.id,
     current_tab: state.navigation.current_tab,
     post_likes: state.posts.post_likes,
-    none_msg: state.posts.none_msg
+    none_msg: state.screens.comments.none_msg
   };
 };
 
