@@ -16,7 +16,6 @@ import { removeUserScreenInfo } from '../../../actions/ScreenActions';
 class ViewProfileScreen extends Component {
   state = {
     height: 0,
-    screen_id: shortid(),
     user_id: ''
   }
 
@@ -26,7 +25,7 @@ class ViewProfileScreen extends Component {
 
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
-    this.props.removeUserScreenInfo(this.state.user_id, this.state.screen_id);
+    this.props.removeUserScreenInfo(this.state.user_id, this.props.screenID);
   }
 
   onPressAction = index => {
@@ -75,10 +74,10 @@ class ViewProfileScreen extends Component {
       this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
-      }, this.state.screen_id);
+      }, this.props.screenID);
     } else {
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.state.screen_id);
+      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.props.screenID);
     }
   }
 
@@ -110,9 +109,9 @@ class ViewProfileScreen extends Component {
       return null;
     } else if (this.props.initial_loading) {
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.props.screenID]) {
       // TODO: Display actual information here
-      return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
+      return <Text>{this.props.profile[this.state.user_id][this.props.screenID].username}</Text>;
     }
     return null;
   }
@@ -121,8 +120,8 @@ class ViewProfileScreen extends Component {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
-      return this.props.profile[this.state.user_id][this.state.screen_id].username;
+    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.props.screenID]) {
+      return this.props.profile[this.state.user_id][this.props.screenID].username;
     }
     return '';
   }

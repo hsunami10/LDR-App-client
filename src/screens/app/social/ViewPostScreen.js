@@ -13,7 +13,6 @@ import { getPostComments } from '../../../actions/PostActions';
 class ViewPostScreen extends Component {
   state = {
     height: 0,
-    screen_id: shortid(),
     post_id: ''
   }
 
@@ -23,7 +22,7 @@ class ViewPostScreen extends Component {
 
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
-    this.props.removePostScreenInfo(this.state.post_id, this.state.screen_id);
+    this.props.removePostScreenInfo(this.state.post_id, this.props.screenID);
   }
 
   viewProfile = id => {
@@ -43,7 +42,7 @@ class ViewPostScreen extends Component {
     const post = this.props.navigation.getParam('post', {});
     this.setState(() => ({ post_id: post.id }));
     // TODO: Implement this function later
-    this.props.getPostComments(post, this.state.screen_id);
+    this.props.getPostComments(post, this.props.screenID);
   }
 
   handleLeftPress = () => {
@@ -101,7 +100,8 @@ ViewPostScreen.propTypes = {
   post_likes: PropTypes.object.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
-  getPostComments: PropTypes.func.isRequired
+  getPostComments: PropTypes.func.isRequired,
+  screenID: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -110,11 +110,16 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({
-  id: state.auth.id,
-  current_tab: state.navigation.current_tab,
-  post_likes: state.screens.posts.post_likes
-});
+const mapStateToProps = (state, ownProps) => {
+  console.log(ownProps);
+  // TODO: Use ownProps to get the screenID and postID
+  // Have this.props.loading and this.props.initial_loading based off of the results
+  return {
+    id: state.auth.id,
+    current_tab: state.navigation.current_tab,
+    post_likes: state.screens.posts.post_likes
+  };
+};
 
 export default connect(mapStateToProps, {
   pushTabRoute,
