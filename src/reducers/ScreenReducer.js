@@ -77,6 +77,7 @@ export default (state = INITIAL_STATE, action) => {
         ...copyPosts[action.payload.postID],
         [action.payload.screenID]: {
           ...copyPosts[action.payload.postID][action.payload.screenID],
+          offset: action.payload.data.offset,
           order: action.payload.data.order
         }
       };
