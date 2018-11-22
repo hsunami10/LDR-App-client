@@ -1,29 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import shortid from 'shortid';
-import { StandardHeader } from '../../../components/common';
+import moment from 'moment';
+import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
 import { getPostComments } from '../../../actions/PostActions';
 
-// TODO: componentDidMount / reload, store in app state screens - like ViewProfileScreen
 // 3 types of loading:
-//  - on mount, initial_loading for comments, get /api/posts/comments/, offset = 0
-//  - on refresh, update post and comments, get /api/posts/
-//  - view previous comments, get /api/posts/comments/, offset > 0
+//  - on mount, initial_loading for comments, get /api/posts/comments/, offset = 0 (initial_comments_loading)
+//  - on refresh, update post and comments, get /api/posts/, add to end of comments (refreshing)
+//  - view previous comments, get /api/posts/comments/, offset > 0, add to beginning of comments (page_comments_loading)
 // If no comments, then show "no comments" message and DO NOT allow "view previous comments"
 // Hide "view previous comments" if number of comments fetched is < limit (5)
+// TODO: Figure out how to do separate screen loading, similar to ViewPostScreen, in ScreenReducer
 class ViewPostScreen extends Component {
   state = {
     height: 0,
-    screen_id: '',
+    post_height: 0,
+    screen_id: shortid(),
     post_id: ''
   }
 
   componentDidMount() {
+    const post = this.props.navigation.getParam('post', null);
+    this.setState(() => ({ post_id: post.id }));
     this.handleFirstLoad(false);
   }
 
@@ -36,49 +40,60 @@ class ViewPostScreen extends Component {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id,
-      screenID: shortid()
+      id
     });
-  }
-
-  handleLayout = e => {
-    const { height } = e.nativeEvent.layout;
-    this.setState(() => ({ height }));
   }
 
   handleFirstLoad = refresh => {
     const post = this.props.navigation.getParam('post', null);
-    const screenID = this.props.navigation.getParam('screenID', null);
-    this.setState(() => ({
-      post_id: post.id,
-      screen_id: screenID
-    }));
-    // TODO: Implement this function later
     if (!refresh) {
-      this.props.getPostComments(post, screenID);
+      this.props.getPostComments(this.props.id, post.id, this.state.screen_id, false, 0, moment().unix());
     } else {
       // TODO: get /api/posts/
       console.log('get post and comments');
     }
   }
 
-  handleLeftPress = () => this.props.navigation.pop()
+  handleLayout = e => {
+    const { height } = e.nativeEvent.layout;
+    this.setState(() => ({ height }));
+  }
+  handlePostLayout = e => {
+    const { height } = e.nativeEvent.layout;
+    this.setState(() => ({ post_height: height }));
+  }
 
-  renderBody = () => {
+  handleLeftPress = () => this.props.navigation.pop()
+  handleRefresh = () => this.handleFirstLoad(true)
+
+  // Only allow refresh if not initial loading
+  handleRefreshControl = () => {
+    if ( // NOTE: Same as renderComments if statement
+      this.props.posts[this.state.post_id] === undefined ||
+      this.props.posts[this.state.post_id][this.state.screen_id] === undefined ||
+      this.props.posts[this.state.post_id][this.state.screen_id].initial_comments_loading
+    ) {
+      return null;
+    }
     return (
-      <View style={{ flex: 1 }}>
-        <PostCard
-          userID={this.props.id}
-          post={this.props.navigation.getParam('post', {})}
-          viewProfile={this.viewProfile}
-          postLikes={this.props.post_likes}
-          navigation={this.props.navigation}
-          parentNavigation={this.props.screenProps.parentNavigation}
-          viewing
-        />
-        <Text>{this.props.none_msg}</Text>
-      </View>
+      <RefreshControl
+        refreshing={this.props.posts[this.state.post_id][this.state.screen_id].refreshing}
+        onRefresh={this.handleRefresh}
+      />
     );
+  }
+
+  renderComments = () => {
+    if (this.state.height === 0 || this.state.post_height === 0) {
+      return null;
+    } else if ( // NOTE: Same as handleRefreshControl if statement
+      this.props.posts[this.state.post_id] === undefined ||
+      this.props.posts[this.state.post_id][this.state.screen_id] === undefined ||
+      this.props.posts[this.state.post_id][this.state.screen_id].initial_comments_loading
+    ) {
+      return <FullScreenLoading height={this.state.height - this.state.post_height} loading />;
+    }
+    return <Text>{JSON.stringify(this.props.posts[this.state.post_id][this.state.screen_id].order)}</Text>;
   }
 
   render() {
@@ -91,15 +106,22 @@ class ViewPostScreen extends Component {
         />
         <ScrollView
           scrollEventThrottle={16}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={this.props.loading}
-          //     onRefresh={this.handleRefresh}
-          //   />
-          // }
+          refreshControl={this.handleRefreshControl()}
           onLayout={this.handleLayout}
         >
-          {this.renderBody()}
+          <PostCard
+            userID={this.props.id}
+            post={this.props.navigation.getParam('post', {})}
+            viewProfile={this.viewProfile}
+            postLikes={this.props.post_likes}
+            navigation={this.props.navigation}
+            parentNavigation={this.props.screenProps.parentNavigation}
+            viewing
+            onLayout={this.handlePostLayout}
+          />
+          <View style={{ flex: 1 }}>
+            {this.renderComments()}
+          </View>
         </ScrollView>
       </View>
     );
@@ -115,7 +137,8 @@ ViewPostScreen.propTypes = {
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
   getPostComments: PropTypes.func.isRequired,
-  none_msg: PropTypes.string.isRequired
+  none_msg: PropTypes.string.isRequired,
+  posts: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -124,17 +147,13 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps);
-  // TODO: Use ownProps to get the screenID and postID
-  // Have this.props.loading and this.props.initial_loading based off of the results
-  return {
-    id: state.auth.id,
-    current_tab: state.navigation.current_tab,
-    post_likes: state.posts.post_likes,
-    none_msg: state.comments.none_msg
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  current_tab: state.navigation.current_tab,
+  post_likes: state.posts.post_likes,
+  none_msg: state.comments.none_msg,
+  posts: state.screens.posts
+});
 
 export default connect(mapStateToProps, {
   pushTabRoute,

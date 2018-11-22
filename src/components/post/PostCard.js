@@ -5,8 +5,9 @@ import PostCardHeader from './PostCardHeader';
 import PostCardBody from './PostCardBody';
 import PostCardFooter from './PostCardFooter';
 
-const PostCard = ({ userID, post, viewProfile, viewPost, navigation, parentNavigation, viewing }) => (
+const PostCard = ({ userID, post, viewProfile, viewPost, navigation, parentNavigation, viewing, onLayout }) => (
   <TouchableHighlight
+    onLayout={onLayout}
     onPress={() => viewPost(post)}
     disabled={viewing}
     underlayColor="rgba(0,0,0,0.4)"
@@ -40,7 +41,8 @@ PostCard.propTypes = {
   viewPost: PropTypes.func,
   navigation: PropTypes.object, // Only not null if in ViewPostScreen
   parentNavigation: PropTypes.object.isRequired,
-  viewing: PropTypes.bool
+  viewing: PropTypes.bool,
+  onLayout: PropTypes.func
 };
 
 const styles = StyleSheet.create({

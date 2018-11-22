@@ -10,6 +10,13 @@ import {
   STOP_INITIAL_USER_SCREEN_LOADING,
   START_USER_SCREEN_REFRESHING,
   STOP_USER_SCREEN_REFRESHING,
+  START_POST_SCREEN_REFRESHING,
+  STOP_POST_SCREEN_REFRESHING,
+  STORE_COMMENTS_SCREEN_INFO,
+  START_INITIAL_COMMENTS_LOADING,
+  STOP_INITIAL_COMMENTS_LOADING,
+  START_COMMENTS_PAGE_LOADING,
+  STOP_COMMENTS_PAGE_LOADING,
 } from '../actions/types';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
@@ -18,13 +25,15 @@ import {
 // ex. Loading - different screens have their own loading indicators
 
 const INITIAL_STATE = {
-  profile: { // user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
-    none_msg: 'This account does not exist or has been deleted.',
-    '': { '': { loading: true } }
+  profiles: { // user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
+    none_msg: 'This account does not exist or has been deleted.'
   },
-  posts: { // Only holds ViewPostScreen loading properties and comment properties (offset, orderArray, etc.)
-    none_msg: 'This post has been deleted.',
-    '': { '': { loading: true } }
+  // TODO: ViewPostScreen loading properties and comment properties (offset, orderArray, etc.)
+  posts: { // post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
+    none_msg: 'This post has been deleted.'
+  },
+  topics: { // topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
+    none_msg: 'This topic does not exist or has been deleted.'
   }
 };
 
@@ -33,8 +42,55 @@ export default (state = INITIAL_STATE, action) => {
     case LOG_OUT_USER:
       return INITIAL_STATE;
 
+    case START_INITIAL_COMMENTS_LOADING:
+      const copyPosts2 = { ...state.posts };
+      copyPosts2[action.payload.postID] = {
+        ...copyPosts2[action.payload.postID],
+        [action.payload.screenID]: {
+          initial_comments_loading: true,
+          refreshing: false,
+          page_comments_loading: false
+        }
+      };
+      return { ...state, posts: copyPosts2 };
+    case STOP_INITIAL_COMMENTS_LOADING:
+      const copyPosts3 = { ...state.posts };
+      copyPosts3[action.payload.postID] = {
+        ...copyPosts3[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts3[action.payload.postID][action.payload.screenID],
+          initial_comments_loading: false
+        }
+      };
+      return { ...state, posts: copyPosts3 };
+    case START_POST_SCREEN_REFRESHING:
+      return state;
+    case STOP_POST_SCREEN_REFRESHING:
+      return state;
+    case START_COMMENTS_PAGE_LOADING:
+      return state;
+    case STOP_COMMENTS_PAGE_LOADING:
+      return state;
+    case STORE_COMMENTS_SCREEN_INFO:
+      const copyPosts = { ...state.posts };
+      copyPosts[action.payload.postID] = {
+        ...copyPosts[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts[action.payload.postID][action.payload.screenID],
+          order: action.payload.data.order
+        }
+      };
+      return { ...state, posts: copyPosts };
+    case REMOVE_POST_SCREEN_INFO:
+      const copyPosts9 = { ...state.posts };
+      delete copyPosts9[action.payload.postID][action.payload.screenID];
+      if (Object.keys(copyPosts9[action.payload.postID]).length === 0) {
+        delete copyPosts9[action.payload.postID];
+      }
+      return { ...state, posts: copyPosts9 };
+
     case START_INITIAL_USER_SCREEN_LOADING:
-      const copyP = { ...state.profile };
+      const copyP = { ...state.profiles };
       copyP[action.payload.userID] = {
         ...copyP[action.payload.userID],
         [action.payload.screenID]: {
@@ -42,9 +98,9 @@ export default (state = INITIAL_STATE, action) => {
           refreshing: false
         }
       };
-      return { ...state, profile: copyP };
+      return { ...state, profiles: copyP };
     case STOP_INITIAL_USER_SCREEN_LOADING:
-      const copyP2 = { ...state.profile };
+      const copyP2 = { ...state.profiles };
       copyP2[action.payload.userID] = {
         ...copyP2[action.payload.userID],
         [action.payload.screenID]: {
@@ -52,9 +108,9 @@ export default (state = INITIAL_STATE, action) => {
           initial_loading: false
         }
       };
-      return { ...state, profile: copyP2 };
+      return { ...state, profiles: copyP2 };
     case START_USER_SCREEN_REFRESHING:
-      const copyProf = { ...state.profile };
+      const copyProf = { ...state.profiles };
       copyProf[action.payload.userID] = {
         ...copyProf[action.payload.userID],
         [action.payload.screenID]: {
@@ -62,9 +118,9 @@ export default (state = INITIAL_STATE, action) => {
           refreshing: true
         }
       };
-      return { ...state, profile: copyProf };
+      return { ...state, profiles: copyProf };
     case STOP_USER_SCREEN_REFRESHING:
-      const copyProf2 = { ...state.profile };
+      const copyProf2 = { ...state.profiles };
       copyProf2[action.payload.userID] = {
         ...copyProf2[action.payload.userID],
         [action.payload.screenID]: {
@@ -72,58 +128,25 @@ export default (state = INITIAL_STATE, action) => {
           refreshing: false
         }
       };
-      return { ...state, profile: copyProf2 };
+      return { ...state, profiles: copyProf2 };
 
     case STORE_USER_SCREEN_INFO:
-      const copyProfile = { ...state.profile };
+      const copyProfile = { ...state.profiles };
       copyProfile[action.payload.user.id] = {
         ...copyProfile[action.payload.user.id],
         [action.payload.screenID]: action.payload.user
       };
-      return { ...state, profile: copyProfile };
+      return { ...state, profiles: copyProfile };
     case REMOVE_USER_SCREEN_INFO:
-      const copyProfile2 = { ...state.profile };
+      const copyProfile2 = { ...state.profiles };
       delete copyProfile2[action.payload.userID][action.payload.screenID];
       if (Object.keys(copyProfile2[action.payload.userID]).length === 0) {
         delete copyProfile2[action.payload.userID];
       }
-      return { ...state, profile: copyProfile2 };
-
-    case STORE_POST_SCREEN_INFO: // TODO: Change later
-      const copyPosts = { ...state.posts };
-      const copyComments = { ...state.comments };
-      copyPosts[action.payload.post.id] = {
-        ...copyPosts[action.payload.post.id],
-        [action.payload.screenID]: action.payload.post
-      };
-      copyComments[action.payload.post.id] = {
-        ...copyComments[action.payload.post.id],
-        [action.payload.screenID]: action.payload.comments
-      };
-      return {
-        ...state,
-        posts: copyPosts,
-        comments: copyComments
-      };
-    case REMOVE_POST_SCREEN_INFO:
-      const copyPosts2 = { ...state.posts };
-      const copyComments2 = { ...state.comments };
-      delete copyPosts2[action.payload.postID][action.payload.screenID];
-      if (Object.keys(copyPosts2[action.payload.postID]).length === 0) {
-        delete copyPosts2[action.payload.postID];
-      }
-      delete copyComments2[action.payload.postID][action.payload.screenID];
-      if (Object.keys(copyComments2[action.payload.postID]).length === 0) {
-        delete copyComments2[action.payload.postID];
-      }
-      return {
-        ...state,
-        posts: copyPosts2,
-        comments: copyComments2
-      };
+      return { ...state, profiles: copyProfile2 };
 
     case CREATE_POST:
-      const copyProfile3 = { ...state.profile };
+      const copyProfile3 = { ...state.profiles };
       const userScreens = copyProfile3[action.payload.author_id];
       if (userScreens) {
         for (const screenID in userScreens) {
@@ -133,11 +156,11 @@ export default (state = INITIAL_STATE, action) => {
             posts.order = [action.payload.id, ...posts.order];
           }
         }
-        return { ...state, profile: copyProfile3 };
+        return { ...state, profiles: copyProfile3 };
       }
       return state;
     case DELETE_POST:
-      const copyProfile5 = { ...state.profile };
+      const copyProfile5 = { ...state.profiles };
       const userScreens3 = copyProfile5[action.payload.userID];
       if (userScreens3) {
         for (const screenID in userScreens3) {
@@ -152,7 +175,7 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       }
-      return { ...state, profile: copyProfile5 };
+      return { ...state, profiles: copyProfile5 };
     default:
       return state;
   }

@@ -3,10 +3,6 @@ export const LOG_OUT_USER = 'log_out_user';
 
 // User
 export const STORE_USER_INFO = 'store_user_info';
-export const START_USER_SCREEN_REFRESHING = 'start_user_screen_refreshing';
-export const STOP_USER_SCREEN_REFRESHING = 'stop_user_screen_refreshing';
-export const START_INITIAL_USER_SCREEN_LOADING = 'start_initial_user_screen_loading';
-export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loading';
 export const FETCH_ALIASES = 'fetch_aliases';
 
 // Authentication
@@ -16,10 +12,26 @@ export const RESET_AUTH_ERRORS = 'reset_auth_errors';
 export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
 
 // Screens
+// Users
 export const STORE_USER_SCREEN_INFO = 'store_user_screen_info';
 export const REMOVE_USER_SCREEN_INFO = 'remove_user_screen_info';
+export const START_USER_SCREEN_REFRESHING = 'start_user_screen_refreshing';
+export const STOP_USER_SCREEN_REFRESHING = 'stop_user_screen_refreshing';
+export const START_INITIAL_USER_SCREEN_LOADING = 'start_initial_user_screen_loading';
+export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loading';
+
+// Posts
 export const STORE_POST_SCREEN_INFO = 'store_post_screen_info';
 export const REMOVE_POST_SCREEN_INFO = 'remove_post_screen_info';
+export const START_POST_SCREEN_REFRESHING = 'start_post_screen_refreshing';
+export const STOP_POST_SCREEN_REFRESHING = 'stop_post_screen_refreshing';
+
+// Comments
+export const STORE_COMMENTS_SCREEN_INFO = 'store_comments_screen_info';
+export const START_INITIAL_COMMENTS_LOADING = 'start_initial_comments_loading';
+export const STOP_INITIAL_COMMENTS_LOADING = 'stop_initial_comments_loading';
+export const START_COMMENTS_PAGE_LOADING = 'start_comments_page_loading';
+export const STOP_COMMENTS_PAGE_LOADING = 'stop_comments_page_loading';
 
 // Loading
 export const START_OVERLAY_LOADING = 'start_overlay_loading';

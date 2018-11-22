@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, ScrollView, Text, StyleSheet, Alert, RefreshControl, Platform } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import { connect } from 'react-redux';
+import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
@@ -24,17 +25,13 @@ Other types are handled by subtabs
 class ViewProfileScreen extends Component {
   state = {
     height: 0,
-    screen_id: '',
+    screen_id: shortid(),
     user_id: ''
   }
 
   componentDidMount() {
     const targetID = this.props.navigation.getParam('id', this.props.id);
-    const screenID = this.props.navigation.getParam('screenID', null) || this.props.screenProps.screenID;
-    this.setState(() => ({
-      user_id: targetID,
-      screen_id: screenID
-    }));
+    this.setState(() => ({ user_id: targetID }));
     this.handleFirstLoad(false);
   }
 
@@ -85,15 +82,14 @@ class ViewProfileScreen extends Component {
   handleFirstLoad = refresh => {
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
-    const screenID = this.props.navigation.getParam('screenID', null) || this.props.screenProps.screenID;
     if (this.props.private || targetID === this.props.id) {
       this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
         navToApp: () => null,
         navToAuth: this.logOut
-      }, screenID);
+      }, this.state.screen_id);
     } else {
       // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh, screenID);
+      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.state.screen_id);
     }
   }
 
@@ -115,18 +111,18 @@ class ViewProfileScreen extends Component {
       });
   }
 
+  // Only allow refresh if not initial loading
   handleRefreshControl = () => {
-    // NOTE: Same as renderBody if statement
-    if (
-      this.props.profile[this.state.user_id] === undefined ||
-      this.props.profile[this.state.user_id][this.state.screen_id] === undefined ||
-      this.props.profile[this.state.user_id][this.state.screen_id].initial_loading
+    if ( // NOTE: Same as renderBody if statement
+      this.props.profiles[this.state.user_id] === undefined ||
+      this.props.profiles[this.state.user_id][this.state.screen_id] === undefined ||
+      this.props.profiles[this.state.user_id][this.state.screen_id].initial_loading
     ) {
       return null;
     }
     return (
       <RefreshControl
-        refreshing={this.props.profile[this.state.user_id][this.state.screen_id].refreshing}
+        refreshing={this.props.profiles[this.state.user_id][this.state.screen_id].refreshing}
         onRefresh={this.handleRefresh}
       />
     );
@@ -141,22 +137,22 @@ class ViewProfileScreen extends Component {
     if (this.state.height === 0) {
       return null;
     } else if ( // NOTE: Same as handleRefreshControl if statement
-      this.props.profile[this.state.user_id] === undefined ||
-      this.props.profile[this.state.user_id][this.state.screen_id] === undefined ||
-      this.props.profile[this.state.user_id][this.state.screen_id].initial_loading
+      this.props.profiles[this.state.user_id] === undefined ||
+      this.props.profiles[this.state.user_id][this.state.screen_id] === undefined ||
+      this.props.profiles[this.state.user_id][this.state.screen_id].initial_loading
     ) {
       return <FullScreenLoading height={this.state.height} loading />;
     }
     // TODO: Display actual information here
-    return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
+    return <Text>{JSON.stringify(this.props.profiles[this.state.user_id][this.state.screen_id])}</Text>;
   }
 
   renderHeaderTitle = () => {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
-      return this.props.profile[this.state.user_id][this.state.screen_id].username;
+    } else if (this.props.profiles[this.state.user_id] && this.props.profiles[this.state.user_id][this.state.screen_id]) {
+      return this.props.profiles[this.state.user_id][this.state.screen_id].username;
     }
     return '';
   }
@@ -201,7 +197,7 @@ ViewProfileScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
+  profiles: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -217,7 +213,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   id: state.auth.id,
   user: state.user,
-  profile: state.screens.profile,
+  profiles: state.screens.profiles,
 });
 
 export default connect(mapStateToProps, {
