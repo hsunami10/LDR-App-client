@@ -1,10 +1,10 @@
 import {
   LOG_OUT_USER,
   STORE_USER_INFO,
-  START_USER_LOADING,
-  STOP_USER_LOADING,
-  START_INITIAL_USER_LOADING,
-  STOP_INITIAL_USER_LOADING,
+  START_USER_SCREEN_REFRESHING, // TODO: Remove all of these later
+  STOP_USER_SCREEN_REFRESHING,
+  START_INITIAL_USER_SCREEN_LOADING,
+  STOP_INITIAL_USER_SCREEN_LOADING,
   FETCH_ALIASES
 } from '../actions/types';
 
@@ -25,13 +25,13 @@ export default (state = INITIAL_STATE, action) => {
       return INITIAL_STATE;
 
     // Loading action types for refreshing your own profile page
-    case START_USER_LOADING:
+    case START_USER_SCREEN_REFRESHING:
       return { ...state, loading: true };
-    case STOP_USER_LOADING:
+    case STOP_USER_SCREEN_REFRESHING:
       return { ...state, loading: false };
-    case START_INITIAL_USER_LOADING:
+    case START_INITIAL_USER_SCREEN_LOADING:
       return { ...state, initial_loading: true };
-    case STOP_INITIAL_USER_LOADING:
+    case STOP_INITIAL_USER_SCREEN_LOADING:
       return { ...state, initial_loading: false };
 
     case STORE_USER_INFO:

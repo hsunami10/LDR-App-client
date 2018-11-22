@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import {
-  START_USER_LOADING,
-  STOP_USER_LOADING,
-  START_INITIAL_USER_LOADING,
-  STOP_INITIAL_USER_LOADING,
   STORE_USER_INFO,
   FETCH_ALIASES
 } from './types';
@@ -12,16 +8,14 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { removeCredentials, logOutUser } from './AuthActions';
 import { navigateToRoute } from './NavigationActions';
-import { storeUserScreenInfo } from './ScreenActions';
+import {
+  storeUserScreenInfo,
+  startUserScreenRefreshing,
+  stopUserScreenRefreshing,
+  startInitialUserLoading,
+  stopInitialUserLoading,
+} from './ScreenActions';
 import { handleError } from '../assets/helpers';
-
-// Loading only for profile screens and anything user-related - refreshing
-const startUserLoading = () => ({ type: START_USER_LOADING });
-const stopUserLoading = () => ({ type: STOP_USER_LOADING });
-
-// Dispatched only on first user load
-export const startInitialUserLoading = () => ({ type: START_INITIAL_USER_LOADING });
-export const stopInitialUserLoading = () => ({ type: STOP_INITIAL_USER_LOADING });
 
 /*
 Get public or private user information
@@ -32,18 +26,18 @@ private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
 export const getUserInfo = (userID, targetID, type, isRefresh, credentials = undefined, callbacks = undefined, screenID) => dispatch => {
   if (isRefresh) {
-    dispatch(startUserLoading());
+    dispatch(startUserScreenRefreshing(userID, screenID));
   } else {
-    dispatch(startInitialUserLoading());
+    dispatch(startInitialUserLoading(userID, screenID));
   }
 
   // userID used for getting liked posts
   axios.get(`${ROOT_URL}/api/user/${targetID}?type=${type}&user_id=${userID}`)
     .then(response => {
       if (isRefresh) {
-        dispatch(stopUserLoading());
+        dispatch(stopUserScreenRefreshing(userID, screenID));
       } else {
-        dispatch(stopInitialUserLoading());
+        dispatch(stopInitialUserLoading(userID, screenID));
       }
 
       if (response.data.type === 'private') {
@@ -95,9 +89,9 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
     })
     .catch(error => {
       if (isRefresh) {
-        dispatch(stopUserLoading());
+        dispatch(stopUserScreenRefreshing(userID, screenID));
       } else {
-        dispatch(stopInitialUserLoading());
+        dispatch(stopInitialUserLoading(userID, screenID));
       }
       if (error.response) {
         handleError(error.response.data, false);

@@ -47,14 +47,19 @@ class ViewPostScreen extends Component {
   }
 
   handleFirstLoad = refresh => {
-    const post = this.props.navigation.getParam('post', {});
-    const screenID = this.props.navigation.getParam('screenID', '');
+    const post = this.props.navigation.getParam('post', null);
+    const screenID = this.props.navigation.getParam('screenID', null);
     this.setState(() => ({
       post_id: post.id,
       screen_id: screenID
     }));
     // TODO: Implement this function later
-    this.props.getPostComments(post, screenID);
+    if (!refresh) {
+      this.props.getPostComments(post, screenID);
+    } else {
+      // TODO: get /api/posts/
+      console.log('get post and comments');
+    }
   }
 
   handleLeftPress = () => this.props.navigation.pop()
@@ -127,7 +132,7 @@ const mapStateToProps = (state, ownProps) => {
     id: state.auth.id,
     current_tab: state.navigation.current_tab,
     post_likes: state.posts.post_likes,
-    none_msg: state.screens.comments.none_msg
+    none_msg: state.comments.none_msg
   };
 };
 

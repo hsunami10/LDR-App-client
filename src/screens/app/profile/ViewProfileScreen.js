@@ -12,15 +12,15 @@ import { navigateToRoute, goBackwardTabRoute } from '../../../actions/Navigation
 import { removeUserScreenInfo } from '../../../actions/ScreenActions';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
+// NOTE: Use navigation.push('ViewOtherProfile', { id, screenID }) to view other profiles here
+// Navigate to ViewOtherProfile if user ID != your ID
+// Navigate to ViewProfile if user ID == your ID
 /*
 2 types of loading:
   - on mount, initial_loading
   - refreshing
 Other types are handled by subtabs
  */
-// NOTE: Only use this.props.screenID in this.handleFirstLoad, use this.state.screen_id everywhere else
-// BUG: Passing screenID as props complicates things, because it changes with every re-render, every time the route changes
-// FIX: Maybe pass screen_id down from navigation params (ViewPostScreen) or screen props (ViewProfileScreen)
 class ViewProfileScreen extends Component {
   state = {
     height: 0,
@@ -115,6 +115,23 @@ class ViewProfileScreen extends Component {
       });
   }
 
+  handleRefreshControl = () => {
+    // NOTE: Same as renderBody if statement
+    if (
+      this.props.profile[this.state.user_id] === undefined ||
+      this.props.profile[this.state.user_id][this.state.screen_id] === undefined ||
+      this.props.profile[this.state.user_id][this.state.screen_id].initial_loading
+    ) {
+      return null;
+    }
+    return (
+      <RefreshControl
+        refreshing={this.props.profile[this.state.user_id][this.state.screen_id].refreshing}
+        onRefresh={this.handleRefresh}
+      />
+    );
+  }
+
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
     this.setState(() => ({ height }));
@@ -123,13 +140,15 @@ class ViewProfileScreen extends Component {
   renderBody = () => {
     if (this.state.height === 0) {
       return null;
-    } else if (this.props.initial_loading) {
+    } else if ( // NOTE: Same as handleRefreshControl if statement
+      this.props.profile[this.state.user_id] === undefined ||
+      this.props.profile[this.state.user_id][this.state.screen_id] === undefined ||
+      this.props.profile[this.state.user_id][this.state.screen_id].initial_loading
+    ) {
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.profile[this.state.user_id] && this.props.profile[this.state.user_id][this.state.screen_id]) {
-      // TODO: Display actual information here
-      return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
     }
-    return null;
+    // TODO: Display actual information here
+    return <Text>{this.props.profile[this.state.user_id][this.state.screen_id].username}</Text>;
   }
 
   renderHeaderTitle = () => {
@@ -149,19 +168,13 @@ class ViewProfileScreen extends Component {
           title={this.renderHeaderTitle()}
           showRight
           headerRight={<Ionicons name={`${Platform.OS}-settings`} size={25} color="gray" />}
-          // onRightPress={() => this.props.navigation.push('ViewProfile', { type: 'public', id: this.state.user_id })} // TODO: Remove this later - for testing only
           onRightPress={this.showActionSheet}
           showLeft={!this.props.private} // Show back button only when NOT on the main tab screen profile
           onLeftPress={() => this.props.navigation.pop()}
         />
         <ScrollView
           scrollEventThrottle={16}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.props.loading}
-              onRefresh={this.handleRefresh}
-            />
-          }
+          refreshControl={this.handleRefreshControl()}
           onLayout={this.handleLayout}
         >
           {this.renderBody()}
@@ -181,12 +194,10 @@ class ViewProfileScreen extends Component {
 ViewProfileScreen.propTypes = {
   id: PropTypes.string.isRequired,
   private: PropTypes.bool,
-  loading: PropTypes.bool.isRequired,
   user: PropTypes.object.isRequired,
   getUserInfo: PropTypes.func.isRequired,
   screenProps: PropTypes.object.isRequired,
   logOutUser: PropTypes.func.isRequired,
-  initial_loading: PropTypes.bool.isRequired,
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
@@ -206,8 +217,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   id: state.auth.id,
   user: state.user,
-  loading: state.user.loading,
-  initial_loading: state.user.initial_loading,
   profile: state.screens.profile,
 });
 

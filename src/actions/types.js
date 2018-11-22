@@ -3,10 +3,10 @@ export const LOG_OUT_USER = 'log_out_user';
 
 // User
 export const STORE_USER_INFO = 'store_user_info';
-export const START_USER_LOADING = 'start_user_loading';
-export const STOP_USER_LOADING = 'stop_user_loading';
-export const START_INITIAL_USER_LOADING = 'start_initial_user_loading';
-export const STOP_INITIAL_USER_LOADING = 'stop_initial_user_loading';
+export const START_USER_SCREEN_REFRESHING = 'start_user_screen_refreshing';
+export const STOP_USER_SCREEN_REFRESHING = 'stop_user_screen_refreshing';
+export const START_INITIAL_USER_SCREEN_LOADING = 'start_initial_user_screen_loading';
+export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loading';
 export const FETCH_ALIASES = 'fetch_aliases';
 
 // Authentication

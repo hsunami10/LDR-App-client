@@ -1,12 +1,15 @@
 import {
   LOG_OUT_USER,
-  STORE_USER_INFO,
+  STORE_USER_SCREEN_INFO,
   GET_USER_FEED,
   CREATE_POST,
   EDIT_POST,
   DELETE_POST,
 } from '../actions/types';
 
+// NOTE: No need for STORE_POST_SCREEN_INFO because data is already stored in all_posts
+
+// Holds all posts data - want all posts to be the same across screens
 const INITIAL_STATE = {
   none_msg: 'This post does not exist or has been deleted.',
   post_likes: {},
@@ -18,11 +21,11 @@ export default (state = INITIAL_STATE, action) => {
     case LOG_OUT_USER:
       return INITIAL_STATE;
 
-    case STORE_USER_INFO:
+    case STORE_USER_SCREEN_INFO: // Called on every fetch user profile
       return {
         ...state,
-        post_likes: { ...state.post_likes, ...action.payload.posts.post_likes },
-        all_posts: { ...state.all_posts, ...action.payload.posts.data }
+        post_likes: { ...state.post_likes, ...action.payload.user.posts.post_likes },
+        all_posts: { ...state.all_posts, ...action.payload.user.posts.data }
       };
     case GET_USER_FEED:
       return {
