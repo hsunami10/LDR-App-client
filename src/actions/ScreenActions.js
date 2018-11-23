@@ -15,6 +15,7 @@ import {
   STOP_COMMENTS_PAGE_LOADING,
   STORE_COMMENTS_SCREEN_INFO,
 } from './types';
+import { COMMENTS_PAGINATE_LIMIT } from '../constants/variables';
 
 // ======================================= Profile / User =======================================
 // Loading only for profile screens and anything user-related - refreshing
@@ -68,7 +69,12 @@ export const stopPostScreenRefreshing = (postID, screenID) => ({
 // =========================================== Comments ===========================================
 export const storeCommentsScreenInfo = (data, postID, screenID) => ({
   type: STORE_COMMENTS_SCREEN_INFO,
-  payload: { data, postID, screenID }
+  payload: {
+    data,
+    postID,
+    screenID,
+    keepPaging: data.order.length >= COMMENTS_PAGINATE_LIMIT
+  }
 });
 export const startInitialCommentsLoading = (postID, screenID) => ({
   type: START_INITIAL_COMMENTS_LOADING,

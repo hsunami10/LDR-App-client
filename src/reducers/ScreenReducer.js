@@ -18,6 +18,7 @@ import {
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
 } from '../actions/types';
+import { COMMENTS_PAGINATE_LIMIT } from '../constants/variables';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
 // Or if it would be the same for all screens (ex: post likes - posts.post_likes)
@@ -42,6 +43,20 @@ export default (state = INITIAL_STATE, action) => {
     case LOG_OUT_USER:
       return INITIAL_STATE;
 
+    case STORE_COMMENTS_SCREEN_INFO:
+      const copyPosts = { ...state.posts };
+      copyPosts[action.payload.postID] = {
+        ...copyPosts[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts[action.payload.postID][action.payload.screenID],
+          offset: action.payload.data.offset,
+          order: [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order],
+          keepPaging: action.payload.keepPaging
+        }
+      };
+      return { ...state, posts: copyPosts };
+    // NOTE: This runs first out of all of the actions related to ViewPostScreen
+    // So treat it as initialization (initial state)
     case START_INITIAL_COMMENTS_LOADING:
       const copyPosts2 = { ...state.posts };
       copyPosts2[action.payload.postID] = {
@@ -51,7 +66,8 @@ export default (state = INITIAL_STATE, action) => {
           refreshing: false,
           page_comments_loading: false,
           order: [],
-          offset: 0
+          offset: 0,
+          keepPaging: false
         }
       };
       return { ...state, posts: copyPosts2 };
@@ -65,25 +81,30 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
       return { ...state, posts: copyPosts3 };
+    case START_COMMENTS_PAGE_LOADING:
+      const copyPosts4 = { ...state.posts };
+      copyPosts4[action.payload.postID] = {
+        ...copyPosts4[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts4[action.payload.postID][action.payload.screenID],
+          page_comments_loading: true
+        }
+      };
+      return { ...state, posts: copyPosts4 };
+    case STOP_COMMENTS_PAGE_LOADING:
+      const copyPosts5 = { ...state.posts };
+      copyPosts5[action.payload.postID] = {
+        ...copyPosts5[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts5[action.payload.postID][action.payload.screenID],
+          page_comments_loading: false
+        }
+      };
+      return { ...state, posts: copyPosts5 };
     case START_POST_SCREEN_REFRESHING:
       return state;
     case STOP_POST_SCREEN_REFRESHING:
       return state;
-    case START_COMMENTS_PAGE_LOADING:
-      return state;
-    case STOP_COMMENTS_PAGE_LOADING:
-      return state;
-    case STORE_COMMENTS_SCREEN_INFO:
-      const copyPosts = { ...state.posts };
-      copyPosts[action.payload.postID] = {
-        ...copyPosts[action.payload.postID],
-        [action.payload.screenID]: {
-          ...copyPosts[action.payload.postID][action.payload.screenID],
-          offset: action.payload.data.offset,
-          order: action.payload.data.order
-        }
-      };
-      return { ...state, posts: copyPosts };
     case REMOVE_POST_SCREEN_INFO:
       const copyPosts9 = { ...state.posts };
       delete copyPosts9[action.payload.postID][action.payload.screenID];

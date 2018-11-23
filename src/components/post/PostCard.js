@@ -10,7 +10,7 @@ const PostCard = ({ userID, post, viewProfile, viewPost, navigation, parentNavig
     onLayout={onLayout}
     onPress={() => viewPost(post)}
     disabled={viewing}
-    underlayColor="rgba(0,0,0,0.4)"
+    underlayColor="rgba(0,0,0,0.3)"
   >
     <View style={styles.viewStyle}>
       <PostCardHeader

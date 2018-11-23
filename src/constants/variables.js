@@ -16,6 +16,8 @@ export const MIN_HEADER_HEIGHT = Header.HEIGHT; // Minimum header height (includ
 export const MIN_HEADER_HEIGHT_NO_STATUS_BAR = MIN_HEADER_HEIGHT - getStatusBarHeight(true);
 export const SEARCH_HEADER_HEIGHT = Header.HEIGHT;
 
+export const COMMENTS_PAGINATE_LIMIT = 5; // NOTE: Same as commentsLimit in server/helpers/paginate.js
+
 // NOTE: Change this in server/config/mail.js if changed
 export const EmailSubjectEnum = Object.freeze({
   password: 0, // forgotten password

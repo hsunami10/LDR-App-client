@@ -8,7 +8,7 @@ import { ROOT_URL } from '../../constants/variables';
 const TopicCard = ({ topic, onPress }) => (
   <TouchableHighlight
     onPress={onPress}
-    underlayColor="rgba(0,0,0,0.4)"
+    underlayColor="rgba(0,0,0,0.3)"
   >
     <View style={styles.viewStyle}>
       <ClickableImage

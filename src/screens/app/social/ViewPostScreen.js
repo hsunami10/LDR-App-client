@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import shortid from 'shortid';
 import moment from 'moment';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
@@ -10,14 +10,9 @@ import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationAct
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
 import { getPostComments } from '../../../actions/PostActions';
 import CommentsList from '../../../components/comment/CommentsList';
+import PageCommentsButton from '../../../components/comment/PageCommentsButton';
 
-// 3 types of loading:
-//  - on mount, initial_loading for comments, get /api/posts/comments/, offset = 0 (initial_comments_loading)
-//  - on refresh, update post and comments, get /api/posts/, add to end of comments (refreshing)
-//  - view previous comments, get /api/posts/comments/, offset > 0, add to beginning of comments (page_comments_loading)
-// If no comments, then show "no comments" message and DO NOT allow "view previous comments"
-// Hide "view previous comments" if number of comments fetched is < limit (5)
-// TODO: Figure out how to do separate screen loading, similar to ViewPostScreen, in ScreenReducer
+// TODO: Handle no post available (if post was deleted) - from initial fetch of comments
 class ViewPostScreen extends Component {
   state = {
     height: 0,
@@ -64,6 +59,18 @@ class ViewPostScreen extends Component {
     }
   }
 
+  handlePageComments = () => {
+    const screenInfo = this.props.posts[this.state.post_id][this.state.screen_id];
+    this.props.getPostComments(
+      this.props.id,
+      this.state.post_id,
+      this.state.screen_id,
+      true,
+      screenInfo.offset,
+      this.props.all_comments[screenInfo.order[screenInfo.order.length - 1]].date_sent
+    );
+  }
+
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
     this.setState(() => ({ height }));
@@ -106,12 +113,19 @@ class ViewPostScreen extends Component {
 
     const data = this.getComments(this.props.posts[this.state.post_id][this.state.screen_id].order);
     return (
-      <CommentsList
-        data={data}
-        empty={data.length === 0}
-        navigation={this.props.navigation}
-        parentNavigation={this.props.screenProps.parentNavigation}
-      />
+      <View>
+        <PageCommentsButton
+          keepPaging={this.props.posts[this.state.post_id][this.state.screen_id].keepPaging}
+          loading={this.props.posts[this.state.post_id][this.state.screen_id].page_comments_loading}
+          handlePress={this.handlePageComments}
+        />
+        <CommentsList
+          data={data}
+          empty={data.length === 0}
+          navigation={this.props.navigation}
+          parentNavigation={this.props.screenProps.parentNavigation}
+        />
+      </View>
     );
   }
 
