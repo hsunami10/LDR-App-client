@@ -79,19 +79,18 @@ class PostsList extends Component {
 PostsList.propTypes = {
   id: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
+  pushTabRoute: PropTypes.func.isRequired,
 
   data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
   empty: PropTypes.bool.isRequired,
   height: PropTypes.number.isRequired,
   refreshing: PropTypes.bool.isRequired,
   handleRefresh: PropTypes.func.isRequired,
-  pushTabRoute: PropTypes.func.isRequired,
   paginateData: PropTypes.func.isRequired,
   keepPaging: PropTypes.bool.isRequired, // False only when there is no more data to retrieve
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
   message: PropTypes.string.isRequired,
-
   handleScroll: PropTypes.func,
   scrollEventThrottle: PropTypes.number
 };

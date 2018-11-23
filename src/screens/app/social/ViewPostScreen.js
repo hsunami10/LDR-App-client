@@ -9,6 +9,7 @@ import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
 import { getPostComments } from '../../../actions/PostActions';
+import CommentsList from '../../../components/comment/CommentsList';
 
 // 3 types of loading:
 //  - on mount, initial_loading for comments, get /api/posts/comments/, offset = 0 (initial_comments_loading)
@@ -34,6 +35,15 @@ class ViewPostScreen extends Component {
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
     this.props.removePostScreenInfo(this.state.post_id, this.state.screen_id);
+  }
+
+  getComments = () => {
+    const postIDs = this.props.posts[this.state.post_id][this.state.screen_id].order;
+    const comments = new Array(postIDs.length);
+    for (let i = 0, len = comments.length; i < len; i++) {
+      comments[i] = this.props.all_comments[postIDs[i]];
+    }
+    return comments;
   }
 
   viewProfile = id => {
@@ -93,7 +103,16 @@ class ViewPostScreen extends Component {
     ) {
       return <FullScreenLoading height={this.state.height - this.state.post_height} loading />;
     }
-    return <Text>{JSON.stringify(this.props.posts[this.state.post_id][this.state.screen_id].order)}</Text>;
+
+    const data = this.getComments(this.props.posts[this.state.post_id][this.state.screen_id].order);
+    return (
+      <CommentsList
+        data={data}
+        empty={data.length === 0}
+        navigation={this.props.navigation}
+        parentNavigation={this.props.screenProps.parentNavigation}
+      />
+    );
   }
 
   render() {
@@ -138,7 +157,8 @@ ViewPostScreen.propTypes = {
   removePostScreenInfo: PropTypes.func.isRequired,
   getPostComments: PropTypes.func.isRequired,
   none_msg: PropTypes.string.isRequired,
-  posts: PropTypes.object.isRequired
+  posts: PropTypes.object.isRequired,
+  all_comments: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -152,7 +172,8 @@ const mapStateToProps = state => ({
   current_tab: state.navigation.current_tab,
   post_likes: state.posts.post_likes,
   none_msg: state.comments.none_msg,
-  posts: state.screens.posts
+  posts: state.screens.posts,
+  all_comments: state.comments.all_comments
 });
 
 export default connect(mapStateToProps, {

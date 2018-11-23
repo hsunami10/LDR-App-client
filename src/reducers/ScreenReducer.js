@@ -49,7 +49,9 @@ export default (state = INITIAL_STATE, action) => {
         [action.payload.screenID]: {
           initial_comments_loading: true,
           refreshing: false,
-          page_comments_loading: false
+          page_comments_loading: false,
+          order: [],
+          offset: 0
         }
       };
       return { ...state, posts: copyPosts2 };

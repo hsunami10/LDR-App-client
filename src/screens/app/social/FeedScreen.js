@@ -269,9 +269,7 @@ const mapStateToProps = state => {
   const postsOrder = state.feed.posts_order;
   const posts = new Array(postsOrder.length);
   for (let i = 0; i < postsOrder.length; i++) {
-    if (state.posts.all_posts[postsOrder[i]]) {
-      posts[i] = state.posts.all_posts[postsOrder[i]];
-    }
+    posts[i] = state.posts.all_posts[postsOrder[i]];
   }
 
   return {

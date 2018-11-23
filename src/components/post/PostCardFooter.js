@@ -34,7 +34,7 @@ class PostCardFooter extends Component {
     this.props.editPost({
       post: this.props.post,
       type: 'num_likes',
-      data: this.props.postLikes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
+      data: this.props.post_likes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
       userID: this.props.id
     });
     this.setState(prevState => ({ flag: !prevState.flag }));
@@ -61,7 +61,7 @@ class PostCardFooter extends Component {
   handleOtherActions = index => {
     switch (index) {
       case 0:
-        console.log('report post');
+        console.log('report post with parentNavigation');
         break;
       default:
         return;
@@ -72,7 +72,7 @@ class PostCardFooter extends Component {
     return (
       <View style={{ flexDirection: 'row', borderColor: 'white', borderWidth: 1, height: 40, alignItems: 'center' }}>
         <Text
-          style={{ marginLeft: 10, backgroundColor: (this.props.postLikes[this.props.post.id] ? 'gray' : 'transparent') }}
+          style={{ marginLeft: 10, backgroundColor: (this.props.post_likes[this.props.post.id] ? 'gray' : 'transparent') }}
           onPress={this.handleLikeAction}
         >
           {/*TODO: Do heart buttom for interaction / liking later - FIX DESIGN*/}
@@ -99,7 +99,7 @@ PostCardFooter.propTypes = {
   id: PropTypes.string.isRequired,
   post: PropTypes.object.isRequired,
   editPost: PropTypes.func.isRequired,
-  postLikes: PropTypes.object.isRequired,
+  post_likes: PropTypes.object.isRequired,
   deletePost: PropTypes.func.isRequired,
   alias_fetched: PropTypes.bool.isRequired,
   viewPost: PropTypes.func,
@@ -113,7 +113,7 @@ PostCardFooter.propTypes = {
 const mapStateToProps = state => ({
   id: state.auth.id,
   alias_fetched: state.user.alias_fetched,
-  postLikes: state.posts.post_likes
+  post_likes: state.posts.post_likes
 });
 
 export default connect(mapStateToProps, {
