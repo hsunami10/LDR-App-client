@@ -67,12 +67,13 @@ export const stopPostScreenRefreshing = (postID, screenID) => ({
 });
 
 // =========================================== Comments ===========================================
-export const storeCommentsScreenInfo = (data, postID, screenID) => ({
+export const storeCommentsScreenInfo = (data, postID, screenID, replace = false) => ({
   type: STORE_COMMENTS_SCREEN_INFO,
   payload: {
     data,
     postID,
     screenID,
+    replace,
     keepPaging: data.order.length >= COMMENTS_PAGINATE_LIMIT
   }
 });

@@ -8,11 +8,10 @@ import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
-import { getPostComments } from '../../../actions/PostActions';
+import { getComments, getPostAndComments } from '../../../actions/PostActions';
 import CommentsList from '../../../components/comment/CommentsList';
 import PageCommentsButton from '../../../components/comment/PageCommentsButton';
 
-// TODO: Handle no post available (if post was deleted) - from initial fetch of comments
 class ViewPostScreen extends Component {
   state = {
     height: 0,
@@ -52,16 +51,21 @@ class ViewPostScreen extends Component {
   handleFirstLoad = refresh => {
     const post = this.props.navigation.getParam('post', null);
     if (!refresh) {
-      this.props.getPostComments(this.props.id, post.id, this.state.screen_id, false, 0, moment().unix());
+      this.props.getComments(this.props.id, post.id, this.state.screen_id, false, 0, moment().unix());
     } else {
-      // TODO: get /api/posts/
-      console.log('get post and comments');
+      const order = this.props.posts[this.state.post_id][this.state.screen_id].order;
+      this.props.getPostAndComments(
+        this.props.id,
+        post.id,
+        this.state.screen_id,
+        order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent // Handle index out of bounds if no comments
+      );
     }
   }
 
   handlePageComments = () => {
     const screenInfo = this.props.posts[this.state.post_id][this.state.screen_id];
-    this.props.getPostComments(
+    this.props.getComments(
       this.props.id,
       this.state.post_id,
       this.state.screen_id,
@@ -169,10 +173,11 @@ ViewPostScreen.propTypes = {
   post_likes: PropTypes.object.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
-  getPostComments: PropTypes.func.isRequired,
+  getComments: PropTypes.func.isRequired,
   none_msg: PropTypes.string.isRequired,
   posts: PropTypes.object.isRequired,
-  all_comments: PropTypes.object.isRequired
+  all_comments: PropTypes.object.isRequired,
+  getPostAndComments: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -194,5 +199,6 @@ export default connect(mapStateToProps, {
   pushTabRoute,
   goBackwardTabRoute,
   removePostScreenInfo,
-  getPostComments
+  getComments,
+  getPostAndComments
 })(ViewPostScreen);

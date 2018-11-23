@@ -13,10 +13,36 @@ import {
   startCommentsPageLoading,
   startInitialCommentsLoading,
   stopCommentsPageLoading,
-  stopInitialCommentsLoading
+  stopInitialCommentsLoading,
+  startPostScreenRefreshing,
+  stopPostScreenRefreshing
 } from './ScreenActions';
 
-export const getPostComments = (userID, postID, screenID, paging, offset, latestDate) => dispatch => {
+export const getPostAndComments = (userID, postID, screenID, earliestDate) => dispatch => {
+  dispatch(startPostScreenRefreshing(postID, screenID));
+  axios.get(`${ROOT_URL}/api/posts/${userID}?earliest_date=${earliestDate}&post_id=${postID}`)
+    .then(response => {
+      dispatch(stopPostScreenRefreshing(postID, screenID));
+      dispatch({
+        type: EDIT_POST,
+        payload: {
+          post: response.data.post,
+          type: null
+        }
+      });
+      dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, true));
+    })
+    .catch(error => {
+      dispatch(stopPostScreenRefreshing(postID, screenID));
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+export const getComments = (userID, postID, screenID, paging, offset, latestDate) => dispatch => {
   if (paging) {
     dispatch(startCommentsPageLoading(postID, screenID));
   } else {

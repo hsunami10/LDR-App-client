@@ -18,7 +18,6 @@ import {
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
 } from '../actions/types';
-import { COMMENTS_PAGINATE_LIMIT } from '../constants/variables';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
 // Or if it would be the same for all screens (ex: post likes - posts.post_likes)
@@ -50,7 +49,11 @@ export default (state = INITIAL_STATE, action) => {
         [action.payload.screenID]: {
           ...copyPosts[action.payload.postID][action.payload.screenID],
           offset: action.payload.data.offset,
-          order: [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order],
+          order: (
+            action.payload.replace ?
+            action.payload.data.order :
+            [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order]
+          ),
           keepPaging: action.payload.keepPaging
         }
       };
@@ -102,16 +105,32 @@ export default (state = INITIAL_STATE, action) => {
       };
       return { ...state, posts: copyPosts5 };
     case START_POST_SCREEN_REFRESHING:
-      return state;
+      const copyPosts6 = { ...state.posts };
+      copyPosts6[action.payload.postID] = {
+        ...copyPosts6[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts6[action.payload.postID][action.payload.screenID],
+          refreshing: true
+        }
+      };
+      return { ...state, posts: copyPosts6 };
     case STOP_POST_SCREEN_REFRESHING:
-      return state;
+      const copyPosts7 = { ...state.posts };
+      copyPosts7[action.payload.postID] = {
+        ...copyPosts7[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts7[action.payload.postID][action.payload.screenID],
+          refreshing: false
+        }
+      };
+      return { ...state, posts: copyPosts7 };
     case REMOVE_POST_SCREEN_INFO:
-      const copyPosts9 = { ...state.posts };
-      delete copyPosts9[action.payload.postID][action.payload.screenID];
-      if (Object.keys(copyPosts9[action.payload.postID]).length === 0) {
-        delete copyPosts9[action.payload.postID];
+      const copyPosts8 = { ...state.posts };
+      delete copyPosts8[action.payload.postID][action.payload.screenID];
+      if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
+        delete copyPosts8[action.payload.postID];
       }
-      return { ...state, posts: copyPosts9 };
+      return { ...state, posts: copyPosts8 };
 
     case START_INITIAL_USER_SCREEN_LOADING:
       const copyP = { ...state.profiles };
