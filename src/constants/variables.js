@@ -12,6 +12,9 @@ export const ROOT_URL = (
 
 export const MAX_POST_BODY_LINES = 5;
 
+export const MAX_TEXT_INPUT_LINES = 5;
+export const MIN_TEXT_INPUT_VIEW_HEIGHT = 30;
+
 export const MIN_HEADER_HEIGHT = Header.HEIGHT; // Minimum header height (including status bar)
 export const MIN_HEADER_HEIGHT_NO_STATUS_BAR = MIN_HEADER_HEIGHT - getStatusBarHeight(true);
 export const SEARCH_HEADER_HEIGHT = Header.HEIGHT;

@@ -1,11 +1,6 @@
-URGENT - figure out how to handle initial_loading and refresh loading for all different types of screens in ScreenReducer
-Why? If one hangs, then you do not want the others to hang also - different loadings for all different screens
-Maybe have another property in ScreenReducer - loading
+Next: deleting comments
 
-- implement getting post's comments for both frontend and backend
-  - get comments for post w/ database
-  - when reloading ViewPostScreen, don't "replace" like FeedScreen, get limit 20 comments where comments.date_sent > latestDate
-  - comments: { order - array, data - object of comment_id -> comment obj, offset - number }
+- FIGURE OUT HOW TO ANIMATE HEIGHT CHANGING TEXT INPUT
 - utilize none_msg in ScreenReducer
 
 Future ideas:

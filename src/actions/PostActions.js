@@ -55,7 +55,7 @@ export const getComments = (userID, postID, screenID, paging, offset, latestDate
       } else {
         dispatch(stopInitialCommentsLoading(postID, screenID));
       }
-      dispatch(storeCommentsScreenInfo(response.data, postID, screenID));
+      dispatch(storeCommentsScreenInfo(response.data, postID, screenID, false));
     })
     .catch(error => {
       if (paging) {

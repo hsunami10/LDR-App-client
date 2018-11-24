@@ -1,3 +1,4 @@
+export * from './AutoExpandingTextInput';
 export * from './Button';
 export * from './DismissKeyboard';
 export * from './FullScreenLoading';

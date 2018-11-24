@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, Keyboard } from 'react-native';
 import shortid from 'shortid';
 import moment from 'moment';
-import { StandardHeader, FullScreenLoading } from '../../../components/common';
+import { StandardHeader, FullScreenLoading, AutoExpandingTextInput } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
@@ -17,7 +17,8 @@ class ViewPostScreen extends Component {
     height: 0,
     post_height: 0,
     screen_id: shortid(),
-    post_id: ''
+    post_id: '',
+    text: ''
   }
 
   componentDidMount() {
@@ -86,6 +87,8 @@ class ViewPostScreen extends Component {
 
   handleLeftPress = () => this.props.navigation.pop()
   handleRefresh = () => this.handleFirstLoad(true)
+  handleChangeText = text => this.setState(() => ({ text }))
+  handleScroll = () => Keyboard.dismiss();
 
   // Only allow refresh if not initial loading
   handleRefreshControl = () => {
@@ -142,6 +145,7 @@ class ViewPostScreen extends Component {
           onLeftPress={this.handleLeftPress}
         />
         <ScrollView
+          onScroll={this.handleScroll}
           scrollEventThrottle={16}
           refreshControl={this.handleRefreshControl()}
           onLayout={this.handleLayout}
@@ -159,6 +163,14 @@ class ViewPostScreen extends Component {
           <View style={{ flex: 1 }}>
             {this.renderComments()}
           </View>
+          <AutoExpandingTextInput
+            value={this.state.text}
+            placeholder="Comment..."
+            onChangeText={this.handleChangeText}
+            onContentSizeChange={height => {
+              console.log('content size height: ' + height);
+            }}
+          />
         </ScrollView>
       </View>
     );

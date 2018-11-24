@@ -67,7 +67,7 @@ export const stopPostScreenRefreshing = (postID, screenID) => ({
 });
 
 // =========================================== Comments ===========================================
-export const storeCommentsScreenInfo = (data, postID, screenID, replace = false) => ({
+export const storeCommentsScreenInfo = (data, postID, screenID, replace) => ({
   type: STORE_COMMENTS_SCREEN_INFO,
   payload: {
     data,
