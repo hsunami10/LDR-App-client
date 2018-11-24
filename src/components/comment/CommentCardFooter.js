@@ -5,6 +5,7 @@ import { View, Platform, Text } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchAliases } from '../../actions/UserActions';
+import { deleteComment } from '../../actions/CommentActions';
 
 class CommentCardFooter extends Component {
   state = { flag: false } // Force re-render to see updated post
@@ -22,12 +23,6 @@ class CommentCardFooter extends Component {
 
   handleLikeAction = () => {
     console.log('like comment');
-    // this.props.editPost({
-    //   post: this.props.post,
-    //   type: 'num_likes',
-    //   data: this.props.postLikes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
-    //   userID: this.props.id
-    // });
     this.setState(prevState => ({ flag: !prevState.flag }));
   }
 
@@ -37,8 +32,7 @@ class CommentCardFooter extends Component {
         console.log('edit comment');
         break;
       case 1:
-        console.log('delete comment');
-        // this.props.deletePost(this.props.id, this.props.comment.id, this.props.navigation);
+        this.props.deleteComment(this.props.comment.post_id, this.props.comment.id);
         break;
       default:
         return;
@@ -82,7 +76,8 @@ CommentCardFooter.propTypes = {
   id: PropTypes.string.isRequired,
   comment: PropTypes.object.isRequired,
   comment_likes: PropTypes.object.isRequired,
-  parentNavigation: PropTypes.object.isRequired
+  parentNavigation: PropTypes.object.isRequired,
+  deleteComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -91,5 +86,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  fetchAliases
+  fetchAliases,
+  deleteComment
 })(CommentCardFooter);

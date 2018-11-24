@@ -8,7 +8,8 @@ import { StandardHeader, FullScreenLoading, AutoExpandingTextInput } from '../..
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
-import { getComments, getPostAndComments } from '../../../actions/PostActions';
+import { getPostAndComments } from '../../../actions/PostActions';
+import { getComments } from '../../../actions/CommentActions';
 import CommentsList from '../../../components/comment/CommentsList';
 import PageCommentsButton from '../../../components/comment/PageCommentsButton';
 
@@ -17,13 +18,13 @@ class ViewPostScreen extends Component {
     height: 0,
     post_height: 0,
     screen_id: shortid(),
-    post_id: '',
+    post_id: null,
     text: ''
   }
 
   componentDidMount() {
-    const post = this.props.navigation.getParam('post', null);
-    this.setState(() => ({ post_id: post.id }));
+    const postID = this.props.navigation.getParam('post_id', null);
+    this.setState(() => ({ post_id: postID }));
     this.handleFirstLoad(false);
   }
 
@@ -50,14 +51,14 @@ class ViewPostScreen extends Component {
   }
 
   handleFirstLoad = refresh => {
-    const post = this.props.navigation.getParam('post', null);
+    const postID = this.props.navigation.getParam('post_id', null);
     if (!refresh) {
-      this.props.getComments(this.props.id, post.id, this.state.screen_id, false, 0, moment().unix());
+      this.props.getComments(this.props.id, postID, this.state.screen_id, false, 0, moment().unix());
     } else {
       const order = this.props.posts[this.state.post_id][this.state.screen_id].order;
       this.props.getPostAndComments(
         this.props.id,
-        post.id,
+        this.state.post_id,
         this.state.screen_id,
         order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent // Handle index out of bounds if no comments
       );
@@ -152,7 +153,7 @@ class ViewPostScreen extends Component {
         >
           <PostCard
             userID={this.props.id}
-            post={this.props.navigation.getParam('post', {})}
+            post={this.props.all_posts[this.state.post_id || this.props.navigation.getParam('post_id', null)]}
             viewProfile={this.viewProfile}
             postLikes={this.props.post_likes}
             navigation={this.props.navigation}
@@ -189,7 +190,8 @@ ViewPostScreen.propTypes = {
   none_msg: PropTypes.string.isRequired,
   posts: PropTypes.object.isRequired,
   all_comments: PropTypes.object.isRequired,
-  getPostAndComments: PropTypes.func.isRequired
+  getPostAndComments: PropTypes.func.isRequired,
+  all_posts: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -204,7 +206,8 @@ const mapStateToProps = state => ({
   post_likes: state.posts.post_likes,
   none_msg: state.comments.none_msg,
   posts: state.screens.posts,
-  all_comments: state.comments.all_comments
+  all_comments: state.comments.all_comments,
+  all_posts: state.posts.all_posts
 });
 
 export default connect(mapStateToProps, {

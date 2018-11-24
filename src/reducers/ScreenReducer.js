@@ -2,10 +2,10 @@ import {
   LOG_OUT_USER,
   STORE_USER_SCREEN_INFO,
   REMOVE_USER_SCREEN_INFO,
-  STORE_POST_SCREEN_INFO,
   REMOVE_POST_SCREEN_INFO,
   CREATE_POST,
   DELETE_POST,
+  DELETE_COMMENT,
   START_INITIAL_USER_SCREEN_LOADING,
   STOP_INITIAL_USER_SCREEN_LOADING,
   START_USER_SCREEN_REFRESHING,
@@ -131,7 +131,23 @@ export default (state = INITIAL_STATE, action) => {
         delete copyPosts8[action.payload.postID];
       }
       return { ...state, posts: copyPosts8 };
+    case DELETE_COMMENT:
+      const copyPosts9 = { ...state.posts };
+      const postScreens = copyPosts9[action.payload.postID];
+      if (postScreens) {
+        for (const screenID in postScreens) {
+          if (Object.prototype.hasOwnProperty.call(postScreens, screenID)) {
+            const screen = postScreens[screenID];
+            const index = screen.order.indexOf(action.payload.commentID);
 
+            if (index >= 0) {
+              screen.order.splice(index, 1);
+              screen.offset--;
+            }
+          }
+        }
+      }
+      return { ...state, posts: copyPosts9 };
     case START_INITIAL_USER_SCREEN_LOADING:
       const copyP = { ...state.profiles };
       copyP[action.payload.userID] = {

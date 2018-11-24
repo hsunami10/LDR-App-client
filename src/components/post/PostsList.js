@@ -20,7 +20,7 @@ class PostsList extends Component {
 
   viewPost = post => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
-    this.props.navigation.push('ViewPost', { post });
+    this.props.navigation.push('ViewPost', { post_id: post.id });
   }
 
   handleScroll = () => Keyboard.dismiss()

@@ -5,9 +5,8 @@ import {
   CREATE_POST,
   EDIT_POST,
   DELETE_POST,
+  DELETE_COMMENT
 } from '../actions/types';
-
-// NOTE: No need for STORE_POST_SCREEN_INFO because data is already stored in all_posts
 
 // Holds all posts data - want all posts to be the same across screens
 const INITIAL_STATE = {
@@ -71,6 +70,14 @@ export default (state = INITIAL_STATE, action) => {
         post_likes: copyPostLikes2,
         all_posts: copyPosts2
       };
+
+    case DELETE_COMMENT:
+      const copyPosts3 = { ...state.all_posts };
+      copyPosts3[action.payload.postID] = {
+        ...copyPosts3[action.payload.postID],
+        num_comments: parseInt(copyPosts3[action.payload.postID].num_comments, 10) - 1
+      };
+      return { ...state, all_posts: copyPosts3 };
     default:
       return state;
   }

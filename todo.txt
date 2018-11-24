@@ -6,6 +6,3 @@ Next: deleting comments
 Future ideas:
   - realtime comments on posts
   -
-
-REMEMBER:
-  - NOTE: Do not need posts object or post_likes object in other reducers, find a way to clean up redux state

@@ -21,7 +21,6 @@ export const START_INITIAL_USER_SCREEN_LOADING = 'start_initial_user_screen_load
 export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loading';
 
 // Posts
-export const STORE_POST_SCREEN_INFO = 'store_post_screen_info';
 export const REMOVE_POST_SCREEN_INFO = 'remove_post_screen_info';
 export const START_POST_SCREEN_REFRESHING = 'start_post_screen_refreshing';
 export const STOP_POST_SCREEN_REFRESHING = 'stop_post_screen_refreshing';
@@ -57,6 +56,9 @@ export const GET_SUBSCRIBED_TOPICS = 'get_subscribed_topics';
 export const CREATE_POST = 'create_post';
 export const DELETE_POST = 'delete_post';
 export const EDIT_POST = 'edit_post';
+
+// Comments
+export const DELETE_COMMENT = 'delete_comment';
 
 // Feed
 export const START_FEED_LOADING = 'start_feed_loading';

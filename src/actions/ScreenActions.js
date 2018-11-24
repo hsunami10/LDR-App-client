@@ -1,7 +1,6 @@
 import {
   STORE_USER_SCREEN_INFO,
   REMOVE_USER_SCREEN_INFO,
-  STORE_POST_SCREEN_INFO,
   REMOVE_POST_SCREEN_INFO,
   START_USER_SCREEN_REFRESHING,
   STOP_USER_SCREEN_REFRESHING,
@@ -48,10 +47,6 @@ export const removeUserScreenInfo = (userID, screenID) => ({
 });
 
 // ============================================ Posts ============================================
-export const storePostScreenInfo = post => ({
-  type: STORE_POST_SCREEN_INFO,
-  payload: { post }
-});
 export const removePostScreenInfo = (postID, screenID) => ({
   type: REMOVE_POST_SCREEN_INFO,
   payload: { postID, screenID }

@@ -10,10 +10,6 @@ import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 import {
   storeCommentsScreenInfo,
-  startCommentsPageLoading,
-  startInitialCommentsLoading,
-  stopCommentsPageLoading,
-  stopInitialCommentsLoading,
   startPostScreenRefreshing,
   stopPostScreenRefreshing
 } from './ScreenActions';
@@ -34,35 +30,6 @@ export const getPostAndComments = (userID, postID, screenID, earliestDate) => di
     })
     .catch(error => {
       dispatch(stopPostScreenRefreshing(postID, screenID));
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
-export const getComments = (userID, postID, screenID, paging, offset, latestDate) => dispatch => {
-  if (paging) {
-    dispatch(startCommentsPageLoading(postID, screenID));
-  } else {
-    dispatch(startInitialCommentsLoading(postID, screenID));
-  }
-  axios.get(`${ROOT_URL}/api/posts/comments/${userID}?offset=${offset}&latest_date=${latestDate}&post_id=${postID}`)
-    .then(response => {
-      if (paging) {
-        dispatch(stopCommentsPageLoading(postID, screenID));
-      } else {
-        dispatch(stopInitialCommentsLoading(postID, screenID));
-      }
-      dispatch(storeCommentsScreenInfo(response.data, postID, screenID, false));
-    })
-    .catch(error => {
-      if (paging) {
-        dispatch(stopCommentsPageLoading(postID, screenID));
-      } else {
-        dispatch(stopInitialCommentsLoading(postID, screenID));
-      }
       if (error.response) {
         handleError(error.response.data, false);
       } else {
