@@ -3,7 +3,6 @@ export const LOG_OUT_USER = 'log_out_user';
 
 // User
 export const STORE_USER_INFO = 'store_user_info';
-export const FETCH_ALIASES = 'fetch_aliases';
 
 // Authentication
 export const SET_USER_CREDENTIALS = 'set_user_credentials';

@@ -39,7 +39,7 @@ export const getPostAndComments = (userID, postID, screenID, earliestDate) => di
 };
 
 export const createPost = (postObj, navigation) => dispatch => {
-  // postObj - { user_id, topic_id, alias_id, body, coordinates }
+  // postObj - { user_id, topic_id, body, coordinates }
   dispatch(startLoading());
   axios.post(`${ROOT_URL}/api/posts/${postObj.user_id}`, postObj)
     .then(response => {

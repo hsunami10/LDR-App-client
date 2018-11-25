@@ -12,7 +12,6 @@ import { editPost } from '../../../actions/PostActions';
 class EditPostScreen extends Component {
   state = {
     post: null,
-    initIndex: -1,
     error: {
       type: null,
       msg: ' '
@@ -20,32 +19,8 @@ class EditPostScreen extends Component {
   }
 
   componentDidMount() {
-    let aliasID = '';
-    let alias = '';
-    let index = -1;
     const post = this.props.navigation.getParam('post', null);
-
-    // Find the index of the alias of the original post in aliases array - to set AliasPicker initial value
-    if (post.alias_id === '') {
-      this.setState(() => ({ post }));
-    } else {
-      for (let i = 0, len = this.props.aliases.length; i < len; i++) {
-        if (this.props.aliases[i].id === post.alias_id) {
-          aliasID = post.alias_id;
-          alias = post.alias;
-          index = i;
-          break;
-        }
-      }
-      this.setState(() => ({
-        post: {
-          ...post,
-          alias_id: aliasID,
-          alias
-        },
-        initIndex: index
-      }));
-    }
+    this.setState(() => ({ post }));
   }
 
   componentWillUnmount() {
@@ -60,16 +35,6 @@ class EditPostScreen extends Component {
 
   handleLeftPress = () => this.props.navigation.pop()
   handleChangeBody = body => this.setState(prevState => ({ post: { ...prevState.post, body } }))
-  handleAliasChange = index => {
-    this.setState(prevState => ({
-      post: {
-        ...prevState.post,
-        alias_id: index < 0 ? '' : this.props.aliases[index].id,
-        alias: index < 0 ? '' : this.props.aliases[index].alias
-      },
-      initIndex: index
-    }));
-  }
 
   handleSubmit = () => {
     console.log('change to topic: ' + this.props.post_topic.name);
@@ -107,10 +72,7 @@ class EditPostScreen extends Component {
               name: this.state.post.name
             }}
             handleChangeBody={this.handleChangeBody}
-            handleAliasChange={this.handleAliasChange}
-            aliases={this.props.aliases}
             error={this.state.error}
-            selectedAlias={this.state.initIndex}
             navigation={this.props.navigation}
           /> :
         null}
@@ -122,7 +84,6 @@ class EditPostScreen extends Component {
 
 EditPostScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  aliases: PropTypes.arrayOf(PropTypes.object).isRequired,
   loading: PropTypes.bool.isRequired,
   stopLoading: PropTypes.func.isRequired,
   goBackwardRoute: PropTypes.func.isRequired,
@@ -133,7 +94,6 @@ EditPostScreen.propTypes = {
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  aliases: state.user.aliases,
   loading: state.loading,
   current_route: state.navigation.current_route,
   post_topic: state.topics.post_topic

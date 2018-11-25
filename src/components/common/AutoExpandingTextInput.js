@@ -50,6 +50,7 @@ export class AutoExpandingTextInput extends Component {
       <View
         style={[styles.viewStyle,
           // this.state.initial_input_height === 0 ? {} : { height: this.state.initial_input_height } // NOTE: This stops onLayout from running every time height changes - value doesn't change?
+          this.props.style || {}
         ]}
         onLayout={this.handleLayout}
       >

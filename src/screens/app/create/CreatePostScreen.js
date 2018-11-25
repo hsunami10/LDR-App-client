@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Dimensions, Animated, Keyboard } from 'react-native';
 import { Button, MultiLineInput } from '../../../components/common';
-import AliasPicker from '../../../components/post/AliasPicker';
 import { errorTextStyle } from '../../../constants/styles/text';
 import { choosePostTopic } from '../../../actions/TopicActions';
 
@@ -37,12 +36,6 @@ class CreatePostScreen extends Component {
             width={Dimensions.get('window').width - 40}
             height={200}
           />
-          <Text>Choose an Alias (optional)</Text>
-          <AliasPicker
-            selectedAlias={this.props.selectedAlias}
-            handleAliasChange={this.props.handleAliasChange}
-            aliases={this.props.aliases}
-          />
           <Text style={errorTextStyle}>{this.props.error.msg}</Text>
         </View>
       </Animated.ScrollView>
@@ -55,9 +48,6 @@ CreatePostScreen.propTypes = {
   body: PropTypes.string.isRequired,
   topic: PropTypes.object.isRequired,
   error: PropTypes.object.isRequired,
-  selectedAlias: PropTypes.number.isRequired,
-  handleAliasChange: PropTypes.func.isRequired,
-  aliases: PropTypes.arrayOf(PropTypes.object).isRequired,
   navigation: PropTypes.object.isRequired,
   choosePostTopic: PropTypes.func.isRequired,
   post_topic: PropTypes.object.isRequired
@@ -66,7 +56,7 @@ CreatePostScreen.propTypes = {
 const styles = StyleSheet.create({
   centerItems: {
     flex: 1,
-    alignItems: 'center' // NOTE: Uncommenting this makes alias picker disappear
+    alignItems: 'center'
   }
 });
 

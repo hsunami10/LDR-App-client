@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { View, Platform, Text } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { fetchAliases } from '../../actions/UserActions';
 import { deleteComment } from '../../actions/CommentActions';
 
 class CommentCardFooter extends Component {
@@ -86,6 +85,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  fetchAliases,
   deleteComment
 })(CommentCardFooter);

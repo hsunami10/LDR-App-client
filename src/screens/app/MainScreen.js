@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import { navigateToRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
-import { fetchAliases } from '../../actions/UserActions';
 import { checkPermission } from '../../assets/helpers';
 import { FullScreenLoading } from '../../components/common';
 import FeedStack from '../../navigation/FeedStack';
@@ -135,12 +134,8 @@ class MainScreen extends Component {
         }
         break;
       case 'compose':
-        if (this.props.alias_fetched) {
-          this.props.navigateToRoute('Create');
-          this.props.navigation.navigate('Create');
-        } else {
-          this.props.fetchAliases(this.props.id, this.props.navigation, 'Create');
-        }
+        this.props.navigateToRoute('Create');
+        this.props.navigation.navigate('Create');
         break;
       case 'notifications':
         if (!this.state.mounted.notifications) {
@@ -228,15 +223,12 @@ MainScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  alias_fetched: PropTypes.bool.isRequired,
-  fetchAliases: PropTypes.func.isRequired,
   tab_routes: PropTypes.object.isRequired,
   current_tab: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  alias_fetched: state.user.alias_fetched, // Check if aliases have already been fetched
   first_login: state.auth.first_login,
   current_route: state.navigation.current_route,
   current_tab: state.navigation.current_tab,
@@ -247,6 +239,5 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   navigateToRoute,
   setNotFirstLogIn,
-  fetchAliases,
   pushTabRoute
 })(MainScreen);

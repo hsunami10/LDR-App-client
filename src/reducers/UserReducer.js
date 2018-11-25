@@ -4,15 +4,12 @@ import {
   START_USER_SCREEN_REFRESHING, // TODO: Remove all of these later
   STOP_USER_SCREEN_REFRESHING,
   START_INITIAL_USER_SCREEN_LOADING,
-  STOP_INITIAL_USER_SCREEN_LOADING,
-  FETCH_ALIASES
+  STOP_INITIAL_USER_SCREEN_LOADING
 } from '../actions/types';
 
 // TODO: Add default values for subscribers && friends later
 const INITIAL_STATE = {
   id: '',
-  aliases: [],
-  alias_fetched: false, // Keeps track of whether or not aliases have already been fetched from database - stops unnecessary repeated fetches
   coordinates: null,
   partner: null,
   initial_loading: false,
@@ -35,11 +32,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, initial_loading: false };
 
     case STORE_USER_INFO:
-      return { ...state, ...action.payload, alias_fetched: true };
-
-    case FETCH_ALIASES:
-      return { ...state, aliases: action.payload, alias_fetched: true };
-
+      return { ...state, ...action.payload };
     default:
       return state;
   }

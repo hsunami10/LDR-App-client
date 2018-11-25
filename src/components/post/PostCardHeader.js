@@ -19,8 +19,7 @@ const PostCardHeader = ({ post, viewProfile, userID }) => (
         style={{ fontWeight: 'bold' }}
         onPress={() => viewProfile(post.author_id)}
       >
-        {/* Only show the real username if there's an alias OR if you're the author */}
-        {(post.alias_id === '' || post.author_id === userID) ? post.username : post.alias}
+        {post.username}
       </Text>
       <Text
         style={{ fontSize: 12 }}

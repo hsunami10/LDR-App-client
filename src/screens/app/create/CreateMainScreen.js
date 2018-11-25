@@ -28,7 +28,6 @@ class CreateMainScreen extends Component {
       type: null,
       msg: ' '
     },
-    selectedAliasIndex: -1,
 
     // Create Topic
     name: '',
@@ -59,7 +58,6 @@ class CreateMainScreen extends Component {
     });
   }
 
-  handleAliasChange = alias => this.setState(() => ({ selectedAliasIndex: alias }))
   handleChangeBody = body => this.setState(() => ({ body }))
   handleChangeName = name => this.setState(() => ({ name }))
   handleChangeDescription = description => this.setState(() => ({ description }))
@@ -77,7 +75,6 @@ class CreateMainScreen extends Component {
         this.props.createPost({
           user_id: this.props.id,
           topic_id: this.props.post_topic.id,
-          alias_id: this.state.selectedAliasIndex < 0 ? '' : this.props.user.aliases[this.state.selectedAliasIndex].id,
           body: this.state.body,
           coordinates: this.props.user.coordinates
         }, this.props.navigation);
@@ -153,9 +150,6 @@ class CreateMainScreen extends Component {
             }}
             body={this.state.body}
             error={this.state.postError}
-            aliases={this.props.user.aliases}
-            selectedAlias={this.state.selectedAliasIndex}
-            handleAliasChange={this.handleAliasChange}
           />
         );
       case 'topic':

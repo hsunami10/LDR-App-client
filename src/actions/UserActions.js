@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import {
-  STORE_USER_INFO,
-  FETCH_ALIASES
+  STORE_USER_INFO
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -118,27 +117,3 @@ export const storeUserInfo = user => ({
   type: STORE_USER_INFO,
   payload: user
 });
-
-// Navigate to CreateMainScreen after aliases are loaded
-export const fetchAliases = (id, navigation, afterFetchRoute, navParams = null) => dispatch => {
-  dispatch(startLoading());
-
-  axios.get(`${ROOT_URL}/api/user/alias/${id}`)
-    .then(response => {
-      dispatch(stopLoading());
-      dispatch({
-        type: FETCH_ALIASES,
-        payload: response.data
-      });
-      dispatch(navigateToRoute(afterFetchRoute));
-      navigation.navigate(afterFetchRoute, navParams);
-    })
-    .catch(error => {
-      dispatch(stopLoading());
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
