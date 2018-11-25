@@ -37,7 +37,6 @@ class EditPostScreen extends Component {
   handleChangeBody = body => this.setState(prevState => ({ post: { ...prevState.post, body } }))
 
   handleSubmit = () => {
-    console.log('change to topic: ' + this.props.post_topic.name);
     this.props.editPost(
       {
         post: this.state.post,

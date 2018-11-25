@@ -68,6 +68,7 @@ navigation = not null ONLY if type is 'body'
 data:
   - number if type = num_likes
   - object if type = body: { topic, body }
+userID - needed for num_likes only, for looking up post_likes in table
  */
 export const editPost = (obj, navigation = null) => dispatch => {
   const { post, type, data, userID } = obj;

@@ -1,4 +1,4 @@
-Next: deleting comments
+Next: editing comments - likes and changing body
 
 - FIGURE OUT HOW TO ANIMATE HEIGHT CHANGING TEXT INPUT
 - utilize none_msg in ScreenReducer

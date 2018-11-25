@@ -54,7 +54,11 @@ export default (state = INITIAL_STATE, action) => {
             action.payload.data.order :
             [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order]
           ),
-          keepPaging: action.payload.keepPaging
+          keepPaging: ( // If keepPaging is false, never change it - only change if keepPaging is true - default
+            copyPosts[action.payload.postID][action.payload.screenID].keepPaging ?
+            action.payload.keepPaging :
+            false
+          )
         }
       };
       return { ...state, posts: copyPosts };
@@ -70,7 +74,7 @@ export default (state = INITIAL_STATE, action) => {
           page_comments_loading: false,
           order: [],
           offset: 0,
-          keepPaging: false
+          keepPaging: true
         }
       };
       return { ...state, posts: copyPosts2 };

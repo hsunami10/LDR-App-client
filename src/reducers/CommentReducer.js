@@ -1,7 +1,8 @@
 import {
   LOG_OUT_USER,
   STORE_COMMENTS_SCREEN_INFO,
-  DELETE_COMMENT
+  DELETE_COMMENT,
+  EDIT_COMMENT
 } from '../actions/types';
 
 // Holds data for all comments - want all comments to be the same across screens
@@ -32,6 +33,22 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         comment_likes: copyComLikes,
         all_comments: copyComs
+      };
+    case EDIT_COMMENT:
+      const copyComs2 = { ...state.all_comments };
+      const copyComLikes2 = { ...state.comment_likes };
+      copyComs2[action.payload.comment.id] = action.payload.comment;
+      if (action.payload.type === 'num_likes') {
+        if (copyComLikes2[action.payload.comment.id]) {
+          delete copyComLikes2[action.payload.comment.id];
+        } else {
+          copyComLikes2[action.payload.comment.id] = true;
+        }
+      }
+      return {
+        ...state,
+        comment_likes: copyComLikes2,
+        all_comments: copyComs2
       };
     default:
       return state;

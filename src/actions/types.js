@@ -58,6 +58,7 @@ export const EDIT_POST = 'edit_post';
 
 // Comments
 export const DELETE_COMMENT = 'delete_comment';
+export const EDIT_COMMENT = 'edit_comment';
 
 // Feed
 export const START_FEED_LOADING = 'start_feed_loading';

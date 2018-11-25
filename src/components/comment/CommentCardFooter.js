@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, Platform, Text } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { deleteComment } from '../../actions/CommentActions';
+import { deleteComment, editComment } from '../../actions/CommentActions';
 
 class CommentCardFooter extends Component {
   state = { flag: false } // Force re-render to see updated post
@@ -21,14 +21,19 @@ class CommentCardFooter extends Component {
   ref = o => (this.ActionSheet = o)
 
   handleLikeAction = () => {
-    console.log('like comment');
+    this.props.editComment({
+      comment: this.props.comment,
+      type: 'num_likes',
+      data: this.props.comment_likes[this.props.comment.id] ? parseInt(this.props.comment.num_likes, 10) - 1 : parseInt(this.props.comment.num_likes, 10) + 1,
+      userID: this.props.id
+    });
     this.setState(prevState => ({ flag: !prevState.flag }));
   }
 
   handleOwnActions = index => {
     switch (index) {
       case 0:
-        console.log('edit comment');
+        console.log('edit comment body');
         break;
       case 1:
         this.props.deleteComment(this.props.comment.post_id, this.props.comment.id);
@@ -76,7 +81,8 @@ CommentCardFooter.propTypes = {
   comment: PropTypes.object.isRequired,
   comment_likes: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
-  deleteComment: PropTypes.func.isRequired
+  deleteComment: PropTypes.func.isRequired,
+  editComment: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -85,5 +91,6 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  deleteComment
+  deleteComment,
+  editComment
 })(CommentCardFooter);

@@ -44,10 +44,7 @@ export default (state = INITIAL_STATE, action) => {
     case EDIT_POST:
       const copyPosts = { ...state.all_posts };
       const copyPostLikes = { ...state.post_likes };
-      // Update posts object
-      if (copyPosts[action.payload.post.id]) {
-        copyPosts[action.payload.post.id] = action.payload.post;
-      }
+      copyPosts[action.payload.post.id] = action.payload.post;
       if (action.payload.type === 'num_likes') {
         if (copyPostLikes[action.payload.post.id]) {
           delete copyPostLikes[action.payload.post.id];
