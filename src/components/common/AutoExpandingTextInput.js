@@ -16,7 +16,7 @@ export class AutoExpandingTextInput extends Component {
   // NOTE: Called every time height of view is changed - IF height changes automatically
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
-    console.log('======================== handleLayout ========================');
+    console.log('======================= handleLayout =======================');
     if (this.state.initial_input_height === 0) {
       console.log('input view initial height: ' + height);
       this.setState(() => ({ initial_input_height: height }));

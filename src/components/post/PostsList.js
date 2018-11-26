@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Text, FlatList, RefreshControl, Keyboard } from 'react-native';
+import { View, Text, FlatList, RefreshControl, Keyboard, Button } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from './PostCard';
+import SortModal from './SortModal';
 
 class PostsList extends Component {
   state = {
-    canPaginate: false
+    canPaginate: false,
+    sortModalVisible: false,
+    sortButtonText: 'Newest'
   }
 
   viewProfile = id => {
@@ -25,6 +28,33 @@ class PostsList extends Component {
 
   handleScroll = () => Keyboard.dismiss()
 
+  // 'Newest', 'Popular'
+  handleChoiceSelect = choice => {
+    this.setState(prevState => ({
+      sortModalVisible: !prevState.sortModalVisible,
+      sortButtonText: choice || prevState.sortButtonText
+    }));
+    if (this.state.sortButtonText === choice) {
+      return;
+    }
+
+    let order = '';
+    let direction = '';
+    switch (choice) {
+      case 'Newest':
+        order = 'date_posted';
+        direction = 'DESC';
+        break;
+      case 'Popular':
+        order = 'num_likes';
+        direction = 'DESC';
+        break;
+      default:
+        return;
+    }
+    this.props.sortPosts(order, direction);
+  }
+
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.setState(() => ({
       canPaginate: contentHeight > this.props.height // Only allow pagination if content height is larger than FlatList height
@@ -39,16 +69,28 @@ class PostsList extends Component {
     }
   }
 
-  renderPosts = ({ item }) => (
-    <PostCard
-      userID={this.props.id}
-      post={item}
-      viewProfile={this.viewProfile}
-      viewPost={this.viewPost}
-      navigation={this.props.navigation}
-      parentNavigation={this.props.parentNavigation}
-    />
-  )
+  showSortModal = () => this.setState(prevState => ({ sortModalVisible: !prevState.sortModalVisible }))
+
+  renderPosts = ({ item, index }) => {
+    if (index === 0) {
+      return (
+        <Button
+          title={`Sort by: ${this.state.sortButtonText}`}
+          onPress={this.showSortModal}
+        />
+      );
+    }
+    return (
+      <PostCard
+        userID={this.props.id}
+        post={item}
+        viewProfile={this.viewProfile}
+        viewPost={this.viewPost}
+        navigation={this.props.navigation}
+        parentNavigation={this.props.parentNavigation}
+      />
+    );
+  }
 
   renderMessage = ({ item }) => (
     <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{item.text}</Text>
@@ -56,22 +98,33 @@ class PostsList extends Component {
 
   render() {
     return (
-      <FlatList
-        data={this.props.empty ? [{ id: 'foo', text: this.props.message }] : this.props.data}
-        renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
-        keyExtractor={post => post.id}
-        onScroll={this.props.handleScroll || this.handleScroll}
-        scrollEventThrottle={this.props.scrollEventThrottle || 16}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.refreshing}
-            onRefresh={this.props.handleRefresh}
-          />
-        }
-        onContentSizeChange={this.handleContentSizeChange}
-        onEndReached={this.handleEndReached}
-        onEndReachedThreshold={0}
-      />
+      <View style={{ flex: 1 }}>
+        <FlatList
+          data={
+            this.props.empty ?
+            [{ id: 'foo', text: this.props.message }] :
+            [{ id: 'foo' }, ...this.props.data]
+          }
+          renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
+          keyExtractor={post => post.id}
+          onScroll={this.props.handleScroll || this.handleScroll}
+          scrollEventThrottle={this.props.scrollEventThrottle || 16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.refreshing}
+              onRefresh={this.props.handleRefresh}
+            />
+          }
+          onContentSizeChange={this.handleContentSizeChange}
+          onEndReached={this.handleEndReached}
+          onEndReachedThreshold={0}
+        />
+        <SortModal
+          isVisible={this.state.sortModalVisible}
+          onChoiceSelect={this.handleChoiceSelect}
+          selected={this.state.sortButtonText}
+        />
+      </View>
     );
   }
 }
@@ -91,6 +144,7 @@ PostsList.propTypes = {
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
   message: PropTypes.string.isRequired,
+  sortPosts: PropTypes.func.isRequired, // 2 params - order (date_posted, num_likes), direction (DESC, DESC)
   handleScroll: PropTypes.func,
   scrollEventThrottle: PropTypes.number
 };

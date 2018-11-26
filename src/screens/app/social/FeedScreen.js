@@ -52,6 +52,8 @@ class FeedScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
+    order: 'date_posted',
+    direction: 'DESC',
     posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -110,19 +112,16 @@ class FeedScreen extends Component {
 
   componentDidMount() {
     if (this.props.current_route === 'feed') {
-      this.props.getUserFeed(this.props.id, 0, true, 'date_posted', 'DESC', moment().unix());
+      this.props.getUserFeed(this.props.id, 0, false, this.state.order, this.state.direction, moment().unix());
     }
   }
-
-  handleScroll = () => Keyboard.dismiss()
-  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, false, 'date_posted', 'DESC', moment().unix())
   paginateData = () => {
     this.props.getUserFeed(
       this.props.id,
       this.props.offset,
       null,
-      'date_posted',
-      'DESC',
+      this.state.order,
+      this.state.direction,
       parseInt(this.props.posts[0].date_posted, 10) // Ignore newer posts when paging
     );
   }
@@ -137,6 +136,13 @@ class FeedScreen extends Component {
       // Store search result in database - discover_searches
     }
     this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
+  }
+
+  handleScroll = () => Keyboard.dismiss()
+  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, true, this.state.order, this.state.direction, moment().unix())
+  handleSortPosts = (order, direction) => {
+    this.setState(() => ({ order, direction }));
+    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix());
   }
 
   handleSearchFocus = () => {
@@ -199,6 +205,7 @@ class FeedScreen extends Component {
         empty={this.props.posts.length === 0}
         message="Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed."
         height={this.state.height}
+        sortPosts={this.handleSortPosts}
         refreshing={this.props.loading}
         handleRefresh={this.handleRefresh}
         paginateData={this.paginateData}

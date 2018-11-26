@@ -17,21 +17,21 @@ export const stopFeedLoading = () => ({ type: STOP_FEED_LOADING });
 export const startInitialFeedLoading = () => ({ type: START_INITIAL_FEED_LOADING });
 export const stopInitialFeedLoading = () => ({ type: STOP_INITIAL_FEED_LOADING });
 
-export const getUserFeed = (id, offset, initialFetch, order, direction, latestDate) => dispatch => {
-  if (initialFetch === true) {
-    dispatch(startInitialFeedLoading());
-  } else if (initialFetch === false) {
+export const getUserFeed = (id, offset, refresh, order, direction, latestDate) => dispatch => {
+  if (refresh === true) {
     dispatch(startFeedLoading());
+  } else if (refresh === false) {
+    dispatch(startInitialFeedLoading());
   }
   // If initialFetch === null, then don't load (only when paging)
 
   // TODO: Change order and direction according to sort by action - instead of hardcoding
   axios.get(`${ROOT_URL}/api/feed/${id}?offset=${offset}&order=${order}&direction=${direction}&latest_date=${latestDate}`)
     .then(response => {
-      if (initialFetch === true) {
-        dispatch(stopInitialFeedLoading());
-      } else if (initialFetch === false) {
+      if (refresh === true) {
         dispatch(stopFeedLoading());
+      } else if (refresh === false) {
+        dispatch(stopInitialFeedLoading());
       }
       dispatch({
         type: GET_USER_FEED,
@@ -45,10 +45,10 @@ export const getUserFeed = (id, offset, initialFetch, order, direction, latestDa
       });
     })
     .catch(error => {
-      if (initialFetch === true) {
-        dispatch(stopInitialFeedLoading());
-      } else if (initialFetch === false) {
+      if (refresh === true) {
         dispatch(stopFeedLoading());
+      } else if (refresh === false) {
+        dispatch(stopInitialFeedLoading());
       }
       if (error.response) {
         handleError(error.response.data, false);

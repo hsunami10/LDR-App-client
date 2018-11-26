@@ -144,7 +144,7 @@ class ViewProfileScreen extends Component {
       return <FullScreenLoading height={this.state.height} loading />;
     }
     // TODO: Display actual information here
-    return <Text>{JSON.stringify(this.props.profiles[this.state.user_id][this.state.screen_id])}</Text>;
+    return this.renderContent();
   }
 
   renderHeaderTitle = () => {
@@ -156,6 +156,10 @@ class ViewProfileScreen extends Component {
     }
     return '';
   }
+
+  renderContent = () => (
+    <Text>{JSON.stringify(this.props.profiles[this.state.user_id][this.state.screen_id])}</Text>
+  )
 
   render() {
     return (
