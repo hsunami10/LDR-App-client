@@ -1,5 +1,6 @@
-- sorting feed
 - populate profile screen
+
+URGENT - figure out how to animate Text component?
 
 - FIGURE OUT HOW TO ANIMATE HEIGHT CHANGING TEXT INPUT
 - utilize none_msg in ScreenReducer

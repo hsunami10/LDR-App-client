@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
-import { MAX_POST_BODY_LINES } from '../../constants/variables';
+import { MAX_POST_BODY_LINES, VIEW_MORE_TEXT } from '../../constants/variables';
 
 // TODO: Check if number of lines exceeds MAX_POST_BODY_LINES to decide whether or not to show "more"
 // QUESTION: How to get line height?
@@ -31,7 +31,7 @@ class PostCardBody extends Component {
           </Text>
           {
             this.state.height > 80 ?
-            <Text onPress={this.handleMorePress} style={styles.moreTextStyle}>More</Text> :
+            <Text onPress={this.handleMorePress} style={styles.moreTextStyle}>{VIEW_MORE_TEXT}</Text> :
             null
           }
         </View>

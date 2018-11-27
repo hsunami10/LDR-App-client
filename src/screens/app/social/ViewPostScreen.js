@@ -42,11 +42,12 @@ class ViewPostScreen extends Component {
     return comments;
   }
 
-  viewProfile = id => {
+  viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id
+      id,
+      username
     });
   }
 

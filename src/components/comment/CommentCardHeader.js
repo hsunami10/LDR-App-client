@@ -11,13 +11,13 @@ const CommentCardHeader = ({ comment, viewProfile }) => (
       width={40}
       height={40}
       type="opacity"
-      onPress={() => viewProfile(comment.author_id)}
+      onPress={() => viewProfile(comment.author_id, comment.username)}
       image={comment.profile_pic ? `${ROOT_URL}/${comment.profile_pic}` : null}
     />
     <View style={styles.middleStyle}>
       <Text
         style={{ fontWeight: 'bold' }}
-        onPress={() => viewProfile(comment.author_id)}
+        onPress={() => viewProfile(comment.author_id, comment.username)}
       >
         {comment.username}
       </Text>

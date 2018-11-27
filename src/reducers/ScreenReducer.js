@@ -228,12 +228,20 @@ export default (state = INITIAL_STATE, action) => {
       if (userScreens3) {
         for (const screenID in userScreens3) {
           if (Object.prototype.hasOwnProperty.call(userScreens3, screenID)) {
+            // Handle user profile posts & interactions
             const posts = userScreens3[screenID].posts;
+            const interactions = userScreens3[screenID].interactions;
+
             const index = posts.order.indexOf(action.payload.postID);
+            const index2 = interactions.order.indexOf(action.payload.postID);
 
             if (index >= 0) {
               posts.order.splice(index, 1);
               posts.offset--;
+            }
+            if (index2 >= 0) {
+              interactions.order.splice(index2, 1);
+              interactions.offset--;
             }
           }
         }

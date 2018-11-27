@@ -21,6 +21,9 @@ import { removeUserScreenInfo } from '../../../actions/ScreenActions';
   - on mount, initial_loading
   - refreshing
 Other types are handled by subtabs
+
+// TODO: Figure out how to lazy load
+NOTE: ONE SCROLLVIEW - no need for nested ScrollView
  */
 class ViewProfileScreen extends Component {
   state = {
@@ -151,10 +154,8 @@ class ViewProfileScreen extends Component {
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
       return this.props.user.username;
-    } else if (this.props.profiles[this.state.user_id] && this.props.profiles[this.state.user_id][this.state.screen_id]) {
-      return this.props.profiles[this.state.user_id][this.state.screen_id].username;
     }
-    return '';
+    return this.props.navigation.getParam('username', '');
   }
 
   renderContent = () => (

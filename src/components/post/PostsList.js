@@ -13,11 +13,12 @@ class PostsList extends Component {
     sortButtonText: 'Newest'
   }
 
-  viewProfile = id => {
+  viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id
+      id,
+      username
     });
   }
 
@@ -105,11 +106,14 @@ class PostsList extends Component {
             [{ id: 'foo', text: this.props.message }] :
             [{ id: 'foo' }, ...this.props.data]
           }
+          scrollEnabled={this.props.disableScrolling}
           renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
           keyExtractor={post => post.id}
           onScroll={this.props.handleScroll || this.handleScroll}
           scrollEventThrottle={this.props.scrollEventThrottle || 16}
           refreshControl={
+            this.props.disableRefresh ?
+            null :
             <RefreshControl
               refreshing={this.props.refreshing}
               onRefresh={this.props.handleRefresh}
@@ -137,8 +141,8 @@ PostsList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
   empty: PropTypes.bool.isRequired,
   height: PropTypes.number.isRequired,
-  refreshing: PropTypes.bool.isRequired,
-  handleRefresh: PropTypes.func.isRequired,
+  refreshing: PropTypes.bool,
+  handleRefresh: PropTypes.func,
   paginateData: PropTypes.func.isRequired,
   keepPaging: PropTypes.bool.isRequired, // False only when there is no more data to retrieve
   navigation: PropTypes.object.isRequired,
@@ -146,7 +150,9 @@ PostsList.propTypes = {
   message: PropTypes.string.isRequired,
   sortPosts: PropTypes.func.isRequired, // 2 params - order (date_posted, num_likes), direction (DESC, DESC)
   handleScroll: PropTypes.func,
-  scrollEventThrottle: PropTypes.number
+  scrollEventThrottle: PropTypes.number,
+  disableRefresh: PropTypes.bool,
+  disableScrolling: PropTypes.bool
 };
 
 const mapStateToProps = state => ({

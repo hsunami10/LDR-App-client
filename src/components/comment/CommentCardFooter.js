@@ -36,7 +36,7 @@ class CommentCardFooter extends Component {
         console.log('edit comment body');
         break;
       case 1:
-        this.props.deleteComment(this.props.comment.post_id, this.props.comment.id);
+        this.props.deleteComment(this.props.id, this.props.comment.post_id, this.props.comment.id);
         break;
       default:
         return;

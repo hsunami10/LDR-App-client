@@ -43,9 +43,9 @@ export const getComments = (userID, postID, screenID, paging, offset, latestDate
     });
 };
 
-export const deleteComment = (postID, commentID) => dispatch => {
+export const deleteComment = (userID, postID, commentID) => dispatch => {
   dispatch(startLoading());
-  axios.delete(`${ROOT_URL}/api/comments/${commentID}`)
+  axios.delete(`${ROOT_URL}/api/comments/${commentID}?user_id=${userID}&post_id=${postID}`)
     .then(() => {
       dispatch(stopLoading());
       dispatch({

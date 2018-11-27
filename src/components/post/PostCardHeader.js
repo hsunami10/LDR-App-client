@@ -11,13 +11,13 @@ const PostCardHeader = ({ post, viewProfile, userID }) => (
       width={40}
       height={40}
       type="opacity"
-      onPress={() => viewProfile(post.author_id)}
+      onPress={() => viewProfile(post.author_id, post.username)}
       image={post.profile_pic ? `${ROOT_URL}/${post.profile_pic}` : null}
     />
     <View style={styles.middleStyle}>
       <Text
         style={{ fontWeight: 'bold' }}
-        onPress={() => viewProfile(post.author_id)}
+        onPress={() => viewProfile(post.author_id, post.username)}
       >
         {post.username}
       </Text>

@@ -24,6 +24,7 @@ export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 };
 
 // TODO: Send report to development team
+// TODO: Add filename and line number and custom error messages for all
 export const handleError = (error, fatal) => {
   console.log(error);
   getConnectionInfo()

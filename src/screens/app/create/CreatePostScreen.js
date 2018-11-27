@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Dimensions, Animated, Keyboard } from 'react-native';
 import { Button, MultiLineInput } from '../../../components/common';
-import { errorTextStyle } from '../../../constants/styles/text';
+import textStyles from '../../../constants/styles/text';
 import { choosePostTopic } from '../../../actions/TopicActions';
 
 // TODO: Location
@@ -36,7 +36,7 @@ class CreatePostScreen extends Component {
             width={Dimensions.get('window').width - 40}
             height={200}
           />
-          <Text style={errorTextStyle}>{this.props.error.msg}</Text>
+          <Text style={textStyles.errorTextStyle}>{this.props.error.msg}</Text>
         </View>
       </Animated.ScrollView>
     );

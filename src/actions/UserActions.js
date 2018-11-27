@@ -4,9 +4,7 @@ import {
   STORE_USER_INFO
 } from './types';
 import { ROOT_URL } from '../constants/variables';
-import { stopLoading, startLoading } from './LoadingActions';
 import { removeCredentials, logOutUser } from './AuthActions';
-import { navigateToRoute } from './NavigationActions';
 import {
   storeUserScreenInfo,
   startUserScreenRefreshing,
@@ -55,7 +53,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
             .then(() => {
               Alert.alert(
                 'Oh no!',
-                'Your account does not exist. If this persists, please contact the development team.',
+                'Your account does not exist or has been deleted. If this persists, please contact the development team.',
                 [{
                   text: 'OK',
                   onPress: () => {

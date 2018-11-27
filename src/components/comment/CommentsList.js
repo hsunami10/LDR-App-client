@@ -6,11 +6,12 @@ import { pushTabRoute } from '../../actions/NavigationActions';
 import CommentCard from './CommentCard';
 
 class CommentsList extends Component {
-  viewProfile = id => {
+  viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', {
       type: 'public',
-      id
+      id,
+      username
     });
   }
 

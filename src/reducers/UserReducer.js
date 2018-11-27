@@ -11,7 +11,6 @@ import {
 const INITIAL_STATE = {
   id: '',
   coordinates: null,
-  partner: null,
   initial_loading: false,
   loading: false
 };

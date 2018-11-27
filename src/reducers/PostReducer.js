@@ -23,8 +23,15 @@ export default (state = INITIAL_STATE, action) => {
     case STORE_USER_SCREEN_INFO: // Called on every fetch user profile
       return {
         ...state,
-        post_likes: { ...state.post_likes, ...action.payload.user.posts.post_likes },
-        all_posts: { ...state.all_posts, ...action.payload.user.posts.data }
+        post_likes: {
+          ...state.post_likes,
+          ...action.payload.user.posts.post_likes
+        },
+        all_posts: {
+          ...state.all_posts,
+          ...action.payload.user.posts.data,
+          ...action.payload.user.interactions.data
+        }
       };
     case GET_USER_FEED:
       return {
