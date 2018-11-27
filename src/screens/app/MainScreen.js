@@ -8,7 +8,7 @@ import { navigateToRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
 import { checkPermission } from '../../assets/helpers';
 import { FullScreenLoading } from '../../components/common';
-import FeedStack from '../../navigation/FeedStack';
+import HomeStack from '../../navigation/HomeStack';
 import DiscoverStack from '../../navigation/DiscoverStack';
 import NotificationStack from '../../navigation/NotificationStack';
 import ProfileStack from '../../navigation/ProfileStack';
@@ -20,7 +20,7 @@ class MainScreen extends Component {
       index: 0, // NOTE: If this default index changes, change the "key" in AuthLoadingScreen, replaceCurrentRoute, where it handles android back press events
       // NOTE: If changed, make sure to update AuthLoadingScreen.js in componentDidMount and this componentDidUpdate
       routes: [
-        { key: 'feed', title: 'Feed' },
+        { key: 'home', title: 'Home' },
         { key: 'discover', title: 'Discover' },
         { key: 'compose', title: 'Compose' },
         { key: 'notifications', title: 'Notifications' },
@@ -112,15 +112,15 @@ class MainScreen extends Component {
   3 cases to handle for each tab press:
     - if previous tab and current tab are different, then don't do anything - default switch tabs action
     - else if tab and current route are the same, then scroll up
-    - else if tab and current route are different, then pop to top of the nested stack navigator (FeedStack, DiscoverStack, NotificationStack, ProfileStack)
+    - else if tab and current route are different, then pop to top of the nested stack navigator (HomeStack, DiscoverStack, NotificationStack, ProfileStack)
    */
   handleTabPress = ({ route }) => {
     switch (route.key) {
-      case 'feed':
-        if (this.props.current_route === 'feed') {
-          console.log('scroll up feed');
-        } else if (this.props.current_tab === 'feed') {
-          console.log('navigate to the top of the feed stack');
+      case 'home':
+        if (this.props.current_route === 'home') {
+          console.log('scroll up home');
+        } else if (this.props.current_tab === 'home') {
+          console.log('navigate to the top of the home stack');
         }
         break;
       case 'discover':
@@ -165,8 +165,8 @@ class MainScreen extends Component {
   // screenProps - allow to use parent navigation - this.props.screenProps
   renderScene = ({ route }) => {
     switch (route.key) {
-      case 'feed':
-        return <FeedStack screenProps={{ parentNavigation: this.props.navigation }} />;
+      case 'home':
+        return <HomeStack screenProps={{ parentNavigation: this.props.navigation }} />;
       case 'discover':
         if (this.state.mounted.discover) {
           return <DiscoverStack screenProps={{ parentNavigation: this.props.navigation }} />;

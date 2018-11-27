@@ -100,7 +100,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
         storeCredentials(response.data.id)
           .then(id => {
             dispatch(setUserCredentials(id, true));
-            dispatch(pushTabRoute('feed', null));
+            dispatch(pushTabRoute('home', null));
             setActive(id, true);
             navigation.navigate('App');
             resetEverything();

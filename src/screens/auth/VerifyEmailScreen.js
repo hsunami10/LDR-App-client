@@ -26,7 +26,7 @@ class VerifyEmailScreen extends Component {
   }
 
   handleRightPress = () => {
-    this.props.pushTabRoute('feed', null);
+    this.props.pushTabRoute('home', null);
     this.props.navigation.navigate('App');
     this.resetEverything();
   }

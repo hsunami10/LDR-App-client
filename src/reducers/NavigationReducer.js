@@ -26,7 +26,7 @@ const INITIAL_STATE = {
   current_tab: '',
   past_route: '',
   tab_routes: { // For handling tab presses
-    feed: {
+    home: {
       index: 0,
       routes: []
     },

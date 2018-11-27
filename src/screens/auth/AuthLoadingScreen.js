@@ -62,7 +62,7 @@ class AuthLoadingScreen extends Component {
          */
         if (
           this.props.current_route === 'Welcome' ||
-          ((this.props.current_route === 'feed' && this.props.current_tab === this.props.current_route))
+          ((this.props.current_route === 'home' && this.props.current_tab === this.props.current_route))
         ) {
           this.props.logOutUser(); // Reset app state
           // if (this.props.current_route === 'Welcome') {
@@ -102,7 +102,7 @@ class AuthLoadingScreen extends Component {
         const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
         if (credentials) {
           this.props.setUserCredentials(credentials.username, credentials.password === 'true');
-          this.props.pushTabRoute('feed', null);
+          this.props.pushTabRoute('home', null);
           setActive(credentials.username, true);
           this.props.navigation.navigate('App');
         } else {

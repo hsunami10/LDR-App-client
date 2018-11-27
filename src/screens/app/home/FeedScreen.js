@@ -111,7 +111,7 @@ class FeedScreen extends Component {
   }
 
   componentDidMount() {
-    if (this.props.current_route === 'feed') {
+    if (this.props.current_route === 'home') {
       this.props.getUserFeed(this.props.id, 0, false, this.state.order, this.state.direction, moment().unix());
     }
   }
