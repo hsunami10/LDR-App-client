@@ -9,7 +9,6 @@ import shortid from 'shortid';
 import {
   StandardHeader,
   ClickableImage,
-  MultiLineInput,
   DismissKeyboard,
   FullScreenLoading
 } from '../../components/common';
@@ -19,7 +18,11 @@ import { createProfile } from '../../actions/AuthActions';
 // BUG: Cannot change crop rect dimension with ImagePicker
 
 class CreateProfileScreen extends Component {
-  state = { bio: '', loading: false, image: null }
+  state = {
+    code: '',
+    loading: false,
+    image: null
+  }
 
   componentWillUnmount() {
     this.resetEverything();
@@ -43,8 +46,8 @@ class CreateProfileScreen extends Component {
     }
   }
 
-  resetEverything = () => this.setState(() => ({ bio: '', loading: false, image: null }))
-  handleChangeText = bio => this.setState(() => ({ bio }))
+  resetEverything = () => this.setState(() => ({ loading: false, image: null }))
+  handleChangeText = code => this.setState(() => ({ code }))
   showActionSheet = () => this.ActionSheet.show()
   ref = o => (this.ActionSheet = o)
 
@@ -53,7 +56,7 @@ class CreateProfileScreen extends Component {
     this.props.createProfile(
       {
         id: this.props.id,
-        bio: this.state.bio,
+        code: this.state.code,
         clientImage: this.state.image || null
       },
       this.props.navigation,
@@ -148,16 +151,9 @@ class CreateProfileScreen extends Component {
               type="none"
               image={this.state.image}
             />
-            <MultiLineInput
-              multiline
-              numberOfLines={4}
-              placeholder="Bio (optional)"
-              onChangeText={this.handleChangeText}
-              value={this.state.bio}
-              width={Dimensions.get('window').width - 20}
-              height={Dimensions.get('window').width - 250}
-              containerStyle={{ marginTop: 10 }}
-            />
+            {/*
+              TODO: Input to enter partner's code - to register as partners
+            */}
           </View>
           <ActionSheet
             ref={this.ref}

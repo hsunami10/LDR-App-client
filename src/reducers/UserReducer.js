@@ -12,7 +12,8 @@ const INITIAL_STATE = {
   id: '',
   coordinates: null,
   initial_loading: false,
-  loading: false
+  loading: false,
+  partner: null
 };
 
 export default (state = INITIAL_STATE, action) => {

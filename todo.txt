@@ -1,3 +1,4 @@
+- finish entering partner code on CreateProfileScreen
 - finish 3 tab screens for home screen - Feed, Friends, Topics
 
 URGENT - figure out how to animate Text component height?
