@@ -104,7 +104,8 @@ class AuthLoadingScreen extends Component {
           this.props.setUserCredentials(credentials.username, credentials.password === 'true');
           this.props.pushTabRoute('home', null);
           setActive(credentials.username, true);
-          this.props.navigation.navigate('App');
+          this.props.navigation.navigate('CreateProfile'); // TODO: Remove this later - efficient testing only
+          // this.props.navigation.navigate('App');
         } else {
           this.props.navigateToRoute('Welcome');
           this.props.navigation.navigate('Auth');

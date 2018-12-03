@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
 import {
-  STORE_USER_INFO
+  STORE_USER_INFO,
+  RESET_USER_ERRORS,
+  REMOVE_PARTNER_RESULT
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { removeCredentials, logOutUser } from './AuthActions';
@@ -13,6 +15,16 @@ import {
   stopInitialUserLoading,
 } from './ScreenActions';
 import { handleError } from '../assets/helpers';
+
+export const findPartnerCode = code => dispatch => {
+  console.log('TODO: Start loading, call api endpoint, check to see if code is in partners table.\nStop loading.\nIf it is, set partner_result to that. If not, set partner_result to null.');
+};
+
+export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
+
+export const acceptResult = (userID, partnerID) => dispatch => {
+  console.log('accept - add to user2_id, remove any entries where userID = user1_id');
+};
 
 /*
 Get public or private user information
@@ -115,3 +127,5 @@ export const storeUserInfo = user => ({
   type: STORE_USER_INFO,
   payload: user
 });
+
+export const resetUserErrors = () => ({ type: RESET_USER_ERRORS });

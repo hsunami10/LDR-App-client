@@ -10,11 +10,14 @@ import NoImage from '../../assets/images/no_image.jpg';
 
 export const ClickableImage = ({ width, height, onPress, image, type, style }) => {
   let source;
+  console.log(typeof image);
   if (!image) {
     source = NoImage;
   } else if (typeof image === 'string') {
     source = { uri: image };
   } else if (typeof image === 'object') {
+    source = image;
+  } else if (typeof image === 'number') {
     source = image;
   }
 
@@ -55,7 +58,8 @@ ClickableImage.propTypes = {
   onPress: PropTypes.func.isRequired,
   image: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.object
+    PropTypes.object,
+    PropTypes.number
   ]),
   type: PropTypes.oneOf(['opacity', 'highlight', 'none']).isRequired,
   style: PropTypes.object

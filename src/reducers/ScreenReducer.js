@@ -26,16 +26,23 @@ import {
 
 const INITIAL_STATE = {
     profiles: { // user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
-        none_msg: 'This account does not exist or has been deleted.'
+      none_msg: 'This account does not exist or has been deleted.'
     },
     // TODO: ViewPostScreen loading properties and comment properties (offset, orderArray, etc.)
     posts: { // post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
-        none_msg: 'This post has been deleted.'
+      none_msg: 'This post has been deleted.'
     },
     topics: { // topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
-        none_msg: 'This topic does not exist or has been deleted.'
+      none_msg: 'This topic does not exist or has been deleted.'
     },
-    partners: {}
+    partners: { // NOTE: Screens for - editing columns in partners table
+      // NOTE: Have these for each partners screen
+      // One for generating a code (for someone else to enter the code)
+      // Another for entering the code
+      get_code_loading: false,
+      find_partner_loading: false,
+      partner_error_msg: 'No Partner Found.' // NOTE: Make sure it's the same as UserReducer
+    }
 };
 
 export default (state = INITIAL_STATE, action) => {

@@ -3,6 +3,8 @@ export const LOG_OUT_USER = 'log_out_user';
 
 // User
 export const STORE_USER_INFO = 'store_user_info';
+export const RESET_USER_ERRORS = 'reset_user_errors';
+export const REMOVE_PARTNER_RESULT = 'remove_partner_result';
 
 // Authentication
 export const SET_USER_CREDENTIALS = 'set_user_credentials';

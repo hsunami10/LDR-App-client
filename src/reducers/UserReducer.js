@@ -4,7 +4,9 @@ import {
   START_USER_SCREEN_REFRESHING, // TODO: Remove all of these later
   STOP_USER_SCREEN_REFRESHING,
   START_INITIAL_USER_SCREEN_LOADING,
-  STOP_INITIAL_USER_SCREEN_LOADING
+  STOP_INITIAL_USER_SCREEN_LOADING,
+  RESET_USER_ERRORS,
+  REMOVE_PARTNER_RESULT
 } from '../actions/types';
 
 // TODO: Add default values for subscribers && friends later
@@ -13,13 +15,19 @@ const INITIAL_STATE = {
   coordinates: null,
   initial_loading: false,
   loading: false,
-  partner: null
+  partner_result: null, // Basic info on user when searching up a partner code
+  partner_error_msg: 'No Partner Found.', // NOTE: Make sure it's the same as ScreenReducer
+  find_partner_loading: false
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOG_OUT_USER:
       return INITIAL_STATE;
+    case RESET_USER_ERRORS:
+      return { ...state, partner_error_msg: ' ' };
+    case REMOVE_PARTNER_RESULT:
+      return { ...state, partner_result: null };
 
     // Loading action types for refreshing your own profile page
     case START_USER_SCREEN_REFRESHING:
