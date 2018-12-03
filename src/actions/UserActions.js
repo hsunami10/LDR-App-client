@@ -3,7 +3,11 @@ import { Alert } from 'react-native';
 import {
   STORE_USER_INFO,
   RESET_USER_ERRORS,
-  REMOVE_PARTNER_RESULT
+  STORE_PARTNER_RESULT,
+  REMOVE_PARTNER_RESULT,
+  ACCEPT_PARTNER_RESULT,
+  START_FIND_PARTNER_LOADING,
+  STOP_FIND_PARTNER_LOADING,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { removeCredentials, logOutUser } from './AuthActions';
@@ -16,14 +20,59 @@ import {
 } from './ScreenActions';
 import { handleError } from '../assets/helpers';
 
-export const findPartnerCode = code => dispatch => {
-  console.log('TODO: Start loading, call api endpoint, check to see if code is in partners table.\nStop loading.\nIf it is, set partner_result to that. If not, set partner_result to null.');
+// If screenID is null, then only change state in UserReducer
+// If screenID is NOT null, then only change state in ScreenReducer
+export const startFindPartnerLoading = screenID => ({
+  type: START_FIND_PARTNER_LOADING,
+  payload: screenID
+});
+export const stopFindPartnerLoading = screenID => ({
+  type: STOP_FIND_PARTNER_LOADING,
+  payload: screenID
+});
+
+export const findPartnerCode = (code, screenID = null) => dispatch => {
+  dispatch(startFindPartnerLoading(screenID));
+  axios.get(`${ROOT_URL}/api/partner/find-code/${code}`)
+    .then(response => {
+      dispatch(stopFindPartnerLoading(screenID));
+      dispatch({
+        type: STORE_PARTNER_RESULT,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
 };
 
 export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
 
-export const acceptResult = (userID, partnerID) => dispatch => {
+export const acceptResult = (userID, partnerID, screenID = null) => dispatch => {
   console.log('accept - add to user2_id, remove any entries where userID = user1_id');
+
+  dispatch(startFindPartnerLoading(screenID));
+  axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
+    .then(response => {
+      dispatch(stopFindPartnerLoading(screenID));
+      dispatch({
+        type: ACCEPT_PARTNER_RESULT,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
 };
 
 /*

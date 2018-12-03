@@ -9,7 +9,7 @@ import GreenV from '../../assets/images/green_check.png';
 
 // NOTE: Only for entering in codes
 // profile_pic, username, date_joined, check and x for accept / reject
-const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
+const PartnerCard = ({ user, loading, message, cancelResult, acceptResult }) => {
   if (loading) {
     return (
       <View style={styles.viewStyle}>
@@ -62,7 +62,7 @@ const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
            </View>
          </View>
        ) :
-       <Text>No Partner Found</Text>
+       <Text>{message}</Text>
      }
    </View>
  );
@@ -71,6 +71,7 @@ const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
 PartnerCard.propTypes = {
   user: PropTypes.object,
   loading: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
   cancelResult: PropTypes.func.isRequired,
   acceptResult: PropTypes.func.isRequired
 };
@@ -92,9 +93,11 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   textViewStyle: {
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    margin: 10
+    marginLeft: 10,
+    marginRight: 10
   },
   actionStyle: {
     flexDirection: 'row',

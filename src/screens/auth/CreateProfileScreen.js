@@ -52,6 +52,7 @@ class CreateProfileScreen extends Component {
     }
   }
 
+  submitCode = () => this.props.findPartnerCode(this.state.code)
   acceptResult = () => this.props.acceptResult(this.props.id, this.props.partner_result.id)
   cancelResult = () => this.props.removePartnerResult()
   resetEverything = () => this.setState(() => ({ loading: false, image: null }))
@@ -139,12 +140,6 @@ class CreateProfileScreen extends Component {
     });
   }
 
-  submitCode = () => {
-    if (this.state.code.trim() !== '') {
-      this.props.findPartnerCode(this.state.code, 'auth');
-    }
-  }
-
   render() {
     return (
       <DismissKeyboard>
@@ -167,20 +162,21 @@ class CreateProfileScreen extends Component {
             />
             <Text>Have a partner?</Text>
             <Input
-              placeholder="Enter code here"
+              placeholder="Enter the code here"
               value={this.state.code}
               onChangeText={this.handleChangeText}
             />
             <PartnerCard
               user={this.props.partner_result}
               loading={this.props.find_partner_loading}
+              message={this.props.partner_error_msg}
               cancelResult={this.cancelResult}
               acceptResult={this.acceptResult}
             />
             <Button
               title="Find Partner"
               onPress={this.submitCode}
-              disabled={this.props.find_partner_loading}
+              disabled={this.props.find_partner_loading || this.state.code.trim() === ''}
             />
           </View>
           <ActionSheet
@@ -207,10 +203,10 @@ CreateProfileScreen.propTypes = {
   loading: PropTypes.bool.isRequired,
   partner_error_msg: PropTypes.string.isRequired,
   findPartnerCode: PropTypes.func.isRequired,
-  partner_result: PropTypes.object,
   find_partner_loading: PropTypes.bool.isRequired,
   removePartnerResult: PropTypes.func.isRequired,
-  acceptResult: PropTypes.func.isRequired
+  acceptResult: PropTypes.func.isRequired,
+  partner_result: PropTypes.object,
 };
 
 const styles = StyleSheet.create({

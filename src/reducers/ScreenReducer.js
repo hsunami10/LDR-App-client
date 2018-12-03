@@ -1,22 +1,28 @@
 import {
-    LOG_OUT_USER,
-    STORE_USER_SCREEN_INFO,
-    REMOVE_USER_SCREEN_INFO,
-    REMOVE_POST_SCREEN_INFO,
-    CREATE_POST,
-    DELETE_POST,
-    DELETE_COMMENT,
-    START_INITIAL_USER_SCREEN_LOADING,
-    STOP_INITIAL_USER_SCREEN_LOADING,
-    START_USER_SCREEN_REFRESHING,
-    STOP_USER_SCREEN_REFRESHING,
-    START_POST_SCREEN_REFRESHING,
-    STOP_POST_SCREEN_REFRESHING,
-    STORE_COMMENTS_SCREEN_INFO,
-    START_INITIAL_COMMENTS_LOADING,
-    STOP_INITIAL_COMMENTS_LOADING,
-    START_COMMENTS_PAGE_LOADING,
-    STOP_COMMENTS_PAGE_LOADING,
+  LOG_OUT_USER,
+  STORE_USER_SCREEN_INFO,
+  REMOVE_USER_SCREEN_INFO,
+  REMOVE_POST_SCREEN_INFO,
+  CREATE_POST,
+  DELETE_POST,
+  DELETE_COMMENT,
+  START_INITIAL_USER_SCREEN_LOADING,
+  STOP_INITIAL_USER_SCREEN_LOADING,
+  START_USER_SCREEN_REFRESHING,
+  STOP_USER_SCREEN_REFRESHING,
+  START_POST_SCREEN_REFRESHING,
+  STOP_POST_SCREEN_REFRESHING,
+  STORE_COMMENTS_SCREEN_INFO,
+  START_INITIAL_COMMENTS_LOADING,
+  STOP_INITIAL_COMMENTS_LOADING,
+  START_COMMENTS_PAGE_LOADING,
+  STOP_COMMENTS_PAGE_LOADING,
+
+  ACCEPT_PARTNER_RESULT,
+  STORE_PARTNER_RESULT,
+  REMOVE_PARTNER_RESULT,
+  START_FIND_PARTNER_LOADING,
+  STOP_FIND_PARTNER_LOADING,
 } from '../actions/types';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
@@ -25,52 +31,65 @@ import {
 // ex. Loading - different screens have their own loading indicators
 
 const INITIAL_STATE = {
-    profiles: { // user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
-      none_msg: 'This account does not exist or has been deleted.'
-    },
-    // TODO: ViewPostScreen loading properties and comment properties (offset, orderArray, etc.)
-    posts: { // post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
-      none_msg: 'This post has been deleted.'
-    },
-    topics: { // topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
-      none_msg: 'This topic does not exist or has been deleted.'
-    },
-    partners: { // NOTE: Screens for - editing columns in partners table
-      // NOTE: Have these for each partners screen
-      // One for generating a code (for someone else to enter the code)
-      // Another for entering the code
-      get_code_loading: false,
-      find_partner_loading: false,
-      partner_error_msg: 'No Partner Found.' // NOTE: Make sure it's the same as UserReducer
-    }
+  profiles: { // user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
+    none_msg: 'This account does not exist or has been deleted.'
+  },
+  // TODO: ViewPostScreen loading properties and comment properties (offset, orderArray, etc.)
+  posts: { // post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
+    none_msg: 'This post has been deleted.'
+  },
+  topics: { // topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
+    none_msg: 'This topic does not exist or has been deleted.'
+  },
+  partners: { // NOTE: Screens for - editing columns in partners table
+    // NOTE: Have these for each partners screen
+    // One for generating a code (for someone else to enter the code)
+    // Another for entering the code
+    generate_code_loading: false,
+    find_partner_loading: false,
+    partner_error_msg: 'No Partner Found.' // NOTE: Make sure it's the same as UserReducer
+  }
 };
 
 export default (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case LOG_OUT_USER:
-            return INITIAL_STATE;
+  switch (action.type) {
+    case LOG_OUT_USER:
+      return INITIAL_STATE;
 
-        case STORE_COMMENTS_SCREEN_INFO:
-            const copyPosts = { ...state.posts };
-            copyPosts[action.payload.postID] = {
-                ...copyPosts[action.payload.postID],
-                [action.payload.screenID]: {
-                    ...copyPosts[action.payload.postID][action.payload.screenID],
-                    offset: action.payload.data.offset,
-                    order: (
-                        action.payload.replace ?
-                        action.payload.data.order : [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order]
-                    ),
-                    keepPaging: ( // If keepPaging is false, never change it - only change if keepPaging is true - default
-                        copyPosts[action.payload.postID][action.payload.screenID].keepPaging ?
-                        action.payload.keepPaging :
-                        false
-                    )
-                }
-            };
-            return { ...state, posts: copyPosts };
-            // NOTE: This runs first out of all of the actions related to ViewPostScreen
-            // So treat it as initialization (initial state)
+    case START_FIND_PARTNER_LOADING:
+      if (action.payload) {
+        // TODO: Finish this
+        console.log('return and change screen state here');
+      }
+      return state;
+    case STOP_FIND_PARTNER_LOADING:
+      // TODO: Finish this
+      if (action.payload) {
+        console.log('return and change screen state here');
+      }
+      return state;
+
+    case STORE_COMMENTS_SCREEN_INFO:
+      const copyPosts = { ...state.posts };
+      copyPosts[action.payload.postID] = {
+        ...copyPosts[action.payload.postID],
+        [action.payload.screenID]: {
+          ...copyPosts[action.payload.postID][action.payload.screenID],
+          offset: action.payload.data.offset,
+          order: (
+            action.payload.replace ?
+            action.payload.data.order : [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order]
+          ),
+          keepPaging: ( // If keepPaging is false, never change it - only change if keepPaging is true - default
+            copyPosts[action.payload.postID][action.payload.screenID].keepPaging ?
+            action.payload.keepPaging :
+            false
+          )
+        }
+      };
+      return { ...state, posts: copyPosts };
+      // NOTE: This runs first out of all of the actions related to ViewPostScreen
+      // So treat it as initialization (initial state)
         case START_INITIAL_COMMENTS_LOADING:
             const copyPosts2 = { ...state.posts };
             copyPosts2[action.payload.postID] = {
@@ -106,7 +125,7 @@ export default (state = INITIAL_STATE, action) => {
             };
             return { ...state, posts: copyPosts4 };
         case STOP_COMMENTS_PAGE_LOADING:
-            const copyPosts5 = {...state.posts };
+            const copyPosts5 = { ...state.posts };
             copyPosts5[action.payload.postID] = {
                 ...copyPosts5[action.payload.postID],
                 [action.payload.screenID]: {
