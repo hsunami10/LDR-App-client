@@ -15,7 +15,12 @@ const INITIAL_STATE = {
   coordinates: null,
   initial_loading: false,
   loading: false,
-  partner_result: null, // Basic info on user when searching up a partner code
+  partner_result: { // TODO: Change default to null - testing purposes only
+    id: '0aa1e4d0-d006-4a0c-9e3e-3fa04c8080c1',
+    username: 'asdf',
+    profile_pic: 'images/profiles/0aa1e4d0-d006-4a0c-9e3e-3fa04c8080c1.JPG',
+    date_joined: '1542516387'
+  }, // Basic info on user when searching up a partner code
   partner_error_msg: 'No Partner Found.', // NOTE: Make sure it's the same as ScreenReducer
   find_partner_loading: false
 };

@@ -7,13 +7,6 @@ import { ClickableImage, FullScreenLoading } from '../../components/common';
 import RedX from '../../assets/images/red_x.png';
 import GreenV from '../../assets/images/green_check.png';
 
-const fakeUser = {
-  id: '0aa1e4d0-d006-4a0c-9e3e-3fa04c8080c1',
-  username: 'asdf',
-  profile_pic: 'images/profiles/0aa1e4d0-d006-4a0c-9e3e-3fa04c8080c1.JPG',
-  date_joined: 1542516387
-};
-
 // NOTE: Only for entering in codes
 // profile_pic, username, date_joined, check and x for accept / reject
 const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
@@ -27,7 +20,7 @@ const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
   return (
    <View style={styles.viewStyle}>
      {
-       fakeUser ?
+       user ?
        (
          <View style={styles.cardContainerStyle}>
            <ClickableImage
@@ -35,7 +28,7 @@ const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
              height={40}
              type="none"
              onPress={() => null}
-             image={fakeUser.profile_pic ? `${ROOT_URL}/${fakeUser.profile_pic}` : null}
+             image={user.profile_pic ? `${ROOT_URL}/${user.profile_pic}` : null}
            />
 
            <View style={styles.textViewStyle}>
@@ -43,12 +36,12 @@ const PartnerCard = ({ user, loading, cancelResult, acceptResult }) => {
                style={{ fontWeight: 'bold' }}
                suppressHighlighting
              >
-               {fakeUser.username}
+               {user.username}
              </Text>
              <Text
                style={{ fontSize: 12 }}
                suppressHighlighting
-             >{`Joined ${moment.unix(fakeUser.date_joined).format('MM/DD/YYYY')}`}</Text>
+             >{`Joined ${moment.unix(user.date_joined).format('MM/DD/YYYY')}`}</Text>
            </View>
 
            <View style={styles.actionStyle}>
@@ -87,14 +80,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width,
-    height: 60,
-    backgroundColor: 'lightgray'
+    height: 60
   },
   cardContainerStyle: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
+    borderColor: 'black',
+    borderWidth: 1
   },
   textViewStyle: {
     justifyContent: 'center',
