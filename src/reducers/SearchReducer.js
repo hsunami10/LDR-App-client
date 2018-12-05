@@ -3,7 +3,7 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  feed: {},
+  home: {},
   discover: {}
 };
 

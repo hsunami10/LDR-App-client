@@ -91,8 +91,8 @@ class MainScreen extends Component {
 
   handleIndexChange = index => {
     // Don't change scenes if compose tab is clicked
-    if (index !== 2 && index !== this.state.index) {
-      this.setState((prevState) => {
+    if (index !== 2 && index !== this.state.navigationState.index) {
+      this.setState(prevState => {
         this.props.pushTabRoute(prevState.navigationState.routes[index].key, null);
         return {
           navigationState: { ...prevState.navigationState, index }
