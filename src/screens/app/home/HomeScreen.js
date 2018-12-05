@@ -8,6 +8,10 @@ import FeedScreen from './FeedScreen';
 // TODO: Add TabView and TabBar
 // QUESTION: How to stick tab bar to top of screen when scrolling up?
 class HomeScreen extends Component {
+  state = {
+    
+  }
+
   render() {
     return (
       <FeedScreen

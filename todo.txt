@@ -1,5 +1,3 @@
-- finish entering partner code on CreateProfileScreen
-  - for queries with partners, handle partners.user2_id = ''
 - finish 3 tab screens for home screen - Feed, Friends, Topics
 
 URGENT - figure out how to animate Text component height?
