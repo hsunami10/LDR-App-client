@@ -4,6 +4,20 @@ import RNRestart from 'react-native-restart';
 import Permissions from 'react-native-permissions';
 import { removeCredentials } from '../../actions/AuthActions';
 
+// PropTypes custom error handlers
+export const propTypesMissingError = (props, propName, componentName) => `The prop \`${propName}\` is marked as required in \`${componentName}\`, but it's value is \`${props[propName]}\``;
+export const propTypesTypeError = (props, propName, componentName, type) => `Invalid prop \`${propName}\` of type \`${typeof props[propName]}\` supplied to \`${componentName}\`, expected \`${type}\``;
+
+export const userCardPropTypesError = (typeArr, props, propName, componentName, expectedType) => {
+  for (let i = 0, len = typeArr.length; i < len; i++) {
+    if (props.type === typeArr[i] && props[propName] === undefined) {
+      return new Error(propTypesMissingError(props, propName, componentName));
+    } else if (props.type === typeArr[i] && typeof props[propName] !== expectedType) {
+      return new Error(propTypesTypeError(props, propName, componentName, expectedType));
+    }
+  }
+};
+
 export const isDiffObj = (o1, o2) => {
   if (Object.keys(o1).length !== Object.keys(o2).length) {
     return true;

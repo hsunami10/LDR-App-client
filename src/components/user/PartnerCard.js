@@ -93,7 +93,6 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   textViewStyle: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
     marginLeft: 10,
