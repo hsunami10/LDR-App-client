@@ -188,7 +188,6 @@ ViewPostScreen.propTypes = {
   goBackwardTabRoute: PropTypes.func.isRequired,
   removePostScreenInfo: PropTypes.func.isRequired,
   getComments: PropTypes.func.isRequired,
-  none_msg: PropTypes.string.isRequired,
   posts: PropTypes.object.isRequired,
   all_comments: PropTypes.object.isRequired,
   getPostAndComments: PropTypes.func.isRequired,

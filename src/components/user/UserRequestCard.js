@@ -7,8 +7,8 @@ import { ClickableImage, FullScreenLoading } from '../../components/common';
 import RedX from '../../assets/images/red_x.png';
 import GreenV from '../../assets/images/green_check.png';
 
-// NOTE: Only for entering in codes
-// profile_pic, username, date_joined, check and x for accept / reject
+// NOTE: Only for entering codes and friend requests
+// profile_pic, username, date_joined, v and x for accept / reject
 const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult }) => {
   if (loading) {
     return (

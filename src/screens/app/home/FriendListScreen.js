@@ -20,6 +20,7 @@ const users = [
   {
     id: 'asldkfadslkfsdf',
     username: 'Noob User 123',
+    profile_pic: null,
     date_joined: '1544237986',
     isFriend: true
   }
@@ -53,9 +54,11 @@ class FriendListScreen extends Component {
     // Only updates root components (PostCard), so remember to force re-render nested components by changing state
     return (
       <UserList
-        data={this.props.users}
+        data={users}
+        empty={users.length === 0}
+        // data={this.props.users}
         // empty={this.props.users.length === 0}
-        empty
+        // empty
         message={NO_FRIENDS_MSG}
         height={this.state.height}
         allowSorting

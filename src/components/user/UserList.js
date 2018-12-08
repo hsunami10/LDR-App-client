@@ -64,7 +64,7 @@ class UserList extends Component {
 
   showSortModal = () => this.setState(prevState => ({ sortModalVisible: !prevState.sortModalVisible }))
 
-  renderPosts = ({ item, index }) => {
+  renderUsers = ({ item, index }) => {
     if (index === 0 && this.props.allowSorting) {
       return (
         <Button
@@ -78,7 +78,8 @@ class UserList extends Component {
     return (
       <UserCard
         user={item}
-        onPress={this.viewProfile}
+        onUserPress={this.viewProfile}
+        onFriendPress={isFriend => console.log(`handle friend or unfriend: if isFriend is true, then unfriend. if isFriend is false, then friend. currently, isFriend is ${isFriend}`)}
       />
     );
   }
@@ -97,7 +98,7 @@ class UserList extends Component {
             [{ id: 'foo' }, ...this.props.data]
           }
           scrollEnabled={this.props.disableScrolling}
-          renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
+          renderItem={this.props.empty ? this.renderMessage : this.renderUsers}
           keyExtractor={post => post.id}
           onScroll={this.props.handleScroll}
           scrollEventThrottle={this.props.scrollEventThrottle || 16}

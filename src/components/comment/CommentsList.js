@@ -45,7 +45,6 @@ class CommentsList extends Component {
 CommentsList.propTypes = {
   id: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
-  none_msg: PropTypes.string.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
 
   data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
