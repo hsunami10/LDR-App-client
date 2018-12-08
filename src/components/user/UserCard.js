@@ -1,47 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PartnerCard from './PartnerCard';
-import FriendCard from './FriendCard';
-import { userCardPropTypesError } from '../../assets/helpers';
+import { View, Text, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
+import moment from 'moment';
+import { ROOT_URL } from '../../constants/variables';
+import { ClickableImage } from '../../components/common';
 
-const UserCard = props => {
-  switch (props.type) {
-    case 'partner':
-      return (
-        <PartnerCard
-          user={props.user}
-          loading={props.loading}
-          message={props.message}
-          cancelResult={props.cancelResult}
-          acceptResult={props.acceptResult}
-        />
-      );
-    case 'user':
-      return null;
-    case 'friend':
-      return (
-        <FriendCard
-          user={props.user}
-          onPress={props.onPress}
-        />
-      );
-    default:
-      return null;
-  }
-};
+const UserCard = ({ user, onPress }) => (
+  <TouchableHighlight
+    style={styles.cardContainerStyle}
+    onPress={onPress}
+    underlayColor="rgba(0,0,0,0.3)"
+  >
+    <ClickableImage
+      width={40}
+      height={40}
+      type="none"
+      onPress={() => null}
+      image={user.profile_pic ? `${ROOT_URL}/${user.profile_pic}` : null}
+    />
+    <View style={styles.textViewStyle}>
+      <Text
+        style={{ fontWeight: 'bold' }}
+        suppressHighlighting
+      >
+        {user.username}
+      </Text>
+      <Text
+        style={{ fontSize: 12 }}
+        suppressHighlighting
+      >{`Joined ${moment.unix(user.date_joined).format('MM/DD/YYYY')}`}</Text>
+    </View>
+  </TouchableHighlight>
+);
 
 // https://stackoverflow.com/questions/42299335/react-props-set-isrequired-on-a-prop-if-another-prop-is-null-empty
 UserCard.propTypes = {
-  type: PropTypes.oneOf(['partner', 'user', 'friend']).isRequired,
-
-  user: (props, propName, componentName) => userCardPropTypesError(['friend', 'user'], props, propName, componentName, 'object'),
-  onPress: (props, propName, componentName) => userCardPropTypesError(['friend', 'user'], props, propName, componentName, 'function'),
-
-  // type = partner
-  loading: (props, propName, componentName) => userCardPropTypesError(['partner'], props, propName, componentName, 'boolean'),
-  message: (props, propName, componentName) => userCardPropTypesError(['partner'], props, propName, componentName, 'string'),
-  cancelResult: (props, propName, componentName) => userCardPropTypesError(['partner'], props, propName, componentName, 'function'),
-  acceptResult: (props, propName, componentName) => userCardPropTypesError(['partner'], props, propName, componentName, 'function'),
+  user: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
 };
+
+const styles = StyleSheet.create({
+  cardContainerStyle: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  textViewStyle: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  actionStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 export default UserCard;

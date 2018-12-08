@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import shortid from 'shortid';
-import { View, StyleSheet, Keyboard, Dimensions, Animated } from 'react-native';
-import { SearchHeader, FullScreenLoading } from '../../../components/common';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { FullScreenLoading } from '../../../components/common';
 import PostsList from '../../../components/post/PostsList';
-import GeneralSearchScreen from '../GeneralSearchScreen';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
+import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
 
 // TODO: Add 3 tabs later - Feed, Topics, Friends
 
@@ -90,8 +89,9 @@ class FeedScreen extends Component {
       <PostsList
         data={this.props.posts}
         empty={this.props.posts.length === 0}
-        message="Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed."
+        message={EMPTY_FEED_MSG}
         height={this.state.height}
+        allowSorting
         sortPosts={this.handleSortPosts}
         refreshing={this.props.loading}
         handleRefresh={this.handleRefresh}
@@ -145,7 +145,9 @@ const mapStateToProps = state => {
   const postsOrder = state.feed.posts_order;
   const posts = new Array(postsOrder.length);
   for (let i = 0; i < postsOrder.length; i++) {
-    posts[i] = state.posts.all_posts[postsOrder[i]];
+    if (state.posts.all_posts[postsOrder[i]]) {
+      posts[i] = state.posts.all_posts[postsOrder[i]];
+    }
   }
 
   return {

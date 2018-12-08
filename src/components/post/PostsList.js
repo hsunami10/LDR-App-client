@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, RefreshControl, Keyboard, Button } from 'react-native';
+import { View, Text, FlatList, RefreshControl, Button } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from './PostCard';
 import SortModal from './SortModal';
+import { requireWhenPropExists } from '../../assets/helpers';
 
 class PostsList extends Component {
   state = {
@@ -26,8 +27,6 @@ class PostsList extends Component {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
     this.props.navigation.push('ViewPost', { post_id: post.id });
   }
-
-  handleScroll = () => Keyboard.dismiss()
 
   // 'Newest', 'Popular'
   handleChoiceSelect = choice => {
@@ -73,13 +72,15 @@ class PostsList extends Component {
   showSortModal = () => this.setState(prevState => ({ sortModalVisible: !prevState.sortModalVisible }))
 
   renderPosts = ({ item, index }) => {
-    if (index === 0) {
+    if (index === 0 && this.props.allowSorting) {
       return (
         <Button
           title={`Sort by: ${this.state.sortButtonText}`}
           onPress={this.showSortModal}
         />
       );
+    } else if (index === 0 && !this.props.allowSorting) {
+      return null;
     }
     return (
       <PostCard
@@ -104,12 +105,12 @@ class PostsList extends Component {
           data={
             this.props.empty ?
             [{ id: 'foo', text: this.props.message }] :
-            [{ id: 'foo' }, ...this.props.data]
+            [{ id: 'foo' }, ...this.props.data] // First value - dummy value for sort by functionality
           }
           scrollEnabled={this.props.disableScrolling}
           renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
           keyExtractor={post => post.id}
-          onScroll={this.props.handleScroll || this.handleScroll}
+          onScroll={this.props.handleScroll}
           scrollEventThrottle={this.props.scrollEventThrottle || 16}
           refreshControl={
             this.props.disableRefresh ?
@@ -141,14 +142,15 @@ PostsList.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired, // Array of 1 object with { id, text } if no posts to show
   empty: PropTypes.bool.isRequired,
   height: PropTypes.number.isRequired,
-  refreshing: PropTypes.bool,
+  refreshing: (props, propName, componentName) => requireWhenPropExists('handleRefresh', props, propName, componentName, 'boolean'),
   handleRefresh: PropTypes.func,
   paginateData: PropTypes.func.isRequired,
   keepPaging: PropTypes.bool.isRequired, // False only when there is no more data to retrieve
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
   message: PropTypes.string.isRequired,
-  sortPosts: PropTypes.func.isRequired, // 2 params - order (date_posted, num_likes), direction (DESC, DESC)
+  allowSorting: PropTypes.bool,
+  sortPosts: (props, propName, componentName) => requireWhenPropExists('allowSorting', props, propName, componentName, 'function'), // 2 params - order (date_posted, num_likes), direction (DESC, DESC)
   handleScroll: PropTypes.func,
   scrollEventThrottle: PropTypes.number,
   disableRefresh: PropTypes.bool,

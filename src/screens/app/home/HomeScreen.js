@@ -206,6 +206,7 @@ class HomeScreen extends Component {
         if (this.state.mounted.friends) {
           return (
             <FriendListScreen
+              showFriendRequests
               navigation={this.props.navigation}
               parentNavigation={this.props.screenProps.parentNavigation}
             />

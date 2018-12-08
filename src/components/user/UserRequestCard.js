@@ -9,7 +9,7 @@ import GreenV from '../../assets/images/green_check.png';
 
 // NOTE: Only for entering in codes
 // profile_pic, username, date_joined, check and x for accept / reject
-const PartnerCard = ({ user, loading, message, cancelResult, acceptResult }) => {
+const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult }) => {
   if (loading) {
     return (
       <View style={styles.viewStyle}>
@@ -68,7 +68,7 @@ const PartnerCard = ({ user, loading, message, cancelResult, acceptResult }) => 
  );
 };
 
-PartnerCard.propTypes = {
+UserRequestCard.propTypes = {
   user: PropTypes.object,
   loading: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PartnerCard;
+export default UserRequestCard;

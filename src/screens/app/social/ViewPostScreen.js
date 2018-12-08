@@ -205,7 +205,6 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   current_tab: state.navigation.current_tab,
   post_likes: state.posts.post_likes,
-  none_msg: state.comments.none_msg,
   posts: state.screens.posts,
   all_comments: state.comments.all_comments,
   all_posts: state.posts.all_posts
