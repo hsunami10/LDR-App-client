@@ -8,11 +8,10 @@ import {
   STOP_INITIAL_USER_SCREEN_LOADING,
   START_POST_SCREEN_REFRESHING,
   STOP_POST_SCREEN_REFRESHING,
-  START_INITIAL_COMMENTS_LOADING,
-  STOP_INITIAL_COMMENTS_LOADING,
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
   STORE_COMMENTS_SCREEN_INFO,
+  INIT_POST_SCREEN_INFO
 } from './types';
 import { COMMENTS_PAGINATE_LIMIT } from '../constants/variables';
 
@@ -47,6 +46,10 @@ export const removeUserScreenInfo = (userID, screenID) => ({
 });
 
 // ============================================ Posts ============================================
+export const initializePostScreenInfo = (postID, screenID) => ({
+  type: INIT_POST_SCREEN_INFO,
+  payload: { postID, screenID }
+});
 export const removePostScreenInfo = (postID, screenID) => ({
   type: REMOVE_POST_SCREEN_INFO,
   payload: { postID, screenID }
@@ -71,14 +74,6 @@ export const storeCommentsScreenInfo = (data, postID, screenID, replace) => ({
     replace,
     keepPaging: data.order.length >= COMMENTS_PAGINATE_LIMIT
   }
-});
-export const startInitialCommentsLoading = (postID, screenID) => ({
-  type: START_INITIAL_COMMENTS_LOADING,
-  payload: { postID, screenID }
-});
-export const stopInitialCommentsLoading = (postID, screenID) => ({
-  type: STOP_INITIAL_COMMENTS_LOADING,
-  payload: { postID, screenID }
 });
 
 export const startCommentsPageLoading = (postID, screenID) => ({

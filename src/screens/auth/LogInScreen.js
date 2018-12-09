@@ -100,7 +100,13 @@ class LogInScreen extends Component {
               onSubmitEditing={this.logIn}
               returnKeyType="go"
             />
-            <Text style={textStyles.errorTextStyle}>{this.props.error_msg}</Text>
+            <Text style={textStyles.errorTextStyle}>
+              {
+                this.props.error_field === 'username' || this.props.error_field === '' ?
+                this.props.error_msg :
+                ' '
+              }
+            </Text>
             <Button onPress={this.logIn}>Log In</Button>
             <Button onPress={this.forgotPassword}>Forgot Password?</Button>
           </View>

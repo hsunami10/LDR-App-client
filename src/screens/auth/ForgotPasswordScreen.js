@@ -32,7 +32,7 @@ class ForgotPasswordScreen extends Component {
       this.props.resetAuthErrors();
       this.props.forgotPassword(this.state.email, this.props.navigation, this.clearInput);
     } else {
-      this.props.setAuthErrors('username', 'Invalid email');
+      this.props.setAuthErrors('email', 'Invalid email');
     }
   }
 
@@ -57,7 +57,7 @@ class ForgotPasswordScreen extends Component {
               placeholder="Email"
               onChangeText={this.handleChangeText}
               value={this.state.email}
-              showBorder={this.props.error_field === 'username'}
+              showBorder={this.props.error_field === 'email'}
               onSubmitEditing={this.sendEmail}
               returnKeyType="send"
             />

@@ -159,18 +159,6 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
     });
 };
 
-// obj: { id, bool }
-export const setActive = (id, bool) => {
-  axios.put(`${ROOT_URL}/api/user/set-active`, { id, bool })
-    .catch(error => {
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
 // Store user's profile information
 export const storeUserInfo = user => ({
   type: STORE_USER_INFO,

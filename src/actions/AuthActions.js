@@ -9,7 +9,6 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { setActive } from './UserActions';
 import { navigateToRoute, pushTabRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers';
 
@@ -101,7 +100,6 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
           .then(id => {
             dispatch(setUserCredentials(id, true));
             dispatch(pushTabRoute('home', null));
-            setActive(id, true);
             navigation.navigate('App');
             resetEverything();
           })

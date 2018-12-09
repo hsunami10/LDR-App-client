@@ -5,7 +5,6 @@ import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-nati
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setUserCredentials, logOutUser } from '../../actions/AuthActions';
-import { setActive } from '../../actions/UserActions';
 import { navigateToRoute, goBackwardRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
 
@@ -103,7 +102,6 @@ class AuthLoadingScreen extends Component {
         if (credentials) {
           this.props.setUserCredentials(credentials.username, credentials.password === 'true');
           this.props.pushTabRoute('home', null);
-          setActive(credentials.username, true);
           // this.props.navigation.navigate('CreateProfile'); // TODO: Remove this later - efficient testing only
           this.props.navigation.navigate('App');
         } else {

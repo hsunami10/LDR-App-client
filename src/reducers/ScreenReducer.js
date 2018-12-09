@@ -13,8 +13,7 @@ import {
   START_POST_SCREEN_REFRESHING,
   STOP_POST_SCREEN_REFRESHING,
   STORE_COMMENTS_SCREEN_INFO,
-  START_INITIAL_COMMENTS_LOADING,
-  STOP_INITIAL_COMMENTS_LOADING,
+  INIT_POST_SCREEN_INFO,
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
 
@@ -83,18 +82,18 @@ export default (state = INITIAL_STATE, action) => {
             copyPosts[action.payload.postID][action.payload.screenID].keepPaging ?
             action.payload.keepPaging :
             false
-          )
+          ),
+          initial_comments_loading: false
         }
       };
       return { ...state, posts: copyPosts };
       // NOTE: This runs first out of all of the actions related to ViewPostScreen
       // So treat it as initialization (initial state)
-    case START_INITIAL_COMMENTS_LOADING:
+    case INIT_POST_SCREEN_INFO:
       const copyPosts2 = { ...state.posts };
       copyPosts2[action.payload.postID] = {
         ...copyPosts2[action.payload.postID],
         [action.payload.screenID]: {
-          initial_comments_loading: true,
           refreshing: false,
           page_comments_loading: false,
           order: [],
@@ -103,16 +102,13 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
       return { ...state, posts: copyPosts2 };
-    case STOP_INITIAL_COMMENTS_LOADING:
-      const copyPosts3 = { ...state.posts };
-      copyPosts3[action.payload.postID] = {
-        ...copyPosts3[action.payload.postID],
-        [action.payload.screenID]: {
-          ...copyPosts3[action.payload.postID][action.payload.screenID],
-          initial_comments_loading: false
-        }
-      };
-      return { ...state, posts: copyPosts3 };
+    case REMOVE_POST_SCREEN_INFO:
+      const copyPosts8 = { ...state.posts };
+      delete copyPosts8[action.payload.postID][action.payload.screenID];
+      if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
+        delete copyPosts8[action.payload.postID];
+      }
+      return { ...state, posts: copyPosts8 };
     case START_COMMENTS_PAGE_LOADING:
       const copyPosts4 = { ...state.posts };
       copyPosts4[action.payload.postID] = {
@@ -153,13 +149,6 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
       return { ...state, posts: copyPosts7 };
-    case REMOVE_POST_SCREEN_INFO:
-      const copyPosts8 = { ...state.posts };
-      delete copyPosts8[action.payload.postID][action.payload.screenID];
-      if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
-        delete copyPosts8[action.payload.postID];
-      }
-      return { ...state, posts: copyPosts8 };
     case DELETE_COMMENT:
       const copyPosts9 = { ...state.posts };
       const postScreens = copyPosts9[action.payload.postID];

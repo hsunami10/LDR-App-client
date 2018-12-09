@@ -29,11 +29,10 @@ export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loadin
 export const REMOVE_POST_SCREEN_INFO = 'remove_post_screen_info';
 export const START_POST_SCREEN_REFRESHING = 'start_post_screen_refreshing';
 export const STOP_POST_SCREEN_REFRESHING = 'stop_post_screen_refreshing';
+export const INIT_POST_SCREEN_INFO = 'init_post_screen_info';
 
 // Comments
 export const STORE_COMMENTS_SCREEN_INFO = 'store_comments_screen_info';
-export const START_INITIAL_COMMENTS_LOADING = 'start_initial_comments_loading';
-export const STOP_INITIAL_COMMENTS_LOADING = 'stop_initial_comments_loading';
 export const START_COMMENTS_PAGE_LOADING = 'start_comments_page_loading';
 export const STOP_COMMENTS_PAGE_LOADING = 'stop_comments_page_loading';
 

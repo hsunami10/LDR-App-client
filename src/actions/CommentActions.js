@@ -8,33 +8,19 @@ import { stopLoading, startLoading } from './LoadingActions';
 import { handleError } from '../assets/helpers';
 import {
   startCommentsPageLoading,
-  startInitialCommentsLoading,
   stopCommentsPageLoading,
-  stopInitialCommentsLoading,
   storeCommentsScreenInfo
 } from './ScreenActions';
 
-export const getComments = (userID, postID, screenID, paging, offset, latestDate) => dispatch => {
-  if (paging) {
-    dispatch(startCommentsPageLoading(postID, screenID));
-  } else {
-    dispatch(startInitialCommentsLoading(postID, screenID));
-  }
+export const getComments = (userID, postID, screenID, offset, latestDate) => dispatch => {
+  dispatch(startCommentsPageLoading(postID, screenID));
   axios.get(`${ROOT_URL}/api/comments/${userID}?offset=${offset}&latest_date=${latestDate}&post_id=${postID}`)
     .then(response => {
-      if (paging) {
-        dispatch(stopCommentsPageLoading(postID, screenID));
-      } else {
-        dispatch(stopInitialCommentsLoading(postID, screenID));
-      }
+      dispatch(stopCommentsPageLoading(postID, screenID));
       dispatch(storeCommentsScreenInfo(response.data, postID, screenID, false));
     })
     .catch(error => {
-      if (paging) {
-        dispatch(stopCommentsPageLoading(postID, screenID));
-      } else {
-        dispatch(stopInitialCommentsLoading(postID, screenID));
-      }
+      dispatch(stopCommentsPageLoading(postID, screenID));
       if (error.response) {
         handleError(error.response.data, false);
       } else {

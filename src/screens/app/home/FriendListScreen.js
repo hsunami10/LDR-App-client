@@ -16,6 +16,7 @@ const requests = [
   ]
 ];
 
+// TODO: Change to object of objects, and array of user_ids (order)
 const users = [
   {
     id: 'asldkfadslkfsdf',

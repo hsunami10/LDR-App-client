@@ -11,14 +11,21 @@ import { handleError } from '../assets/helpers';
 import {
   storeCommentsScreenInfo,
   startPostScreenRefreshing,
-  stopPostScreenRefreshing
+  stopPostScreenRefreshing,
+  initializePostScreenInfo
 } from './ScreenActions';
 
-export const getPostAndComments = (userID, postID, screenID, earliestDate) => dispatch => {
-  dispatch(startPostScreenRefreshing(postID, screenID));
+export const getPostAndComments = (userID, postID, screenID, earliestDate, refreshing) => dispatch => {
+  if (refreshing) {
+    dispatch(startPostScreenRefreshing(postID, screenID));
+  } else {
+    dispatch(initializePostScreenInfo(postID, screenID));
+  }
   axios.get(`${ROOT_URL}/api/posts/${userID}?earliest_date=${earliestDate}&post_id=${postID}`)
     .then(response => {
-      dispatch(stopPostScreenRefreshing(postID, screenID));
+      if (refreshing) {
+        dispatch(stopPostScreenRefreshing(postID, screenID));
+      }
       dispatch({
         type: EDIT_POST,
         payload: {
@@ -29,7 +36,9 @@ export const getPostAndComments = (userID, postID, screenID, earliestDate) => di
       dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, true));
     })
     .catch(error => {
-      dispatch(stopPostScreenRefreshing(postID, screenID));
+      if (refreshing) {
+        dispatch(stopPostScreenRefreshing(postID, screenID));
+      }
       if (error.response) {
         handleError(error.response.data, false);
       } else {

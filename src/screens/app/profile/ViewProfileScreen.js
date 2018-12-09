@@ -7,7 +7,7 @@ import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import { handleError } from '../../../assets/helpers/index';
-import { setActive, getUserInfo } from '../../../actions/UserActions';
+import { getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removeUserScreenInfo } from '../../../actions/ScreenActions';
@@ -107,7 +107,6 @@ class ViewProfileScreen extends Component {
         this.props.logOutUser();
         this.props.navigateToRoute('Welcome');
         this.props.screenProps.parentNavigation.navigate('Welcome');
-        setActive(this.props.id, false);
       })
       .catch(error => {
         handleError(new Error(`Unable to access keychain. ${error.message}`), false);

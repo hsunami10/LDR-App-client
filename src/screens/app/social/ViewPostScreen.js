@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet, ScrollView, RefreshControl, Keyboard } from 'react-native';
 import shortid from 'shortid';
-import moment from 'moment';
 import { StandardHeader, FullScreenLoading, AutoExpandingTextInput } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
@@ -33,6 +32,7 @@ class ViewPostScreen extends Component {
     this.props.removePostScreenInfo(this.state.post_id, this.state.screen_id);
   }
 
+  // Convert to array of objects
   getComments = () => {
     const postIDs = this.props.posts[this.state.post_id][this.state.screen_id].order;
     const comments = new Array(postIDs.length);
@@ -52,18 +52,20 @@ class ViewPostScreen extends Component {
   }
 
   handleFirstLoad = refresh => {
+    let order;
     const postID = this.props.navigation.getParam('post_id', null);
-    if (!refresh) {
-      this.props.getComments(this.props.id, postID, this.state.screen_id, false, 0, moment().unix());
+    if (refresh) { // Handle first load
+      order = this.props.posts[this.state.post_id][this.state.screen_id].order;
     } else {
-      const order = this.props.posts[this.state.post_id][this.state.screen_id].order;
-      this.props.getPostAndComments(
-        this.props.id,
-        this.state.post_id,
-        this.state.screen_id,
-        order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent // Handle index out of bounds if no comments
-      );
+      order = [];
     }
+    this.props.getPostAndComments(
+      this.props.id,
+      postID,
+      this.state.screen_id,
+      order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent, // Handle index out of bounds if no comments
+      refresh
+    );
   }
 
   handlePageComments = () => {
@@ -72,7 +74,6 @@ class ViewPostScreen extends Component {
       this.props.id,
       this.state.post_id,
       this.state.screen_id,
-      true,
       screenInfo.offset,
       this.props.all_comments[screenInfo.order[screenInfo.order.length - 1]].date_sent
     );
