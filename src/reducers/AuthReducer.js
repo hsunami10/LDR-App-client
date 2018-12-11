@@ -5,14 +5,22 @@ import {
   SET_USER_CREDENTIALS,
   SET_NOT_FIRST_LOG_IN
 } from '../actions/types';
-import { handleError } from '../assets/helpers';
 
 const INITIAL_STATE = {
   id: '',
   first_login: false,
-  error_field: '', // 'username', 'password', 'both'
-  error_msg: ' ', // Text error message
-  success: false, // Differentiate between red and green text
+  forgot_password_error: ' ', // Error message to display
+  forgot_password_field: '', // Text input to show red "error" border
+  forgot_password_success: false, // Display red or green text
+  log_in_error: ' ',
+  log_in_field: '',
+  log_in_success: false, // Never used
+  sign_up_error: ' ',
+  sign_up_field: '',
+  sign_up_success: false, // Never used
+  verify_email_error: ' ',
+  verify_email_field: '',
+  verify_email_success: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -21,19 +29,20 @@ export default (state = INITIAL_STATE, action) => {
       return INITIAL_STATE;
 
     case SET_AUTH_ERRORS:
-      const { errorField, errorMsg, success } = action.payload;
-      if (errorField === 'username' || errorField === 'password' || errorField === '') {
-        return {
-          ...state,
-          error_field: errorField,
-          error_msg: errorMsg,
-          success
-        };
-      }
-      handleError(new Error('Invalid field type in SET_AUTH_ERRORS'), true);
-      break;
+      const { screen, errorField, errorMsg, success } = action.payload;
+      return {
+        ...state,
+        [`${screen}_field`]: errorField,
+        [`${screen}_error`]: errorMsg,
+        [`${screen}_success`]: success
+      };
     case RESET_AUTH_ERRORS:
-      return { ...state, error_field: '', error_msg: ' ', success: false };
+      return {
+        ...state,
+        [`${action.payload}_field`]: '',
+        [`${action.payload}_error`]: ' ',
+        [`${action.payload}_success`]: false
+      };
     case SET_USER_CREDENTIALS:
       return { ...state, id: action.payload.id, first_login: action.payload.firstLogin };
     case SET_NOT_FIRST_LOG_IN:

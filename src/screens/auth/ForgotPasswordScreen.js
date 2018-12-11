@@ -16,7 +16,7 @@ class ForgotPasswordScreen extends Component {
   componentWillUnmount() {
     if (this.props.current_route === 'ForgotPassword') {
       this.props.navigateToRoute('LogIn');
-      this.props.resetAuthErrors();
+      this.props.resetAuthErrors('forgot_password');
     }
   }
 
@@ -29,10 +29,10 @@ class ForgotPasswordScreen extends Component {
   sendEmail = () => {
     Keyboard.dismiss();
     if (isValidEmail(this.state.email)) {
-      this.props.resetAuthErrors();
+      this.props.resetAuthErrors('forgot_password');
       this.props.forgotPassword(this.state.email, this.props.navigation, this.clearInput);
     } else {
-      this.props.setAuthErrors('email', 'Invalid email');
+      this.props.setAuthErrors('forgot_password', 'email', 'Invalid email');
     }
   }
 
@@ -104,9 +104,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  error_field: state.auth.error_field,
-  error_msg: state.auth.error_msg,
-  success: state.auth.success,
+  error_field: state.auth.forgot_password_field,
+  error_msg: state.auth.forgot_password_error,
+  success: state.auth.forgot_password_success,
   loading: state.loading,
   current_route: state.navigation.current_route
 });

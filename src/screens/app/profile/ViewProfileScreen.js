@@ -40,7 +40,9 @@ class ViewProfileScreen extends Component {
 
   componentWillUnmount() {
     this.props.goBackwardTabRoute();
-    this.props.removeUserScreenInfo(this.state.user_id, this.state.screen_id);
+    if (this.props.current_route !== 'Welcome') { // Only true if logging out
+      this.props.removeUserScreenInfo(this.state.user_id, this.state.screen_id);
+    }
   }
 
   onPressAction = index => {
@@ -201,7 +203,8 @@ ViewProfileScreen.propTypes = {
   navigateToRoute: PropTypes.func.isRequired,
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
-  profiles: PropTypes.object.isRequired
+  profiles: PropTypes.object.isRequired,
+  current_route: PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -218,6 +221,7 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   user: state.user,
   profiles: state.screens.profiles,
+  current_route: state.navigation.current_route
 });
 
 export default connect(mapStateToProps, {

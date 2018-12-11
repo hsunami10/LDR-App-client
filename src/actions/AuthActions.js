@@ -34,9 +34,19 @@ export const removeCredentials = async () => {
 // Resets all app state to initial states
 export const logOutUser = () => ({ type: LOG_OUT_USER });
 
-export const setAuthErrors = (errorField, errorMsg, success = false) => ({
+export const setAuthErrors = (screen, errorField, errorMsg, success = false) => ({
   type: SET_AUTH_ERRORS,
-  payload: { errorField, errorMsg, success }
+  payload: {
+    screen,
+    errorField,
+    errorMsg,
+    success
+  }
+});
+
+export const resetAuthErrors = screen => ({
+  type: RESET_AUTH_ERRORS,
+  payload: screen
 });
 
 export const setNotFirstLogIn = id => dispatch => {
@@ -56,8 +66,6 @@ export const setUserCredentials = (id, firstLogin) => ({
   payload: { id, firstLogin }
 });
 
-export const resetAuthErrors = () => ({ type: RESET_AUTH_ERRORS });
-
 // ======================================== Forgot Password ========================================
 export const forgotPassword = (email, navigation, clearInput) => dispatch => {
   dispatch(startLoading());
@@ -65,15 +73,15 @@ export const forgotPassword = (email, navigation, clearInput) => dispatch => {
     .then(response => {
       dispatch(stopLoading());
       if (response.data.success) {
-        dispatch(setAuthErrors('', response.data.msg, true));
+        dispatch(setAuthErrors('forgot_password', '', response.data.msg, true));
         clearInput();
       } else if (response.data.not_verified) {
         // TODO: Ask use if they want to verify their email
         // QUESTION: Should we do this? Security issues...
         // If yes, then navigate to email verification screen
-        dispatch(setAuthErrors('username', response.data.msg));
+        dispatch(setAuthErrors('forgot_password', 'email', response.data.msg));
       } else {
-        dispatch(setAuthErrors('username', response.data.msg));
+        dispatch(setAuthErrors('forgot_password', 'email', response.data.msg));
       }
     })
     .catch(error => {
@@ -94,7 +102,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
     .then(response => {
       dispatch(stopLoading());
       if (response.data.msg) {
-        dispatch(setAuthErrors('', response.data.msg)); // Invalid username or password
+        dispatch(setAuthErrors('log_in', '', response.data.msg)); // Invalid username or password
       } else {
         storeCredentials(response.data.id)
           .then(id => {
@@ -125,9 +133,9 @@ export const sendVerificationEmail = (id, email) => dispatch => {
     .then(response => {
       dispatch(stopLoading());
       if (response.data.success) {
-        dispatch(setAuthErrors('', response.data.msg, true));
+        dispatch(setAuthErrors('verify_email', '', response.data.msg, true));
       } else {
-        dispatch(setAuthErrors('username', response.data.msg));
+        dispatch(setAuthErrors('verify_email', 'email', response.data.msg));
       }
     })
     .catch(error => {
@@ -177,7 +185,7 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
     .then(response => {
       dispatch(stopLoading());
       if (response.data.msg) {
-        dispatch(setAuthErrors('username', response.data.msg)); // Username already taken
+        dispatch(setAuthErrors('sign_up', 'username', response.data.msg)); // Username already taken
       } else {
         storeCredentials(response.data.id)
           .then(id => {

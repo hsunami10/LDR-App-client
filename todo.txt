@@ -4,7 +4,6 @@
   - friends
   - topics
 - add replying to comments
-- change auth screens to have different auth error props
 
 URGENT - figure out how to animate Text component height?
 

@@ -22,7 +22,7 @@ class VerifyEmailScreen extends Component {
 
   resetEverything = () => {
     this.setState(() => ({ email: '' }));
-    this.props.resetAuthErrors();
+    this.props.resetAuthErrors('verify_email');
   }
 
   handleRightPress = () => {
@@ -41,10 +41,10 @@ class VerifyEmailScreen extends Component {
   sendEmail = () => {
     Keyboard.dismiss();
     if (isValidEmail(this.state.email)) {
-      this.props.resetAuthErrors();
+      this.props.resetAuthErrors('verify_email');
       this.props.sendVerificationEmail(this.props.id, this.state.email);
     } else {
-      this.props.setAuthErrors('username', 'Invalid email');
+      this.props.setAuthErrors('verify_email', 'email', 'Invalid email');
     }
   }
 
@@ -65,7 +65,7 @@ class VerifyEmailScreen extends Component {
               placeholder="Email (optional)"
               onChangeText={this.handleChangeText}
               value={this.state.email}
-              showBorder={this.props.error_field === 'username'}
+              showBorder={this.props.error_field === 'email'}
               onSubmitEditing={this.sendEmail}
               returnKeyType="send"
             />
@@ -109,10 +109,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  error_field: state.auth.error_field,
-  error_msg: state.auth.error_msg,
+  error_field: state.auth.verify_email_field,
+  error_msg: state.auth.verify_email_error,
   loading: state.loading,
-  success: state.auth.success
+  success: state.auth.verify_email_success
 });
 
 export default connect(mapStateToProps, {

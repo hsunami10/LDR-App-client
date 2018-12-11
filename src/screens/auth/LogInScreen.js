@@ -33,7 +33,7 @@ class LogInScreen extends Component {
 
   resetEverything = () => {
     this.setState(() => ({ username: '', password: '' }));
-    this.props.resetAuthErrors();
+    this.props.resetAuthErrors('log_in');
   }
 
   handleLeftPress = () => this.props.navigation.pop()
@@ -64,14 +64,14 @@ class LogInScreen extends Component {
     const { status } = isValidCredentials([username, password]);
     // Check spaces
     if (status) {
-      this.props.resetAuthErrors();
+      this.props.resetAuthErrors('log_in');
       this.props.logInWithUsernameAndPassword(
         { username, password },
         this.props.navigation,
         this.resetEverything
       );
     } else {
-      this.props.setAuthErrors('', 'Invalid username or password');
+      this.props.setAuthErrors('log_in', '', 'Invalid username or password');
     }
   }
 
@@ -90,7 +90,6 @@ class LogInScreen extends Component {
               placeholder="Username"
               onChangeText={text => this.handleChangeText(text, 0)}
               value={this.state.username}
-              showBorder={this.props.error_field === 'username'}
             />
             <Input
               placeholder="Password"
@@ -101,11 +100,7 @@ class LogInScreen extends Component {
               returnKeyType="go"
             />
             <Text style={textStyles.errorTextStyle}>
-              {
-                this.props.error_field === 'username' || this.props.error_field === '' ?
-                this.props.error_msg :
-                ' '
-              }
+              {this.props.error_msg}
             </Text>
             <Button onPress={this.logIn}>Log In</Button>
             <Button onPress={this.forgotPassword}>Forgot Password?</Button>
@@ -137,8 +132,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   current_route: state.navigation.current_route,
-  error_field: state.auth.error_field,
-  error_msg: state.auth.error_msg,
+  error_field: state.auth.log_in_field,
+  error_msg: state.auth.log_in_error,
   loading: state.loading
 });
 

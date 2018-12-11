@@ -35,7 +35,7 @@ class SignUpScreen extends Component {
   // Pseudo componentWillUnmount
   resetEverything = () => {
     this.setState(() => ({ username: '', password: '', confirmPassword: '' }));
-    this.props.resetAuthErrors();
+    this.props.resetAuthErrors('sign_up');
   }
 
   handleLeftPress = () => this.props.navigation.pop()
@@ -67,20 +67,20 @@ class SignUpScreen extends Component {
       if (password === confirmPassword) {
         // Check password length
         if (password.length >= 6) {
-          this.props.resetAuthErrors();
+          this.props.resetAuthErrors('sign_up');
           this.props.signUpWithUsernameAndPassword(
             { username, password },
             this.props.navigation,
             this.resetEverything
           );
         } else {
-          this.props.setAuthErrors('password', 'Password must be at least 6 characters');
+          this.props.setAuthErrors('sign_up', 'password', 'Password must be at least 6 characters');
         }
       } else {
-        this.props.setAuthErrors('password', 'Passwords do not match');
+        this.props.setAuthErrors('sign_up', 'password', 'Passwords do not match');
       }
     } else {
-      this.props.setAuthErrors(type, msg);
+      this.props.setAuthErrors('sign_up', type, msg);
     }
   }
 
@@ -148,8 +148,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   current_route: state.navigation.current_route,
-  error_field: state.auth.error_field,
-  error_msg: state.auth.error_msg,
+  error_field: state.auth.sign_up_field,
+  error_msg: state.auth.sign_up_error,
   loading: state.loading
 });
 
