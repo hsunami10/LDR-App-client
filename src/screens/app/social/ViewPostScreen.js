@@ -7,7 +7,7 @@ import { StandardHeader, FullScreenLoading, AutoExpandingTextInput } from '../..
 import PostCard from '../../../components/post/PostCard';
 import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
-import { getPostAndComments } from '../../../actions/PostActions';
+import { getPostAndComments, deletePost } from '../../../actions/PostActions';
 import { getComments } from '../../../actions/CommentActions';
 import CommentsList from '../../../components/comment/CommentsList';
 import PageCommentsButton from '../../../components/comment/PageCommentsButton';
@@ -68,6 +68,8 @@ class ViewPostScreen extends Component {
     );
   }
 
+  handleNoPostError = () => this.props.deletePost(this.props.id, this.state.post_id, this.props.navigation)
+
   handlePageComments = () => {
     const screenInfo = this.props.posts[this.state.post_id][this.state.screen_id];
     this.props.getComments(
@@ -75,7 +77,8 @@ class ViewPostScreen extends Component {
       this.state.post_id,
       this.state.screen_id,
       screenInfo.offset,
-      this.props.all_comments[screenInfo.order[screenInfo.order.length - 1]].date_sent
+      this.props.all_comments[screenInfo.order[screenInfo.order.length - 1]].date_sent,
+      this.handleNoPostError
     );
   }
 
@@ -192,7 +195,8 @@ ViewPostScreen.propTypes = {
   posts: PropTypes.object.isRequired,
   all_comments: PropTypes.object.isRequired,
   getPostAndComments: PropTypes.func.isRequired,
-  all_posts: PropTypes.object.isRequired
+  all_posts: PropTypes.object.isRequired,
+  deletePost: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -215,5 +219,6 @@ export default connect(mapStateToProps, {
   goBackwardTabRoute,
   removePostScreenInfo,
   getComments,
-  getPostAndComments
+  getPostAndComments,
+  deletePost
 })(ViewPostScreen);

@@ -6,7 +6,8 @@ export const STORE_USER_INFO = 'store_user_info';
 export const RESET_USER_ERRORS = 'reset_user_errors';
 export const STORE_PARTNER_RESULT = 'store_partner_result';
 export const REMOVE_PARTNER_RESULT = 'remove_partner_result';
-export const ACCEPT_PARTNER_RESULT = 'accept_partner_result';
+export const ACCEPT_PARTNER_RESULT_SUCCESS = 'accept_partner_result_success';
+export const ACCEPT_PARTNER_RESULT_FAILURE = 'accept_partner_result_failure';
 export const START_FIND_PARTNER_LOADING = 'start_find_partner_loading';
 export const STOP_FIND_PARTNER_LOADING = 'stop_find_partner_loading';
 

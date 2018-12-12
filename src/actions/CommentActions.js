@@ -6,18 +6,27 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { handleError } from '../assets/helpers/errors';
+import { alertWithSingleAction } from '../assets/helpers/alerts';
 import {
   startCommentsPageLoading,
   stopCommentsPageLoading,
   storeCommentsScreenInfo
 } from './ScreenActions';
 
-export const getComments = (userID, postID, screenID, offset, latestDate) => dispatch => {
+export const getComments = (userID, postID, screenID, offset, latestDate, noPostCB) => dispatch => {
   dispatch(startCommentsPageLoading(postID, screenID));
   axios.get(`${ROOT_URL}/api/comments/${userID}?offset=${offset}&latest_date=${latestDate}&post_id=${postID}`)
     .then(response => {
       dispatch(stopCommentsPageLoading(postID, screenID));
-      dispatch(storeCommentsScreenInfo(response.data, postID, screenID, false));
+      if (response.data.success) {
+        dispatch(storeCommentsScreenInfo(response.data.result, postID, screenID, false));
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          noPostCB
+        );
+      }
     })
     .catch(error => {
       dispatch(stopCommentsPageLoading(postID, screenID));

@@ -5,7 +5,8 @@ import {
   RESET_USER_ERRORS,
   STORE_PARTNER_RESULT,
   REMOVE_PARTNER_RESULT,
-  ACCEPT_PARTNER_RESULT,
+  ACCEPT_PARTNER_RESULT_SUCCESS,
+  ACCEPT_PARTNER_RESULT_FAILURE,
   START_FIND_PARTNER_LOADING,
   STOP_FIND_PARTNER_LOADING,
 } from './types';
@@ -60,10 +61,17 @@ export const acceptResult = (userID, partnerID, screenID = null) => dispatch => 
   axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
     .then(response => {
       dispatch(stopFindPartnerLoading(screenID));
-      dispatch({
-        type: ACCEPT_PARTNER_RESULT,
-        payload: response.data
-      });
+      if (response.data.success) {
+        dispatch({
+          type: ACCEPT_PARTNER_RESULT_SUCCESS,
+          payload: response.data
+        });
+      } else {
+        dispatch({
+          type: ACCEPT_PARTNER_RESULT_FAILURE,
+          payload: response.data.error
+        });
+      }
     })
     .catch(error => {
       dispatch(stopFindPartnerLoading(screenID));

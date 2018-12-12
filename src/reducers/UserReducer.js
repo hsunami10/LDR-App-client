@@ -6,7 +6,8 @@ import {
   START_INITIAL_USER_SCREEN_LOADING,
   STOP_INITIAL_USER_SCREEN_LOADING,
   RESET_USER_ERRORS,
-  ACCEPT_PARTNER_RESULT,
+  ACCEPT_PARTNER_RESULT_SUCCESS,
+  ACCEPT_PARTNER_RESULT_FAILURE,
   STORE_PARTNER_RESULT,
   REMOVE_PARTNER_RESULT,
   START_FIND_PARTNER_LOADING,
@@ -45,8 +46,10 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, partner_result: null, partner_error_msg: INITIAL_STATE.partner_error_msg };
     case REMOVE_PARTNER_RESULT:
       return { ...state, partner_result: null };
-    case ACCEPT_PARTNER_RESULT:
-      return { ...state, partner_result: null, partner_error_msg: action.payload.msg };
+    case ACCEPT_PARTNER_RESULT_SUCCESS:
+      return { ...state, partner_result: null, partner_error_msg: action.payload.message };
+    case ACCEPT_PARTNER_RESULT_FAILURE:
+      return { ...state, partner_result: null, partner_error_msg: action.payload };
 
     // Loading action types for refreshing your own profile page
     case START_USER_SCREEN_REFRESHING:

@@ -8,6 +8,7 @@ import PostsList from '../../../components/post/PostsList';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
+import { logOut } from '../../../assets/helpers/authentication';
 
 // TODO: Add 3 tabs later - Feed, Topics, Friends
 
@@ -52,7 +53,15 @@ class FeedScreen extends Component {
 
   componentDidMount() {
     if (this.props.current_route === 'home') {
-      this.props.getUserFeed(this.props.id, 0, false, this.state.order, this.state.direction, moment().unix());
+      this.props.getUserFeed(
+        this.props.id,
+        0,
+        false,
+        this.state.order,
+        this.state.direction,
+        moment().unix(),
+        this.handleNoUserError
+      );
     }
   }
 
@@ -63,14 +72,28 @@ class FeedScreen extends Component {
       null,
       this.state.order,
       this.state.direction,
-      parseInt(this.props.posts[0].date_posted, 10) // Ignore newer posts when paging
+      parseInt(this.props.posts[0].date_posted, 10), // Ignore newer posts when paging
+      this.handleNoUserError
     );
   }
 
-  handleRefresh = () => this.props.getUserFeed(this.props.id, 0, true, this.state.order, this.state.direction, moment().unix())
+  handleNoUserError = () => this.props.logOut(this.props.parentNavigation)
+
+  handleRefresh = () => {
+    this.props.getUserFeed(
+      this.props.id,
+      0,
+      true,
+      this.state.order,
+      this.state.direction,
+      moment().unix(),
+      this.handleNoUserError
+    );
+  }
+
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix());
+    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix(), this.handleNoUserError);
   }
 
   handleLayout = e => {
@@ -124,7 +147,8 @@ FeedScreen.propTypes = {
   offset: PropTypes.number.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
-  parentNavigation: PropTypes.object.isRequired
+  parentNavigation: PropTypes.object.isRequired,
+  logOut: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -163,5 +187,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   getUserFeed,
-  pushTabRoute
+  pushTabRoute,
+  logOut
 })(FeedScreen);

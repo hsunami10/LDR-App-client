@@ -17,7 +17,7 @@ import {
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
 
-  ACCEPT_PARTNER_RESULT,
+  ACCEPT_PARTNER_RESULT_SUCCESS,
   STORE_PARTNER_RESULT,
   REMOVE_PARTNER_RESULT,
   START_FIND_PARTNER_LOADING,
@@ -31,12 +31,15 @@ import {
 
 const INITIAL_STATE = {
   profiles: { // ViewProfileScreen - user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
+    // Holds all profile information
     none_msg: 'This account does not exist or has been deleted.'
   },
   posts: { // ViewPostScreen - post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
+    // Holds comments-related properties, loading properties
     none_msg: 'This post has been deleted.'
   },
   topics: { // VIewTopicScreen - topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
+    // Holds all topic information
     none_msg: 'This topic does not exist or has been deleted.'
   },
   partners: { // NOTE: Screens for - editing columns in partners table
@@ -104,7 +107,9 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, posts: copyPosts2 };
     case REMOVE_POST_SCREEN_INFO:
       const copyPosts8 = { ...state.posts };
-      delete copyPosts8[action.payload.postID][action.payload.screenID];
+      if (copyPosts8.hasOwnProperty(action.payload.postID)) {
+        delete copyPosts8[action.payload.postID][action.payload.screenID];
+      }
       if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
         delete copyPosts8[action.payload.postID];
       }
@@ -154,12 +159,12 @@ export default (state = INITIAL_STATE, action) => {
       const postScreens = copyPosts9[action.payload.postID];
       if (postScreens) {
         for (const screenID in postScreens) {
-          if (Object.prototype.hasOwnProperty.call(postScreens, screenID)) {
+          if (postScreens.hasOwnProperty(screenID)) {
             const screen = postScreens[screenID];
             const index = screen.order.indexOf(action.payload.commentID);
 
             if (index >= 0) {
-            screen.order.splice(index, 1);
+              screen.order.splice(index, 1);
               screen.offset--;
             }
           }
@@ -216,7 +221,9 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, profiles: copyProfile };
     case REMOVE_USER_SCREEN_INFO:
       const copyProfile2 = { ...state.profiles };
-      delete copyProfile2[action.payload.userID][action.payload.screenID];
+      if (copyProfile2.hasOwnProperty(action.payload.userID)) {
+        delete copyProfile2[action.payload.userID][action.payload.screenID];
+      }
       if (Object.keys(copyProfile2[action.payload.userID]).length === 0) {
         delete copyProfile2[action.payload.userID];
       }
@@ -227,7 +234,7 @@ export default (state = INITIAL_STATE, action) => {
       const userScreens = copyProfile3[action.payload.author_id];
       if (userScreens) {
         for (const screenID in userScreens) {
-          if (Object.prototype.hasOwnProperty.call(userScreens, screenID)) {
+          if (userScreens.hasOwnProperty(screenID)) {
             const posts = userScreens[screenID].posts;
             posts.offset++;
             posts.order = [action.payload.id, ...posts.order];
@@ -241,7 +248,7 @@ export default (state = INITIAL_STATE, action) => {
       const userScreens3 = copyProfile5[action.payload.userID];
       if (userScreens3) {
         for (const screenID in userScreens3) {
-          if (Object.prototype.hasOwnProperty.call(userScreens3, screenID)) {
+          if (userScreens3.hasOwnProperty(screenID)) {
             // Handle user profile posts & interactions
             const posts = userScreens3[screenID].posts;
             const interactions = userScreens3[screenID].interactions;

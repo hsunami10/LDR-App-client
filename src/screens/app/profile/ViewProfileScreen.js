@@ -11,6 +11,7 @@ import { getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removeUserScreenInfo } from '../../../actions/ScreenActions';
+import { logOut } from '../../../assets/helpers/authentication';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
 // NOTE: Use navigation.push('ViewOtherProfile', { id, screenID }) to view other profiles here
@@ -99,21 +100,9 @@ class ViewProfileScreen extends Component {
   }
 
   handleRefresh = () => this.handleFirstLoad(true)
-
   showActionSheet = () => this.ActionSheet.show();
   ref = o => (this.ActionSheet = o)
-
-  logOut = () => {
-    removeCredentials()
-      .then(() => {
-        this.props.logOutUser();
-        this.props.navigateToRoute('Welcome');
-        this.props.screenProps.parentNavigation.navigate('Welcome');
-      })
-      .catch(error => {
-        handleError(new Error(`Unable to access keychain. ${error.message}`), false);
-      });
-  }
+  logOutUser = () => this.props.logOut(this.props.screenProps.parentNavigation)
 
   // Only allow refresh if not initial loading
   handleRefreshControl = () => {
@@ -204,7 +193,8 @@ ViewProfileScreen.propTypes = {
   goBackwardTabRoute: PropTypes.func.isRequired,
   removeUserScreenInfo: PropTypes.func.isRequired,
   profiles: PropTypes.object.isRequired,
-  current_route: PropTypes.string.isRequired
+  current_route: PropTypes.string.isRequired,
+  logOut: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -229,5 +219,6 @@ export default connect(mapStateToProps, {
   logOutUser,
   navigateToRoute,
   goBackwardTabRoute,
-  removeUserScreenInfo
+  removeUserScreenInfo,
+  logOut
 })(ViewProfileScreen);
