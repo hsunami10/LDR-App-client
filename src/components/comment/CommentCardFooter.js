@@ -63,12 +63,16 @@ class CommentCardFooter extends Component {
           {/*TODO: Do heart buttom for interaction / liking later - FIX DESIGN*/}
           {`${this.props.comment.num_likes} Likes`}
         </Text>
+        <View style={{ height: 40, marginLeft: 10, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />
+        <Text onPress={() => console.log('reply to comment')}>
+          Reply
+        </Text>
         <Ionicons onPress={this.showActionSheet} style={{ marginLeft: 'auto', marginRight: 10 }} name={`${Platform.OS}-more`} size={35} color="gray" />
         <ActionSheet
           ref={this.ref}
           options={this.props.id === this.props.comment.author_id ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel']}
-          cancelButtonIndex={this.props.id === this.props.comment.author_id ? 2 : null}
-          destructiveButtonIndex={this.props.id === this.props.comment.author_id ? 1 : null}
+          cancelButtonIndex={this.props.id === this.props.comment.author_id ? 2 : 1}
+          destructiveButtonIndex={this.props.id === this.props.comment.author_id ? 1 : undefined}
           onPress={this.onPressAction}
         />
       </View>

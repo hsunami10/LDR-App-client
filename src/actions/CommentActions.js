@@ -19,7 +19,7 @@ export const getComments = (userID, postID, screenID, offset, latestDate, noPost
     .then(response => {
       dispatch(stopCommentsPageLoading(postID, screenID));
       if (response.data.success) {
-        dispatch(storeCommentsScreenInfo(response.data.result, postID, screenID, false));
+        dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, false));
       } else {
         alertWithSingleAction(
           'Oh no!',
@@ -38,15 +38,16 @@ export const getComments = (userID, postID, screenID, offset, latestDate, noPost
     });
 };
 
+const deleteCommentAction = (postID, commentID) => ({
+  type: DELETE_COMMENT,
+  payload: { postID, commentID }
+});
 export const deleteComment = (userID, postID, commentID) => dispatch => {
   dispatch(startLoading());
   axios.delete(`${ROOT_URL}/api/comments/${commentID}?user_id=${userID}&post_id=${postID}`)
     .then(() => {
       dispatch(stopLoading());
-      dispatch({
-        type: DELETE_COMMENT,
-        payload: { postID, commentID }
-      });
+      dispatch(deleteCommentAction(postID, commentID));
     })
     .catch(error => {
       dispatch(stopLoading());
@@ -69,7 +70,6 @@ export const editComment = obj => dispatch => {
       comment
     }
   });
-
   axios.put(`${ROOT_URL}/api/comments/${userID}`, { type, comment })
     .then(response => {
       console.log(response.status);
@@ -77,9 +77,9 @@ export const editComment = obj => dispatch => {
     })
     .catch(error => {
       if (error.response) {
-        handleError(error.response.data, false);
+        handleError(error.response.data, false, () => dispatch(deleteCommentAction(comment.post_id, comment.id)));
       } else {
-        handleError(error, false);
+        handleError(error, false, () => dispatch(deleteCommentAction(comment.post_id, comment.id)));
       }
     });
 };

@@ -68,7 +68,7 @@ class CreateMainScreen extends Component {
     if (this.state.navigationState.index === 0) {
       if (this.props.post_topic.id === '') {
         this.handlePostError('topic');
-      } else if (!isValidName(this.state.body)) {
+      } else if (this.state.body.trim() === '') {
         this.handlePostError('body');
       } else {
         this.handlePostError(null);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, StyleSheet, ScrollView, RefreshControl, Keyboard } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, Keyboard, Text } from 'react-native';
 import shortid from 'shortid';
 import { StandardHeader, FullScreenLoading, AutoExpandingTextInput } from '../../../components/common';
 import PostCard from '../../../components/post/PostCard';
@@ -11,6 +11,7 @@ import { getPostAndComments, deletePost } from '../../../actions/PostActions';
 import { getComments } from '../../../actions/CommentActions';
 import CommentsList from '../../../components/comment/CommentsList';
 import PageCommentsButton from '../../../components/comment/PageCommentsButton';
+import { NO_POST_MSG } from '../../../constants/noneMessages';
 
 class ViewPostScreen extends Component {
   state = {
@@ -64,7 +65,8 @@ class ViewPostScreen extends Component {
       postID,
       this.state.screen_id,
       order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent, // Handle index out of bounds if no comments
-      refresh
+      refresh,
+      this.props.navigation
     );
   }
 
@@ -113,6 +115,47 @@ class ViewPostScreen extends Component {
     );
   }
 
+  renderBody = () => {
+    const post = this.props.all_posts[this.state.post_id || this.props.navigation.getParam('post_id', null)];
+    if (!post) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>{NO_POST_MSG}</Text>
+        </View>
+      );
+    }
+    return (
+      <ScrollView
+        onScroll={this.handleScroll}
+        scrollEventThrottle={16}
+        refreshControl={this.handleRefreshControl()}
+        onLayout={this.handleLayout}
+      >
+        <PostCard
+          userID={this.props.id}
+          post={post}
+          viewProfile={this.viewProfile}
+          postLikes={this.props.post_likes}
+          navigation={this.props.navigation}
+          parentNavigation={this.props.screenProps.parentNavigation}
+          viewing
+          onLayout={this.handlePostLayout}
+        />
+        <View style={{ flex: 1 }}>
+          {this.renderComments()}
+        </View>
+        <AutoExpandingTextInput
+          value={this.state.text}
+          placeholder="Comment..."
+          onChangeText={this.handleChangeText}
+          onContentSizeChange={height => {
+            console.log('content size height: ' + height);
+          }}
+        />
+      </ScrollView>
+    );
+  }
+
   renderComments = () => {
     if (this.state.height === 0 || this.state.post_height === 0) {
       return null;
@@ -150,34 +193,7 @@ class ViewPostScreen extends Component {
           showLeft
           onLeftPress={this.handleLeftPress}
         />
-        <ScrollView
-          onScroll={this.handleScroll}
-          scrollEventThrottle={16}
-          refreshControl={this.handleRefreshControl()}
-          onLayout={this.handleLayout}
-        >
-          <PostCard
-            userID={this.props.id}
-            post={this.props.all_posts[this.state.post_id || this.props.navigation.getParam('post_id', null)]}
-            viewProfile={this.viewProfile}
-            postLikes={this.props.post_likes}
-            navigation={this.props.navigation}
-            parentNavigation={this.props.screenProps.parentNavigation}
-            viewing
-            onLayout={this.handlePostLayout}
-          />
-          <View style={{ flex: 1 }}>
-            {this.renderComments()}
-          </View>
-          <AutoExpandingTextInput
-            value={this.state.text}
-            placeholder="Comment..."
-            onChangeText={this.handleChangeText}
-            onContentSizeChange={height => {
-              console.log('content size height: ' + height);
-            }}
-          />
-        </ScrollView>
+        {this.renderBody()}
       </View>
     );
   }

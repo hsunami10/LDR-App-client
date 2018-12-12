@@ -35,7 +35,7 @@ export const getUserFeed = (id, offset, refresh, order, direction, latestDate, n
         dispatch(stopInitialFeedLoading());
       }
       if (response.data.success) {
-        const feed = response.data.result;
+        const { feed } = response.data;
         dispatch({
           type: GET_USER_FEED,
           payload: {

@@ -81,8 +81,8 @@ class PostCardFooter extends Component {
         <ActionSheet
           ref={this.ref}
           options={this.props.id === this.props.post.author_id ? ['Edit', 'Delete', 'Cancel'] : ['Report', 'Cancel']}
-          cancelButtonIndex={this.props.id === this.props.post.author_id ? 2 : null}
-          destructiveButtonIndex={this.props.id === this.props.post.author_id ? 1 : null}
+          cancelButtonIndex={this.props.id === this.props.post.author_id ? 2 : 1}
+          destructiveButtonIndex={this.props.id === this.props.post.author_id ? 1 : undefined}
           onPress={this.onPressAction}
         />
       </View>

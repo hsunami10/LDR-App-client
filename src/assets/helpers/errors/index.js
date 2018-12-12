@@ -3,9 +3,38 @@ import { getConnectionInfo, showNoConnectionAlert } from '../connection';
 import { removeCredentials } from '../../../actions/AuthActions';
 import { alertWithSingleAction } from '../alerts';
 
+// NOTE: Same cases as generateMessage in server/assets/wrapper.js
+// Only gets triggered on inserts or updates
+const handleAction = (type, callback) => {
+  switch (type) {
+    case 'topics':
+      break;
+    case 'users':
+      // NOTE: This might be bad - force restarting is bad for UX
+      removeCredentials()
+        .then(() => RNRestart.Restart())
+        .catch(error => {
+          handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+        });
+      break;
+    case 'posts':
+      if (callback) {
+        callback();
+      }
+      break;
+    case 'comments':
+      if (callback) {
+        callback();
+      }
+      break;
+    default:
+      break;
+  }
+};
+
 // TODO: Send report to development team
 // TODO: Add filename and line number and custom error messages for all
-export const handleError = (error, fatal) => {
+export const handleError = (error, fatal, callback = null) => {
   console.log(error);
   getConnectionInfo()
     .then(connectionInfo => {
@@ -18,16 +47,8 @@ export const handleError = (error, fatal) => {
         alertWithSingleAction(
           'Oh no!',
           error.fk_error_msg,
-          () => {
-            if (error.fk_error_type === 'users') {
-              removeCredentials()
-                .then(() => RNRestart.Restart())
-                .catch(error2 => {
-                  handleError(new Error(`Unable to access keychain. ${error2.message}`), false);
-                });
-            }
-          },
-          error.fk_error_type === 'users' ? 'Log Out' : 'OK',
+          () => handleAction(error.fk_error_type, callback),
+          error.fk_error_type === 'users' ? 'Log Out and Restart' : 'OK',
           error.fk_error_type !== 'users'
         );
       } else if (fatal) {
@@ -42,7 +63,7 @@ export const handleError = (error, fatal) => {
         alertWithSingleAction(
           'Oh no!',
           `Error: ${error.message}\n\nIf this keeps recurring, please send a bug report, and we will get it fixed as soon as possible.`,
-          () => console.log('hi'));
+        );
       }
     });
 };

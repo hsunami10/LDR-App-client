@@ -3,7 +3,8 @@ import { Alert } from 'react-native';
 import {
   STORE_USER_INFO,
   RESET_USER_ERRORS,
-  STORE_PARTNER_RESULT,
+  STORE_PARTNER_RESULT_SUCCESS,
+  STORE_PARTNER_RESULT_FAILURE,
   REMOVE_PARTNER_RESULT,
   ACCEPT_PARTNER_RESULT_SUCCESS,
   ACCEPT_PARTNER_RESULT_FAILURE,
@@ -12,6 +13,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { removeCredentials, logOutUser } from './AuthActions';
+import { alertWithSingleAction } from '../assets/helpers/alerts';
 import {
   storeUserScreenInfo,
   startUserScreenRefreshing,
@@ -37,10 +39,14 @@ export const findPartnerCode = (code, screenID = null) => dispatch => {
   axios.get(`${ROOT_URL}/api/partner/find-code/${code}`)
     .then(response => {
       dispatch(stopFindPartnerLoading(screenID));
-      dispatch({
-        type: STORE_PARTNER_RESULT,
-        payload: response.data
-      });
+      if (response.data.success) {
+        dispatch({
+          type: STORE_PARTNER_RESULT_SUCCESS,
+          payload: response.data.user
+        });
+      } else {
+        dispatch({ type: STORE_PARTNER_RESULT_FAILURE });
+      }
     })
     .catch(error => {
       dispatch(stopFindPartnerLoading(screenID));
@@ -62,6 +68,7 @@ export const acceptResult = (userID, partnerID, screenID = null) => dispatch => 
     .then(response => {
       dispatch(stopFindPartnerLoading(screenID));
       if (response.data.success) {
+        // TODO: Finish this later - add response.data.partner to global redux state
         dispatch({
           type: ACCEPT_PARTNER_RESULT_SUCCESS,
           payload: response.data
@@ -90,7 +97,7 @@ credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
-export const getUserInfo = (userID, targetID, type, isRefresh, credentials = undefined, callbacks = undefined, screenID) => dispatch => {
+export const getUserInfo = (userID, targetID, type, isRefresh, credentials = null, callbacks = null, screenID) => dispatch => {
   if (isRefresh) {
     dispatch(startUserScreenRefreshing(userID, screenID));
   } else {
@@ -106,7 +113,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
         dispatch(stopInitialUserLoading(userID, screenID));
       }
 
-      if (response.data.type === 'private') {
+      if (response.data.type === 'private' || userID === targetID) {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
           dispatch(storeUserScreenInfo(response.data.user, screenID));
@@ -120,24 +127,22 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
         } else { // If own account does not exist in database, then log out to Welcome screen
           removeCredentials()
             .then(() => {
-              Alert.alert(
+              alertWithSingleAction(
                 'Oh no!',
                 'Your account does not exist or has been deleted. If this persists, please contact the development team.',
-                [{
-                  text: 'OK',
-                  onPress: () => {
-                    if (callbacks) {
-                      if (callbacks.navToAuth) {
-                        dispatch(logOutUser());
-                        callbacks.navToAuth();
-                      } else {
-                        // NOTE: This should never run
-                        handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
-                      }
+                () => {
+                  if (callbacks) {
+                    if (callbacks.navToAuth) {
+                      dispatch(logOutUser());
+                      callbacks.navToAuth();
+                    } else {
+                      // NOTE: This should never run
+                      handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
                     }
                   }
-                }],
-                { cancelable: false }
+                },
+                undefined,
+                false
               );
             })
             .catch(error => {
@@ -147,9 +152,14 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = und
       } else if (response.data.type === 'edit') {
         // TODO: Handle retriving data for editing profile
         console.log('retrieve data to edit profile here');
-      } else if (response.data.type === 'public' || response.data.type === 'partner') { // User does exist - type: public / partner
-        dispatch(storeUserScreenInfo(response.data.user, screenID));
+      } else if (response.data.type === 'public' || response.data.type === 'partner') {
+        if (response.data.success) {
+          dispatch(storeUserScreenInfo(response.data.user, screenID));
+        } else {
+          console.log('TODO: show store user screen info failed action type here');
+        }
       } else { // User does not exist - type: public / partner
+        console.log('TODO: show store user screen info failed action type here');
         dispatch(storeUserScreenInfo(null, screenID));
       }
     })

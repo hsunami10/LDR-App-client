@@ -7,6 +7,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
+import { alertWithSingleAction } from '../assets/helpers/alerts';
 import { handleError } from '../assets/helpers/errors';
 import {
   storeCommentsScreenInfo,
@@ -15,7 +16,14 @@ import {
   initializePostScreenInfo
 } from './ScreenActions';
 
-export const getPostAndComments = (userID, postID, screenID, earliestDate, refreshing) => dispatch => {
+const noPostError = (dispatch, userID, postID, navigation) => {
+  dispatch(deletePostAction(userID, postID));
+  if (navigation) {
+    navigation.pop();
+  }
+};
+
+export const getPostAndComments = (userID, postID, screenID, earliestDate, refreshing, navigation) => dispatch => {
   if (refreshing) {
     dispatch(startPostScreenRefreshing(postID, screenID));
   } else {
@@ -26,14 +34,25 @@ export const getPostAndComments = (userID, postID, screenID, earliestDate, refre
       if (refreshing) {
         dispatch(stopPostScreenRefreshing(postID, screenID));
       }
-      dispatch({
-        type: EDIT_POST,
-        payload: {
-          post: response.data.post,
-          type: null
-        }
-      });
-      dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, true));
+      if (response.data.success) {
+        const { result } = response.data;
+        dispatch({
+          type: EDIT_POST,
+          payload: {
+            post: result.post,
+            type: null
+          }
+        });
+        dispatch(storeCommentsScreenInfo(result.comments, postID, screenID, true));
+      } else if (refreshing) {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => noPostError(dispatch, userID, postID, navigation)
+        );
+      } else {
+        noPostError(dispatch, userID, postID);
+      }
     })
     .catch(error => {
       if (refreshing) {
@@ -109,22 +128,23 @@ export const editPost = (obj, navigation = null) => dispatch => {
         dispatch(stopLoading());
       }
       if (error.response) {
-        handleError(error.response.data, false);
+        handleError(error.response.data, false, () => noPostError(dispatch, userID, post.id, navigation));
       } else {
-        handleError(error, false);
+        handleError(error, false, () => noPostError(dispatch, userID, post.id, navigation));
       }
     });
 };
 
+const deletePostAction = (userID, postID) => ({
+  type: DELETE_POST,
+  payload: { userID, postID }
+});
 export const deletePost = (userID, postID, navigation = null) => dispatch => {
   dispatch(startLoading());
   axios.delete(`${ROOT_URL}/api/posts/${postID}`)
     .then(() => {
       dispatch(stopLoading());
-      dispatch({
-        type: DELETE_POST,
-        payload: { userID, postID }
-      });
+      dispatch(deletePostAction(userID, postID));
       if (navigation) {
         navigation.pop();
       }

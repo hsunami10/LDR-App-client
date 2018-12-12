@@ -4,7 +4,8 @@ export const LOG_OUT_USER = 'log_out_user';
 // User
 export const STORE_USER_INFO = 'store_user_info';
 export const RESET_USER_ERRORS = 'reset_user_errors';
-export const STORE_PARTNER_RESULT = 'store_partner_result';
+export const STORE_PARTNER_RESULT_SUCCESS = 'store_partner_result_success';
+export const STORE_PARTNER_RESULT_FAILURE = 'store_partner_result_failure';
 export const REMOVE_PARTNER_RESULT = 'remove_partner_result';
 export const ACCEPT_PARTNER_RESULT_SUCCESS = 'accept_partner_result_success';
 export const ACCEPT_PARTNER_RESULT_FAILURE = 'accept_partner_result_failure';

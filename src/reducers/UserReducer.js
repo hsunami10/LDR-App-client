@@ -8,7 +8,8 @@ import {
   RESET_USER_ERRORS,
   ACCEPT_PARTNER_RESULT_SUCCESS,
   ACCEPT_PARTNER_RESULT_FAILURE,
-  STORE_PARTNER_RESULT,
+  STORE_PARTNER_RESULT_SUCCESS,
+  STORE_PARTNER_RESULT_FAILURE,
   REMOVE_PARTNER_RESULT,
   START_FIND_PARTNER_LOADING,
   STOP_FIND_PARTNER_LOADING,
@@ -39,10 +40,9 @@ export default (state = INITIAL_STATE, action) => {
     case RESET_USER_ERRORS:
       return { ...state, partner_error_msg: ' ' };
 
-    case STORE_PARTNER_RESULT:
-      if (action.payload.success) {
-        return { ...state, partner_result: action.payload.result };
-      }
+    case STORE_PARTNER_RESULT_SUCCESS:
+      return { ...state, partner_result: action.payload.result };
+    case STORE_PARTNER_RESULT_FAILURE:
       return { ...state, partner_result: null, partner_error_msg: INITIAL_STATE.partner_error_msg };
     case REMOVE_PARTNER_RESULT:
       return { ...state, partner_result: null };

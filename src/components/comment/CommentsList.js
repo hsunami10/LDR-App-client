@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Text, FlatList } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import CommentCard from './CommentCard';
-import { NO_COMMENTS_MSG } from '../../constants/noneMessages';
+import { NO_COMMENTS_FOR_POST_MSG } from '../../constants/noneMessages';
 
 class CommentsList extends Component {
   viewProfile = (id, username) => {
@@ -31,7 +31,7 @@ class CommentsList extends Component {
   render() {
     return (
       <FlatList
-        data={this.props.empty ? [{ id: 'foo', text: NO_COMMENTS_MSG }] : this.props.data}
+        data={this.props.empty ? [{ id: 'foo', text: NO_COMMENTS_FOR_POST_MSG }] : this.props.data}
         renderItem={this.props.empty ? this.renderMessage : this.renderPosts}
         keyExtractor={comment => comment.id}
         scrollEventThrottle={this.props.scrollEventThrottle || 16}
