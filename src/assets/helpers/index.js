@@ -3,6 +3,9 @@ import { Alert, NetInfo, Platform } from 'react-native';
 import RNRestart from 'react-native-restart';
 import Permissions from 'react-native-permissions';
 import { removeCredentials } from '../../actions/AuthActions';
+import { alertWithSingleAction } from './alerts';
+
+// TODO: Split up this file
 
 // PropTypes custom error handlers
 export const propTypesMissingError = (props, propName, componentName) => `The prop \`${propName}\` is marked as required in \`${componentName}\`, but it's value is \`${props[propName]}\``;
@@ -19,25 +22,6 @@ export const requireWhenPropExists = (targetProp, props, propName, componentName
   }
 };
 
-export const isDiffObj = (o1, o2) => {
-  if (Object.keys(o1).length !== Object.keys(o2).length) {
-    return true;
-  }
-  for (const key in o1) {
-    if (o1[key] !== o2[key]) {
-      return true;
-    }
-  }
-  return false;
-};
-
-export const atBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-  if (contentOffset.y < 0) {
-    console.log('content smaller than view');
-  }
-  return layoutMeasurement.height + contentOffset.y >= contentSize.height && contentOffset.y > 0;
-};
-
 // TODO: Send report to development team
 // TODO: Add filename and line number and custom error messages for all
 export const handleError = (error, fatal) => {
@@ -50,38 +34,34 @@ export const handleError = (error, fatal) => {
         // Handle foreign key violation (insert, update)
         // NOTE: Same as LDR_App_server helpers/wrapper.js
         // FK violation on users is a special case - log out user by restarting app
-        Alert.alert(
-            'Oh no!',
-            error.fk_error_msg,
-          [
-            {
-              text: error.fk_error_type === 'users' ? 'Log Out' : 'OK',
-              onPress: () => {
-                if (error.fk_error_type === 'users') {
-                  removeCredentials()
-                    .then(() => RNRestart.Restart())
-                    .catch(error2 => {
-                      handleError(new Error(`Unable to access keychain. ${error2.message}`), false);
-                    });
-                }
-              }
+        alertWithSingleAction(
+          'Oh no!',
+          error.fk_error_msg,
+          () => {
+            if (error.fk_error_type === 'users') {
+              removeCredentials()
+                .then(() => RNRestart.Restart())
+                .catch(error2 => {
+                  handleError(new Error(`Unable to access keychain. ${error2.message}`), false);
+                });
             }
-          ],
-          { cancelable: error.fk_error_type !== 'users' }
+          },
+          error.fk_error_type === 'users' ? 'Log Out' : 'OK',
+          error.fk_error_type !== 'users'
         );
       } else if (fatal) {
-        Alert.alert(
-            'Oops!',
-            `Fatal: ${error.message}\n\nAn unexpected error occured. This should not have happened. Please send a bug report, and we will get it fixed as soon as possible. We are sorry for the inconvenience.`,
-          [{ text: 'Restart', onPress: () => RNRestart.Restart() }],
-          { cancelable: false }
+        alertWithSingleAction(
+          'Oops!',
+          `Fatal: ${error.message}\n\nAn unexpected error occured. This should not have happened. Please send a bug report, and we will get it fixed as soon as possible. We are sorry for the inconvenience.`,
+          () => RNRestart.Restart(),
+          'Restart',
+          false
         );
       } else {
-        Alert.alert(
+        alertWithSingleAction(
           'Oh no!',
           `Error: ${error.message}\n\nIf this keeps recurring, please send a bug report, and we will get it fixed as soon as possible.`,
-          [{ text: 'OK' }]
-        );
+          () => console.log('hi'));
       }
     });
 };
@@ -116,10 +96,9 @@ export const getConnectionInfo = async () => {
 // ========================================= Permissions =========================================
 const alertRestrictedPermission = () => {
   if (Platform.OS === 'ios') {
-    Alert.alert(
+    alertWithSingleAction(
       'Your access has been restricted.',
-      'This feature is either not supported by this device or blocked by parental controls.',
-      [{ text: 'OK' }]
+      'This feature is either not supported by this device or blocked by parental controls.'
     );
   }
 };

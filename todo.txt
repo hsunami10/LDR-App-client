@@ -1,9 +1,15 @@
 - fix backend checks - if something exists for all api requests
   - have all api requests have a "success" = true / false depending on if it exists
+  - might not have to do this - because foreign key violation checks may handle this?
 - finish 3 tab screens for home screen - Feed, Friends, Topics
   - friends
   - topics
 - add replying to comments
+
+NOTE - When getting posts & comments created by deleted users:
+  - before inner joining author_id, check to see if the user exists?
+  - or after inner joining, check the values for undefined or not exists
+  - QUESTION: what to do with post_likes and comment_likes when a user gets deleted?
 
 URGENT - figure out how to animate Text component height?
 
