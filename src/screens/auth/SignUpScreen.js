@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
-import { isValidCredentials } from '../../assets/helpers';
+import { isValidCredentials } from '../../assets/helpers/text';
 import {
   setAuthErrors,
   resetAuthErrors,
@@ -85,7 +85,6 @@ class SignUpScreen extends Component {
   }
 
   render() {
-    console.log(this.props.loading);
     return (
       <DismissKeyboard>
         <View style={{ flex: 1 }}>

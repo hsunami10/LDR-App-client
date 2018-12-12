@@ -10,7 +10,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { navigateToRoute, pushTabRoute } from './NavigationActions';
-import { handleError } from '../assets/helpers';
+import { handleError } from '../assets/helpers/errors';
 
 // Only called when from log in / sign up screen
 export const storeCredentials = async id => {

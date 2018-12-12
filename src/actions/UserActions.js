@@ -18,7 +18,7 @@ import {
   startInitialUserLoading,
   stopInitialUserLoading,
 } from './ScreenActions';
-import { handleError } from '../assets/helpers';
+import { handleError } from '../assets/helpers/errors';
 
 // If screenID is null, then only change state in UserReducer
 // If screenID is NOT null, then only change state in ScreenReducer

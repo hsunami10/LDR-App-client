@@ -5,7 +5,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
-import { handleError } from '../assets/helpers';
+import { handleError } from '../assets/helpers/errors';
 import {
   startCommentsPageLoading,
   stopCommentsPageLoading,

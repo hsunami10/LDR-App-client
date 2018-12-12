@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import { navigateToRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { setNotFirstLogIn } from '../../actions/AuthActions';
-import { checkPermission } from '../../assets/helpers';
+import { checkPermission } from '../../assets/helpers/permissions';
 import { FullScreenLoading } from '../../components/common';
 import HomeStack from '../../navigation/HomeStack';
 import DiscoverStack from '../../navigation/DiscoverStack';

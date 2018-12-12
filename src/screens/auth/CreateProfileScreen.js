@@ -13,7 +13,7 @@ import {
   FullScreenLoading,
   Input
 } from '../../components/common';
-import { alertPermission, checkPermission } from '../../assets/helpers';
+import { alertPermission, checkPermission } from '../../assets/helpers/permissions';
 import { createProfile } from '../../actions/AuthActions';
 import { findPartnerCode, removePartnerResult, acceptResult } from '../../actions/UserActions';
 import UserRequestCard from '../../components/user/UserRequestCard';

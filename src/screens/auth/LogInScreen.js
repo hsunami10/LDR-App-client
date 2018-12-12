@@ -15,7 +15,7 @@ import {
   logInWithUsernameAndPassword
 } from '../../actions/AuthActions';
 import { navigateToRoute } from '../../actions/NavigationActions';
-import { isValidCredentials } from '../../assets/helpers';
+import { isValidCredentials } from '../../assets/helpers/text';
 import textStyles from '../../constants/styles/text';
 
 class LogInScreen extends Component {

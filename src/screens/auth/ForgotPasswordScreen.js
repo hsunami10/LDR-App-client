@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, StyleSheet, Platform, TouchableOpacity, Keyboard, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } from '../../components/common';
-import { isValidEmail } from '../../assets/helpers';
+import { isValidEmail } from '../../assets/helpers/text';
 import { MIN_HEADER_HEIGHT_NO_STATUS_BAR } from '../../constants/variables';
 import { forgotPassword, resetAuthErrors, setAuthErrors } from '../../actions/AuthActions';
 import { navigateToRoute } from '../../actions/NavigationActions';

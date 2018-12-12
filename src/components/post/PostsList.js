@@ -5,7 +5,7 @@ import { View, Text, FlatList, RefreshControl, Button } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from './PostCard';
 import SortModal from './SortModal';
-import { requireWhenPropExists } from '../../assets/helpers';
+import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 
 class PostsList extends Component {
   state = {

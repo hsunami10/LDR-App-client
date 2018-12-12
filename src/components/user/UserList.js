@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FlatList, View, StyleSheet, RefreshControl, Text, Button } from 'react-native';
 import UserCard from './UserCard';
-import { requireWhenPropExists } from '../../assets/helpers';
+import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 
 class UserList extends Component {
   state = {

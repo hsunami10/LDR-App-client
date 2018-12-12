@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { DismissKeyboard, StandardHeader, Input, Button, FullScreenLoading } from '../../components/common';
-import { isValidEmail } from '../../assets/helpers';
+import { isValidEmail } from '../../assets/helpers/text';
 import {
   setAuthErrors,
   resetAuthErrors,

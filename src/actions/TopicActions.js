@@ -8,7 +8,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
-import { handleError } from '../assets/helpers';
+import { handleError } from '../assets/helpers/errors';
 
 // ========================================= Create Topic =========================================
 export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch => {

@@ -8,7 +8,7 @@ import { createPost } from '../../../actions/PostActions';
 import { createTopic } from '../../../actions/TopicActions';
 import { stopLoading } from '../../../actions/LoadingActions';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
-import { isValidName, hasTrailingSpaces } from '../../../assets/helpers';
+import { isValidName, hasTrailingSpaces } from '../../../assets/helpers/text';
 import CreatePostScreen from './CreatePostScreen';
 import CreateTopicScreen from './CreateTopicScreen';
 

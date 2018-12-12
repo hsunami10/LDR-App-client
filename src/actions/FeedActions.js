@@ -8,7 +8,7 @@ import {
   SORT_FEED
 } from './types';
 import { ROOT_URL } from '../constants/variables';
-import { handleError } from '../assets/helpers';
+import { handleError } from '../assets/helpers/errors';
 
 export const startFeedLoading = () => ({ type: START_FEED_LOADING });
 export const stopFeedLoading = () => ({ type: STOP_FEED_LOADING });

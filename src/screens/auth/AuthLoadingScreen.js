@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setUserCredentials, logOutUser } from '../../actions/AuthActions';
 import { navigateToRoute, goBackwardRoute, pushTabRoute } from '../../actions/NavigationActions';
-import { handleError, showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers';
+import { handleError } from '../../assets/helpers/errors';
+import { showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers/connection';
 
 class AuthLoadingScreen extends Component {
   state = { appState: AppState.currentState }

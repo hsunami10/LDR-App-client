@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
-import { handleError } from '../../../assets/helpers/index';
+import { handleError } from '../../../assets/helpers/errors';
 import { getUserInfo } from '../../../actions/UserActions';
 import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';

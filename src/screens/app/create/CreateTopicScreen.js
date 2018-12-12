@@ -7,7 +7,7 @@ import Permissions from 'react-native-permissions';
 import shortid from 'shortid';
 import { Input, MultiLineInput, ClickableImage } from '../../../components/common';
 import textStyles from '../../../constants/styles/text';
-import { alertPermission, checkPermission } from '../../../assets/helpers';
+import { alertPermission, checkPermission } from '../../../assets/helpers/permissions';
 
 // TODO: Handle animating height with keyboard
 class CreateTopicScreen extends Component {
