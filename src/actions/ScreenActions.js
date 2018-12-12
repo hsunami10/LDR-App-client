@@ -1,5 +1,6 @@
 import {
-  STORE_USER_SCREEN_INFO,
+  STORE_USER_SCREEN_INFO_SUCCESS,
+  STORE_USER_SCREEN_INFO_FAILURE,
   REMOVE_USER_SCREEN_INFO,
   REMOVE_POST_SCREEN_INFO,
   START_USER_SCREEN_REFRESHING,
@@ -36,9 +37,13 @@ export const stopInitialUserLoading = (userID, screenID) => ({
   payload: { userID, screenID }
 });
 
-export const storeUserScreenInfo = (user, screenID) => ({
-  type: STORE_USER_SCREEN_INFO,
+export const storeUserScreenInfoSuccess = (user, screenID) => ({
+  type: STORE_USER_SCREEN_INFO_SUCCESS,
   payload: { user, screenID }
+});
+export const storeUserScreenInfoFailure = (userID, screenID) => ({
+  type: STORE_USER_SCREEN_INFO_FAILURE,
+  payload: { userID, screenID }
 });
 export const removeUserScreenInfo = (userID, screenID) => ({
   type: REMOVE_USER_SCREEN_INFO,

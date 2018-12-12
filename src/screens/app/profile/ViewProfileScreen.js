@@ -6,12 +6,12 @@ import { connect } from 'react-redux';
 import shortid from 'shortid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
-import { handleError } from '../../../assets/helpers/errors';
 import { getUserInfo } from '../../../actions/UserActions';
-import { logOutUser, removeCredentials } from '../../../actions/AuthActions';
+import { logOutUser } from '../../../actions/AuthActions';
 import { navigateToRoute, goBackwardTabRoute } from '../../../actions/NavigationActions';
 import { removeUserScreenInfo } from '../../../actions/ScreenActions';
 import { logOut } from '../../../assets/helpers/authentication';
+import { NO_USER_MSG } from '../../../constants/noneMessages';
 
 // NOTE: Remember to handle pagination like FeedScreen, GeneralSearchScreen, DiscoverScreen - FlatList onContentSizeChange, state.canPaginate
 // NOTE: Use navigation.push('ViewOtherProfile', { id, screenID }) to view other profiles here
@@ -65,7 +65,7 @@ class ViewProfileScreen extends Component {
             'Are you sure you want to log out?',
           [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Log Out', onPress: this.logOut }
+            { text: 'Log Out', onPress: this.logOutUser }
           ]
         );
         break;
@@ -89,16 +89,19 @@ class ViewProfileScreen extends Component {
     const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
-      this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, undefined, {
+      this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, {
         navToApp: () => null,
         navToAuth: this.logOut
       }, this.state.screen_id);
     } else {
-      // type: 'partner', 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh, this.state.screen_id);
+      // type: 'public'
+      this.props.getUserInfo(this.props.id, targetID, type, refresh, {
+        noUserCB: this.handleNoUserError
+      }, this.state.screen_id);
     }
   }
 
+  handleNoUserError = () => this.props.navigation.pop()
   handleRefresh = () => this.handleFirstLoad(true)
   showActionSheet = () => this.ActionSheet.show();
   ref = o => (this.ActionSheet = o)
@@ -111,6 +114,8 @@ class ViewProfileScreen extends Component {
       this.props.profiles[this.state.user_id][this.state.screen_id] === undefined ||
       this.props.profiles[this.state.user_id][this.state.screen_id].initial_loading
     ) {
+      return null;
+    } else if (Object.keys(this.props.profiles[this.state.user_id][this.state.screen_id]).length === 0) {
       return null;
     }
     return (
@@ -135,6 +140,14 @@ class ViewProfileScreen extends Component {
       this.props.profiles[this.state.user_id][this.state.screen_id].initial_loading
     ) {
       return <FullScreenLoading height={this.state.height} loading />;
+    } else if (Object.keys(this.props.profiles[this.state.user_id][this.state.screen_id]).length === 0) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text>
+            {NO_USER_MSG}
+          </Text>
+        </View>
+      );
     }
     // TODO: Display actual information here
     return this.renderContent();

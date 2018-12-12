@@ -11,7 +11,7 @@ import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers/errors';
 
 // ========================================= Create Topic =========================================
-export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch => {
+export const createTopic = (dataObj, navigation, createTopicErrorCB) => dispatch => {
   dispatch(startLoading());
 
   const data = new FormData();
@@ -35,7 +35,7 @@ export const createTopic = (dataObj, navigation, createTopicErrCb) => dispatch =
         dispatch(goBackwardRoute());
         navigation.pop();
       } else {
-        createTopicErrCb(response.data.msg);
+        createTopicErrorCB(response.data.error);
       }
     })
     .catch(error => {

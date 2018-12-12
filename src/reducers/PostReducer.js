@@ -1,6 +1,6 @@
 import {
   LOG_OUT_USER,
-  STORE_USER_SCREEN_INFO,
+  STORE_USER_SCREEN_INFO_SUCCESS,
   GET_USER_FEED,
   CREATE_POST,
   EDIT_POST,
@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
     case LOG_OUT_USER:
       return INITIAL_STATE;
 
-    case STORE_USER_SCREEN_INFO: // Called on every fetch user profile
+    case STORE_USER_SCREEN_INFO_SUCCESS: // Called on every fetch user profile
       return {
         ...state,
         post_likes: {

@@ -32,7 +32,7 @@ const users = [
 // When adding and removing friends, do the same to all (like posting for user profiles)
 // Have a FriendReducer, which is like PostReducer - so adding and removing friends will show for all screens
 // When getting friends, return an order, and an object of user_ids to user objects, like always
-// NOTE: Remember to change ScreenReducer STORE_USER_SCREEN_INFO to store friends list IF userID = current user
+// NOTE: Remember to change ScreenReducer STORE_USER_SCREEN_INFO_SUCCESS to store friends list IF userID = current user
 // Have a new action and dispatch - GET_USER_FRIENDS
 //
 // Remember to also show friend requests - have SectionList if showFriendRequests = true

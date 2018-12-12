@@ -80,11 +80,13 @@ export const createPost = (postObj, navigation) => dispatch => {
       navigation.pop();
     })
     .catch(error => {
+      // 2 possible errors: foreign key violation users or topics
+      // callback only gets invoked when topics
       dispatch(stopLoading());
       if (error.response) {
-        handleError(error.response.data, false);
+        handleError(error.response.data, false, () => console.log('TODO: delete topic here'));
       } else {
-        handleError(error, false);
+        handleError(error, false, () => console.log('TODO: delete topic here'));
       }
     });
 };
@@ -124,6 +126,7 @@ export const editPost = (obj, navigation = null) => dispatch => {
       }
     })
     .catch(error => {
+      // 1 possible error: foreign key violation posts
       if (type === 'body') {
         dispatch(stopLoading());
       }

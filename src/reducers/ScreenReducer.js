@@ -1,6 +1,7 @@
 import {
   LOG_OUT_USER,
-  STORE_USER_SCREEN_INFO,
+  STORE_USER_SCREEN_INFO_SUCCESS,
+  STORE_USER_SCREEN_INFO_FAILURE,
   REMOVE_USER_SCREEN_INFO,
   REMOVE_POST_SCREEN_INFO,
   CREATE_POST,
@@ -212,13 +213,20 @@ export default (state = INITIAL_STATE, action) => {
       };
       return { ...state, profiles: copyProf2 };
 
-    case STORE_USER_SCREEN_INFO:
+    case STORE_USER_SCREEN_INFO_SUCCESS:
       const copyProfile = { ...state.profiles };
       copyProfile[action.payload.user.id] = {
         ...copyProfile[action.payload.user.id],
         [action.payload.screenID]: action.payload.user
       };
       return { ...state, profiles: copyProfile };
+    case STORE_USER_SCREEN_INFO_FAILURE:
+      const copyProfile1 = { ...state.profiles };
+      copyProfile1[action.payload.userID] = {
+        ...copyProfile1[action.payload.userID],
+        [action.payload.screenID]: {}
+      };
+      return { ...state, profiles: copyProfile1 };
     case REMOVE_USER_SCREEN_INFO:
       const copyProfile2 = { ...state.profiles };
       if (copyProfile2.hasOwnProperty(action.payload.userID)) {

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Alert } from 'react-native';
 import {
   STORE_USER_INFO,
   RESET_USER_ERRORS,
@@ -15,7 +14,8 @@ import { ROOT_URL } from '../constants/variables';
 import { removeCredentials, logOutUser } from './AuthActions';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
 import {
-  storeUserScreenInfo,
+  storeUserScreenInfoSuccess,
+  storeUserScreenInfoFailure,
   startUserScreenRefreshing,
   stopUserScreenRefreshing,
   startInitialUserLoading,
@@ -93,11 +93,10 @@ export const acceptResult = (userID, partnerID, screenID = null) => dispatch => 
 /*
 Get public or private user information
 type: private, public, edit, partner
-credentials and callbacks are only BOTH defined when called in AuthLoading
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined
  */
-export const getUserInfo = (userID, targetID, type, isRefresh, credentials = null, callbacks = null, screenID) => dispatch => {
+export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null, screenID) => dispatch => {
   if (isRefresh) {
     dispatch(startUserScreenRefreshing(userID, screenID));
   } else {
@@ -113,10 +112,11 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = nul
         dispatch(stopInitialUserLoading(userID, screenID));
       }
 
-      if (response.data.type === 'private' || userID === targetID) {
+      // If own account
+      if (response.data.type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
-          dispatch(storeUserScreenInfo(response.data.user, screenID));
+          dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
           if (callbacks) {
             if (callbacks.navToApp) {
               callbacks.navToApp();
@@ -146,21 +146,24 @@ export const getUserInfo = (userID, targetID, type, isRefresh, credentials = nul
               );
             })
             .catch(error => {
-              handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+              handleError(new Error(error.message), true);
             });
         }
-      } else if (response.data.type === 'edit') {
-        // TODO: Handle retriving data for editing profile
-        console.log('retrieve data to edit profile here');
-      } else if (response.data.type === 'public' || response.data.type === 'partner') {
+      } else if (response.data.type === 'public') {
         if (response.data.success) {
-          dispatch(storeUserScreenInfo(response.data.user, screenID));
+          dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
+        } else if (isRefresh) {
+          alertWithSingleAction(
+            'Oh no!',
+            response.data.error,
+            () => {
+              if (callbacks.noUserCB) {
+                callbacks.noUserCB();
+              }
+            });
         } else {
-          console.log('TODO: show store user screen info failed action type here');
+          dispatch(storeUserScreenInfoFailure(targetID, screenID));
         }
-      } else { // User does not exist - type: public / partner
-        console.log('TODO: show store user screen info failed action type here');
-        dispatch(storeUserScreenInfo(null, screenID));
       }
     })
     .catch(error => {

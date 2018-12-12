@@ -76,6 +76,7 @@ export const editComment = obj => dispatch => {
       console.log('TODO: do something here after editing comment');
     })
     .catch(error => {
+      // 1 possible error: foreign key violation comments
       if (error.response) {
         handleError(error.response.data, false, () => dispatch(deleteCommentAction(comment.post_id, comment.id)));
       } else {

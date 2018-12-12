@@ -8,13 +8,16 @@ import { alertWithSingleAction } from '../alerts';
 const handleAction = (type, callback) => {
   switch (type) {
     case 'topics':
+      if (callback) {
+        callback();
+      }
       break;
-    case 'users':
+    case 'users': // Only true if own user account gets deleted
       // NOTE: This might be bad - force restarting is bad for UX
       removeCredentials()
         .then(() => RNRestart.Restart())
         .catch(error => {
-          handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+          handleError(new Error(error.message), true);
         });
       break;
     case 'posts':

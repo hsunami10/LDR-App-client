@@ -11,6 +11,6 @@ export const logOut = navigation => dispatch => {
       navigation.navigate('Welcome');
     })
     .catch(error => {
-      handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+      handleError(new Error(error.message), true);
     });
 };

@@ -39,16 +39,6 @@
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
-			<!-- TODO: Remove this later -->
-			<key>192.168.0.189:3000</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSExceptionRequiresForwardSecrecy</key>
-				<false/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
 		</dict>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>

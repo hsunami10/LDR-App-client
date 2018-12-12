@@ -57,7 +57,7 @@ export const setNotFirstLogIn = id => dispatch => {
       dispatch({ type: SET_NOT_FIRST_LOG_IN });
     }
   })().catch(error => {
-    handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+    handleError(new Error(`Unable to access keychain. ${error.message}`), true);
   });
 };
 
@@ -76,9 +76,6 @@ export const forgotPassword = (email, navigation, clearInput) => dispatch => {
         dispatch(setAuthErrors('forgot_password', '', response.data.msg, true));
         clearInput();
       } else if (response.data.not_verified) {
-        // TODO: Ask use if they want to verify their email
-        // QUESTION: Should we do this? Security issues...
-        // If yes, then navigate to email verification screen
         dispatch(setAuthErrors('forgot_password', 'email', response.data.msg));
       } else {
         dispatch(setAuthErrors('forgot_password', 'email', response.data.msg));
@@ -112,7 +109,7 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
             resetEverything();
           })
           .catch(error => {
-            handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+            handleError(new Error(`Unable to access keychain. ${error.message}`), true);
           });
       }
     })
@@ -195,7 +192,7 @@ export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverythi
             resetEverything();
           })
           .catch(error => {
-            handleError(new Error(`Unable to access keychain. ${error.message}`), false);
+            handleError(new Error(`Unable to access keychain. ${error.message}`), true);
           });
       }
     })

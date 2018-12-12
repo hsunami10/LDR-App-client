@@ -60,7 +60,7 @@ class CommentCardFooter extends Component {
           style={{ marginLeft: 10, backgroundColor: (this.props.comment_likes[this.props.comment.id] ? 'gray' : 'transparent') }}
           onPress={this.handleLikeAction}
         >
-          {/*TODO: Do heart buttom for interaction / liking later - FIX DESIGN*/}
+          {/*TODO: Do heart button for interaction / liking later - FIX DESIGN*/}
           {`${this.props.comment.num_likes} Likes`}
         </Text>
         <View style={{ height: 40, marginLeft: 10, marginRight: 10, borderColor: 'white', borderWidth: 1 }} />

@@ -24,9 +24,7 @@ export const getUserFeed = (id, offset, refresh, order, direction, latestDate, n
   } else if (refresh === false) {
     dispatch(startInitialFeedLoading());
   }
-  // If initialFetch === null, then don't load (only when paging)
 
-  // TODO: Change order and direction according to sort by action - instead of hardcoding
   axios.get(`${ROOT_URL}/api/feed/${id}?offset=${offset}&order=${order}&direction=${direction}&latest_date=${latestDate}`)
     .then(response => {
       if (refresh === true) {
@@ -50,7 +48,8 @@ export const getUserFeed = (id, offset, refresh, order, direction, latestDate, n
         alertWithSingleAction(
           'Oh no!',
           response.data.error,
-          noUserCB
+          noUserCB,
+          'Log Out'
         );
       }
     })

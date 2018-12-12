@@ -20,7 +20,8 @@ export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
 
 // Screens
 // Users
-export const STORE_USER_SCREEN_INFO = 'store_user_screen_info';
+export const STORE_USER_SCREEN_INFO_SUCCESS = 'store_user_screen_info_success';
+export const STORE_USER_SCREEN_INFO_FAILURE = 'store_user_screen_info_failure';
 export const REMOVE_USER_SCREEN_INFO = 'remove_user_screen_info';
 export const START_USER_SCREEN_REFRESHING = 'start_user_screen_refreshing';
 export const STOP_USER_SCREEN_REFRESHING = 'stop_user_screen_refreshing';
