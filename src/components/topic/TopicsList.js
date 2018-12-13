@@ -1,10 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text, StyleSheet, SectionList } from 'react-native';
+import { Text, StyleSheet, SectionList, FlatList, RefreshControl } from 'react-native';
 import TopicCard from './TopicCard';
+import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
+import { NO_SUBSCRIBED_TOPICS_MSG } from '../../constants/noneMessages';
 
 // TODO: Handle no data for a certain section (no subscribed topics)
 class TopicsList extends Component {
+  state = { canPaginate: false }
+
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.setState(() => ({
+      canPaginate: contentHeight > this.props.height // Only allow pagination if content height is larger than FlatList height
+    }));
+  }
+
+  handleEndReached = () => {
+    // canPaginate - true ONLY when content is overflowing
+    // keepPaging - true ONLY when there is more data to retrieve
+    if (this.state.canPaginate && this.props.keepPaging) {
+      this.props.paginateData();
+    }
+  }
+
   renderTopics = ({ item }) => {
     if (typeof item === 'string') { // No data for section
       return <Text style={{ alignSelf: 'center' }}>{item}</Text>;
@@ -17,6 +35,10 @@ class TopicsList extends Component {
       />
     );
   }
+
+  renderMessage = ({ item }) => (
+    <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{item.text}</Text>
+  )
 
   renderSections = () => {
     const result = new Array(this.props.sectionTitles.length);
@@ -34,22 +56,55 @@ class TopicsList extends Component {
   )
 
   render() {
+    if (this.props.sectioned) {
+      return (
+        <SectionList
+          renderItem={this.renderTopics}
+          renderSectionHeader={this.renderSectionHeader}
+          sections={this.renderSections()}
+          keyExtractor={(item, index) => item + index}
+          scrollEventThrottle={this.props.scrollEventThrottle || 16}
+          onEndReachedThreshold={0}
+        />
+      );
+    }
     return (
-      <SectionList
-        renderItem={this.renderTopics}
-        renderSectionHeader={this.renderSectionHeader}
-        sections={this.renderSections()}
-        keyExtractor={(item, index) => item + index}
+      <FlatList
+        data={this.props.empty ? [{ id: 'foo', text: NO_SUBSCRIBED_TOPICS_MSG }] : this.props.data}
+        renderItem={this.props.empty ? this.renderMessage : this.renderTopics}
+        keyExtractor={comment => comment.id}
+        scrollEventThrottle={this.props.scrollEventThrottle || 16}
+        onEndReachedThreshold={0}
+        handleRefresh={this.props.handleRefresh}
+        scrollEventThrottle={this.props.scrollEventThrottle || 16}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.handleRefresh}
+          />
+        }
+        onEndReached={this.handleEndReached}
       />
     );
   }
 }
 
 TopicsList.propTypes = {
-  sectionTitles: PropTypes.arrayOf(PropTypes.string).isRequired,
-  sectionData: PropTypes.arrayOf(PropTypes.array).isRequired,
-  emptyMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onTopicSelect: PropTypes.func.isRequired
+  sectioned: PropTypes.bool,
+  onTopicSelect: PropTypes.func.isRequired,
+  scrollEventThrottle: PropTypes.number,
+
+  empty: PropTypes.bool,
+  data: PropTypes.array,
+  handleRefresh: PropTypes.func,
+  refreshing: PropTypes.bool,
+  height: PropTypes.number,
+  keepPaging: PropTypes.bool,
+  paginateData: PropTypes.func,
+
+  sectionTitles: (props, propName, componentName) => requireWhenPropExists('sectioned', props, propName, componentName, 'object'),
+  sectionData: (props, propName, componentName) => requireWhenPropExists('sectioned', props, propName, componentName, 'object'),
+  emptyMessages: (props, propName, componentName) => requireWhenPropExists('sectioned', props, propName, componentName, 'object'),
 };
 
 const styles = StyleSheet.create({

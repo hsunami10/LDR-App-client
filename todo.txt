@@ -1,6 +1,3 @@
-- fix backend checks - if something exists for all api requests
-  - have all api requests have a "success" = true / false depending on if it exists
-  - might not have to do this - because foreign key violation checks may handle this?
 - finish 3 tab screens for home screen - Feed, Friends, Topics
   - friends
   - topics

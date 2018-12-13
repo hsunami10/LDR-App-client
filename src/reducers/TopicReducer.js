@@ -14,7 +14,8 @@ const INITIAL_STATE = {
   },
   subscribed: [], // List of objects (subcribed topics)
   current_topic: {}, // NOTE: Might have to put it in ScreenReducer, because can have multiple screens of different / same topics w/ diff data
-  loading: false // For refreshing current topic screen
+  loading: false, // For refreshing current topic screen
+  refreshing: false
 };
 
 const sortTopicsAlpha = (t1, t2) => t1.lowercase_name.localeCompare(t2.lowercase_name); // Sort alphabetically by locale

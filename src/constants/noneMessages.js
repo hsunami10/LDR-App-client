@@ -5,3 +5,4 @@ export const NO_TOPIC_MSG = 'This topic has been deleted.';
 export const NO_USER_MSG = 'This user account has been deleted.';
 export const NO_POST_MSG = 'This post has been deleted.';
 export const NO_COMMENT_MSG = 'This comment has been deleted.';
+export const NO_SUBSCRIBED_TOPICS_MSG = 'You are not currently subscribed to any topics.';

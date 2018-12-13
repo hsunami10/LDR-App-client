@@ -4,18 +4,18 @@ import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import TopicsList from '../../../components/topic/TopicsList';
-import { getSubscribedTopics, choosePostTopic } from '../../../actions/TopicActions';
-import { stopLoading } from '../../../actions/LoadingActions';
+import { getSubscribedTopics, choosePostTopic, startTopicLoading, stopTopicLoading } from '../../../actions/TopicActions';
+import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {
-    this.props.getSubscribedTopics(this.props.id);
+    this.props.getSubscribedTopics(this.props.id, false);
   }
 
   // No handle for navigation in componentWillUnmount because there was no change navigating here
   componentWillUnmount() {
     if (this.props.loading) {
-      this.props.stopLoading();
+      this.props.stopTopicLoading();
     }
   }
 
@@ -33,10 +33,11 @@ class ChooseTopicScreen extends Component {
           onLeftPress={() => this.props.navigation.pop()}
         />
         <TopicsList
+          sectioned
           onTopicSelect={this.handleTopicSelect}
           sectionTitles={['Subscribed Topics']}
           sectionData={[this.props.subscribed]}
-          emptyMessages={['You are not currently subscribed to any topics.']}
+          emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
         />
         <FullScreenLoading loading={this.props.loading} allowTouchThrough />
       </View>
@@ -50,12 +51,13 @@ ChooseTopicScreen.propTypes = {
   getSubscribedTopics: PropTypes.func.isRequired,
   choosePostTopic: PropTypes.func.isRequired,
   subscribed: PropTypes.array.isRequired,
-  stopLoading: PropTypes.func.isRequired
+  startTopicLoading: PropTypes.func.isRequired,
+  stopTopicLoading: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.loading,
+  loading: state.topics.loading,
   post_topic: state.topics.post_topic,
   subscribed: state.topics.subscribed
 });
@@ -63,5 +65,6 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   getSubscribedTopics,
   choosePostTopic,
-  stopLoading
+  startTopicLoading,
+  stopTopicLoading,
 })(ChooseTopicScreen);

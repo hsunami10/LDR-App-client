@@ -66,13 +66,19 @@ class FeedScreen extends Component {
   }
 
   paginateData = () => {
+    let benchmark;
+    if (this.state.order === 'date_posted') {
+      benchmark = this.props.posts[0].date_posted;
+    } else if (this.state.order === 'num_likes') {
+      benchmark = this.props.posts[0].num_likes;
+    }
     this.props.getUserFeed(
       this.props.id,
       this.props.offset,
       null,
       this.state.order,
       this.state.direction,
-      parseInt(this.props.posts[0].date_posted, 10), // Ignore newer posts when paging
+      benchmark,
       this.handleNoUserError
     );
   }

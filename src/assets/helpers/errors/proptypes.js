@@ -8,6 +8,8 @@ export const requireWhenPropExists = (targetProp, props, propName, componentName
     return new Error(`The prop \`${propName}\` in \`${componentName}\` must be required when \`${targetProp}\` exists.`);
   } else if (props[targetProp] === undefined && props[propName] !== undefined) {
     return new Error(`Unnecessary prop \`${propName}\` supplied to \`${componentName}\`. This is not needed if \`${targetProp}\` is undefined.`);
+  } else if (props[targetProp] === undefined) {
+    return;
   } else if (typeof props[propName] !== expectedType) {
     return new Error(propTypesTypeError(props, propName, componentName, expectedType));
   }
