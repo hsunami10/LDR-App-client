@@ -3,6 +3,8 @@
   - topics
 - add replying to comments
 
+BUG QUESTION - how to set benchmark for paging for num_likes in feed? - how to mark the start of the original sequence when offset != 0?
+
 NOTE - When getting posts & comments created by deleted users:
   - before inner joining author_id, check to see if the user exists?
   - or after inner joining, check the values for undefined or not exists

@@ -58,13 +58,13 @@ export const createTopic = (dataObj, navigation, createTopicErrorCB) => dispatch
     });
 };
 
-export const getSubscribedTopics = (id, refresh, offset, order, direction, latest) => dispatch => {
+export const getSubscribedTopics = (id, refresh, order, direction) => dispatch => {
   if (refresh === true) {
     dispatch(startTopicRefreshing());
   } else if (refresh === false) {
     dispatch(startTopicLoading());
   }
-  axios.get(`${ROOT_URL}/api/subscribed-topics/${id}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+  axios.get(`${ROOT_URL}/api/subscribed-topics/${id}?order=${order}&direction=${direction}`)
     .then(response => {
       if (refresh) {
         dispatch(stopTopicRefreshing());

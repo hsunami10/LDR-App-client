@@ -9,7 +9,7 @@ import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {
-    this.props.getSubscribedTopics(this.props.id, false);
+    this.props.getSubscribedTopics(this.props.id, false, 'lowercase_name', 'ASC');
   }
 
   // No handle for navigation in componentWillUnmount because there was no change navigating here
@@ -18,6 +18,8 @@ class ChooseTopicScreen extends Component {
       this.props.stopTopicLoading();
     }
   }
+
+  handleRefresh = () => this.props.getSubscribedTopics(this.props.id, true, 'lowercase_name', 'ASC')
 
   handleTopicSelect = topic => {
     this.props.choosePostTopic(topic);
@@ -33,11 +35,16 @@ class ChooseTopicScreen extends Component {
           onLeftPress={() => this.props.navigation.pop()}
         />
         <TopicsList
-          sectioned
+          data={this.props.subscribed}
+          empty={this.props.subscribed.length === 0}
           onTopicSelect={this.handleTopicSelect}
-          sectionTitles={['Subscribed Topics']}
-          sectionData={[this.props.subscribed]}
-          emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
+          refreshing={this.props.refreshing}
+          handleRefresh={this.handleRefresh}
+          // sectioned
+          // onTopicSelect={this.handleTopicSelect}
+          // sectionTitles={['Subscribed Topics']}
+          // sectionData={[this.props.subscribed]}
+          // emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
         />
         <FullScreenLoading loading={this.props.loading} allowTouchThrough />
       </View>
@@ -52,14 +59,16 @@ ChooseTopicScreen.propTypes = {
   choosePostTopic: PropTypes.func.isRequired,
   subscribed: PropTypes.array.isRequired,
   startTopicLoading: PropTypes.func.isRequired,
-  stopTopicLoading: PropTypes.func.isRequired
+  stopTopicLoading: PropTypes.func.isRequired,
+  refreshing: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
   loading: state.topics.loading,
+  refreshing: state.topics.refreshing,
   post_topic: state.topics.post_topic,
-  subscribed: state.topics.subscribed
+  subscribed: state.topics.subscribed,
 });
 
 export default connect(mapStateToProps, {

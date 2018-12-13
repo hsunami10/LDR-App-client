@@ -7,22 +7,6 @@ import { NO_SUBSCRIBED_TOPICS_MSG } from '../../constants/noneMessages';
 
 // TODO: Handle no data for a certain section (no subscribed topics)
 class TopicsList extends Component {
-  state = { canPaginate: false }
-
-  handleContentSizeChange = (contentWidth, contentHeight) => {
-    this.setState(() => ({
-      canPaginate: contentHeight > this.props.height // Only allow pagination if content height is larger than FlatList height
-    }));
-  }
-
-  handleEndReached = () => {
-    // canPaginate - true ONLY when content is overflowing
-    // keepPaging - true ONLY when there is more data to retrieve
-    if (this.state.canPaginate && this.props.keepPaging) {
-      this.props.paginateData();
-    }
-  }
-
   renderTopics = ({ item }) => {
     if (typeof item === 'string') { // No data for section
       return <Text style={{ alignSelf: 'center' }}>{item}</Text>;
@@ -74,7 +58,6 @@ class TopicsList extends Component {
         renderItem={this.props.empty ? this.renderMessage : this.renderTopics}
         keyExtractor={comment => comment.id}
         scrollEventThrottle={this.props.scrollEventThrottle || 16}
-        onEndReachedThreshold={0}
         handleRefresh={this.props.handleRefresh}
         scrollEventThrottle={this.props.scrollEventThrottle || 16}
         refreshControl={
@@ -83,7 +66,6 @@ class TopicsList extends Component {
             onRefresh={this.props.handleRefresh}
           />
         }
-        onEndReached={this.handleEndReached}
       />
     );
   }
@@ -98,9 +80,6 @@ TopicsList.propTypes = {
   data: PropTypes.array,
   handleRefresh: PropTypes.func,
   refreshing: PropTypes.bool,
-  height: PropTypes.number,
-  keepPaging: PropTypes.bool,
-  paginateData: PropTypes.func,
 
   sectionTitles: (props, propName, componentName) => requireWhenPropExists('sectioned', props, propName, componentName, 'object'),
   sectionData: (props, propName, componentName) => requireWhenPropExists('sectioned', props, propName, componentName, 'object'),
