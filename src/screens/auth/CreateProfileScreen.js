@@ -16,7 +16,7 @@ import {
 import { alertPermission, checkPermission } from '../../assets/helpers/permissions';
 import { createProfile } from '../../actions/AuthActions';
 import { findPartnerCode, removePartnerResult, acceptResult } from '../../actions/UserActions';
-import UserRequestCard from '../../components/user/UserRequestCard';
+import PartnerRequestCard from '../../components/user/PartnerRequestCard';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
 // TODO: Have a prompt to enter a partner's code
@@ -166,7 +166,7 @@ class CreateProfileScreen extends Component {
               value={this.state.code}
               onChangeText={this.handleChangeText}
             />
-            <UserRequestCard
+            <PartnerRequestCard
               user={this.props.partner_result}
               loading={this.props.find_partner_loading}
               message={this.props.partner_error_msg}

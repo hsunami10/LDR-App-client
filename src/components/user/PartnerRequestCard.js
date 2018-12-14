@@ -4,13 +4,11 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import moment from 'moment';
 import { ROOT_URL } from '../../constants/variables';
 import { ClickableImage, FullScreenLoading } from '../../components/common';
-import RedX from '../../assets/images/red_x.png';
-import GreenV from '../../assets/images/green_check.png';
 import UserRequestButtons from './UserRequestButtons';
 
-// NOTE: Only for entering codes and friend requests
+// NOTE: Only for entering codes
 // profile_pic, username, date_joined, v and x for accept / reject
-const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult }) => {
+const PartnerRequestCard = ({ user, loading, message, cancelResult, acceptResult }) => {
   if (loading) {
     return (
       <View style={styles.viewStyle}>
@@ -28,7 +26,7 @@ const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult })
              width={40}
              height={40}
              type="none"
-             onPress={() => null}
+             disabled
              image={user.profile_pic ? `${ROOT_URL}/${user.profile_pic}` : null}
            />
 
@@ -57,7 +55,7 @@ const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult })
  );
 };
 
-UserRequestCard.propTypes = {
+PartnerRequestCard.propTypes = {
   user: PropTypes.object,
   loading: PropTypes.bool.isRequired,
   message: PropTypes.string.isRequired,
@@ -94,4 +92,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default UserRequestCard;
+export default PartnerRequestCard;

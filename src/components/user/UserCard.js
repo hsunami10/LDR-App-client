@@ -8,7 +8,7 @@ import ActionButton from './ActionButton';
 
 const UserCard = ({ user, onUserPress, onActionPress, onRequestPress }) => (
   <TouchableHighlight
-    onPress={onUserPress}
+    onPress={() => onUserPress(user.id, user.username)}
     underlayColor="rgba(0,0,0,0.3)"
   >
     <View style={styles.cardContainerStyle}>
@@ -16,7 +16,7 @@ const UserCard = ({ user, onUserPress, onActionPress, onRequestPress }) => (
         width={40}
         height={40}
         type="none"
-        onPress={() => null}
+        disabled
         image={user.profile_pic ? `${ROOT_URL}/${user.profile_pic}` : null}
       />
 
@@ -34,9 +34,10 @@ const UserCard = ({ user, onUserPress, onActionPress, onRequestPress }) => (
       </View>
 
       <ActionButton
+        id={user.id}
+        type={user.type}
         onPress={onActionPress}
         onRequestPress={onRequestPress}
-        type={user.type}
       />
     </View>
   </TouchableHighlight>

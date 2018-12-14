@@ -44,6 +44,26 @@ class DataList extends Component {
     this.props.navigation.push('ViewPost', { post_id: post.id });
   }
 
+  handleUserActionPress = (id, type) => {
+    switch (type) {
+      case 'regular':
+        console.log(`send a friend request to this user with id: ${id}`);
+        break;
+      case 'friend':
+        console.log(`unfriend this user with id: ${id}`);
+        break;
+      case 'pending':
+        console.log(`cancel friend request to this user with id: ${id}`);
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleUserRequestPress = (id, accepted) => {
+    console.log(`request accepted? ${accepted} for user with id: ${id}`);
+  }
+
   // choice -> sort string to display on button
   handleSortSelect = choice => {
     this.setState(prevState => ({
@@ -139,8 +159,8 @@ class DataList extends Component {
           <UserCard
             user={item}
             onUserPress={this.viewProfile}
-            onActionPress={type => console.log(`Handle action here. Currently, it is type: ${type}`)}
-            onRequestPress={accepted => console.log(`accepted request? ${accepted}`)}
+            onActionPress={this.handleUserActionPress}
+            onRequestPress={this.handleUserRequestPress}
           />
         );
       default:

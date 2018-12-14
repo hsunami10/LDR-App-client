@@ -15,11 +15,42 @@ const requests = [
     type: 'request'
   },
   {
-    id: 'ofirefdmflsakfjdsaf',
-    username: 'Request From User 888',
+    id: 'sdfdfflsakfjdsaf',
+    username: 'UserRequest222',
     profile_pic: null,
-    date_joined: '1544238102',
+    date_joined: '1544212302',
     type: 'request'
+  },
+  {
+    id: 'dmasdfdfflsakfjdsaf',
+    username: 'User100000',
+    profile_pic: null,
+    date_joined: '1544232932',
+    type: 'request'
+  },
+  {
+    id: 'dfjdsaf',
+    username: 'Noob',
+    profile_pic: null,
+    date_joined: '1544129401',
+    type: 'request'
+  }
+];
+
+const pending = [
+  {
+    id: 'asdjflksdfdsafd',
+    username: 'PendingUser111',
+    profile_pic: null,
+    date_joined: '1544231022',
+    type: 'pending'
+  },
+  {
+    id: 'asdfjasdlkfjalsdf',
+    username: 'PendingUser2002',
+    profile_pic: null,
+    date_joined: '1544111111',
+    type: 'pending'
   }
 ];
 
@@ -55,14 +86,14 @@ const friends = [
     type: 'pending'
   },
   {
-    id: 'fsdfdadfasdf',
+    id: 'asdfoiasdfjajcsalkdf',
     username: 'throwawayUser10',
     profile_pic: null,
     date_joined: '1544220382',
     type: 'friend'
   },
   {
-    id: 'ukyftjfjfytj',
+    id: 'lkjlkfjdskjfsdf',
     username: 'I am a nice Friend',
     profile_pic: null,
     date_joined: '1544220011',
@@ -88,8 +119,9 @@ const friends = [
 // Have a new action and dispatch - GET_USER_FRIENDS
 //
 // Remember to also show friend requests - have SectionList if showFriendRequests = true
-// Show UserRequestCard in first section
-// Show UserCard in third section
+// Show requests in first section
+// Show pending in second section
+// Show friends in third section
 class FriendListScreen extends Component {
   state = { height: 0 }
 

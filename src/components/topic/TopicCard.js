@@ -14,7 +14,7 @@ const TopicCard = ({ topic, onPress }) => (
       <ClickableImage
         type="none"
         image={topic.topic_pic ? `${ROOT_URL}/${topic.topic_pic}` : null}
-        onPress={() => null}
+        disabled
         width={35}
         height={35}
         style={{ alignSelf: 'center', marginLeft: 5, marginRight: 5 }}

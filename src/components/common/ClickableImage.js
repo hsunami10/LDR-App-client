@@ -8,9 +8,8 @@ import {
 } from 'react-native';
 import NoImage from '../../assets/images/no_image.jpg';
 
-export const ClickableImage = ({ width, height, onPress, image, type, style }) => {
+export const ClickableImage = ({ width, height, onPress, image, type, style, disabled }) => {
   let source;
-  console.log(typeof image);
   if (!image) {
     source = NoImage;
   } else if (typeof image === 'string') {
@@ -23,7 +22,11 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
 
   if (type === 'opacity') {
     return (
-      <TouchableOpacity style={[{ width, height }, style || {}]} onPress={onPress}>
+      <TouchableOpacity
+        style={[{ width, height }, style || {}]}
+        onPress={onPress}
+        disabled={disabled}
+      >
         <Image
           style={[{ width, height }, style || {}]}
           source={source}
@@ -32,7 +35,11 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
     );
   } else if (type === 'highlight') {
     return (
-      <TouchableHighlight style={[{ width, height }, style || {}]} onPress={onPress}>
+      <TouchableHighlight
+        style={[{ width, height }, style || {}]}
+        onPress={onPress}
+        disabled={disabled}
+      >
         <Image
           style={[{ width, height }, style || {}]}
           source={source}
@@ -41,7 +48,11 @@ export const ClickableImage = ({ width, height, onPress, image, type, style }) =
     );
   } else if (type === 'none') {
     return (
-      <TouchableWithoutFeedback style={[{ width, height }, style || {}]} onPress={onPress}>
+      <TouchableWithoutFeedback
+        style={[{ width, height }, style || {}]}
+        onPress={onPress}
+        disabled={disabled}
+      >
         <Image
           style={[{ width, height }, style || {}]}
           source={source}
@@ -62,5 +73,6 @@ ClickableImage.propTypes = {
     PropTypes.number
   ]),
   type: PropTypes.oneOf(['opacity', 'highlight', 'none']).isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  disabled: PropTypes.bool
 };

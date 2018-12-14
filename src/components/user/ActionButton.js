@@ -18,7 +18,7 @@ class ActionButton extends Component {
               height={30}
               image={Plus}
               type="none"
-              onPress={() => null}
+              disabled
             />
             <Text>Friend</Text>
           </View>
@@ -31,7 +31,7 @@ class ActionButton extends Component {
               height={30}
               image={GreenV}
               type="none"
-              onPress={() => null}
+              disabled
             />
             <Text>Friends</Text>
           </View>
@@ -44,7 +44,7 @@ class ActionButton extends Component {
               height={30}
               image={Clock}
               type="none"
-              onPress={() => null}
+              disabled
             />
             <Text>Pending</Text>
           </View>
@@ -58,14 +58,14 @@ class ActionButton extends Component {
     if (this.props.type === 'request') {
       return (
         <UserRequestButtons
-          onAcceptPress={() => this.props.onRequestPress(true)}
-          onRejectPress={() => this.props.onRequestPress(false)}
+          onAcceptPress={() => this.props.onRequestPress(this.props.id, true)}
+          onRejectPress={() => this.props.onRequestPress(this.props.id, false)}
         />
       );
     }
     return (
       <TouchableHighlight
-        onPress={() => this.props.onPress(this.props.type)}
+        onPress={() => this.props.onPress(this.props.id, this.props.type)}
         underlayColor="rgba(0,0,0,0.3)"
       >
         {this.renderAction()}
@@ -75,9 +75,10 @@ class ActionButton extends Component {
 }
 
 ActionButton.propTypes = {
+  id: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['regular', 'friend', 'request', 'pending']).isRequired,
   onPress: PropTypes.func.isRequired,
   onRequestPress: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
