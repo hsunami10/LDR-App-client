@@ -138,10 +138,9 @@ class DataList extends Component {
         return (
           <UserCard
             user={item}
-            regular={item.type === 'regular' ? true : undefined}
-            request={item.type === 'request' ? true : undefined}
             onUserPress={this.viewProfile}
-            onFriendPress={isFriend => console.log(`handle friend or unfriend: if isFriend is true, then unfriend. if isFriend is false, then friend. currently, isFriend is ${isFriend}`)}
+            onActionPress={type => console.log(`Handle action here. Currently, it is type: ${type}`)}
+            onRequestPress={accepted => console.log(`accepted request? ${accepted}`)}
           />
         );
       default:

@@ -13,33 +13,38 @@ const requests = [
     profile_pic: null,
     date_joined: '1544238461',
     type: 'request'
+  },
+  {
+    id: 'ofirefdmflsakfjdsaf',
+    username: 'Request From User 888',
+    profile_pic: null,
+    date_joined: '1544238102',
+    type: 'request'
   }
 ];
 
 // TODO: Change to object of objects, and array of user_ids (order)
-const users = [
+const friends = [
   {
     id: 'asldkfadslkfsdf',
     username: 'Noob User 123',
     profile_pic: null,
     date_joined: '1544237986',
     isFriend: true,
-    type: 'regular'
+    type: 'request'
   },
   {
     id: 'dsfdfadsfdsf',
     username: 'HelloWorld',
     profile_pic: null,
     date_joined: '1544233000',
-    isFriend: true,
-    type: 'regular'
+    type: 'friend'
   },
   {
     id: 'fsdfdadfasdf',
     username: 'I AM DUMB',
     profile_pic: null,
     date_joined: '1544237100',
-    isFriend: true,
     type: 'regular'
   },
   {
@@ -47,22 +52,44 @@ const users = [
     username: 'Noob User 8888888',
     profile_pic: null,
     date_joined: '1544220000',
-    isFriend: true,
-    type: 'regular'
+    type: 'pending'
+  },
+  {
+    id: 'fsdfdadfasdf',
+    username: 'throwawayUser10',
+    profile_pic: null,
+    date_joined: '1544220382',
+    type: 'friend'
+  },
+  {
+    id: 'ukyftjfjfytj',
+    username: 'I am a nice Friend',
+    profile_pic: null,
+    date_joined: '1544220011',
+    type: 'friend'
   }
 ];
 
-// QUESTION: How to organize list of friends?
+// QUESTION: How to organize OWN list of friends?
+// NOTE: Don't have to worry about multiple screens for requests - you can only view them on one screen
+// QUESTION: Instead of FriendReducer, why not just store all users in UserReducer.all_users = {}?
+//   - Could store in all_users with type property ('regular', 'friend', 'pending', 'request')
+//
 // Going to need multiple lists with different data
 // When adding and removing friends, do the same to all (like posting for user profiles)
 // Have a FriendReducer, which is like PostReducer - so adding and removing friends will show for all screens
+//   - NOTE: ONLY for your OWN friends
 // When getting friends, return an order, and an object of user_ids to user objects, like always
+//   - Add those object of objects to FriendReducer
+//   - Set offset correctly
+// In ViewProfileScreen, add object of objects to FriendReducer, but have own offset and order
+//
 // NOTE: Remember to change ScreenReducer STORE_USER_SCREEN_INFO_SUCCESS to store friends list IF userID = current user
 // Have a new action and dispatch - GET_USER_FRIENDS
 //
 // Remember to also show friend requests - have SectionList if showFriendRequests = true
 // Show UserRequestCard in first section
-// Show UserCard in second section
+// Show UserCard in third section
 class FriendListScreen extends Component {
   state = { height: 0 }
 
@@ -76,23 +103,23 @@ class FriendListScreen extends Component {
       return null;
     } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.showFriendRequests) { // TODO: Show sectioned list
+    } /*else if (this.props.showFriendRequests) { // TODO: Show sectioned list
       return (
         <View>
-          <Text>Show SectionList with Requests and Friends Here. Always pull ALL requests, but only page 20 friends at a time. Do not allow any sorting.</Text>
+          <Text>Show SectionList with Requests, Pending, Friends, Here. Always pull ALL requests and ALL pending, but only page 20 friends at a time. Do not allow any sorting.</Text>
         </View>
       );
-    }
+    }*/
     // TODO: Finish this later
     // Can allow sorting here
     return (
       <DataList
         type="users"
         flatList
-        data={users}
-        empty={users.length === 0}
-        // data={this.props.users}
-        // empty={this.props.users.length === 0}
+        data={friends}
+        empty={friends.length === 0}
+        // data={this.props.friends}
+        // empty={this.props.friends.length === 0}
         message={NO_FRIENDS_MSG}
         onItemSelect={item => console.log('item selected: ', item)}
         height={this.state.height}

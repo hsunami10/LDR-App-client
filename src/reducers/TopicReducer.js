@@ -6,6 +6,7 @@ import {
   CHOOSE_POST_TOPIC,
   GET_SUBSCRIBED_TOPICS
 } from '../actions/types';
+import { sortTopicsAlpha } from '../assets/helpers/sorting';
 
 const INITIAL_STATE = {
   post_topic: { // NOTE: Make sure it's the same as the CreateMainScreen state
@@ -17,8 +18,6 @@ const INITIAL_STATE = {
   loading: false, // For refreshing current topic screen
   refreshing: false
 };
-
-const sortTopicsAlpha = (t1, t2) => t1.lowercase_name.localeCompare(t2.lowercase_name); // Sort alphabetically by locale
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {

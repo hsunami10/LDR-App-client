@@ -6,6 +6,7 @@ import { ROOT_URL } from '../../constants/variables';
 import { ClickableImage, FullScreenLoading } from '../../components/common';
 import RedX from '../../assets/images/red_x.png';
 import GreenV from '../../assets/images/green_check.png';
+import UserRequestButtons from './UserRequestButtons';
 
 // NOTE: Only for entering codes and friend requests
 // profile_pic, username, date_joined, v and x for accept / reject
@@ -44,22 +45,10 @@ const UserRequestCard = ({ user, loading, message, cancelResult, acceptResult })
              >{`Joined ${moment.unix(user.date_joined).format('MM/DD/YYYY')}`}</Text>
            </View>
 
-           <View style={styles.actionStyle}>
-            <ClickableImage
-              width={30}
-              height={30}
-              image={RedX}
-              type="opacity"
-              onPress={cancelResult}
-            />
-            <ClickableImage
-              width={30}
-              height={30}
-              image={GreenV}
-              type="opacity"
-              onPress={acceptResult}
-            />
-           </View>
+           <UserRequestButtons
+             onAcceptPress={acceptResult}
+             onRejectPress={cancelResult}
+           />
          </View>
        ) :
        <Text>{message}</Text>

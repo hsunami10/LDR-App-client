@@ -14,6 +14,7 @@ import {
   START_FIND_PARTNER_LOADING,
   STOP_FIND_PARTNER_LOADING,
 } from '../actions/types';
+import { NO_PARTNER_FOUND_MSG } from '../constants/noneMessages';
 
 /*{ // TODO: Change default to null - testing purposes only
   id: '0aa1e4d0-d006-4a0c-9e3e-3fa04c8080c1',
@@ -29,7 +30,7 @@ const INITIAL_STATE = {
   initial_loading: false,
   loading: false,
   partner_result: null, // Basic info on user when searching up a partner code
-  partner_error_msg: 'No partner found, or code has expired.', // NOTE: Make sure it's the same as ScreenReducer
+  partner_error_msg: NO_PARTNER_FOUND_MSG, // NOTE: Make sure it's the same as ScreenReducer
   find_partner_loading: false
 };
 

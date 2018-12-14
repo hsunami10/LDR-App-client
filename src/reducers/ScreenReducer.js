@@ -24,6 +24,7 @@ import {
   START_FIND_PARTNER_LOADING,
   STOP_FIND_PARTNER_LOADING,
 } from '../actions/types';
+import { NO_PARTNER_FOUND_MSG } from '../constants/noneMessages';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
 // Or if it would be the same for all screens (ex: post likes - posts.post_likes)
@@ -31,25 +32,26 @@ import {
 // ex. Loading - different screens have their own loading indicators
 
 const INITIAL_STATE = {
-  profiles: { // ViewProfileScreen - user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
+  profiles: {
+    // ViewProfileScreen - user_id : { screen_id1: {}, screen_id2: {}, ... }, user_id2...
     // Holds all profile information
-    none_msg: 'This account does not exist or has been deleted.'
   },
-  posts: { // ViewPostScreen - post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
+  posts: {
+    // ViewPostScreen - post_id : { screen_id1: {}, screen_id2: {}, ... }, post_id2...
     // Holds comments-related properties, loading properties
-    none_msg: 'This post has been deleted.'
   },
-  topics: { // VIewTopicScreen - topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
+  topics: {
+    // ViewTopicScreen - topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
     // Holds all topic information
-    none_msg: 'This topic does not exist or has been deleted.'
   },
-  partners: { // NOTE: Screens for - editing columns in partners table
+  partners: {
+    // NOTE: Screens for - editing columns in partners table
     // NOTE: Have these for each partners screen
     // One for generating a code (for someone else to enter the code)
     // Another for entering the code
     generate_code_loading: false,
     find_partner_loading: false,
-    partner_error_msg: 'No Partner Found.' // NOTE: Make sure it's the same as UserReducer
+    partner_error_msg: NO_PARTNER_FOUND_MSG
   }
 };
 
