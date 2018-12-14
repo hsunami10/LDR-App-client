@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
-import TopicsList from '../../../components/topic/TopicsList';
+import DataList from '../../../components/DataList';
 import { getSubscribedTopics, choosePostTopic, startTopicLoading, stopTopicLoading } from '../../../actions/TopicActions';
 import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 
@@ -26,6 +26,29 @@ class ChooseTopicScreen extends Component {
     this.props.navigation.pop();
   }
 
+  renderBody() {
+    if (this.props.loading) {
+      return <FullScreenLoading loading allowTouchThrough />;
+    }
+    return (
+      <DataList
+        type="topics"
+        flatList
+        data={this.props.subscribed}
+        empty={this.props.subscribed.length === 0}
+        onItemSelect={this.handleTopicSelect}
+        enableRefresh
+        refreshing={this.props.refreshing}
+        handleRefresh={this.handleRefresh}
+        // sectioned
+        // onTopicSelect={this.handleTopicSelect}
+        // sectionTitles={['Subscribed Topics']}
+        // sectionData={[this.props.subscribed]}
+        // emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
+      />
+    );
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -34,19 +57,7 @@ class ChooseTopicScreen extends Component {
           showLeft
           onLeftPress={() => this.props.navigation.pop()}
         />
-        <TopicsList
-          data={this.props.subscribed}
-          empty={this.props.subscribed.length === 0}
-          onTopicSelect={this.handleTopicSelect}
-          refreshing={this.props.refreshing}
-          handleRefresh={this.handleRefresh}
-          // sectioned
-          // onTopicSelect={this.handleTopicSelect}
-          // sectionTitles={['Subscribed Topics']}
-          // sectionData={[this.props.subscribed]}
-          // emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
-        />
-        <FullScreenLoading loading={this.props.loading} allowTouchThrough />
+        {this.renderBody()}
       </View>
     );
   }

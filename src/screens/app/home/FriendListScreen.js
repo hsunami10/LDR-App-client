@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
-import UserList from '../../../components/user/UserList';
+import DataList from '../../../components/DataList';
 import { NO_FRIENDS_MSG } from '../../../constants/noneMessages';
 
 const requests = [
-  [
-    {
-      id: 'fdjaoifdjsaflkadsf',
-      username: 'Request 123',
-      date_joined: '1544238461'
-    }
-  ]
+  {
+    id: 'fdjaoifdjsaflkadsf',
+    username: 'Request 123',
+    profile_pic: null,
+    date_joined: '1544238461',
+    type: 'request'
+  }
 ];
 
 // TODO: Change to object of objects, and array of user_ids (order)
@@ -23,7 +23,32 @@ const users = [
     username: 'Noob User 123',
     profile_pic: null,
     date_joined: '1544237986',
-    isFriend: true
+    isFriend: true,
+    type: 'regular'
+  },
+  {
+    id: 'dsfdfadsfdsf',
+    username: 'HelloWorld',
+    profile_pic: null,
+    date_joined: '1544233000',
+    isFriend: true,
+    type: 'regular'
+  },
+  {
+    id: 'fsdfdadfasdf',
+    username: 'I AM DUMB',
+    profile_pic: null,
+    date_joined: '1544237100',
+    isFriend: true,
+    type: 'regular'
+  },
+  {
+    id: 'ukyftjfjfytj',
+    username: 'Noob User 8888888',
+    profile_pic: null,
+    date_joined: '1544220000',
+    isFriend: true,
+    type: 'regular'
   }
 ];
 
@@ -51,23 +76,26 @@ class FriendListScreen extends Component {
       return null;
     } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
+    } else if (this.props.showFriendRequests) { // TODO: Show sectioned list
+      return (
+        <View>
+          <Text>Show SectionList with Requests and Friends Here. Always pull ALL requests, but only page 20 friends at a time. Do not allow any sorting.</Text>
+        </View>
+      );
     }
-    // Only updates root components (PostCard), so remember to force re-render nested components by changing state
+    // TODO: Finish this later
+    // Can allow sorting here
     return (
-      <UserList
+      <DataList
+        type="users"
+        flatList
         data={users}
         empty={users.length === 0}
         // data={this.props.users}
         // empty={this.props.users.length === 0}
-        // empty
         message={NO_FRIENDS_MSG}
+        onItemSelect={item => console.log('item selected: ', item)}
         height={this.state.height}
-        allowSorting
-        sortPosts={this.handleSortPosts}
-        refreshing={this.props.loading}
-        handleRefresh={this.handleRefresh}
-        paginateData={this.paginateData}
-        keepPaging={this.props.keepPaging}
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
       />
@@ -89,7 +117,7 @@ class FriendListScreen extends Component {
 FriendListScreen.propTypes = {
   id: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired,
-  loading: PropTypes.bool.isRequired,
+  refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
 

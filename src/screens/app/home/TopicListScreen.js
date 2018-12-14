@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { getSubscribedTopics } from '../../../actions/TopicActions';
 import { FullScreenLoading } from '../../../components/common';
-import TopicsList from '../../../components/topic/TopicsList';
+import DataList from '../../../components/DataList';
+import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 
 class TopicListScreen extends Component {
   componentDidMount() {
@@ -27,10 +28,14 @@ class TopicListScreen extends Component {
       );
     }
     return (
-      <TopicsList
+      <DataList
+        type="topics"
+        flatList
+        message={NO_SUBSCRIBED_TOPICS_MSG}
         data={this.props.subscribed}
         empty={this.props.subscribed.length === 0}
-        onTopicSelect={this.handleTopicSelect}
+        onItemSelect={this.handleTopicSelect}
+        enableRefresh
         refreshing={this.props.refreshing}
         handleRefresh={this.handleRefresh}
       />

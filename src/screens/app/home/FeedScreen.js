@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
-import PostsList from '../../../components/post/PostsList';
+import DataList from '../../../components/DataList';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
@@ -115,19 +115,23 @@ class FeedScreen extends Component {
     }
     // Only updates root components (PostCard), so remember to force re-render nested components by changing state
     return (
-      <PostsList
+      <DataList
+        type="posts"
+        navigation={this.props.navigation}
+        parentNavigation={this.props.parentNavigation}
+        flatList
         data={this.props.posts}
         empty={this.props.posts.length === 0}
         message={EMPTY_FEED_MSG}
-        height={this.state.height}
-        allowSorting
-        sortPosts={this.handleSortPosts}
-        refreshing={this.props.loading}
-        handleRefresh={this.handleRefresh}
+        enableSorting
+        sortData={this.handleSortPosts}
+        enablePaging
         paginateData={this.paginateData}
         keepPaging={this.props.keepPaging}
-        navigation={this.props.navigation}
-        parentNavigation={this.props.parentNavigation}
+        height={this.state.height}
+        enableRefresh
+        refreshing={this.props.loading}
+        handleRefresh={this.handleRefresh}
       />
     );
   }
