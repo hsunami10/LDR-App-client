@@ -9,6 +9,7 @@ import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
 import { logOut } from '../../../assets/helpers/authentication';
+import { orderToArrData } from '../../../assets/helpers/misc';
 
 // TODO: Add 3 tabs later - Feed, Topics, Friends
 
@@ -176,14 +177,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   // Pre-process posts - convert from an object of objects to an array of objects
-  const postsOrder = state.feed.posts_order;
-  const posts = new Array(postsOrder.length);
-  for (let i = 0; i < postsOrder.length; i++) {
-    if (state.posts.all_posts[postsOrder[i]]) {
-      posts[i] = state.posts.all_posts[postsOrder[i]];
-    }
-  }
-
+  const posts = orderToArrData(state.feed.posts_order, state.posts.all_posts);
   return {
     id: state.auth.id,
     loading: state.feed.loading,

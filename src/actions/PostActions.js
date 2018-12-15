@@ -138,7 +138,7 @@ export const editPost = (obj, navigation = null) => dispatch => {
     });
 };
 
-const deletePostAction = (userID, postID) => ({
+export const deletePostAction = (userID, postID) => ({
   type: DELETE_POST,
   payload: { userID, postID }
 });

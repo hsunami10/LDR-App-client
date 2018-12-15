@@ -28,6 +28,7 @@ UserCardHeader.propTypes = {
 
 const styles = StyleSheet.create({
   headerStyle: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'

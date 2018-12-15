@@ -206,7 +206,7 @@ class HomeScreen extends Component {
         if (this.state.mounted.social) {
           return (
             <SocialScreen
-              showFriendRequests
+              private
               navigation={this.props.navigation}
               parentNavigation={this.props.screenProps.parentNavigation}
             />

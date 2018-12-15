@@ -10,16 +10,16 @@ const UserRequestButtons = ({ onAcceptPress, onRejectPress }) => (
    <ClickableImage
      width={30}
      height={30}
-     image={RedX}
+     image={GreenV}
      type="opacity"
-     onPress={onRejectPress}
+     onPress={onAcceptPress}
    />
    <ClickableImage
      width={30}
      height={30}
-     image={GreenV}
+     image={RedX}
      type="opacity"
-     onPress={onAcceptPress}
+     onPress={onRejectPress}
    />
   </View>
 );

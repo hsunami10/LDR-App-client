@@ -4,107 +4,13 @@ import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/DataList';
-import { NO_FRIENDS_MSG } from '../../../constants/noneMessages';
-import { getSocialInfo } from '../../../actions/SocialActions';
-
-const requests = [
-  {
-    id: 'fdjaoifdjsaflkadsf',
-    username: 'Request 123',
-    profile_pic: null,
-    message: 'Let\'s be friends!',
-    type: 'request'
-  },
-  {
-    id: 'sdfdfflsakfjdsaf',
-    username: 'UserRequest222',
-    profile_pic: null,
-    date_joined: '1544212302',
-    type: 'request'
-  },
-  {
-    id: 'dmasdfdfflsakfjdsaf',
-    username: 'User100000',
-    profile_pic: null,
-    date_joined: '1544232932',
-    type: 'request'
-  },
-  {
-    id: 'dfjdsaf',
-    username: 'Noob',
-    profile_pic: null,
-    date_joined: '1544129401',
-    type: 'request'
-  }
-];
-
-const pending = [
-  {
-    id: 'asdjflksdfdsafd',
-    username: 'PendingUser111',
-    profile_pic: null,
-    date_joined: '1544231022',
-    type: 'pending'
-  },
-  {
-    id: 'asdfjasdlkfjalsdf',
-    username: 'PendingUser2002',
-    profile_pic: null,
-    date_joined: '1544111111',
-    type: 'pending'
-  }
-];
-
-// TODO: Change to object of objects, and array of user_ids (order)
-const friends = [
-  {
-    id: 'asldkfadslkfsdf',
-    username: 'Noob User 123',
-    profile_pic: null,
-    date_joined: '1544237986',
-    message: 'Let\'s be friends!',
-    type: 'request'
-  },
-  {
-    id: 'dsfdfadsfdsf',
-    username: 'HelloWorld',
-    profile_pic: null,
-    date_joined: '1544233000',
-    date_friended: '1544233000',
-    type: 'friend'
-  },
-  {
-    id: 'fsdfdadfasdf',
-    username: 'I AM DUMB',
-    profile_pic: null,
-    date_joined: '1544237100',
-    type: 'regular'
-  },
-  {
-    id: 'ukyftjfjfytj',
-    username: 'Noob User 8888888',
-    profile_pic: null,
-    date_joined: '1544220000',
-    date_sent: '1544220000',
-    type: 'pending'
-  },
-  {
-    id: 'asdfoiasdfjajcsalkdf',
-    username: 'throwawayUser10',
-    profile_pic: null,
-    date_joined: '1544220382',
-    date_friended: '1544220382',
-    type: 'friend'
-  },
-  {
-    id: 'lkjlkfjdskjfsdf',
-    username: 'I am a nice Friend',
-    profile_pic: null,
-    date_joined: '1544220011',
-    date_friended: '1544220011',
-    type: 'friend'
-  }
-];
+import {
+  NO_FRIEND_REQUESTS_MSG,
+  NO_PENDING_MSG,
+  NO_FRIENDS_MSG
+} from '../../../constants/noneMessages';
+import { getSocialInfo, getFriends } from '../../../actions/SocialActions';
+import { orderToArrData } from '../../../assets/helpers/misc';
 
 // QUESTION: How to organize OWN list of friends?
 // NOTE: Don't have to worry about multiple screens for requests - you can only view them on one screen
@@ -123,7 +29,7 @@ const friends = [
 // NOTE: Remember to change ScreenReducer STORE_USER_SCREEN_INFO_SUCCESS to store friends list IF userID = current user
 // Have a new action and dispatch - GET_USER_FRIENDS
 //
-// Remember to also show friend requests - have SectionList if showFriendRequests = true
+// Remember to also show friend requests - have SectionList if private = true
 // Show requests in first section
 // Show pending in second section
 // Show friends in third section
@@ -133,6 +39,10 @@ class SocialScreen extends Component {
   componentDidMount() {
     this.props.getSocialInfo(this.props.id, false, 0, this.props.parentNavigation);
   }
+
+  getMoreFriends = () => this.props.getFriends(this.props.id, this.props.offset);
+
+  handleSocialRefresh = () => this.props.getSocialInfo(this.props.id, true, 0, this.props.parentNavigation)
 
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
@@ -144,25 +54,35 @@ class SocialScreen extends Component {
       return null;
     } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
-    } /*else if (this.props.showFriendRequests) { // TODO: Show sectioned list
+    } else if (this.props.private) { // TODO: Show sectioned list
       return (
-        <View>
-          <Text>Show SectionList with Requests, Pending, Friends, Here. Always pull ALL requests and ALL pending, but only page 20 friends at a time. Do not allow any sorting.</Text>
-        </View>
+        <DataList
+          type="users"
+          sectionList
+          sectionTitles={['Requests', 'Pending', 'Friends']}
+          sectionData={[this.props.requests, this.props.pending, this.props.friends]}
+          emptyMessages={[NO_FRIEND_REQUESTS_MSG, NO_PENDING_MSG, NO_FRIENDS_MSG]}
+          enableRefresh
+          refreshing={this.props.refreshing}
+          handleRefresh={this.handleSocialRefresh}
+          enablePaging
+          keepPaging={this.props.keepPaging}
+          paginateData={this.getMoreFriends}
+          height={this.state.height}
+          navigation={this.props.navigation}
+          parentNavigation={this.props.parentNavigation}
+        />
       );
-    }*/
+    }
     // TODO: Finish this later
     // Can allow sorting here
     return (
       <DataList
         type="users"
         flatList
-        data={friends}
-        empty={friends.length === 0}
-        // data={this.props.friends}
-        // empty={this.props.friends.length === 0}
+        data={this.props.friends}
+        empty={this.props.friends.length === 0}
         message={NO_FRIENDS_MSG}
-        onItemSelect={item => console.log('item selected: ', item)}
         height={this.state.height}
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
@@ -184,24 +104,38 @@ class SocialScreen extends Component {
 
 SocialScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  users: PropTypes.array.isRequired,
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
   getSocialInfo: PropTypes.func.isRequired,
+  requests: PropTypes.array.isRequired,
+  pending: PropTypes.array.isRequired,
+  friends: PropTypes.array.isRequired,
+  getFriends: PropTypes.func.isRequired,
+  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
-  showFriendRequests: PropTypes.bool
+  private: PropTypes.bool
 };
 
-const mapStateToProps = state => ({
-  id: state.auth.id,
-  initial_loading: state.social.initial_loading,
-  refreshing: state.social.refreshing,
-  keepPaging: state.social.keepPaging
-});
+const mapStateToProps = state => {
+  const requests = orderToArrData(state.social.requests.order, state.social.all_users);
+  const pending = orderToArrData(state.social.pending.order, state.social.all_users);
+  const friends = orderToArrData(state.social.friends.order, state.social.all_users);
+  return {
+    id: state.auth.id,
+    initial_loading: state.social.initial_loading,
+    refreshing: state.social.refreshing,
+    keepPaging: state.social.friends.keepPaging,
+    offset: state.social.friends.offset,
+    requests,
+    pending,
+    friends,
+  };
+};
 
 export default connect(mapStateToProps, {
-  getSocialInfo
+  getSocialInfo,
+  getFriends
 })(SocialScreen);

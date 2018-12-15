@@ -8,6 +8,13 @@ import TopicCard from './topic/TopicCard';
 import UserCard from './user/UserCard';
 import SortModal from './post/SortModal';
 import { requireWhenPropExists } from '../assets/helpers/errors/proptypes';
+import {
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  cancelPendingRequest,
+  unfriendUser,
+} from '../actions/SocialActions';
 
 class DataList extends Component {
   state = {
@@ -47,13 +54,13 @@ class DataList extends Component {
   handleUserActionPress = (id, type) => {
     switch (type) {
       case 'regular':
-        console.log(`send a friend request to this user with id: ${id}`);
+        this.props.sendFriendRequest(this.props.id, id);
         break;
       case 'friend':
-        console.log(`unfriend this user with id: ${id}`);
+        this.props.unfriendUser(this.props.id, id);
         break;
       case 'pending':
-        console.log(`cancel friend request to this user with id: ${id}`);
+        this.props.cancelPendingRequest(this.props.id, id);
         break;
       default:
         break;
@@ -61,7 +68,11 @@ class DataList extends Component {
   }
 
   handleUserRequestPress = (id, accepted) => {
-    console.log(`request accepted? ${accepted} for user with id: ${id}`);
+    if (accepted) {
+      this.props.acceptFriendRequest(this.props.id, id);
+    } else {
+      this.props.rejectFriendRequest(this.props.id, id);
+    }
   }
 
   // choice -> sort string to display on button
@@ -102,7 +113,7 @@ class DataList extends Component {
   }
 
   handleContentSizeChange = (contentWidth, contentHeight) => {
-    if (this.props.height) {
+    if (this.props.height && this.props.enablePaging) {
       this.setState(() => ({
         canPaginate: contentHeight > this.props.height // Only allow pagination if content height is larger than FlatList height
       }));
@@ -123,14 +134,14 @@ class DataList extends Component {
     if (typeof item === 'string') { // Only true if empty data for section index, since array.size = 1, string
       return <Text style={{ alignSelf: 'center' }}>{item}</Text>;
     }
-    if (index === 0 && this.props.enableSorting) {
+    if (index === 0 && this.props.enableSorting && this.props.flatList) {
       return (
         <Button
           title={`Sort by: ${this.state.sortButtonText}`}
           onPress={this.showSortModal}
         />
       );
-    } else if (index === 0 && !this.props.enableSorting) {
+    } else if (index === 0 && !this.props.enableSorting && this.props.flatList) {
       return null;
     }
     switch (this.props.type) {
@@ -206,7 +217,7 @@ class DataList extends Component {
   }
 
   renderSectionHeader = ({ section: { title } }) => (
-    <Text style={{ fontWeight: 'bold', fontSize: 24 }}>{title}</Text>
+    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{title}</Text>
   )
 
   render() {
@@ -217,6 +228,16 @@ class DataList extends Component {
           renderSectionHeader={this.renderSectionHeader}
           sections={this.renderSections()}
           keyExtractor={(item, index) => item + index}
+          refreshControl={
+            this.props.enableRefresh ?
+            <RefreshControl
+              refreshing={this.props.refreshing}
+              onRefresh={this.props.handleRefresh}
+            /> :
+            null
+          }
+          onContentSizeChange={this.handleContentSizeChange}
+          onEndReached={this.handleEndReached}
           scrollEventThrottle={16}
           onEndReachedThreshold={0}
         />
@@ -256,10 +277,17 @@ DataList.propTypes = {
   id: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
+  sendFriendRequest: PropTypes.func.isRequired,
+  acceptFriendRequest: PropTypes.func.isRequired,
+  rejectFriendRequest: PropTypes.func.isRequired,
+  cancelPendingRequest: PropTypes.func.isRequired,
+  unfriendUser: PropTypes.func.isRequired,
 
   type: PropTypes.oneOf(['posts', 'topics', 'users']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
+
+  // FlatList and SectionList optional props
   handleScroll: PropTypes.func,
   onItemSelect: PropTypes.func,
 
@@ -303,5 +331,10 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, {
-  pushTabRoute
+  pushTabRoute,
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  cancelPendingRequest,
+  unfriendUser,
 })(DataList);

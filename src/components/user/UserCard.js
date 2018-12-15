@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { View, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
 import UserCardHeader from './UserCardHeader';
 import UserCardActions from './UserCardActions';
-import UserCardBody from './UserCardBody';
 
 const UserCard = ({ user, onActionPress, onRequestPress, onUserPress }) => (
   <TouchableHighlight
@@ -11,15 +10,11 @@ const UserCard = ({ user, onActionPress, onRequestPress, onUserPress }) => (
     underlayColor="rgba(0,0,0,0.3)"
   >
     <View style={styles.cardContainerStyle}>
-      <View style={{ flex: 1 }}>
-        <UserCardHeader
-          user={user}
-          onActionPress={onActionPress}
-          onRequestPress={onRequestPress}
-        />
-        <UserCardBody user={user} />
-      </View>
-
+      <UserCardHeader
+        user={user}
+        onActionPress={onActionPress}
+        onRequestPress={onRequestPress}
+      />
       <UserCardActions
         user={user}
         onActionPress={onActionPress}

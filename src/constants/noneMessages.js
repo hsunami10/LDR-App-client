@@ -1,7 +1,5 @@
 // Users
 export const NO_USER_MSG = 'This user account has been deleted.';
-export const NO_FRIENDS_MSG = 'Oh no, you have no friends!';
-export const NO_FRIEND_REQUESTS_MSG = 'You have no friend requests.';
 
 // Posts
 export const NO_POST_MSG = 'This post has been deleted.';
@@ -17,3 +15,8 @@ export const EMPTY_FEED_MSG = 'Oh no, you have nothing! Create posts, add friend
 
 // Partner
 export const NO_PARTNER_FOUND_MSG = 'No Partner Found.';
+
+// Social
+export const NO_FRIEND_REQUESTS_MSG = 'You have no friend requests.';
+export const NO_PENDING_MSG = 'You have no pending requests';
+export const NO_FRIENDS_MSG = 'Oh no, you have no friends!';

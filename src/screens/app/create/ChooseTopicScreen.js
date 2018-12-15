@@ -40,11 +40,6 @@ class ChooseTopicScreen extends Component {
         enableRefresh
         refreshing={this.props.refreshing}
         handleRefresh={this.handleRefresh}
-        // sectioned
-        // onTopicSelect={this.handleTopicSelect}
-        // sectionTitles={['Subscribed Topics']}
-        // sectionData={[this.props.subscribed]}
-        // emptyMessages={[NO_SUBSCRIBED_TOPICS_MSG]}
       />
     );
   }
