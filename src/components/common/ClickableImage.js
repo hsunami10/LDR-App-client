@@ -66,7 +66,7 @@ export const ClickableImage = ({ width, height, onPress, image, type, style, dis
 ClickableImage.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  onPress: PropTypes.func.isRequired,
+  onPress: PropTypes.func,
   image: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object,

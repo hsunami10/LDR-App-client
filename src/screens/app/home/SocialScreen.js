@@ -11,7 +11,7 @@ const requests = [
     id: 'fdjaoifdjsaflkadsf',
     username: 'Request 123',
     profile_pic: null,
-    date_joined: '1544238461',
+    message: 'Let\'s be friends!',
     type: 'request'
   },
   {
@@ -61,7 +61,7 @@ const friends = [
     username: 'Noob User 123',
     profile_pic: null,
     date_joined: '1544237986',
-    isFriend: true,
+    message: 'Let\'s be friends!',
     type: 'request'
   },
   {
@@ -69,6 +69,7 @@ const friends = [
     username: 'HelloWorld',
     profile_pic: null,
     date_joined: '1544233000',
+    date_friended: '1544233000',
     type: 'friend'
   },
   {
@@ -83,6 +84,7 @@ const friends = [
     username: 'Noob User 8888888',
     profile_pic: null,
     date_joined: '1544220000',
+    date_sent: '1544220000',
     type: 'pending'
   },
   {
@@ -90,6 +92,7 @@ const friends = [
     username: 'throwawayUser10',
     profile_pic: null,
     date_joined: '1544220382',
+    date_friended: '1544220382',
     type: 'friend'
   },
   {
@@ -97,6 +100,7 @@ const friends = [
     username: 'I am a nice Friend',
     profile_pic: null,
     date_joined: '1544220011',
+    date_friended: '1544220011',
     type: 'friend'
   }
 ];
@@ -122,7 +126,7 @@ const friends = [
 // Show requests in first section
 // Show pending in second section
 // Show friends in third section
-class FriendListScreen extends Component {
+class SocialScreen extends Component {
   state = { height: 0 }
 
   handleLayout = e => {
@@ -173,7 +177,7 @@ class FriendListScreen extends Component {
   }
 }
 
-FriendListScreen.propTypes = {
+SocialScreen.propTypes = {
   id: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired,
   refreshing: PropTypes.bool.isRequired,
@@ -189,4 +193,4 @@ const mapStateToProps = state => ({
   id: state.auth.id
 });
 
-export default connect(mapStateToProps, null)(FriendListScreen);
+export default connect(mapStateToProps, null)(SocialScreen);

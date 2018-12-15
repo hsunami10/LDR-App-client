@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, Dimensions, TouchableHighlight } from 'react-native';
 import moment from 'moment';
@@ -6,42 +6,76 @@ import { ROOT_URL } from '../../constants/variables';
 import { ClickableImage } from '../common';
 import ActionButton from './ActionButton';
 
-const UserCard = ({ user, onUserPress, onActionPress, onRequestPress }) => (
-  <TouchableHighlight
-    onPress={() => onUserPress(user.id, user.username)}
-    underlayColor="rgba(0,0,0,0.3)"
-  >
-    <View style={styles.cardContainerStyle}>
-      <ClickableImage
-        width={40}
-        height={40}
-        type="none"
-        disabled
-        image={user.profile_pic ? `${ROOT_URL}/${user.profile_pic}` : null}
-      />
+class UserCard extends Component {
+  // QUESTION: Is this even necessary? Displaying this information?
+  // Is having a message for requests even necessary?
+  renderData = () => {
+    switch (this.props.user.type) {
+      case 'regular':
+        return (
+          <Text style={{ fontSize: 12 }} suppressHighlighting>
+            {`Joined ${moment(moment.unix(this.props.user.date_joined)).fromNow(true)} ago`}
+          </Text>
+        );
+      case 'friend':
+        return (
+          <Text style={{ fontSize: 12 }} suppressHighlighting>
+            {`Friended ${moment(moment.unix(this.props.user.date_friended)).fromNow(true)} ago`}
+          </Text>
+        );
+      case 'request':
+        return (
+          <Text style={{ fontSize: 12 }} suppressHighlighting>
+            {this.props.user.message}
+          </Text>
+        );
+      case 'pending':
+        return (
+          <Text style={{ fontSize: 12 }} suppressHighlighting>
+            {`Sent ${moment(moment.unix(this.props.user.date_sent)).fromNow(true)} ago`}
+          </Text>
+        );
+      default:
+        return null;
+    }
+  }
 
-      <View style={styles.textViewStyle}>
-        <Text
-          style={{ fontWeight: 'bold' }}
-          suppressHighlighting
-        >
-          {user.username}
-        </Text>
-        <Text
-          style={{ fontSize: 12 }}
-          suppressHighlighting
-        >{`Joined ${moment.unix(user.date_joined).format('MM/DD/YYYY')}`}</Text>
-      </View>
+  render() {
+    return (
+      <TouchableHighlight
+        onPress={() => this.props.onUserPress(this.props.user.id, this.props.user.username)}
+        underlayColor="rgba(0,0,0,0.3)"
+      >
+        <View style={styles.cardContainerStyle}>
+          <ClickableImage
+            width={40}
+            height={40}
+            type="none"
+            disabled
+            image={this.props.user.profile_pic ? `${ROOT_URL}/${this.props.user.profile_pic}` : null}
+          />
 
-      <ActionButton
-        id={user.id}
-        type={user.type}
-        onPress={onActionPress}
-        onRequestPress={onRequestPress}
-      />
-    </View>
-  </TouchableHighlight>
-);
+          <View style={styles.textViewStyle}>
+            <Text
+              style={{ fontWeight: 'bold' }}
+              suppressHighlighting
+            >
+              {this.props.user.username}
+            </Text>
+            {this.renderData()}
+          </View>
+
+          <ActionButton
+            id={this.props.user.id}
+            type={this.props.user.type}
+            onPress={this.props.onActionPress}
+            onRequestPress={this.props.onRequestPress}
+          />
+        </View>
+      </TouchableHighlight>
+    );
+  }
+}
 
 UserCard.propTypes = {
   user: PropTypes.object.isRequired,

@@ -7,7 +7,7 @@ import { View, Animated, Keyboard } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import FeedScreen from './FeedScreen';
-import FriendListScreen from './FriendListScreen';
+import SocialScreen from './SocialScreen';
 import TopicListScreen from './TopicListScreen';
 
 class HomeScreen extends Component {
@@ -205,7 +205,7 @@ class HomeScreen extends Component {
       case 'friends':
         if (this.state.mounted.friends) {
           return (
-            <FriendListScreen
+            <SocialScreen
               showFriendRequests
               navigation={this.props.navigation}
               parentNavigation={this.props.screenProps.parentNavigation}
