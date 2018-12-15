@@ -77,3 +77,10 @@ export const START_INITIAL_FEED_LOADING = 'start_initial_feed_loading';
 export const STOP_INITIAL_FEED_LOADING = 'stop_initial_feed_loading';
 export const GET_USER_FEED = 'get_user_feed';
 export const SORT_FEED = 'sort_feed';
+
+// Social
+export const START_INITIAL_SOCIAL_LOADING = 'start_initial_social_loading';
+export const STOP_INITIAL_SOCIAL_LOADING = 'stop_initial_social_loading';
+export const START_SOCIAL_REFRESHING = 'start_social_refreshing';
+export const STOP_SOCIAL_REFRESHING = 'stop_social_refreshing';
+export const GET_SOCIAL_INFO = 'get_social_info';

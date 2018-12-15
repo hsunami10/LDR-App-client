@@ -38,7 +38,7 @@ class ActionButton extends Component {
         );
       case 'pending':
         return (
-          <View style={styles.viewStyle}>
+          <View style={[styles.viewStyle, styles.pendingStyle]}>
             <ClickableImage
               width={30}
               height={30}
@@ -65,6 +65,7 @@ class ActionButton extends Component {
     }
     return (
       <TouchableHighlight
+        style={styles.buttonStyle}
         onPress={() => this.props.onPress(this.props.id, this.props.type)}
         underlayColor="rgba(0,0,0,0.3)"
       >
@@ -86,6 +87,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  pendingStyle: {
+    backgroundColor: '#C0C0C0'
+  },
+  buttonStyle: {
+    marginLeft: 'auto',
+    marginRight: 0,
   }
 });
 

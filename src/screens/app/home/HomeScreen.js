@@ -15,13 +15,13 @@ class HomeScreen extends Component {
     navigationState: {
       index: 1,
       routes: [
-        { key: 'friends', title: 'Friends' },
+        { key: 'social', title: 'Social' },
         { key: 'feed', title: 'Feed' },
         { key: 'topics', title: 'Topics' }
       ]
     },
     mounted: {
-      friends: false,
+      social: false,
       topics: false
     },
 
@@ -154,10 +154,10 @@ class HomeScreen extends Component {
         let mounted = { ...prevState.mounted };
         switch (index) {
           case 0:
-            if (!prevState.mounted.friends) {
+            if (!prevState.mounted.social) {
               mounted = {
                 ...prevState.mounted,
-                friends: true
+                social: true
               };
             }
             break;
@@ -185,9 +185,9 @@ class HomeScreen extends Component {
 
   handleTabPress = ({ route }) => {
     switch (route.key) {
-      case 'friends':
-        if (!this.state.mounted.friends) {
-          this.setState(prevState => ({ mounted: { ...prevState.mounted, friends: true } }));
+      case 'social':
+        if (!this.state.mounted.social) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, social: true } }));
         }
         break;
       case 'topics':
@@ -202,8 +202,8 @@ class HomeScreen extends Component {
 
   renderScene = ({ route }) => {
     switch (route.key) {
-      case 'friends':
-        if (this.state.mounted.friends) {
+      case 'social':
+        if (this.state.mounted.social) {
           return (
             <SocialScreen
               showFriendRequests

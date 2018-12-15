@@ -5,6 +5,7 @@ import { View, Text } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/DataList';
 import { NO_FRIENDS_MSG } from '../../../constants/noneMessages';
+import { getSocialInfo } from '../../../actions/SocialActions';
 
 const requests = [
   {
@@ -129,6 +130,10 @@ const friends = [
 class SocialScreen extends Component {
   state = { height: 0 }
 
+  componentDidMount() {
+    this.props.getSocialInfo(this.props.id, false, 0, this.props.parentNavigation);
+  }
+
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
     this.setState(() => ({ height }));
@@ -183,6 +188,7 @@ SocialScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
+  getSocialInfo: PropTypes.func.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -190,7 +196,12 @@ SocialScreen.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  id: state.auth.id
+  id: state.auth.id,
+  initial_loading: state.social.initial_loading,
+  refreshing: state.social.refreshing,
+  keepPaging: state.social.keepPaging
 });
 
-export default connect(mapStateToProps, null)(SocialScreen);
+export default connect(mapStateToProps, {
+  getSocialInfo
+})(SocialScreen);
