@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { getSubscribedTopics } from '../../../actions/TopicActions';
 import { FullScreenLoading } from '../../../components/common';
-import DataList from '../../../components/DataList';
+import DataList from '../../../components/common/DataList';
 import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 
-class TopicListScreen extends Component {
+class HomeTopicScreen extends Component {
   componentDidMount() {
     this.props.getSubscribedTopics(this.props.id, false, 'lowercase_name', 'ASC');
   }
@@ -51,7 +51,7 @@ class TopicListScreen extends Component {
   }
 }
 
-TopicListScreen.propTypes = {
+HomeTopicScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
 
@@ -79,4 +79,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   getSubscribedTopics
-})(TopicListScreen);
+})(HomeTopicScreen);

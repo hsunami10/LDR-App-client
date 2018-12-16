@@ -1,7 +1,7 @@
-- finish 3 tab screens for home screen - Feed, Friends, Topics
-  - friends
-  - topics
 - add replying to comments
+- find a way to shrink the SocialScreen's SectionList by section title?
+
+NOTE - always take blocked users and partners hidden into account (exclude)
 
 NOTE - for REMOVE_FRIEND_REQUEST, REMOVE_PENDING_REQUEST, REMOVE_FRIEND actions, they might have to be handled in other reducers - adjusting offset, etc. - CHANGE IN ViewProfileScreens
 

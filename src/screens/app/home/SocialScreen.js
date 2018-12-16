@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
-import DataList from '../../../components/DataList';
+import DataList from '../../../components/common/DataList';
 import {
   NO_FRIEND_REQUESTS_MSG,
   NO_PENDING_MSG,

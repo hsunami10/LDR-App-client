@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { StandardHeader, FullScreenLoading } from '../../../components/common';
-import DataList from '../../../components/DataList';
+import DataList from '../../../components/common/DataList';
 import { getSubscribedTopics, choosePostTopic, startTopicLoading, stopTopicLoading } from '../../../actions/TopicActions';
 import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
 

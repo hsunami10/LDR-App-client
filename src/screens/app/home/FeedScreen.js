@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
-import DataList from '../../../components/DataList';
+import DataList from '../../../components/common/DataList';
 import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';

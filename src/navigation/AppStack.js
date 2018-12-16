@@ -1,10 +1,10 @@
 import { createStackNavigator } from 'react-navigation';
 import MainScreen from '../screens/app/MainScreen';
-// import ViewPostScreen from '../screens/app/social/ViewPostScreen';
+// import ViewPostScreen from '../screens/app/post/ViewPostScreen';
 import CreateMainScreen from '../screens/app/create/CreateMainScreen';
 import ChooseTopicScreen from '../screens/app/create/ChooseTopicScreen';
 import EditProfileScreen from '../screens/app/profile/EditProfileScreen';
-import EditPostScreen from '../screens/app/social/EditPostScreen';
+import EditPostScreen from '../screens/app/post/EditPostScreen';
 
 const MainStack = createStackNavigator(
   {

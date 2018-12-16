@@ -8,7 +8,7 @@ import { SearchHeader } from '../../../components/common';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 import FeedScreen from './FeedScreen';
 import SocialScreen from './SocialScreen';
-import TopicListScreen from './TopicListScreen';
+import HomeTopicScreen from './HomeTopicScreen';
 
 class HomeScreen extends Component {
   state = {
@@ -223,7 +223,7 @@ class HomeScreen extends Component {
       case 'topics':
         if (this.state.mounted.topics) {
           return (
-            <TopicListScreen
+            <HomeTopicScreen
               navigation={this.props.navigation}
               parentNavigation={this.props.screenProps.parentNavigation}
             />

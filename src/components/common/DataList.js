@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, Text, FlatList, RefreshControl, Button, SectionList, StyleSheet } from 'react-native';
-import { pushTabRoute } from '../actions/NavigationActions';
-import PostCard from './post/PostCard';
-import TopicCard from './topic/TopicCard';
-import UserCard from './user/UserCard';
-import SortModal from './post/SortModal';
-import { requireWhenPropExists } from '../assets/helpers/errors/proptypes';
+import { pushTabRoute } from '../../actions/NavigationActions';
+import PostCard from '../post/PostCard';
+import TopicCard from '../topic/TopicCard';
+import UserCard from '../user/UserCard';
+import SortModal from '../post/SortModal';
+import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
   sendFriendRequest,
   acceptFriendRequest,

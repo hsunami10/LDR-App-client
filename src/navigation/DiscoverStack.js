@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
-import DiscoverScreen from '../screens/app/social/DiscoverScreen';
+import DiscoverScreen from '../screens/app/discover/DiscoverScreen';
 import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
-import ViewPostScreen from '../screens/app/social/ViewPostScreen';
+import ViewPostScreen from '../screens/app/post/ViewPostScreen';
 
 // TODO: Add ViewGroupScreen and other screens if necessary
 export default createStackNavigator(
