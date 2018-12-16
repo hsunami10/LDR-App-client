@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
 import { View, Button, StyleSheet, Platform } from 'react-native';
 
-// 'Newest', 'Popular'
-const PostSortModal = ({ isVisible, onChoiceSelect, selected }) => (
+// 'Recently Joined', 'Popular'
+const UserSortModal = ({ isVisible, onChoiceSelect, selected }) => (
   <Modal
     animationIn="fadeIn"
     animationOut="fadeOut"
@@ -15,9 +15,9 @@ const PostSortModal = ({ isVisible, onChoiceSelect, selected }) => (
   >
     <View style={styles.contentStyle}>
       <Button
-        title="Newest"
-        onPress={() => onChoiceSelect('Newest')}
-        color={selected === 'Newest' ? 'purple' : null}
+        title="Recently Joined"
+        onPress={() => onChoiceSelect('Recently Joined')}
+        color={selected === 'Recently Joined' ? 'purple' : null}
       />
       <Button
         title="Popular"
@@ -33,7 +33,7 @@ const PostSortModal = ({ isVisible, onChoiceSelect, selected }) => (
   </Modal>
 );
 
-PostSortModal.propTypes = {
+UserSortModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onChoiceSelect: PropTypes.func.isRequired,
   selected: PropTypes.string.isRequired
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PostSortModal;
+export default UserSortModal;

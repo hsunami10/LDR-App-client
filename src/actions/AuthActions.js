@@ -152,6 +152,7 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   const data = new FormData();
   data.append('user_id', dataObj.id);
   data.append('type', 'profile');
+  data.append('bio', dataObj.bio);
   data.append('code', dataObj.code);
   data.append('clientImage', dataObj.clientImage);
   console.log(data);

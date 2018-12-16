@@ -7,6 +7,7 @@ import PostCard from '../post/PostCard';
 import TopicCard from '../topic/TopicCard';
 import UserCard from '../user/UserCard';
 import PostSortModal from '../post/PostSortModal';
+import UserSortModal from '../user/UserSortModal';
 import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
   sendFriendRequest,
@@ -31,6 +32,9 @@ class DataList extends Component {
       case 'topics':
         break;
       case 'users':
+        break;
+      case 'users_descriptive':
+        this.setState(() => ({ sortButtonText: 'Recently Joined' }));
         break;
       default:
         break;
@@ -106,6 +110,20 @@ class DataList extends Component {
         break;
       case 'users':
         break;
+      case 'users_descriptive':
+        switch (choice) {
+          case 'Recently Joined':
+            order = 'date_joined';
+            direction = 'DESC';
+            break;
+          case 'Popular':
+            order = 'num_friends';
+            direction = 'DESC';
+            break;
+          default:
+            break;
+        }
+        break;
       default:
         break;
     }
@@ -174,6 +192,11 @@ class DataList extends Component {
             onRequestPress={this.handleUserRequestPress}
           />
         );
+      case 'users_descriptive':
+        // TODO: Finish this later
+        return (
+          <Text>{item.username}</Text>
+        );
       default:
         return null;
     }
@@ -183,7 +206,7 @@ class DataList extends Component {
     <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{item.text}</Text>
   )
 
-  renderPostSortModal = () => {
+  renderSortModal = () => {
     switch (this.props.type) {
       case 'posts':
         if (this.props.enableSorting) {
@@ -195,14 +218,26 @@ class DataList extends Component {
             />
           );
         }
-        return null;
+        break;
       case 'topics':
         break;
       case 'users':
         break;
+      case 'users_descriptive':
+        if (this.props.enableSorting) {
+          return (
+            <UserSortModal
+              isVisible={this.state.sortModalVisible}
+              onChoiceSelect={this.handleSortSelect}
+              selected={this.state.sortButtonText}
+            />
+          );
+        }
+        break;
       default:
-        return null;
+        break;
     }
+    return null;
   }
 
   renderSections = () => {
@@ -267,7 +302,7 @@ class DataList extends Component {
           scrollEventThrottle={16}
           onEndReachedThreshold={0}
         />
-        {this.renderPostSortModal()}
+        {this.renderSortModal()}
       </View>
     );
   }
@@ -283,7 +318,7 @@ DataList.propTypes = {
   cancelPendingRequest: PropTypes.func.isRequired,
   unfriendUser: PropTypes.func.isRequired,
 
-  type: PropTypes.oneOf(['posts', 'topics', 'users']).isRequired,
+  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_descriptive']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
 

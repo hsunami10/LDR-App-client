@@ -48,7 +48,19 @@ export default (state = INITIAL_STATE, action) => {
       return INITIAL_STATE;
 
     case DELETE_POST:
-      // TODO: Finish delete post later
+      const copyOrder = [...state.posts.order];
+      const index = copyOrder.indexOf(action.payload.postID);
+      if (index >= 0) {
+        copyOrder.splice(index, 1);
+        return {
+          ...state,
+          posts: {
+            ...state.posts,
+            offset: state.offset - 1,
+            order: copyOrder
+          }
+        };
+      }
       return state;
     case START_INITIAL_DISCOVER_POSTS_LOADING:
       return {

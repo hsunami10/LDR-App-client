@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';
 import {
@@ -54,35 +54,20 @@ class SocialScreen extends Component {
       return null;
     } else if (this.props.initial_loading) { // Only true once, on componentDidMount
       return <FullScreenLoading height={this.state.height} loading />;
-    } else if (this.props.private) { // TODO: Show sectioned list
-      return (
-        <DataList
-          type="users"
-          sectionList
-          sectionTitles={['Requests', 'Pending', 'Friends']}
-          sectionData={[this.props.requests, this.props.pending, this.props.friends]}
-          emptyMessages={[NO_FRIEND_REQUESTS_MSG, NO_PENDING_MSG, NO_FRIENDS_MSG]}
-          enableRefresh
-          refreshing={this.props.refreshing}
-          handleRefresh={this.handleSocialRefresh}
-          enablePaging
-          keepPaging={this.props.keepPaging}
-          paginateData={this.getMoreFriends}
-          height={this.state.height}
-          navigation={this.props.navigation}
-          parentNavigation={this.props.parentNavigation}
-        />
-      );
     }
-    // TODO: Finish this later
-    // Can allow sorting here
     return (
       <DataList
         type="users"
-        flatList
-        data={this.props.friends}
-        empty={this.props.friends.length === 0}
-        message={NO_FRIENDS_MSG}
+        sectionList
+        sectionTitles={['Requests', 'Pending', 'Friends']}
+        sectionData={[this.props.requests, this.props.pending, this.props.friends]}
+        emptyMessages={[NO_FRIEND_REQUESTS_MSG, NO_PENDING_MSG, NO_FRIENDS_MSG]}
+        enableRefresh
+        refreshing={this.props.refreshing}
+        handleRefresh={this.handleSocialRefresh}
+        enablePaging
+        keepPaging={this.props.keepPaging}
+        paginateData={this.getMoreFriends}
         height={this.state.height}
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}

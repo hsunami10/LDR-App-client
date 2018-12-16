@@ -10,6 +10,7 @@ import {
   StandardHeader,
   ClickableImage,
   DismissKeyboard,
+  MultiLineInput,
   FullScreenLoading,
   Input
 } from '../../components/common';
@@ -26,6 +27,7 @@ import PartnerRequestCard from '../../components/user/PartnerRequestCard';
 class CreateProfileScreen extends Component {
   state = {
     code: '',
+    bio: '',
     loading: false, // For querying partner
     image: null
   }
@@ -56,7 +58,8 @@ class CreateProfileScreen extends Component {
   acceptResult = () => this.props.acceptResult(this.props.id, this.props.partner_result.id)
   cancelResult = () => this.props.removePartnerResult()
   resetEverything = () => this.setState(() => ({ loading: false, image: null }))
-  handleChangeText = code => this.setState(() => ({ code }))
+  handleChangeBio = bio => this.setState(() => ({ bio }))
+  handleChangeCode = code => this.setState(() => ({ code }))
   showActionSheet = () => this.ActionSheet.show()
   ref = o => (this.ActionSheet = o)
 
@@ -65,6 +68,7 @@ class CreateProfileScreen extends Component {
     this.props.createProfile(
       {
         id: this.props.id,
+        bio: this.state.bio,
         code: this.state.code,
         clientImage: this.state.image || null
       },
@@ -160,11 +164,21 @@ class CreateProfileScreen extends Component {
               type="none"
               image={this.state.image}
             />
+            <MultiLineInput
+              multiline
+              numberOfLines={4}
+              placeholder="Bio (optional)"
+              onChangeText={this.handleChangeBio}
+              value={this.state.bio}
+              width={Dimensions.get('window').width - 20}
+              height={Dimensions.get('window').width - 250}
+              containerStyle={{ marginTop: 10 }}
+            />
             <Text>Have a partner?</Text>
             <Input
               placeholder="Enter the code here"
               value={this.state.code}
-              onChangeText={this.handleChangeText}
+              onChangeText={this.handleChangeCode}
             />
             <PartnerRequestCard
               user={this.props.partner_result}

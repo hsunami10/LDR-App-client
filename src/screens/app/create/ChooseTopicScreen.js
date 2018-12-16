@@ -36,6 +36,7 @@ class ChooseTopicScreen extends Component {
         flatList
         data={this.props.subscribed}
         empty={this.props.subscribed.length === 0}
+        message={NO_SUBSCRIBED_TOPICS_MSG}
         onItemSelect={this.handleTopicSelect}
         enableRefresh
         refreshing={this.props.refreshing}

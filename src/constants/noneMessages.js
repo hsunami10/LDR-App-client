@@ -22,4 +22,5 @@ export const NO_PENDING_MSG = 'You have no pending requests';
 export const NO_FRIENDS_MSG = 'Oh no, you have no friends!';
 
 // Discover
-export const EMPTY_DISCOVER_POST_MSG = 'Oh no, no posts have been created ever. Be the first one!';
+export const EMPTY_DISCOVER_POST_MSG = 'No posts have been created ever. Be the first one!';
+export const NO_DISCOVER_USERS_MSG = 'No users other than yourself have joined. Help invite people over!';
