@@ -280,17 +280,17 @@ class HomeScreen extends Component {
 }
 
 HomeScreen.propTypes = {
-  screenProps: PropTypes.object.isRequired,
-
   id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
-  current_tab: PropTypes.string.isRequired
+  current_tab: PropTypes.string.isRequired,
+
+  screenProps: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
   id: state.auth.id,
   current_route: state.navigation.current_route,
-  current_tab: state.navigation.current_tab
+  current_tab: state.navigation.current_tab,
 });
 
 export default connect(mapStateToProps, null)(HomeScreen);

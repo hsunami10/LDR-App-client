@@ -6,7 +6,7 @@ import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from '../post/PostCard';
 import TopicCard from '../topic/TopicCard';
 import UserCard from '../user/UserCard';
-import SortModal from '../post/SortModal';
+import PostSortModal from '../post/PostSortModal';
 import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
   sendFriendRequest,
@@ -14,7 +14,7 @@ import {
   rejectFriendRequest,
   cancelPendingRequest,
   unfriendUser,
-} from '../actions/SocialActions';
+} from '../../actions/SocialActions';
 
 class DataList extends Component {
   state = {
@@ -128,7 +128,7 @@ class DataList extends Component {
     }
   }
 
-  showSortModal = () => this.setState(prevState => ({ sortModalVisible: !prevState.sortModalVisible }))
+  showPostSortModal = () => this.setState(prevState => ({ sortModalVisible: !prevState.sortModalVisible }))
 
   renderData = ({ item, index }) => {
     if (typeof item === 'string') { // Only true if empty data for section index, since array.size = 1, string
@@ -138,7 +138,7 @@ class DataList extends Component {
       return (
         <Button
           title={`Sort by: ${this.state.sortButtonText}`}
-          onPress={this.showSortModal}
+          onPress={this.showPostSortModal}
         />
       );
     } else if (index === 0 && !this.props.enableSorting && this.props.flatList) {
@@ -183,12 +183,12 @@ class DataList extends Component {
     <Text style={{ marginTop: 50, alignSelf: 'center', textAlign: 'center' }}>{item.text}</Text>
   )
 
-  renderSortModal = () => {
+  renderPostSortModal = () => {
     switch (this.props.type) {
       case 'posts':
         if (this.props.enableSorting) {
           return (
-            <SortModal
+            <PostSortModal
               isVisible={this.state.sortModalVisible}
               onChoiceSelect={this.handleSortSelect}
               selected={this.state.sortButtonText}
@@ -267,7 +267,7 @@ class DataList extends Component {
           scrollEventThrottle={16}
           onEndReachedThreshold={0}
         />
-        {this.renderSortModal()}
+        {this.renderPostSortModal()}
       </View>
     );
   }

@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import { View, Text, Button, StyleSheet, Platform } from 'react-native';
 
 // 'Newest', 'Popular'
-const SortModal = ({ isVisible, onChoiceSelect, selected }) => (
+const PostSortModal = ({ isVisible, onChoiceSelect, selected }) => (
   <Modal
     animationIn="fadeIn"
     animationOut="fadeOut"
@@ -33,7 +33,7 @@ const SortModal = ({ isVisible, onChoiceSelect, selected }) => (
   </Modal>
 );
 
-SortModal.propTypes = {
+PostSortModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onChoiceSelect: PropTypes.func.isRequired,
   selected: PropTypes.string.isRequired
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SortModal;
+export default PostSortModal;

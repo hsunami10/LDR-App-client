@@ -11,8 +11,6 @@ import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
 import { logOut } from '../../../assets/helpers/authentication';
 import { orderToArrData } from '../../../assets/helpers/misc';
 
-// TODO: Add 3 tabs later - Feed, Topics, Friends
-
 /*
 HOW TO POPULATE THIS SCREEN
 Show posts with a search header on top to search / filter for keywords
@@ -61,7 +59,7 @@ class FeedScreen extends Component {
         this.state.order,
         this.state.direction,
         moment().unix(),
-        this.handleNoUserError
+        this.props.parentNavigation
       );
     }
   }
@@ -80,11 +78,9 @@ class FeedScreen extends Component {
       this.state.order,
       this.state.direction,
       benchmark,
-      this.handleNoUserError
+      this.props.parentNavigation
     );
   }
-
-  handleNoUserError = () => this.props.logOut(this.props.parentNavigation)
 
   handleRefresh = () => {
     this.props.getUserFeed(
@@ -94,13 +90,13 @@ class FeedScreen extends Component {
       this.state.order,
       this.state.direction,
       moment().unix(),
-      this.handleNoUserError
+      this.props.parentNavigation
     );
   }
 
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix(), this.handleNoUserError);
+    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix(), this.props.parentNavigation);
   }
 
   handleLayout = e => {

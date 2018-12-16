@@ -43,7 +43,6 @@ const INITIAL_STATE = {
       routes: []
     }
   },
-  routes: [] // TODO: Remove this later
 };
 
 export default (state = INITIAL_STATE, action) => {

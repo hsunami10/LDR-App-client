@@ -2,10 +2,11 @@ import {
   LOG_OUT_USER,
   STORE_USER_SCREEN_INFO_SUCCESS,
   GET_USER_FEED,
+  GET_DISCOVER_POSTS,
   CREATE_POST,
   EDIT_POST,
   DELETE_POST,
-  DELETE_COMMENT
+  DELETE_COMMENT,
 } from '../actions/types';
 
 // Holds all posts data - want all posts to be the same across screens
@@ -34,6 +35,12 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
     case GET_USER_FEED:
+      return {
+        ...state,
+        post_likes: { ...state.post_likes, ...action.payload.post_likes },
+        all_posts: { ...state.all_posts, ...action.payload.posts }
+      };
+    case GET_DISCOVER_POSTS:
       return {
         ...state,
         post_likes: { ...state.post_likes, ...action.payload.post_likes },

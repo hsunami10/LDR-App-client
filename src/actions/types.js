@@ -1,6 +1,10 @@
 // Include in every reducer
 export const LOG_OUT_USER = 'log_out_user';
 
+// Loading
+export const START_OVERLAY_LOADING = 'start_overlay_loading';
+export const STOP_OVERLAY_LOADING = 'stop_overlay_loading';
+
 // User
 export const STORE_USER_INFO = 'store_user_info';
 export const RESET_USER_ERRORS = 'reset_user_errors';
@@ -18,8 +22,7 @@ export const SET_AUTH_ERRORS = 'set_auth_errors';
 export const RESET_AUTH_ERRORS = 'reset_auth_errors';
 export const SET_NOT_FIRST_LOG_IN = 'set_not_first_log_in';
 
-// Screens
-// Users
+// Screen Users
 export const STORE_USER_SCREEN_INFO_SUCCESS = 'store_user_screen_info_success';
 export const STORE_USER_SCREEN_INFO_FAILURE = 'store_user_screen_info_failure';
 export const REMOVE_USER_SCREEN_INFO = 'remove_user_screen_info';
@@ -28,20 +31,17 @@ export const STOP_USER_SCREEN_REFRESHING = 'stop_user_screen_refreshing';
 export const START_INITIAL_USER_SCREEN_LOADING = 'start_initial_user_screen_loading';
 export const STOP_INITIAL_USER_SCREEN_LOADING = 'stop_initial_user_screen_loading';
 
-// Posts
+// Screen Posts
 export const REMOVE_POST_SCREEN_INFO = 'remove_post_screen_info';
 export const START_POST_SCREEN_REFRESHING = 'start_post_screen_refreshing';
 export const STOP_POST_SCREEN_REFRESHING = 'stop_post_screen_refreshing';
 export const INIT_POST_SCREEN_INFO = 'init_post_screen_info';
 
-// Comments
+// Screen Comments
 export const STORE_COMMENTS_SCREEN_INFO = 'store_comments_screen_info';
 export const START_COMMENTS_PAGE_LOADING = 'start_comments_page_loading';
 export const STOP_COMMENTS_PAGE_LOADING = 'stop_comments_page_loading';
 
-// Loading
-export const START_OVERLAY_LOADING = 'start_overlay_loading';
-export const STOP_OVERLAY_LOADING = 'stop_overlay_loading';
 
 // Navigation
 export const GO_BACKWARD_ROUTE = 'go_backward_route';
@@ -93,3 +93,24 @@ export const REMOVE_PENDING_REQUEST = 'remove_pending_request';
 export const CANCEL_PENDING_REQUEST = 'cancel_pending_request';
 export const REMOVE_FRIEND = 'remove_friend';
 export const UNFRIEND_USER = 'unfriend_user';
+
+// Discover Posts
+export const START_INITIAL_DISCOVER_POSTS_LOADING = 'start_initial_discover_posts_loading';
+export const STOP_INITIAL_DISCOVER_POSTS_LOADING = 'stop_initial_discover_posts_loading';
+export const START_DISCOVER_POSTS_REFRESHING = 'start_discover_posts_refreshing';
+export const STOP_DISCOVER_POSTS_REFRESHING = 'stop_discover_posts_refreshing';
+export const GET_DISCOVER_POSTS = 'get_discover_posts';
+
+// Discover Users
+export const START_INITIAL_DISCOVER_USERS_LOADING = 'start_initial_discover_users_loading';
+export const STOP_INITIAL_DISCOVER_USERS_LOADING = 'stop_initial_discover_users_loading';
+export const START_DISCOVER_USERS_REFRESHING = 'start_discover_users_refreshing';
+export const STOP_DISCOVER_USERS_REFRESHING = 'stop_discover_users_refreshing';
+export const GET_DISCOVER_USERS = 'get_discover_users';
+
+// Discover Topics
+export const START_INITIAL_DISCOVER_TOPICS_LOADING = 'start_initial_discover_topics_loading';
+export const STOP_INITIAL_DISCOVER_TOPICS_LOADING = 'stop_initial_discover_topics_loading';
+export const START_DISCOVER_TOPICS_REFRESHING = 'start_discover_topics_refreshing';
+export const STOP_DISCOVER_TOPICS_REFRESHING = 'stop_discover_topics_refreshing';
+export const GET_DISCOVER_TOPICS = 'get_discover_topics';

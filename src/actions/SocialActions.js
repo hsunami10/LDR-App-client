@@ -49,7 +49,7 @@ export const getSocialInfo = (userID, refresh, offset, navigation) => dispatch =
         alertWithSingleAction(
           'Oh no!',
           response.data.error,
-          () => logOut(navigation),
+          () => dispatch(logOut(navigation)),
           'Log Out'
         );
       }

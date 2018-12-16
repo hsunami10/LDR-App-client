@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { TabView, TabBar } from 'react-native-tab-view';
 import shortid from 'shortid';
-import { View, Text, Animated, Keyboard, RefreshControl, FlatList } from 'react-native';
+import { connect } from 'react-redux';
+import { View, Animated, Keyboard, StyleSheet } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import DiscoverUserScreen from './DiscoverUserScreen';
+import DiscoverPostScreen from './DiscoverPostScreen';
+import DiscoverTopicScreen from './DiscoverTopicScreen';
 import GeneralSearchScreen from '../GeneralSearchScreen';
 
 // TODO: Have 3 tabs and 3 screens automatically - Users, Posts, Topics - default to middle "Posts"
@@ -12,6 +17,19 @@ import GeneralSearchScreen from '../GeneralSearchScreen';
 
 class DiscoverScreen extends Component {
   state = {
+    navigationState: {
+      index: 1,
+      routes: [
+        { key: 'users', title: 'Users' },
+        { key: 'posts', title: 'Posts' },
+        { key: 'topics', title: 'Topics' }
+      ]
+    },
+    mounted: {
+      users: false,
+      topics: false
+    },
+
     search: '',
     oldSearch: '',
     typingTimeout: null,
@@ -20,60 +38,6 @@ class DiscoverScreen extends Component {
     display: 'none',
     height: 0,
     canPaginate: false,
-    posts: [
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-    ],
     posts2: [
       { id: shortid(), text: `Text Here + ${shortid()}` },
       { id: shortid(), text: `Text Here + ${shortid()}` },
@@ -211,8 +175,90 @@ class DiscoverScreen extends Component {
     this.setState(() => ({ height }));
   }
 
-  renderItem = data => {
-    return <Text style={{ alignSelf: 'center' }}>{data.item.text}</Text>;
+  handleIndexChange = index => {
+    if (index !== this.state.navigationState.index) {
+      this.setState(prevState => {
+        let mounted = { ...prevState.mounted };
+        switch (index) {
+          case 0:
+            if (!prevState.mounted.users) {
+              mounted = {
+                ...prevState.mounted,
+                users: true
+              };
+            }
+            break;
+          case 2:
+            if (!prevState.mounted.topics) {
+              mounted = {
+                ...prevState.mounted,
+                topics: true
+              };
+            }
+            break;
+          default:
+            break;
+        }
+        return {
+          navigationState: {
+            ...prevState.navigationState,
+            index
+          },
+          mounted
+        };
+      });
+    }
+  }
+
+  handleTabPress = ({ route }) => {
+    switch (route.key) {
+      case 'users':
+        if (!this.state.mounted.users) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, users: true } }));
+        }
+        break;
+      case 'topics':
+        if (!this.state.mounted.topics) {
+          this.setState(prevState => ({ mounted: { ...prevState.mounted, topics: true } }));
+        }
+        break;
+      default:
+        return;
+    }
+  }
+
+  renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'users':
+        if (this.state.mounted.users) {
+          return (
+            <DiscoverUserScreen
+              navigation={this.props.navigation}
+              parentNavigation={this.props.screenProps.parentNavigation}
+            />
+          );
+        }
+        break;
+      case 'posts':
+        return (
+          <DiscoverPostScreen
+            navigation={this.props.navigation}
+            parentNavigation={this.props.screenProps.parentNavigation}
+          />
+        );
+      case 'topics':
+        if (this.state.mounted.topics) {
+          return (
+            <DiscoverTopicScreen
+              navigation={this.props.navigation}
+              parentNavigation={this.props.screenProps.parentNavigation}
+            />
+          );
+        }
+        break;
+      default:
+        return;
+    }
   }
 
   render() {
@@ -231,21 +277,20 @@ class DiscoverScreen extends Component {
           style={{ flex: 1 }}
           onLayout={this.handleLayout}
         >
-          <FlatList
-            data={this.state.posts}
-            renderItem={this.renderItem}
-            keyExtractor={post => post.id}
-            onScroll={this.handleScroll}
-            scrollEventThrottle={16}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.handleRefresh}
+          <TabView
+            tabBarPosition="top"
+            navigationState={this.state.navigationState}
+            renderScene={this.renderScene}
+            renderTabBar={props =>
+              <TabBar
+                {...props}
+                useNativeDriver
+                onTabPress={this.handleTabPress}
+                // indicatorStyle={{ borderBottomColor: 'pink', borderBottomWidth: 2 }}
               />
             }
-            onContentSizeChange={this.handleContentSizeChange}
-            onEndReached={this.handleEndReached} // TODO: Paginate here
-            onEndReachedThreshold={0}
+            onIndexChange={this.handleIndexChange}
+            useNativeDriver
           />
           <GeneralSearchScreen
             display={this.state.display}
@@ -259,4 +304,22 @@ class DiscoverScreen extends Component {
   }
 }
 
-export default DiscoverScreen;
+DiscoverScreen.propTypes = {
+  id: PropTypes.string.isRequired,
+  current_route: PropTypes.string.isRequired,
+  current_tab: PropTypes.string.isRequired,
+
+  screenProps: PropTypes.object.isRequired,
+};
+
+const styles = StyleSheet.create({
+
+});
+
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  current_route: state.navigation.current_route,
+  current_tab: state.navigation.current_tab,
+});
+
+export default connect(mapStateToProps, null)(DiscoverScreen);
