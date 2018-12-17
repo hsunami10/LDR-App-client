@@ -24,3 +24,4 @@ export const NO_FRIENDS_MSG = 'Oh no, you have no friends!';
 // Discover
 export const EMPTY_DISCOVER_POST_MSG = 'No posts have been created ever. Be the first one!';
 export const NO_DISCOVER_USERS_MSG = 'No users other than yourself have joined. Help invite people over!';
+export const NO_DISCOVER_TOPICS_MSG = 'No topics have been created ever. Be the first one!';

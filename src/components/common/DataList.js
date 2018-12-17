@@ -8,6 +8,7 @@ import TopicCard from '../topic/TopicCard';
 import UserCard from '../user/UserCard';
 import PostSortModal from '../post/PostSortModal';
 import UserSortModal from '../user/UserSortModal';
+import TopicSortModal from '../topic/TopicSortModal';
 import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
   sendFriendRequest,
@@ -30,8 +31,13 @@ class DataList extends Component {
         this.setState(() => ({ sortButtonText: 'Newest' }));
         break;
       case 'topics':
+        this.setState(() => ({ sortButtonText: 'Popular' }));
+        break;
+      case 'topics_verbose':
+        this.setState(() => ({ sortButtonText: 'Popular' }));
         break;
       case 'users':
+        this.setState(() => ({ sortButtonText: 'Recently Joined' }));
         break;
       case 'users_verbose':
         this.setState(() => ({ sortButtonText: 'Recently Joined' }));
@@ -80,6 +86,7 @@ class DataList extends Component {
   }
 
   // choice -> sort string to display on button
+  // NOTE: Make sure "choice" matches the button titles of the respective sort modals
   handleSortSelect = choice => {
     this.setState(prevState => ({
       sortModalVisible: !prevState.sortModalVisible,
@@ -107,8 +114,58 @@ class DataList extends Component {
         }
         break;
       case 'topics':
+        switch (choice) {
+          case 'Newest':
+            order = 'date_created';
+            direction = 'DESC';
+            break;
+          case 'Oldest':
+            order = 'date_created';
+            direction = 'ASC';
+            break;
+          case 'Popular':
+            order = 'num_subscribers';
+            direction = 'DESC';
+            break;
+          default:
+            break;
+        }
+        break;
+      case 'topics_verbose':
+        switch (choice) {
+          case 'Newest':
+            order = 'date_created';
+            direction = 'DESC';
+            break;
+          case 'Oldest':
+            order = 'date_created';
+            direction = 'ASC';
+            break;
+          case 'Popular':
+            order = 'num_subscribers';
+            direction = 'DESC';
+            break;
+          default:
+            break;
+        }
         break;
       case 'users':
+        switch (choice) {
+          case 'Recently Joined':
+            order = 'date_joined';
+            direction = 'DESC';
+            break;
+          case 'Oldest':
+            order = 'date_joined';
+            direction = 'ASC';
+            break;
+          case 'Popular':
+            order = 'num_friends';
+            direction = 'DESC';
+            break;
+          default:
+            break;
+        }
         break;
       case 'users_verbose':
         switch (choice) {
@@ -187,6 +244,11 @@ class DataList extends Component {
             onPress={() => this.props.onItemSelect(item)}
           />
         );
+      case 'topics_verbose':
+        // TODO: Finish this later
+        return (
+          <Text>{item.name}</Text>
+        );
       case 'users':
         return (
           <UserCard
@@ -224,8 +286,37 @@ class DataList extends Component {
         }
         break;
       case 'topics':
+        if (this.props.enableSorting) {
+          return (
+            <TopicSortModal
+              isVisible={this.state.sortModalVisible}
+              onChoiceSelect={this.handleSortSelect}
+              selected={this.state.sortButtonText}
+            />
+          );
+        }
+        break;
+      case 'topics_verbose':
+        if (this.props.enableSorting) {
+          return (
+            <TopicSortModal
+              isVisible={this.state.sortModalVisible}
+              onChoiceSelect={this.handleSortSelect}
+              selected={this.state.sortButtonText}
+            />
+          );
+        }
         break;
       case 'users':
+        if (this.props.enableSorting) {
+          return (
+            <UserSortModal
+              isVisible={this.state.sortModalVisible}
+              onChoiceSelect={this.handleSortSelect}
+              selected={this.state.sortButtonText}
+            />
+          );
+        }
         break;
       case 'users_verbose':
         if (this.props.enableSorting) {
@@ -322,7 +413,7 @@ DataList.propTypes = {
   cancelPendingRequest: PropTypes.func.isRequired,
   unfriendUser: PropTypes.func.isRequired,
 
-  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_verbose']).isRequired,
+  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_verbose', 'topics_verbose']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
 

@@ -13,6 +13,8 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers/errors';
+import { alertWithSingleAction } from '../assets/helpers/alerts';
+import { logOut } from '../assets/helpers/authentication';
 
 export const startTopicLoading = () => ({ type: START_TOPIC_LOADING });
 export const stopTopicLoading = () => ({ type: STOP_TOPIC_LOADING });
@@ -58,7 +60,7 @@ export const createTopic = (dataObj, navigation, createTopicErrorCB) => dispatch
     });
 };
 
-export const getSubscribedTopics = (id, refresh, order, direction) => dispatch => {
+export const getSubscribedTopics = (id, refresh, order, direction, navigation) => dispatch => {
   if (refresh === true) {
     dispatch(startTopicRefreshing());
   } else if (refresh === false) {
@@ -66,20 +68,29 @@ export const getSubscribedTopics = (id, refresh, order, direction) => dispatch =
   }
   axios.get(`${ROOT_URL}/api/subscribed-topics/${id}?order=${order}&direction=${direction}`)
     .then(response => {
-      if (refresh) {
+      if (refresh === true) {
         dispatch(stopTopicRefreshing());
-      } else {
+      } else if (refresh === false) {
         dispatch(stopTopicLoading());
       }
-      dispatch({
-        type: GET_SUBSCRIBED_TOPICS,
-        payload: response.data
-      });
+      if (response.data.success) {
+        dispatch({
+          type: GET_SUBSCRIBED_TOPICS,
+          payload: response.data.result
+        });
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => dispatch(logOut(navigation)),
+          'Log Out'
+        );
+      }
     })
     .catch(error => {
-      if (refresh) {
+      if (refresh === true) {
         dispatch(stopTopicRefreshing());
-      } else {
+      } else if (refresh === false) {
         dispatch(stopTopicLoading());
       }
       if (error.response) {

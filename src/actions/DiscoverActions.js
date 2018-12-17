@@ -119,3 +119,49 @@ export const getDiscoverUsers = (userID, refresh, offset, order, direction, late
 
 
 // ============================================ Topics ============================================
+export const startInitialDiscoverTopicsLoading = () => ({ type: START_INITIAL_DISCOVER_TOPICS_LOADING });
+export const stopInitialDiscoverTopicsLoading = () => ({ type: STOP_INITIAL_DISCOVER_TOPICS_LOADING });
+
+export const startDiscoverTopicsRefreshing = () => ({ type: START_DISCOVER_TOPICS_REFRESHING });
+export const stopDiscoverTopicsRefreshing = () => ({ type: STOP_DISCOVER_TOPICS_REFRESHING });
+
+export const getDiscoverTopics = (userID, refresh, offset, order, direction, latest, navigation) => dispatch => {
+  if (refresh === true) {
+    dispatch(startDiscoverTopicsRefreshing());
+  } else if (refresh === false) {
+    dispatch(startInitialDiscoverTopicsLoading());
+  }
+  axios.get(`${ROOT_URL}/api/discover/topics/${userID}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+    .then(response => {
+      if (refresh === true) {
+        dispatch(stopDiscoverTopicsRefreshing());
+      } else if (refresh === false) {
+        dispatch(stopInitialDiscoverTopicsLoading());
+      }
+      if (response.data.success) {
+        dispatch({
+          type: GET_DISCOVER_TOPICS,
+          payload: response.data.result
+        });
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => dispatch(logOut(navigation)),
+          'Log Out'
+        );
+      }
+    })
+    .catch(error => {
+      if (refresh === true) {
+        dispatch(stopDiscoverTopicsRefreshing());
+      } else if (refresh === false) {
+        dispatch(stopInitialDiscoverTopicsLoading());
+      }
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};

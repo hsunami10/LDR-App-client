@@ -91,7 +91,7 @@ class DiscoverUserScreen extends Component {
         refreshing={this.props.refreshing}
         handleRefresh={this.handleRefresh}
       />
-  );
+    );
   }
 
   render() {

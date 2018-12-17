@@ -148,6 +148,49 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
 
+    case START_INITIAL_DISCOVER_TOPICS_LOADING:
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          initial_loading: true
+        }
+      };
+    case STOP_INITIAL_DISCOVER_TOPICS_LOADING:
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          initial_loading: false
+        }
+      };
+    case START_DISCOVER_TOPICS_REFRESHING:
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          refreshing: true
+        }
+      };
+    case STOP_DISCOVER_TOPICS_REFRESHING:
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          refreshing: false
+        }
+      };
+    case GET_DISCOVER_TOPICS:
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          order: action.payload.replace ? action.payload.order : [...state.posts.order, ...action.payload.order],
+          offset: action.payload.offset,
+          keepPaging: action.payload.order.length !== 0
+        }
+      };
+
     default:
       return state;
   }
