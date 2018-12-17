@@ -14,6 +14,7 @@ import {
   CANCEL_PENDING_REQUEST,
   REMOVE_FRIEND,
   UNFRIEND_USER,
+  GET_DISCOVER_USERS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -157,6 +158,15 @@ export default (state = INITIAL_STATE, action) => {
             ...state.all_users[action.payload],
             type: 'regular'
           }
+        }
+      };
+
+    case GET_DISCOVER_USERS:
+      return {
+        ...state,
+        all_users: {
+          ...state.all_users,
+          ...action.payload.users
         }
       };
     default:

@@ -33,7 +33,7 @@ class DataList extends Component {
         break;
       case 'users':
         break;
-      case 'users_descriptive':
+      case 'users_verbose':
         this.setState(() => ({ sortButtonText: 'Recently Joined' }));
         break;
       default:
@@ -110,11 +110,15 @@ class DataList extends Component {
         break;
       case 'users':
         break;
-      case 'users_descriptive':
+      case 'users_verbose':
         switch (choice) {
           case 'Recently Joined':
             order = 'date_joined';
             direction = 'DESC';
+            break;
+          case 'Oldest':
+            order = 'date_joined';
+            direction = 'ASC';
             break;
           case 'Popular':
             order = 'num_friends';
@@ -192,7 +196,7 @@ class DataList extends Component {
             onRequestPress={this.handleUserRequestPress}
           />
         );
-      case 'users_descriptive':
+      case 'users_verbose':
         // TODO: Finish this later
         return (
           <Text>{item.username}</Text>
@@ -223,7 +227,7 @@ class DataList extends Component {
         break;
       case 'users':
         break;
-      case 'users_descriptive':
+      case 'users_verbose':
         if (this.props.enableSorting) {
           return (
             <UserSortModal
@@ -318,7 +322,7 @@ DataList.propTypes = {
   cancelPendingRequest: PropTypes.func.isRequired,
   unfriendUser: PropTypes.func.isRequired,
 
-  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_descriptive']).isRequired,
+  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_verbose']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
 

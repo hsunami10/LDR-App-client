@@ -1,30 +1,64 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';
 import { NO_DISCOVER_USERS_MSG } from '../../../constants/noneMessages';
 import { orderToArrData } from '../../../assets/helpers/misc';
+import { getDiscoverUsers } from '../../../actions/DiscoverActions';
 
 class DiscoverUserScreen extends Component {
   state = {
     height: 0,
-    order: 'date_posted',
+    order: 'date_joined',
     direction: 'DESC'
   }
 
   componentDidMount() {
-    console.log('grab discover UserSortModal here');
+    this.props.getDiscoverUsers(
+      this.props.id,
+      false,
+      0,
+      this.state.order,
+      this.state.direction,
+      moment().unix(),
+      this.props.parentNavigation
+    );
   }
 
-  paginateData = () => console.log('page data here')
+  paginateData = () => {
+    let benchmark;
+    if (this.state.order === 'date_joined') {
+      benchmark = this.props.users[0].date_joined;
+    } else if (this.state.order === 'num_friends') {
+      benchmark = this.props.users[0].num_friends;
+    }
+    this.props.getDiscoverUsers(
+      this.props.id,
+      null,
+      0,
+      this.state.order,
+      this.state.direction,
+      benchmark,
+      this.props.parentNavigation
+    );
+  }
 
-  handleRefresh = () => console.log('handle refresh here')
+  handleRefresh = () => this.props.getDiscoverUsers(this.props.id, true, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation);
 
-  handleSortPosts = (order, direction) => {
+  handleSortUsers = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    console.log('sort posts here');
+    this.props.getDiscoverUsers(
+      this.props.id,
+      true,
+      0,
+      order,
+      direction,
+      moment().unix(),
+      this.props.parentNavigation
+    );
   }
 
   handleLayout = e => {
@@ -40,7 +74,7 @@ class DiscoverUserScreen extends Component {
     }
     return (
       <DataList
-        type="users_descriptive"
+        type="users_verbose"
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
         flatList
@@ -48,7 +82,7 @@ class DiscoverUserScreen extends Component {
         empty={this.props.users.length === 0}
         message={NO_DISCOVER_USERS_MSG}
         enableSorting
-        sortData={this.handleSortPosts}
+        sortData={this.handleSortUsers}
         enablePaging
         paginateData={this.paginateData}
         keepPaging={this.props.keepPaging}
@@ -78,6 +112,7 @@ DiscoverUserScreen.propTypes = {
   initial_loading: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
+  getDiscoverUsers: PropTypes.func.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -98,4 +133,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(DiscoverUserScreen);
+export default connect(mapStateToProps, { getDiscoverUsers })(DiscoverUserScreen);

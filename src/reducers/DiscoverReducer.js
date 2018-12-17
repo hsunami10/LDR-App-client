@@ -79,14 +79,69 @@ export default (state = INITIAL_STATE, action) => {
         }
       };
     case START_DISCOVER_POSTS_REFRESHING:
-      return { ...state, refreshing: true };
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          refreshing: true
+        }
+      };
     case STOP_DISCOVER_POSTS_REFRESHING:
-      return { ...state, refreshing: false };
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          refreshing: false
+        }
+      };
     case GET_DISCOVER_POSTS:
       return {
         ...state,
         posts: {
           ...state.posts,
+          order: action.payload.replace ? action.payload.order : [...state.posts.order, ...action.payload.order],
+          offset: action.payload.offset,
+          keepPaging: action.payload.order.length !== 0
+        }
+      };
+
+    case START_INITIAL_DISCOVER_USERS_LOADING:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          initial_loading: true
+        }
+      };
+    case STOP_INITIAL_DISCOVER_USERS_LOADING:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          initial_loading: false
+        }
+      };
+    case START_DISCOVER_USERS_REFRESHING:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          refreshing: true
+        }
+      };
+    case STOP_DISCOVER_USERS_REFRESHING:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          refreshing: false
+        }
+      };
+    case GET_DISCOVER_USERS:
+      return {
+        ...state,
+        users: {
+          ...state.users,
           order: action.payload.replace ? action.payload.order : [...state.posts.order, ...action.payload.order],
           offset: action.payload.offset,
           keepPaging: action.payload.order.length !== 0

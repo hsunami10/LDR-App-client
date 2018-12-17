@@ -1,9 +1,11 @@
 - add replying to comments
 - find a way to shrink the SocialScreen's SectionList by section title?
 
-NOTE - always take blocked users and partners hidden into account (exclude)
+Look up HOW_TO_PAGE to find problems with paging (posts num_likes and users num_friends)
 
-NOTE - for REMOVE_FRIEND_REQUEST, REMOVE_PENDING_REQUEST, REMOVE_FRIEND actions, they might have to be handled in other reducers - adjusting offset, etc. - CHANGE IN ViewProfileScreens
+NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
+
+NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - adjusting offset, etc. - CHANGE IN ViewProfileScreen - Friends Tab
 
 BUG QUESTION - how to set benchmark for paging for num_likes in feed? - how to mark the start of the original sequence when offset != 0?
 

@@ -96,7 +96,15 @@ class FeedScreen extends Component {
 
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    this.props.getUserFeed(this.props.id, 0, true, order, direction, moment().unix(), this.props.parentNavigation);
+    this.props.getUserFeed(
+      this.props.id,
+      0,
+      true,
+      order,
+      direction,
+      moment().unix(),
+      this.props.parentNavigation
+    );
   }
 
   handleLayout = e => {

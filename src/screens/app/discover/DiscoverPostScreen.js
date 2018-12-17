@@ -17,7 +17,15 @@ class DiscoverPostScreen extends Component {
   }
 
   componentDidMount() {
-    this.props.getDiscoverPosts(this.props.id, false, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation);
+    this.props.getDiscoverPosts(
+      this.props.id,
+      false,
+      0,
+      this.state.order,
+      this.state.direction,
+      moment().unix(),
+      this.props.parentNavigation
+    );
   }
 
   paginateData = () => {
@@ -42,7 +50,15 @@ class DiscoverPostScreen extends Component {
 
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    this.props.getDiscoverPosts(this.props.id, true, 0, order, direction, moment().unix(), this.props.parentNavigation);
+    this.props.getDiscoverPosts(
+      this.props.id,
+      true,
+      0,
+      order,
+      direction,
+      moment().unix(),
+      this.props.parentNavigation
+    );
   }
 
   handleLayout = e => {
