@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Dimensions, TouchableHighlight } from 'react-na
 import { ClickableImage } from '../common';
 import { ROOT_URL } from '../../constants/variables';
 
-// TODO: Finish post cards - to show in feed
+// TODO: Finish topic cards - show "subscribe" button if is_subscriber = false
 const TopicCard = ({ topic, onPress }) => (
   <TouchableHighlight
     onPress={onPress}

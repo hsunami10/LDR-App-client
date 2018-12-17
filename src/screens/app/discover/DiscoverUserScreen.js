@@ -74,7 +74,7 @@ class DiscoverUserScreen extends Component {
     }
     return (
       <DataList
-        type="users_verbose"
+        type="users"
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
         flatList

@@ -49,7 +49,14 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, refreshing: false };
 
     case GET_SOCIAL_INFO:
-      return { ...state, ...action.payload };
+      return {
+        ...state,
+        ...action.payload,
+        all_users: {
+          ...state.all_users,
+          ...action.payload.all_users
+        }
+      };
     case GET_USER_FRIENDS:
       return {
         ...state,

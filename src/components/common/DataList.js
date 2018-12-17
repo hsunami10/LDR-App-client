@@ -33,13 +33,7 @@ class DataList extends Component {
       case 'topics':
         this.setState(() => ({ sortButtonText: 'Popular' }));
         break;
-      case 'topics_verbose':
-        this.setState(() => ({ sortButtonText: 'Popular' }));
-        break;
       case 'users':
-        this.setState(() => ({ sortButtonText: 'Recently Joined' }));
-        break;
-      case 'users_verbose':
         this.setState(() => ({ sortButtonText: 'Recently Joined' }));
         break;
       default:
@@ -131,43 +125,7 @@ class DataList extends Component {
             break;
         }
         break;
-      case 'topics_verbose':
-        switch (choice) {
-          case 'Newest':
-            order = 'date_created';
-            direction = 'DESC';
-            break;
-          case 'Oldest':
-            order = 'date_created';
-            direction = 'ASC';
-            break;
-          case 'Popular':
-            order = 'num_subscribers';
-            direction = 'DESC';
-            break;
-          default:
-            break;
-        }
-        break;
       case 'users':
-        switch (choice) {
-          case 'Recently Joined':
-            order = 'date_joined';
-            direction = 'DESC';
-            break;
-          case 'Oldest':
-            order = 'date_joined';
-            direction = 'ASC';
-            break;
-          case 'Popular':
-            order = 'num_friends';
-            direction = 'DESC';
-            break;
-          default:
-            break;
-        }
-        break;
-      case 'users_verbose':
         switch (choice) {
           case 'Recently Joined':
             order = 'date_joined';
@@ -244,11 +202,6 @@ class DataList extends Component {
             onPress={() => this.props.onItemSelect(item)}
           />
         );
-      case 'topics_verbose':
-        // TODO: Finish this later
-        return (
-          <Text>{item.name}</Text>
-        );
       case 'users':
         return (
           <UserCard
@@ -257,11 +210,6 @@ class DataList extends Component {
             onActionPress={this.handleUserActionPress}
             onRequestPress={this.handleUserRequestPress}
           />
-        );
-      case 'users_verbose':
-        // TODO: Finish this later
-        return (
-          <Text>{item.username}</Text>
         );
       default:
         return null;
@@ -296,29 +244,7 @@ class DataList extends Component {
           );
         }
         break;
-      case 'topics_verbose':
-        if (this.props.enableSorting) {
-          return (
-            <TopicSortModal
-              isVisible={this.state.sortModalVisible}
-              onChoiceSelect={this.handleSortSelect}
-              selected={this.state.sortButtonText}
-            />
-          );
-        }
-        break;
       case 'users':
-        if (this.props.enableSorting) {
-          return (
-            <UserSortModal
-              isVisible={this.state.sortModalVisible}
-              onChoiceSelect={this.handleSortSelect}
-              selected={this.state.sortButtonText}
-            />
-          );
-        }
-        break;
-      case 'users_verbose':
         if (this.props.enableSorting) {
           return (
             <UserSortModal
@@ -413,7 +339,7 @@ DataList.propTypes = {
   cancelPendingRequest: PropTypes.func.isRequired,
   unfriendUser: PropTypes.func.isRequired,
 
-  type: PropTypes.oneOf(['posts', 'topics', 'users', 'users_verbose', 'topics_verbose']).isRequired,
+  type: PropTypes.oneOf(['posts', 'topics', 'users']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
 

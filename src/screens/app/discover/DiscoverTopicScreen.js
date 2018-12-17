@@ -74,7 +74,7 @@ class DiscoverTopicScreen extends Component {
     }
     return (
       <DataList
-        type="topics_verbose"
+        type="topics"
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
         flatList
