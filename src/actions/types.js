@@ -60,6 +60,8 @@ export const START_TOPIC_REFRESHING = 'start_topic_refreshing';
 export const STOP_TOPIC_REFRESHING = 'stop_topic_refreshing';
 export const CHOOSE_POST_TOPIC = 'choose_post_topic';
 export const GET_SUBSCRIBED_TOPICS = 'get_subscribed_topics';
+export const SUBSCRIBE_TOPIC = 'subscribe_topic';
+export const UNSUBSCRIBE_TOPIC = 'unsubscribe_topic';
 
 // Posts
 export const CREATE_POST = 'create_post';

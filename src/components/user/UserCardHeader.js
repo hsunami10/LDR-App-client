@@ -16,6 +16,8 @@ const UserCardHeader = ({ user }) => (
     <Text
       style={{ fontWeight: 'bold', marginLeft: 10, marginRight: 10 }}
       suppressHighlighting
+      numberOfLines={1}
+      ellipsizeMode="tail"
     >
       {user.username}
     </Text>

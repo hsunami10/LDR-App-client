@@ -38,7 +38,7 @@ class DiscoverUserScreen extends Component {
     this.props.getDiscoverUsers(
       this.props.id,
       null,
-      0,
+      this.props.offset,
       this.state.order,
       this.state.direction,
       benchmark,
@@ -113,6 +113,7 @@ DiscoverUserScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   getDiscoverUsers: PropTypes.func.isRequired,
+  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -130,6 +131,7 @@ const mapStateToProps = state => {
     initial_loading: state.discover.users.initial_loading,
     refreshing: state.discover.users.refreshing,
     keepPaging: state.discover.users.keepPaging,
+    offset: state.discover.users.offset,
   };
 };
 

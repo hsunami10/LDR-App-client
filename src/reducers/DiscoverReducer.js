@@ -142,7 +142,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: {
           ...state.users,
-          order: action.payload.replace ? action.payload.order : [...state.posts.order, ...action.payload.order],
+          order: action.payload.replace ? action.payload.order : [...state.users.order, ...action.payload.order],
           offset: action.payload.offset,
           keepPaging: action.payload.order.length !== 0
         }
@@ -185,7 +185,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         topics: {
           ...state.topics,
-          order: action.payload.replace ? action.payload.order : [...state.posts.order, ...action.payload.order],
+          order: action.payload.replace ? action.payload.order : [...state.topics.order, ...action.payload.order],
           offset: action.payload.offset,
           keepPaging: action.payload.order.length !== 0
         }

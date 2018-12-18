@@ -15,6 +15,7 @@ class HomeTopicScreen extends Component {
 
   handleRefresh = () => this.props.getSubscribedTopics(this.props.id, true, 'lowercase_name', 'ASC', this.props.parentNavigation)
 
+  // NOTE: Exact same as DiscoverTopicScreen
   handleTopicSelect = topic => {
     console.log('show topic screen');
     console.log(topic);

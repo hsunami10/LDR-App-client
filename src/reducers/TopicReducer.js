@@ -6,8 +6,10 @@ import {
   CHOOSE_POST_TOPIC,
   GET_SUBSCRIBED_TOPICS,
   GET_DISCOVER_TOPICS,
+  SUBSCRIBE_TOPIC,
+  UNSUBSCRIBE_TOPIC,
 } from '../actions/types';
-import { sortTopicsAlpha } from '../assets/helpers/sorting';
+import { addTopicToOrderArrayAlpha } from '../assets/helpers/sorting';
 
 const INITIAL_STATE = {
   post_topic: { // NOTE: Make sure it's the same as the CreateMainScreen state
@@ -31,6 +33,39 @@ export default (state = INITIAL_STATE, action) => {
     case STOP_TOPIC_LOADING:
       return { ...state, loading: false };
 
+    case SUBSCRIBE_TOPIC:
+      return {
+        ...state,
+        subscribed_order: addTopicToOrderArrayAlpha(state.subscribed_order, state.all_topics, state.all_topics[action.payload]),
+        all_topics: {
+          ...state.all_topics,
+          [action.payload]: {
+            ...state.all_topics[action.payload],
+            type: 'just_subscribed',
+            num_subscribers: parseInt(state.all_topics[action.payload].num_subscribers, 10) + 1
+          }
+        }
+      };
+    case UNSUBSCRIBE_TOPIC:
+      const copyOrder = [...state.subscribed_order];
+      const index = copyOrder.indexOf(action.payload);
+      if (index >= 0) {
+        copyOrder.splice(index, 1);
+        return {
+          ...state,
+          subscribed_order: copyOrder,
+          all_topics: {
+            ...state.all_topics,
+            [action.payload]: {
+              ...state.all_topics[action.payload],
+              type: 'not_subscribed',
+              num_subscribers: parseInt(state.all_topics[action.payload].num_subscribers, 10) - 1
+            }
+          }
+        };
+      }
+      return state;
+
     case GET_SUBSCRIBED_TOPICS:
       return {
         ...state,
@@ -50,11 +85,15 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case CREATE_TOPIC:
-      // Add to subscribed topics list
-      const copySub = [...state.subscribed];
-      copySub.push(action.payload);
-      copySub.sort(sortTopicsAlpha);
-      return { ...state, subscribed: copySub };
+      const copyTopics = {
+        ...state.all_topics,
+        [action.payload.id]: action.payload
+      };
+      return {
+        ...state,
+        subscribed_order: addTopicToOrderArrayAlpha(state.subscribed_order, copyTopics, action.payload),
+        all_topics: copyTopics
+      };
     case CHOOSE_POST_TOPIC:
       return { ...state, post_topic: action.payload };
     default:

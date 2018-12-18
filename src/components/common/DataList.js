@@ -17,6 +17,7 @@ import {
   cancelPendingRequest,
   unfriendUser,
 } from '../../actions/SocialActions';
+import { subscribeTopic, unsubscribeTopic } from '../../actions/TopicActions';
 
 class DataList extends Component {
   state = {
@@ -53,6 +54,21 @@ class DataList extends Component {
   viewPost = post => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
     this.props.navigation.push('ViewPost', { post_id: post.id });
+  }
+
+  handleTopicActionPress = (id, type) => {
+    switch (type) {
+      case 'not_subscribed':
+        this.props.subscribeTopic(this.props.id, id);
+        console.log(`subscribe to topic with id ${id}`);
+        break;
+      case 'just_subscribed':
+        this.props.unsubscribeTopic(this.props.id, id);
+        console.log(`unsubscribe to topic with id ${id}`);
+        break;
+      default:
+        break;
+    }
   }
 
   handleUserActionPress = (id, type) => {
@@ -200,6 +216,7 @@ class DataList extends Component {
             key={item.id}
             topic={item}
             onPress={() => this.props.onItemSelect(item)}
+            onActionPress={this.handleTopicActionPress}
           />
         );
       case 'users':
@@ -338,6 +355,8 @@ DataList.propTypes = {
   rejectFriendRequest: PropTypes.func.isRequired,
   cancelPendingRequest: PropTypes.func.isRequired,
   unfriendUser: PropTypes.func.isRequired,
+  subscribeTopic: PropTypes.func.isRequired,
+  unsubscribeTopic: PropTypes.func.isRequired,
 
   type: PropTypes.oneOf(['posts', 'topics', 'users']).isRequired,
   navigation: PropTypes.object,
@@ -393,4 +412,6 @@ export default connect(mapStateToProps, {
   rejectFriendRequest,
   cancelPendingRequest,
   unfriendUser,
+  subscribeTopic,
+  unsubscribeTopic,
 })(DataList);

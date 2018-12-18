@@ -38,7 +38,7 @@ class DiscoverTopicScreen extends Component {
     this.props.getDiscoverTopics(
       this.props.id,
       null,
-      0,
+      this.props.offset,
       this.state.order,
       this.state.direction,
       benchmark,
@@ -47,6 +47,12 @@ class DiscoverTopicScreen extends Component {
   }
 
   handleRefresh = () => this.props.getDiscoverTopics(this.props.id, true, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation);
+
+  // NOTE: Exact same as HomeTopicScreen
+  handleTopicSelect = topic => {
+    console.log('show topic screen');
+    console.log(topic);
+  }
 
   handleSortUsers = (order, direction) => {
     this.setState(() => ({ order, direction }));
@@ -77,6 +83,7 @@ class DiscoverTopicScreen extends Component {
         type="topics"
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
+        onItemSelect={this.handleTopicSelect}
         flatList
         data={this.props.topics}
         empty={this.props.topics.length === 0}
@@ -113,6 +120,7 @@ DiscoverTopicScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   getDiscoverTopics: PropTypes.func.isRequired,
+  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -130,6 +138,7 @@ const mapStateToProps = state => {
     initial_loading: state.discover.topics.initial_loading,
     refreshing: state.discover.topics.refreshing,
     keepPaging: state.discover.topics.keepPaging,
+    offset: state.discover.topics.offset,
   };
 };
 

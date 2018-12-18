@@ -8,6 +8,8 @@ import {
   CREATE_TOPIC,
   CHOOSE_POST_TOPIC,
   GET_SUBSCRIBED_TOPICS,
+  SUBSCRIBE_TOPIC,
+  UNSUBSCRIBE_TOPIC,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
@@ -66,7 +68,7 @@ export const getSubscribedTopics = (id, refresh, order, direction, navigation) =
   } else if (refresh === false) {
     dispatch(startTopicLoading());
   }
-  axios.get(`${ROOT_URL}/api/subscribed-topics/${id}?order=${order}&direction=${direction}`)
+  axios.get(`${ROOT_URL}/api/topics/subscribed/${id}?order=${order}&direction=${direction}`)
     .then(response => {
       if (refresh === true) {
         dispatch(stopTopicRefreshing());
@@ -105,3 +107,33 @@ export const choosePostTopic = topic => ({
   type: CHOOSE_POST_TOPIC,
   payload: topic
 });
+
+export const subscribeTopic = (userID, topicID) => dispatch => {
+  dispatch({
+    type: SUBSCRIBE_TOPIC,
+    payload: topicID
+  });
+  axios.post(`${ROOT_URL}/api/topics/subscribe/${userID}`, { topic_id: topicID })
+    .catch(error => {
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+export const unsubscribeTopic = (userID, topicID) => dispatch => {
+  dispatch({
+    type: UNSUBSCRIBE_TOPIC,
+    payload: topicID
+  });
+  axios.delete(`${ROOT_URL}/api/topics/unsubscribe/${userID}`, { topic_id: topicID })
+    .catch(error => {
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
