@@ -28,7 +28,6 @@ const INITIAL_STATE = {
   },
   friends: {
     order: [],
-    offset: 0,
     keepPaging: false,
     replace: true
   },
@@ -63,7 +62,6 @@ export default (state = INITIAL_STATE, action) => {
         friends: {
           ...state.friends,
           order: action.payload.replace ? action.payload.order : [...state.friends.order, ...action.payload.order],
-          offset: action.payload.offset,
           keepPaging: action.payload.keepPaging
         }
       };

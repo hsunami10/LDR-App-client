@@ -76,13 +76,13 @@ export const stopInitialDiscoverUsersLoading = () => ({ type: STOP_INITIAL_DISCO
 export const startDiscoverUsersRefreshing = () => ({ type: START_DISCOVER_USERS_REFRESHING });
 export const stopDiscoverUsersRefreshing = () => ({ type: STOP_DISCOVER_USERS_REFRESHING });
 
-export const getDiscoverUsers = (userID, refresh, offset, order, direction, latest, navigation) => dispatch => {
+export const getDiscoverUsers = (userID, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
   if (refresh === true) {
     dispatch(startDiscoverUsersRefreshing());
   } else if (refresh === false) {
     dispatch(startInitialDiscoverUsersLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/users/${userID}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+  axios.get(`${ROOT_URL}/api/discover/users/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (refresh === true) {
         dispatch(stopDiscoverUsersRefreshing());
@@ -125,13 +125,13 @@ export const stopInitialDiscoverTopicsLoading = () => ({ type: STOP_INITIAL_DISC
 export const startDiscoverTopicsRefreshing = () => ({ type: START_DISCOVER_TOPICS_REFRESHING });
 export const stopDiscoverTopicsRefreshing = () => ({ type: STOP_DISCOVER_TOPICS_REFRESHING });
 
-export const getDiscoverTopics = (userID, refresh, offset, order, direction, latest, navigation) => dispatch => {
+export const getDiscoverTopics = (userID, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
   if (refresh === true) {
     dispatch(startDiscoverTopicsRefreshing());
   } else if (refresh === false) {
     dispatch(startInitialDiscoverTopicsLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/topics/${userID}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+  axios.get(`${ROOT_URL}/api/discover/topics/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (refresh === true) {
         dispatch(stopDiscoverTopicsRefreshing());

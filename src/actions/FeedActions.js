@@ -19,14 +19,14 @@ export const stopFeedLoading = () => ({ type: STOP_FEED_LOADING });
 export const startInitialFeedLoading = () => ({ type: START_INITIAL_FEED_LOADING });
 export const stopInitialFeedLoading = () => ({ type: STOP_INITIAL_FEED_LOADING });
 
-export const getUserFeed = (id, offset, refresh, order, direction, latest, navigation) => dispatch => {
+export const getUserFeed = (id, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
   if (refresh === true) {
     dispatch(startFeedLoading());
   } else if (refresh === false) {
     dispatch(startInitialFeedLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/feed/${id}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+  axios.get(`${ROOT_URL}/api/feed/${id}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (refresh === true) {
         dispatch(stopFeedLoading());
@@ -34,7 +34,6 @@ export const getUserFeed = (id, offset, refresh, order, direction, latest, navig
         dispatch(stopInitialFeedLoading());
       }
       if (response.data.success) {
-        console.log(response.data.feed);
         dispatch({
           type: GET_USER_FEED,
           payload: response.data.feed

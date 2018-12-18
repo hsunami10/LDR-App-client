@@ -37,12 +37,17 @@ class SocialScreen extends Component {
   state = { height: 0 }
 
   componentDidMount() {
-    this.props.getSocialInfo(this.props.id, false, 0, this.props.parentNavigation);
+    this.props.getSocialInfo(this.props.id, false, '', '', this.props.parentNavigation);
   }
 
-  getMoreFriends = () => this.props.getFriends(this.props.id, this.props.offset);
+  paginateData = () => {
+    const length = this.props.friends.length;
+    const lastID = this.props.friends[length - 1].id;
+    const lastData = this.props.friends[length - 1].date_friended;
+    this.props.getFriends(this.props.id, null, 'date_friended', 'DESC', lastID, lastData);
+  }
 
-  handleSocialRefresh = () => this.props.getSocialInfo(this.props.id, true, 0, this.props.parentNavigation)
+  handleSocialRefresh = () => this.props.getSocialInfo(this.props.id, true, '', '', this.props.parentNavigation)
 
   handleLayout = e => {
     const { height } = e.nativeEvent.layout;
@@ -67,7 +72,7 @@ class SocialScreen extends Component {
         handleRefresh={this.handleSocialRefresh}
         enablePaging
         keepPaging={this.props.keepPaging}
-        paginateData={this.getMoreFriends}
+        paginateData={this.paginateData}
         height={this.state.height}
         navigation={this.props.navigation}
         parentNavigation={this.props.parentNavigation}
@@ -97,7 +102,6 @@ SocialScreen.propTypes = {
   pending: PropTypes.array.isRequired,
   friends: PropTypes.array.isRequired,
   getFriends: PropTypes.func.isRequired,
-  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -113,7 +117,6 @@ const mapStateToProps = state => {
     initial_loading: state.social.initial_loading,
     refreshing: state.social.refreshing,
     keepPaging: state.social.friends.keepPaging,
-    offset: state.social.friends.offset,
     requests,
     pending,
     friends,

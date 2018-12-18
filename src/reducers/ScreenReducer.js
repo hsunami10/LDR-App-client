@@ -79,7 +79,6 @@ export default (state = INITIAL_STATE, action) => {
         ...copyPosts[action.payload.postID],
         [action.payload.screenID]: {
           ...copyPosts[action.payload.postID][action.payload.screenID],
-          offset: action.payload.data.offset,
           order: (
             action.payload.replace ?
             action.payload.data.order : [...action.payload.data.order, ...copyPosts[action.payload.postID][action.payload.screenID].order]
@@ -103,7 +102,6 @@ export default (state = INITIAL_STATE, action) => {
           refreshing: false,
           page_comments_loading: false,
           order: [],
-          offset: 0,
           keepPaging: true
         }
       };

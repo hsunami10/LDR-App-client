@@ -13,9 +13,9 @@ import {
   storeCommentsScreenInfo
 } from './ScreenActions';
 
-export const getComments = (userID, postID, screenID, offset, latestDate, noPostCB) => dispatch => {
+export const getComments = (userID, postID, screenID, lastID, lastDate, noPostCB) => dispatch => {
   dispatch(startCommentsPageLoading(postID, screenID));
-  axios.get(`${ROOT_URL}/api/comments/${userID}?offset=${offset}&latest_date=${latestDate}&post_id=${postID}`)
+  axios.get(`${ROOT_URL}/api/comments/${userID}?last_id=${lastID}&last_date=${lastDate}&post_id=${postID}`)
     .then(response => {
       dispatch(stopCommentsPageLoading(postID, screenID));
       if (response.data.success) {

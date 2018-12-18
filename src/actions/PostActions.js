@@ -23,13 +23,13 @@ const noPostError = (dispatch, userID, postID, navigation) => {
   }
 };
 
-export const getPostAndComments = (userID, postID, screenID, earliestDate, refreshing, navigation) => dispatch => {
+export const getPostAndComments = (userID, refreshing, postID, screenID, length, navigation) => dispatch => {
   if (refreshing) {
     dispatch(startPostScreenRefreshing(postID, screenID));
   } else {
     dispatch(initializePostScreenInfo(postID, screenID));
   }
-  axios.get(`${ROOT_URL}/api/posts/${userID}?earliest_date=${earliestDate}&post_id=${postID}`)
+  axios.get(`${ROOT_URL}/api/posts/${userID}?length=${length}&post_id=${postID}`)
     .then(response => {
       if (refreshing) {
         dispatch(stopPostScreenRefreshing(postID, screenID));

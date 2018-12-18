@@ -20,43 +20,45 @@ class DiscoverUserScreen extends Component {
     this.props.getDiscoverUsers(
       this.props.id,
       false,
-      0,
       this.state.order,
       this.state.direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
 
   paginateData = () => {
-    let benchmark;
+    const length = this.props.users.length;
+    const lastID = this.props.users[length - 1].id;
+    let lastData;
     if (this.state.order === 'date_joined') {
-      benchmark = this.props.users[0].date_joined;
+      lastData = this.props.users[length - 1].date_joined;
     } else if (this.state.order === 'num_friends') {
-      benchmark = this.props.users[0].num_friends;
+      lastData = this.props.users[length - 1].num_friends;
     }
     this.props.getDiscoverUsers(
       this.props.id,
       null,
-      this.props.offset,
       this.state.order,
       this.state.direction,
-      benchmark,
+      lastID,
+      lastData,
       this.props.parentNavigation
     );
   }
 
-  handleRefresh = () => this.props.getDiscoverUsers(this.props.id, true, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation);
+  handleRefresh = () => this.props.getDiscoverUsers(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation);
 
   handleSortUsers = (order, direction) => {
     this.setState(() => ({ order, direction }));
     this.props.getDiscoverUsers(
       this.props.id,
       true,
-      0,
       order,
       direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
@@ -113,7 +115,6 @@ DiscoverUserScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   getDiscoverUsers: PropTypes.func.isRequired,
-  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -131,7 +132,6 @@ const mapStateToProps = state => {
     initial_loading: state.discover.users.initial_loading,
     refreshing: state.discover.users.refreshing,
     keepPaging: state.discover.users.keepPaging,
-    offset: state.discover.users.offset,
   };
 };
 

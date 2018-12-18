@@ -53,19 +53,19 @@ class ViewPostScreen extends Component {
   }
 
   handleFirstLoad = refresh => {
-    let order;
     const postID = this.props.navigation.getParam('post_id', null);
-    if (refresh) { // Handle first load
+    let order;
+    if (refresh) {
       order = this.props.posts[this.state.post_id][this.state.screen_id].order;
     } else {
       order = [];
     }
     this.props.getPostAndComments(
       this.props.id,
+      refresh,
       postID,
       this.state.screen_id,
-      order.length === 0 ? 0 : this.props.all_comments[order[0]].date_sent, // Handle index out of bounds if no comments
-      refresh,
+      order.length, // Used to track how many comments to get - if 0, then regular page. If not, then fetch the same number of comments
       this.props.navigation
     );
   }
@@ -73,13 +73,13 @@ class ViewPostScreen extends Component {
   handleNoPostError = () => this.props.deletePost(this.props.id, this.state.post_id, this.props.navigation)
 
   handlePageComments = () => {
-    const screenInfo = this.props.posts[this.state.post_id][this.state.screen_id];
+    const order = this.props.posts[this.state.post_id][this.state.screen_id].order;
     this.props.getComments(
       this.props.id,
       this.state.post_id,
       this.state.screen_id,
-      screenInfo.offset,
-      this.props.all_comments[screenInfo.order[screenInfo.order.length - 1]].date_sent,
+      this.props.all_comments[order[0]].id,
+      this.props.all_comments[order[0]].date_sent,
       this.handleNoPostError
     );
   }

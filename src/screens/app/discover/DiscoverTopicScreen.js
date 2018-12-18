@@ -20,33 +20,35 @@ class DiscoverTopicScreen extends Component {
     this.props.getDiscoverTopics(
       this.props.id,
       false,
-      0,
       this.state.order,
       this.state.direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
 
   paginateData = () => {
-    let benchmark;
+    const length = this.props.topics.length;
+    const lastID = this.props.topics[length - 1].id;
+    let lastData;
     if (this.state.order === 'date_created') {
-      benchmark = this.props.topics[0].date_created;
+      lastData = this.props.topics[length - 1].date_created;
     } else if (this.state.order === 'num_subscribers') {
-      benchmark = this.props.topics[0].num_subscribers;
+      lastData = this.props.topics[length - 1].num_subscribers;
     }
     this.props.getDiscoverTopics(
       this.props.id,
       null,
-      this.props.offset,
       this.state.order,
       this.state.direction,
-      benchmark,
+      lastID,
+      lastData,
       this.props.parentNavigation
     );
   }
 
-  handleRefresh = () => this.props.getDiscoverTopics(this.props.id, true, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation);
+  handleRefresh = () => this.props.getDiscoverTopics(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation);
 
   // NOTE: Exact same as HomeTopicScreen
   handleTopicSelect = topic => {
@@ -59,10 +61,10 @@ class DiscoverTopicScreen extends Component {
     this.props.getDiscoverTopics(
       this.props.id,
       true,
-      0,
       order,
       direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
@@ -120,7 +122,6 @@ DiscoverTopicScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   getDiscoverTopics: PropTypes.func.isRequired,
-  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -138,7 +139,6 @@ const mapStateToProps = state => {
     initial_loading: state.discover.topics.initial_loading,
     refreshing: state.discover.topics.refreshing,
     keepPaging: state.discover.topics.keepPaging,
-    offset: state.discover.topics.offset,
   };
 };
 

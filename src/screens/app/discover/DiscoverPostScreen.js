@@ -114,7 +114,6 @@ DiscoverPostScreen.propTypes = {
   keepPaging: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
-  offset: PropTypes.number.isRequired,
 
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -132,7 +131,6 @@ const mapStateToProps = state => {
     initial_loading: state.discover.posts.initial_loading,
     refreshing: state.discover.posts.refreshing,
     keepPaging: state.discover.posts.keepPaging,
-    offset: state.discover.posts.offset,
   };
 };
 

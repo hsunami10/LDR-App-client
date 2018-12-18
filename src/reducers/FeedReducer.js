@@ -12,7 +12,6 @@ import {
 const INITIAL_STATE = {
   loading: false,
   initial_loading: false,
-  offset: 0,
   keepPaging: false, // Stop continuous calls in onEndReached when there's no more data to retrieve / page
   posts_order: [] // Stores order of posts
 };
@@ -35,7 +34,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         posts_order: action.payload.replace ? action.payload.order : [...state.posts_order, ...action.payload.order],
-        offset: action.payload.offset,
         keepPaging: action.payload.order.length !== 0 // Continue paging only when there is data retrieved
       };
     case SORT_FEED:
@@ -49,7 +47,6 @@ export default (state = INITIAL_STATE, action) => {
         copyOrder.splice(index, 1);
         return {
           ...state,
-          offset: state.offset - 1,
           posts_order: copyOrder
         };
       }

@@ -54,30 +54,32 @@ class FeedScreen extends Component {
     if (this.props.current_route === 'home') {
       this.props.getUserFeed(
         this.props.id,
-        0,
         false,
         this.state.order,
         this.state.direction,
-        moment().unix(),
+        '',
+        '',
         this.props.parentNavigation
       );
     }
   }
 
   paginateData = () => {
-    let benchmark;
+    const length = this.props.posts.length;
+    const lastID = this.props.posts[length - 1].id;
+    let lastData;
     if (this.state.order === 'date_posted') {
-      benchmark = this.props.posts[0].date_posted;
+      lastData = this.props.posts[length - 1].date_posted;
     } else if (this.state.order === 'num_likes') {
-      benchmark = this.props.posts[0].num_likes;
+      lastData = this.props.posts[length - 1].num_likes;
     }
     this.props.getUserFeed(
       this.props.id,
-      this.props.offset,
       null,
       this.state.order,
       this.state.direction,
-      benchmark,
+      lastID,
+      lastData,
       this.props.parentNavigation
     );
   }
@@ -85,11 +87,11 @@ class FeedScreen extends Component {
   handleRefresh = () => {
     this.props.getUserFeed(
       this.props.id,
-      0,
       true,
       this.state.order,
       this.state.direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
@@ -98,11 +100,11 @@ class FeedScreen extends Component {
     this.setState(() => ({ order, direction }));
     this.props.getUserFeed(
       this.props.id,
-      0,
       true,
       order,
       direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
@@ -159,7 +161,6 @@ FeedScreen.propTypes = {
   initial_loading: PropTypes.bool.isRequired,
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   getUserFeed: PropTypes.func.isRequired,
-  offset: PropTypes.number.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   current_route: PropTypes.string.isRequired,
   parentNavigation: PropTypes.object.isRequired,
@@ -187,7 +188,6 @@ const mapStateToProps = state => {
     loading: state.feed.loading,
     initial_loading: state.feed.initial_loading,
     current_route: state.navigation.current_route,
-    offset: state.feed.offset,
     posts,
     keepPaging: state.feed.keepPaging
   };

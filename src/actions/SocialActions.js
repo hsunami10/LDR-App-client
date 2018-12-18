@@ -27,13 +27,13 @@ export const stopInitialSocialLoading = () => ({ type: STOP_INITIAL_SOCIAL_LOADI
 export const startSocialRefreshing = () => ({ type: START_SOCIAL_REFRESHING });
 export const stopSocialRefreshing = () => ({ type: STOP_SOCIAL_REFRESHING });
 
-export const getSocialInfo = (userID, refresh, offset, navigation) => dispatch => {
+export const getSocialInfo = (userID, refresh, lastID, lastData, navigation) => dispatch => {
   if (refresh) {
     dispatch(startSocialRefreshing());
   } else {
     dispatch(startInitialSocialLoading());
   }
-  axios.get(`${ROOT_URL}/api/social/${userID}?offset=${offset}`)
+  axios.get(`${ROOT_URL}/api/social/${userID}?last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (refresh) {
         dispatch(stopSocialRefreshing());
@@ -68,14 +68,14 @@ export const getSocialInfo = (userID, refresh, offset, navigation) => dispatch =
     });
 };
 
-export const getFriends = (userID, offset) => dispatch => {
-  axios.get(`${ROOT_URL}/api/social/get-friends/${userID}?offset=${offset}`)
+export const getFriends = (userID, refresh, order, direction, lastID, lastData) => dispatch => {
+  axios.get(`${ROOT_URL}/api/social/get-friends/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       dispatch({
         type: GET_USER_FRIENDS,
         payload: {
           ...response.data,
-          replace: offset === 0
+          replace: lastID === ''
         }
       });
     })
