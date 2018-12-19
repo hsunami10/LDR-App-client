@@ -113,7 +113,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
       }
 
       // If own account
-      if (response.data.type === 'private') {
+      if (type === 'private') {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
           dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
@@ -149,7 +149,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
               handleError(new Error(error.message), true);
             });
         }
-      } else if (response.data.type === 'public') {
+      } else if (type === 'public') {
         if (response.data.success) {
           dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
         } else if (isRefresh) {

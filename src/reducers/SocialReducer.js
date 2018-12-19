@@ -63,6 +63,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.friends,
           order: action.payload.replace ? action.payload.order : [...state.friends.order, ...action.payload.order],
           keepPaging: action.payload.keepPaging
+        },
+        all_users: {
+          ...state.all_users,
+          ...action.payload.friends
         }
       };
 

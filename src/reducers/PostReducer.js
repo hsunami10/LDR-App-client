@@ -31,7 +31,6 @@ export default (state = INITIAL_STATE, action) => {
         all_posts: {
           ...state.all_posts,
           ...action.payload.user.posts.data,
-          ...action.payload.user.interactions.data
         }
       };
     case GET_USER_FEED:

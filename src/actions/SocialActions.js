@@ -73,10 +73,7 @@ export const getFriends = (userID, refresh, order, direction, lastID, lastData) 
     .then(response => {
       dispatch({
         type: GET_USER_FRIENDS,
-        payload: {
-          ...response.data,
-          replace: lastID === ''
-        }
+        payload: response.data
       });
     })
     .catch(error => {

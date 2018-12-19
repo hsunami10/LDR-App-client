@@ -1,20 +1,11 @@
 - add replying to comments
-- find a way to shrink the SocialScreen's SectionList by section title?
-
-Look up HOW_TO_PAGE to find problems with paging (posts num_likes and users num_friends)
+- find a way to shrink the SocialScreen's SectionList by clicking on section title?
 
 NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
 
 NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - adjusting offset, etc. - CHANGE IN ViewProfileScreen - Friends Tab
 
-BUG QUESTION - how to set benchmark for paging for num_likes in feed? - how to mark the start of the original sequence when offset != 0?
-
 NOTE - for PostReducer, UserReducer, for fear of a memory leak (because once added, objects never get deleted, so it might ramp up a lot of data), have another object that maps ID -> screen_reference_count, stores the number of screens that have that data in it. If it hits 0, then delete it.
-
-NOTE - When getting posts & comments created by deleted users:
-  - before inner joining author_id, check to see if the user exists?
-  - or after inner joining, check the values for undefined or not exists
-  - QUESTION: what to do with post_likes and comment_likes when a user gets deleted?
 
 URGENT - figure out how to animate Text component height?
 
@@ -23,4 +14,3 @@ URGENT - figure out how to animate Text component height?
 
 Future ideas:
   - realtime comments on posts
-  -

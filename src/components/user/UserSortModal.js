@@ -20,11 +20,6 @@ const UserSortModal = ({ isVisible, onChoiceSelect, selected }) => (
         color={selected === 'Recently Joined' ? 'purple' : null}
       />
       <Button
-        title="Oldest"
-        onPress={() => onChoiceSelect('Oldest')}
-        color={selected === 'Oldest' ? 'purple' : null}
-      />
-      <Button
         title="Popular"
         onPress={() => onChoiceSelect('Popular')}
         color={selected === 'Popular' ? 'purple' : null}

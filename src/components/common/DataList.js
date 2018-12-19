@@ -147,10 +147,6 @@ class DataList extends Component {
             order = 'date_joined';
             direction = 'DESC';
             break;
-          case 'Oldest':
-            order = 'date_joined';
-            direction = 'ASC';
-            break;
           case 'Popular':
             order = 'num_friends';
             direction = 'DESC';
