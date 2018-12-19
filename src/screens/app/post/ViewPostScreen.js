@@ -45,11 +45,7 @@ class ViewPostScreen extends Component {
 
   viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.push('ViewProfile', {
-      type: 'public',
-      id,
-      username
-    });
+    this.props.navigation.push('ViewProfile', { id, username });
   }
 
   handleFirstLoad = refresh => {
@@ -65,8 +61,7 @@ class ViewPostScreen extends Component {
       refresh,
       postID,
       this.state.screen_id,
-      order.length, // Used to track how many comments to get - if 0, then regular page. If not, then fetch the same number of comments
-      this.props.navigation
+      order.length // Used to track how many comments to get - if 0, then regular page. If not, then fetch the same number of comments
     );
   }
 

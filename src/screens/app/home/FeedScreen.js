@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';

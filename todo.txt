@@ -1,5 +1,5 @@
 - add replying to comments
-- find a way to shrink the SocialScreen's SectionList by clicking on section title?
+- find a way to shrink the SocialScreen's SectionList by clicking on section title? - react-native-collapsible
 
 NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
 

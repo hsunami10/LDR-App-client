@@ -44,11 +44,7 @@ class DataList extends Component {
 
   viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.push('ViewProfile', {
-      type: 'public',
-      id,
-      username
-    });
+    this.props.navigation.push('ViewProfile', { id, username });
   }
 
   viewPost = post => {

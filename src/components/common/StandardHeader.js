@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, StyleSheet, BackHandler, Platform, Dimensions } from 'react-native';
 import { HeaderTitle } from 'react-navigation';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { MIN_HEADER_HEIGHT } from '../../constants/variables';
+import { MIN_HEADER_HEIGHT, STATUS_BAR_HEIGHT } from '../../constants/variables';
 import { HeaderLeft } from './HeaderLeft';
 import { HeaderRight } from './HeaderRight';
 
@@ -74,7 +73,8 @@ export class StandardHeader extends Component {
         </View>
 
         <View
-          pointerEvents={tabTitleWidth ? undefined : 'none'} // If there's a tab bar title, then allow clicks on view
+          pointerEvents={tabTitleWidth ? undefined : 'none'}
+          // If there is a tab bar title, then allow clicks on view
           style={[
             styles.containerStyle,
             { height },
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     left: 0,
-    paddingTop: getStatusBarHeight(true),
+    paddingTop: STATUS_BAR_HEIGHT,
     backgroundColor: '#f8f8f8'
     // position: 'absolute'
   },

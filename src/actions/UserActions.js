@@ -25,81 +25,7 @@ import {
 import { handleError } from '../assets/helpers/errors';
 import { logOut } from '../assets/helpers/authentication';
 
-// If screenID is null, then only change state in UserReducer
-// If screenID is NOT null, then only change state in ScreenReducer
-export const startFindPartnerLoading = screenID => ({
-  type: START_FIND_PARTNER_LOADING,
-  payload: screenID
-});
-export const stopFindPartnerLoading = screenID => ({
-  type: STOP_FIND_PARTNER_LOADING,
-  payload: screenID
-});
-
-export const findPartnerCode = (code, screenID = null) => dispatch => {
-  dispatch(startFindPartnerLoading(screenID));
-  axios.get(`${ROOT_URL}/api/partner/find-code/${code}`)
-    .then(response => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (response.data.success) {
-        dispatch({
-          type: STORE_PARTNER_RESULT_SUCCESS,
-          payload: response.data.user
-        });
-      } else {
-        dispatch({ type: STORE_PARTNER_RESULT_FAILURE });
-      }
-    })
-    .catch(error => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
-export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
-
-export const acceptResult = (userID, partnerID, screenID = null) => dispatch => {
-  dispatch(startFindPartnerLoading(screenID));
-  axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
-    .then(response => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (response.data.success) {
-        // TODO: Finish this later - add response.data.partner to global redux state
-        dispatch({
-          type: ACCEPT_PARTNER_RESULT_SUCCESS,
-          payload: response.data
-        });
-      } else {
-        dispatch({
-          type: ACCEPT_PARTNER_RESULT_FAILURE,
-          payload: response.data.error
-        });
-      }
-    })
-    .catch(error => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
-/*
-Get public or private user information
-type: private, public, edit, partner
-isRefresh differentiates between first load and pull to refresh load
-private - must have callbacks.navToApp and callbacks.navToAuth defined
-
-TODO: Handle which tab information to get - "currentTab" - posts, interactions, friends
-Only fetch one tab at a time
- */
-export const getUserInfo = (userID, targetID, isRefresh, callbacks = null, screenID, currentTab, order, direction, lastID, lastData) => dispatch => {
+export const getUserInfo = (userID, targetID, isRefresh, screenID, currentTab, order, direction, lastID, lastData, navigation) => dispatch => {
   if (isRefresh) {
     dispatch(startUserScreenRefreshing(userID, screenID));
   } else {
@@ -120,32 +46,14 @@ export const getUserInfo = (userID, targetID, isRefresh, callbacks = null, scree
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
           dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
-          if (callbacks) {
-            if (callbacks.navToApp) {
-              callbacks.navToApp();
-            } else {
-              handleError(new Error('navToApp does not exist in callbacks param in getUserInfo'), true);
-            }
-          }
         } else { // If own account does not exist in database, then log out to Welcome screen
           removeCredentials()
             .then(() => {
               alertWithSingleAction(
                 'Oh no!',
                 'Your account does not exist or has been deleted. If this persists, please contact the development team.',
-                () => {
-                  if (callbacks) {
-                    if (callbacks.navToAuth) {
-                      dispatch(logOutUser());
-                      callbacks.navToAuth();
-                    } else {
-                      // NOTE: This should never run
-                      handleError(new Error('navToAuth does not exist in callbacks param in getUserInfo'), true);
-                    }
-                  }
-                },
-                undefined,
-                false
+                () => dispatch(logOut(navigation)),
+                'Log Out'
               );
             })
             .catch(error => {
@@ -157,12 +65,8 @@ export const getUserInfo = (userID, targetID, isRefresh, callbacks = null, scree
       } else if (isRefresh) {
           alertWithSingleAction(
             'Oh no!',
-            response.data.error,
-            () => {
-              if (callbacks.noUserCB) {
-                callbacks.noUserCB();
-              }
-            });
+            response.data.error
+          );
       } else {
         dispatch(storeUserScreenInfoFailure(targetID, screenID));
       }
@@ -228,3 +132,68 @@ export const storeUserInfo = user => ({
 });
 
 export const resetUserErrors = () => ({ type: RESET_USER_ERRORS });
+
+// If screenID is null, then only change state in UserReducer
+// If screenID is NOT null, then only change state in ScreenReducer
+export const startFindPartnerLoading = screenID => ({
+  type: START_FIND_PARTNER_LOADING,
+  payload: screenID
+});
+export const stopFindPartnerLoading = screenID => ({
+  type: STOP_FIND_PARTNER_LOADING,
+  payload: screenID
+});
+
+export const findPartnerCode = (code, screenID = null) => dispatch => {
+  dispatch(startFindPartnerLoading(screenID));
+  axios.get(`${ROOT_URL}/api/partner/find-code/${code}`)
+    .then(response => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (response.data.success) {
+        dispatch({
+          type: STORE_PARTNER_RESULT_SUCCESS,
+          payload: response.data.user
+        });
+      } else {
+        dispatch({ type: STORE_PARTNER_RESULT_FAILURE });
+      }
+    })
+    .catch(error => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
+
+export const acceptResult = (userID, partnerID, screenID = null) => dispatch => {
+  dispatch(startFindPartnerLoading(screenID));
+  axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
+    .then(response => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (response.data.success) {
+        // TODO: Finish this later - add response.data.partner to global redux state
+        dispatch({
+          type: ACCEPT_PARTNER_RESULT_SUCCESS,
+          payload: response.data
+        });
+      } else {
+        dispatch({
+          type: ACCEPT_PARTNER_RESULT_FAILURE,
+          payload: response.data.error
+        });
+      }
+    })
+    .catch(error => {
+      dispatch(stopFindPartnerLoading(screenID));
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};

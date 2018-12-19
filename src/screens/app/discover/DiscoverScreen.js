@@ -211,16 +211,11 @@ class DiscoverScreen extends Component {
   }
 
   handleTabPress = ({ route }) => {
+    // TODO: Handle scrolling here
     switch (route.key) {
       case 'users':
-        if (!this.state.mounted.users) {
-          this.setState(prevState => ({ mounted: { ...prevState.mounted, users: true } }));
-        }
         break;
       case 'topics':
-        if (!this.state.mounted.topics) {
-          this.setState(prevState => ({ mounted: { ...prevState.mounted, topics: true } }));
-        }
         break;
       default:
         return;
@@ -257,8 +252,9 @@ class DiscoverScreen extends Component {
         }
         break;
       default:
-        return;
+        return null;
     }
+    return null;
   }
 
   render() {

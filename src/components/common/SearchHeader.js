@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, Animated } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { SEARCH_HEADER_HEIGHT } from '../../constants/variables';
+import { SEARCH_HEADER_HEIGHT, STATUS_BAR_HEIGHT } from '../../constants/variables';
 
 // TODO: Figure out how to incorporate with other elements in header (left and right)
 export class SearchHeader extends Component {
@@ -95,7 +94,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     left: 0,
-    paddingTop: getStatusBarHeight(true),
+    paddingTop: STATUS_BAR_HEIGHT,
     backgroundColor: '#f8f8f8',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     paddingRight: 5,
     justifyContent: 'center',
-    height: SEARCH_HEADER_HEIGHT - getStatusBarHeight(true) - 16, // 8 * 2 - margin top and bottom = 8
+    height: SEARCH_HEADER_HEIGHT - STATUS_BAR_HEIGHT - 16, // 8 * 2 - margin top and bottom = 8
     marginLeft: 8,
     marginRight: 8
   },

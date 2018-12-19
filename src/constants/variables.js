@@ -21,6 +21,7 @@ export const VIEW_LESS_TEXT = 'Show Less';
 export const MIN_HEADER_HEIGHT = Header.HEIGHT; // Minimum header height (including status bar)
 export const MIN_HEADER_HEIGHT_NO_STATUS_BAR = MIN_HEADER_HEIGHT - getStatusBarHeight(true);
 export const SEARCH_HEADER_HEIGHT = Header.HEIGHT;
+export const STATUS_BAR_HEIGHT = getStatusBarHeight(true);
 
 export const COMMENTS_PAGINATE_LIMIT = 5; // NOTE: Same as commentsLimit in server/helpers/paginate.js
 

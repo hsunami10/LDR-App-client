@@ -9,11 +9,7 @@ import { NO_COMMENTS_FOR_POST_MSG } from '../../constants/noneMessages';
 class CommentsList extends Component {
   viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
-    this.props.navigation.push('ViewProfile', {
-      type: 'public',
-      id,
-      username
-    });
+    this.props.navigation.push('ViewProfile', { id, username });
   }
 
   renderPosts = ({ item }) => (

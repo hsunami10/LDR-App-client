@@ -184,16 +184,11 @@ class HomeScreen extends Component {
   }
 
   handleTabPress = ({ route }) => {
+    // TODO: Handle scrolling here
     switch (route.key) {
       case 'social':
-        if (!this.state.mounted.social) {
-          this.setState(prevState => ({ mounted: { ...prevState.mounted, social: true } }));
-        }
         break;
       case 'topics':
-        if (!this.state.mounted.topics) {
-          this.setState(prevState => ({ mounted: { ...prevState.mounted, topics: true } }));
-        }
         break;
       default:
         return;
@@ -259,7 +254,6 @@ class HomeScreen extends Component {
               <TabBar
                 {...props}
                 useNativeDriver
-                onTabPress={this.handleTabPress}
                 // indicatorStyle={{ borderBottomColor: 'pink', borderBottomWidth: 2 }}
               />
             }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import ViewProfileScreen from '../screens/app/profile/ViewProfileScreen';
 import ViewPostScreen from '../screens/app/post/ViewPostScreen';
@@ -6,8 +5,7 @@ import ViewPostScreen from '../screens/app/post/ViewPostScreen';
 // TODO: Add ViewGroupScreen and other screens if necessary
 export default createStackNavigator(
   {
-    ViewProfile: props => <ViewProfileScreen {...props} private />,
-    ViewOtherProfile: ViewProfileScreen,
+    ViewProfile: ViewProfileScreen,
     ViewPost: ViewPostScreen
   },
   {

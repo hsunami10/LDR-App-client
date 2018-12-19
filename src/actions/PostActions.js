@@ -16,14 +16,7 @@ import {
   initializePostScreenInfo
 } from './ScreenActions';
 
-const noPostError = (dispatch, userID, postID, navigation) => {
-  dispatch(deletePostAction(userID, postID));
-  if (navigation) {
-    navigation.pop();
-  }
-};
-
-export const getPostAndComments = (userID, refresh, postID, screenID, length, navigation) => dispatch => {
+export const getPostAndComments = (userID, refresh, postID, screenID, length) => dispatch => {
   if (refresh) {
     dispatch(startPostScreenRefreshing(postID, screenID));
   } else {
@@ -48,10 +41,10 @@ export const getPostAndComments = (userID, refresh, postID, screenID, length, na
         alertWithSingleAction(
           'Oh no!',
           response.data.error,
-          () => noPostError(dispatch, userID, postID, navigation)
+          () => dispatch(deletePostAction(userID, postID))
         );
       } else {
-        noPostError(dispatch, userID, postID);
+        dispatch(deletePostAction(userID, postID));
       }
     })
     .catch(error => {

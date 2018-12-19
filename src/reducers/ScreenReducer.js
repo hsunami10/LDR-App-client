@@ -110,9 +110,9 @@ export default (state = INITIAL_STATE, action) => {
       const copyPosts8 = { ...state.posts };
       if (copyPosts8.hasOwnProperty(action.payload.postID)) {
         delete copyPosts8[action.payload.postID][action.payload.screenID];
-      }
-      if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
-        delete copyPosts8[action.payload.postID];
+        if (Object.keys(copyPosts8[action.payload.postID]).length === 0) {
+          delete copyPosts8[action.payload.postID];
+        }
       }
       return { ...state, posts: copyPosts8 };
     case START_COMMENTS_PAGE_LOADING:
@@ -242,9 +242,9 @@ export default (state = INITIAL_STATE, action) => {
       const copyProfile2 = { ...state.profiles };
       if (copyProfile2.hasOwnProperty(action.payload.userID)) {
         delete copyProfile2[action.payload.userID][action.payload.screenID];
-      }
-      if (Object.keys(copyProfile2[action.payload.userID]).length === 0) {
-        delete copyProfile2[action.payload.userID];
+        if (Object.keys(copyProfile2[action.payload.userID]).length === 0) {
+          delete copyProfile2[action.payload.userID];
+        }
       }
       return { ...state, profiles: copyProfile2 };
 
