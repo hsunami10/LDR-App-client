@@ -86,18 +86,36 @@ class ViewProfileScreen extends Component {
 
   // For some reason, this.props.screenID changes 3 times
   handleFirstLoad = refresh => {
-    const type = this.props.navigation.getParam('type', 'public');
     const targetID = this.props.navigation.getParam('id', this.props.id);
     if (this.props.private || targetID === this.props.id) {
-      this.props.getUserInfo(this.props.id, this.props.id, 'private', refresh, {
-        navToApp: () => null,
-        navToAuth: this.logOut
-      }, this.state.screen_id);
+      this.props.getUserInfo(
+        this.props.id,
+        this.props.id,
+        refresh,
+        {
+          navToApp: () => null,
+          navToAuth: this.logOut
+        },
+        this.state.screen_id,
+        'posts', // TODO: Add current tab here
+        'date_posted', // TODO: Have all of this work with real data
+        'DESC', // TODO: Have all of this work with real data
+        '', // TODO: Have all of this work with real data
+        '' // TODO: Have all of this work with real data
+      );
     } else {
-      // type: 'public'
-      this.props.getUserInfo(this.props.id, targetID, type, refresh, {
-        noUserCB: this.handleNoUserError
-      }, this.state.screen_id);
+      this.props.getUserInfo(
+        this.props.id,
+        targetID,
+        refresh,
+        { noUserCB: this.handleNoUserError },
+        this.state.screen_id,
+        'posts', // TODO: Add current tab here
+        'date_posted', // TODO: Have all of this work with real data
+        'DESC', // TODO: Have all of this work with real data
+        '', // TODO: Have all of this work with real data
+        '' // TODO: Have all of this work with real data
+      );
     }
   }
 

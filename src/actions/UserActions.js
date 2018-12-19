@@ -9,6 +9,7 @@ import {
   ACCEPT_PARTNER_RESULT_FAILURE,
   START_FIND_PARTNER_LOADING,
   STOP_FIND_PARTNER_LOADING,
+  GET_USER_FRIENDS,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { removeCredentials, logOutUser } from './AuthActions';
@@ -22,6 +23,7 @@ import {
   stopInitialUserLoading,
 } from './ScreenActions';
 import { handleError } from '../assets/helpers/errors';
+import { logOut } from '../assets/helpers/authentication';
 
 // If screenID is null, then only change state in UserReducer
 // If screenID is NOT null, then only change state in ScreenReducer
@@ -61,8 +63,6 @@ export const findPartnerCode = (code, screenID = null) => dispatch => {
 export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
 
 export const acceptResult = (userID, partnerID, screenID = null) => dispatch => {
-  console.log('accept - add to user2_id, remove any entries where userID = user1_id');
-
   dispatch(startFindPartnerLoading(screenID));
   axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
     .then(response => {
@@ -95,8 +95,11 @@ Get public or private user information
 type: private, public, edit, partner
 isRefresh differentiates between first load and pull to refresh load
 private - must have callbacks.navToApp and callbacks.navToAuth defined
+
+TODO: Handle which tab information to get - "currentTab" - posts, interactions, friends
+Only fetch one tab at a time
  */
-export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null, screenID) => dispatch => {
+export const getUserInfo = (userID, targetID, isRefresh, callbacks = null, screenID, currentTab, order, direction, lastID, lastData) => dispatch => {
   if (isRefresh) {
     dispatch(startUserScreenRefreshing(userID, screenID));
   } else {
@@ -104,7 +107,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
   }
 
   // userID used for getting liked posts
-  axios.get(`${ROOT_URL}/api/user/${targetID}?type=${type}&user_id=${userID}`)
+  axios.get(`${ROOT_URL}/api/user/${targetID}?user_id=${userID}&current_tab=${currentTab}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (isRefresh) {
         dispatch(stopUserScreenRefreshing(userID, screenID));
@@ -113,7 +116,7 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
       }
 
       // If own account
-      if (type === 'private') {
+      if (userID === targetID) {
         if (response.data.success) { // If own account exists in database
           dispatch(storeUserInfo(response.data.user));
           dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
@@ -149,10 +152,9 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
               handleError(new Error(error.message), true);
             });
         }
-      } else if (type === 'public') {
-        if (response.data.success) {
-          dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
-        } else if (isRefresh) {
+      } else if (response.data.success) {
+        dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
+      } else if (isRefresh) {
           alertWithSingleAction(
             'Oh no!',
             response.data.error,
@@ -161,9 +163,8 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
                 callbacks.noUserCB();
               }
             });
-        } else {
-          dispatch(storeUserScreenInfoFailure(targetID, screenID));
-        }
+      } else {
+        dispatch(storeUserScreenInfoFailure(targetID, screenID));
       }
     })
     .catch(error => {
@@ -172,6 +173,46 @@ export const getUserInfo = (userID, targetID, type, isRefresh, callbacks = null,
       } else {
         dispatch(stopInitialUserLoading(userID, screenID));
       }
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+// loading = null and screenID = null in SocialScreen
+// loading != null and screenID != null in ViewProfileScreen
+export const getFriends = (userID, targetID, order, direction, lastID, lastData, navigation, loading = null, screenID = null) => dispatch => {
+  if (loading === true) {
+    // TODO: Dispatch initial loading for ViewProfileScreen - ScreenReducer.profiles.friends
+  }
+  axios.get(`${ROOT_URL}/api/user/get-friends/${targetID}?user_id=${userID}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+    .then(response => {
+      if (response.data.success) {
+        if (screenID) { // If in ViewProfileScreen
+          // TODO: Dispatch a screen reducer action here to update friends prop in ScreenReducer.profiles
+        } else { // If in SocialScreen
+          dispatch({
+            type: GET_USER_FRIENDS,
+            payload: response.data.friends
+          });
+        }
+      } else if (userID === targetID) {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => dispatch(logOut(navigation)),
+          'Log Out'
+        );
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error
+        );
+      }
+    })
+    .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
       } else {

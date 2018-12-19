@@ -9,7 +9,8 @@ import {
   NO_PENDING_MSG,
   NO_FRIENDS_MSG
 } from '../../../constants/noneMessages';
-import { getSocialInfo, getFriends } from '../../../actions/SocialActions';
+import { getSocialInfo } from '../../../actions/SocialActions';
+import { getFriends } from '../../../actions/UserActions';
 import { orderToArrData } from '../../../assets/helpers/misc';
 
 // QUESTION: How to organize OWN list of friends?
@@ -44,7 +45,7 @@ class SocialScreen extends Component {
     const length = this.props.friends.length;
     const lastID = this.props.friends[length - 1].id;
     const lastData = this.props.friends[length - 1].date_friended;
-    this.props.getFriends(this.props.id, null, 'date_friended', 'DESC', lastID, lastData);
+    this.props.getFriends(this.props.id, this.props.id, 'date_friended', 'DESC', lastID, lastData, this.props.parentNavigation);
   }
 
   handleSocialRefresh = () => this.props.getSocialInfo(this.props.id, true, '', '', this.props.parentNavigation)

@@ -23,15 +23,15 @@ const noPostError = (dispatch, userID, postID, navigation) => {
   }
 };
 
-export const getPostAndComments = (userID, refreshing, postID, screenID, length, navigation) => dispatch => {
-  if (refreshing) {
+export const getPostAndComments = (userID, refresh, postID, screenID, length, navigation) => dispatch => {
+  if (refresh) {
     dispatch(startPostScreenRefreshing(postID, screenID));
   } else {
     dispatch(initializePostScreenInfo(postID, screenID));
   }
   axios.get(`${ROOT_URL}/api/posts/${userID}?length=${length}&post_id=${postID}`)
     .then(response => {
-      if (refreshing) {
+      if (refresh) {
         dispatch(stopPostScreenRefreshing(postID, screenID));
       }
       if (response.data.success) {
@@ -44,7 +44,7 @@ export const getPostAndComments = (userID, refreshing, postID, screenID, length,
           }
         });
         dispatch(storeCommentsScreenInfo(result.comments, postID, screenID, true));
-      } else if (refreshing) {
+      } else if (refresh) {
         alertWithSingleAction(
           'Oh no!',
           response.data.error,
@@ -55,7 +55,7 @@ export const getPostAndComments = (userID, refreshing, postID, screenID, length,
       }
     })
     .catch(error => {
-      if (refreshing) {
+      if (refresh) {
         dispatch(stopPostScreenRefreshing(postID, screenID));
       }
       if (error.response) {

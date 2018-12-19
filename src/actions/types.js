@@ -15,6 +15,7 @@ export const ACCEPT_PARTNER_RESULT_SUCCESS = 'accept_partner_result_success';
 export const ACCEPT_PARTNER_RESULT_FAILURE = 'accept_partner_result_failure';
 export const START_FIND_PARTNER_LOADING = 'start_find_partner_loading';
 export const STOP_FIND_PARTNER_LOADING = 'stop_find_partner_loading';
+export const GET_USER_FRIENDS = 'get_user_friends';
 
 // Authentication
 export const SET_USER_CREDENTIALS = 'set_user_credentials';
@@ -86,7 +87,6 @@ export const STOP_INITIAL_SOCIAL_LOADING = 'stop_initial_social_loading';
 export const START_SOCIAL_REFRESHING = 'start_social_refreshing';
 export const STOP_SOCIAL_REFRESHING = 'stop_social_refreshing';
 export const GET_SOCIAL_INFO = 'get_social_info';
-export const GET_USER_FRIENDS = 'get_user_friends';
 export const REMOVE_FRIEND_REQUEST = 'remove_friend_request';
 export const SEND_FRIEND_REQUEST = 'send_friend_request';
 export const ACCEPT_FRIEND_REQUEST = 'accept_friend_request';

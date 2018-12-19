@@ -215,10 +215,21 @@ export default (state = INITIAL_STATE, action) => {
 
     case STORE_USER_SCREEN_INFO_SUCCESS:
       const copyProfile = { ...state.profiles };
-      copyProfile[action.payload.user.id] = {
-        ...copyProfile[action.payload.user.id],
-        [action.payload.screenID]: action.payload.user
-      };
+      // If possibility of the current screen existing (reloading), then override existing data
+      if (copyProfile.hasOwnProperty(action.payload.user.id)) {
+        copyProfile[action.payload.user.id] = {
+          ...copyProfile[action.payload.user.id],
+          [action.payload.screenID]: {
+            ...copyProfile[action.payload.user.id][action.payload.screenID],
+            ...action.payload.user
+          }
+        };
+      } else { // Completely new screen (initial load)
+        copyProfile[action.payload.user.id] = {
+          ...copyProfile[action.payload.user.id],
+          [action.payload.screenID]: action.payload.user
+        };
+      }
       return { ...state, profiles: copyProfile };
     case STORE_USER_SCREEN_INFO_FAILURE:
       const copyProfile1 = { ...state.profiles };

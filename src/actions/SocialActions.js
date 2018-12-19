@@ -1,12 +1,10 @@
 import axios from 'axios';
-import moment from 'moment';
 import {
   START_INITIAL_SOCIAL_LOADING,
   STOP_INITIAL_SOCIAL_LOADING,
   START_SOCIAL_REFRESHING,
   STOP_SOCIAL_REFRESHING,
   GET_SOCIAL_INFO,
-  GET_USER_FRIENDS,
   REMOVE_FRIEND_REQUEST,
   SEND_FRIEND_REQUEST,
   ACCEPT_FRIEND_REQUEST,
@@ -60,23 +58,6 @@ export const getSocialInfo = (userID, refresh, lastID, lastData, navigation) => 
       } else {
         dispatch(stopInitialSocialLoading());
       }
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
-export const getFriends = (userID, refresh, order, direction, lastID, lastData) => dispatch => {
-  axios.get(`${ROOT_URL}/api/social/get-friends/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      dispatch({
-        type: GET_USER_FRIENDS,
-        payload: response.data
-      });
-    })
-    .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
       } else {
