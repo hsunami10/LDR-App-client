@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { getDiscoverTopics } from '../../../actions/DiscoverActions';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { NO_DISCOVER_TOPICS_MSG } from '../../../constants/noneMessages';

@@ -1,46 +1,56 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, Animated, StyleSheet, RefreshControl, Text, Dimensions, Keyboard } from 'react-native';
+import { connect } from 'react-redux';
+import { Animated, StyleSheet, Dimensions, Platform } from 'react-native';
+import { orderToArrData } from '../../assets/helpers/preprocess';
+import SearchResultTabView from '../../components/search/SearchResultTabView';
+import SuggestionList from '../../components/search/suggestions/SuggestionList';
+import { FullScreenLoading } from '../../components/common';
+import {
+  searchTerm,
+  removeUserSearch,
+} from '../../actions/SearchActions';
+import {
+  DEFAULT_IOS_BACKGROUND_COLOR,
+  DEFAULT_ANDROID_BACKGROUND_COLOR,
+} from '../../constants/variables';
 
-// TODO: Add tab view later
-// Connect to redux to handle pagination and refresh
-// Fix pagination to only happen when on search results, not search suggestions
-// When showing popular search suggestings, have a "search up" clickable at the bottom (like reddit app)
+/*
+To show when the user clicks on search, before typing anything
+user_searches
+suggestion: {
+  id,
+  user_id,
+  search_term,
+  date_searched,
+}
+
+To show when the user types something
+all_searches
+suggestion: {
+  id,
+  search_term,
+  num_searches
+}
+ */
 class GeneralSearchScreen extends Component {
-  state = {
-    refreshing: false,
-    canPaginate: false
-  }
+  handleSuggestionPress = (id, term) => this.props.searchTerm(this.props.type, id, term)
+  handleRemovePress = id => this.props.removeUserSearch(this.props.type, id)
 
-  componentDidUpdate(prevProps) {
-    // Scroll back to top if hidden
-    if (this.props.display === 'none' && prevProps.display === 'flex') {
-      this.animList.scrollToOffset({ x: 0, y: 0, animated: false });
+  renderBody() {
+    if (this.props.initial_loading) {
+      return <FullScreenLoading height={this.props.height} loading />;
+    } else if (this.props.searched) {
+      return <SearchResultTabView type={this.props.type} />;
     }
-  }
-
-  handleScroll = () => Keyboard.dismiss()
-
-  handleContentSizeChange = (contentWidth, contentHeight) => {
-    this.setState(() => ({
-      canPaginate: contentHeight > this.props.height
-    }));
-  }
-
-  handleRefresh = () => {
-    this.setState(() => ({ refreshing: true }));
-    // TODO: Grab new data from database again here, and set refreshing to false
-    setTimeout(() => this.setState(() => ({ refreshing: false })), 1000);
-  }
-
-  handleEndReached = () => {
-    // TODO: Handle pagination here
-    // If no more old data, then don't do anything anymore
-    console.log('search results paginate for more data here');
-  };
-
-  renderItem = data => {
-    return <Text style={{ alignSelf: 'center' }}>{data.item.text}</Text>;
+    return (
+      <SuggestionList
+        data={this.props.suggestions}
+        onPress={this.handleSuggestionPress}
+        onRemovePress={this.handleRemovePress}
+        height={this.props.height}
+      />
+    );
   }
 
   render() {
@@ -52,41 +62,42 @@ class GeneralSearchScreen extends Component {
           height: this.props.height
         }]}
       >
-        <FlatList
-          ref={o => (this.animList = o)}
-          data={this.props.results}
-          renderItem={this.renderItem}
-          keyExtractor={data => data.id}
-          onScroll={this.handleScroll}
-          scrollEventThrottle={16}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.handleRefresh}
-            />
-          }
-          onContentSizeChange={this.handleContentSizeChange}
-          onEndReached={this.handleEndReached}
-          onEndReachedThreshold={0}
-        />
+        {this.renderBody()}
       </Animated.View>
     );
   }
 }
 
 GeneralSearchScreen.propTypes = {
+  type: PropTypes.oneOf(['home', 'discover']).isRequired,
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
-  results: PropTypes.arrayOf(PropTypes.object).isRequired
+
+  searched: PropTypes.bool.isRequired,
+  suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  searchTerm: PropTypes.func.isRequired,
+  removeUserSearch: PropTypes.func.isRequired,
+  initial_loading: PropTypes.bool.isRequired,
+  refreshing: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({
   searchViewStyle: {
-    backgroundColor: 'blue',
     position: 'absolute',
+    backgroundColor: Platform.OS === 'ios' ? DEFAULT_IOS_BACKGROUND_COLOR : DEFAULT_ANDROID_BACKGROUND_COLOR,
     width: Dimensions.get('window').width
   }
 });
 
-export default GeneralSearchScreen;
+const mapStateToProps = (state, ownProps) => ({
+  searched: state.search[ownProps.type].searched,
+  suggestions: orderToArrData(state.search[ownProps.type].suggestions.order, state.search[ownProps.type].suggestions.data),
+  initial_loading: state.search[ownProps.type].initial_loading,
+  refreshing: state.search[ownProps.type].refreshing,
+});
+
+export default connect(mapStateToProps, {
+  searchTerm,
+  removeUserSearch,
+})(GeneralSearchScreen);

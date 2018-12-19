@@ -9,7 +9,7 @@ import { pushTabRoute, goBackwardTabRoute } from '../../../actions/NavigationAct
 import { removePostScreenInfo } from '../../../actions/ScreenActions';
 import { getPostAndComments, deletePost } from '../../../actions/PostActions';
 import { getComments } from '../../../actions/CommentActions';
-import CommentsList from '../../../components/comment/CommentsList';
+import CommentList from '../../../components/comment/CommentList';
 import PageCommentsButton from '../../../components/comment/PageCommentsButton';
 import { NO_POST_MSG } from '../../../constants/noneMessages';
 
@@ -170,7 +170,7 @@ class ViewPostScreen extends Component {
           loading={this.props.posts[this.state.post_id][this.state.screen_id].page_comments_loading}
           handlePress={this.handlePageComments}
         />
-        <CommentsList
+        <CommentList
           data={data}
           empty={data.length === 0}
           navigation={this.props.navigation}

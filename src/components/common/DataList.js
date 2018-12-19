@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, RefreshControl, Button, SectionList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, RefreshControl, Button, SectionList, StyleSheet, Keyboard } from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from '../post/PostCard';
 import TopicCard from '../topic/TopicCard';
@@ -51,6 +51,8 @@ class DataList extends Component {
     this.props.pushTabRoute(this.props.current_tab, 'ViewPost');
     this.props.navigation.push('ViewPost', { post_id: post.id });
   }
+
+  handleScroll = Keyboard.dismiss();
 
   handleTopicActionPress = (id, type) => {
     switch (type) {
@@ -301,6 +303,7 @@ class DataList extends Component {
             /> :
             null
           }
+          onScroll={this.props.handleScroll || this.handleScroll}
           onContentSizeChange={this.handleContentSizeChange}
           onEndReached={this.handleEndReached}
           scrollEventThrottle={16}
@@ -318,7 +321,7 @@ class DataList extends Component {
           }
           renderItem={this.props.empty ? this.renderMessage : this.renderData}
           keyExtractor={post => post.id}
-          onScroll={this.props.handleScroll}
+          onScroll={this.props.handleScroll || this.handleScroll}
           refreshControl={
             this.props.enableRefresh ?
             <RefreshControl

@@ -28,13 +28,13 @@ export const stopInitialDiscoverPostsLoading = () => ({ type: STOP_INITIAL_DISCO
 export const startDiscoverPostsRefreshing = () => ({ type: START_DISCOVER_POSTS_REFRESHING });
 export const stopDiscoverPostsRefreshing = () => ({ type: STOP_DISCOVER_POSTS_REFRESHING });
 
-export const getDiscoverPosts = (userID, refresh, offset, order, direction, latest, navigation) => dispatch => {
+export const getDiscoverPosts = (userID, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
   if (refresh === true) {
     dispatch(startDiscoverPostsRefreshing());
   } else if (refresh === false) {
     dispatch(startInitialDiscoverPostsLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/posts/${userID}?offset=${offset}&order=${order}&direction=${direction}&latest=${latest}`)
+  axios.get(`${ROOT_URL}/api/discover/posts/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
     .then(response => {
       if (refresh === true) {
         dispatch(stopDiscoverPostsRefreshing());

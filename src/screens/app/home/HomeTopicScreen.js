@@ -6,7 +6,7 @@ import { getSubscribedTopics } from '../../../actions/TopicActions';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';
 import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 
 class HomeTopicScreen extends Component {
   componentDidMount() {

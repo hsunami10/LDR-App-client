@@ -5,6 +5,7 @@ import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { View, Animated, Keyboard, StyleSheet } from 'react-native';
 import { SearchHeader } from '../../../components/common';
+import { getUserSearches, resetSearch } from '../../../actions/SearchActions';
 import DiscoverUserScreen from './DiscoverUserScreen';
 import DiscoverPostScreen from './DiscoverPostScreen';
 import DiscoverTopicScreen from './DiscoverTopicScreen';
@@ -34,7 +35,6 @@ class DiscoverScreen extends Component {
     oldSearch: '',
     typingTimeout: null,
     opacity: new Animated.Value(0),
-    refreshing: false,
     display: 'none',
     height: 0,
     canPaginate: false,
@@ -114,8 +114,8 @@ class DiscoverScreen extends Component {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    if (this.state.oldSearch !== this.state.search) {
-      console.log(`search up: ${this.state.search} in general search`);
+    if (this.state.oldSearch !== this.state.search && this.state.search.trim()) {
+      console.log(`search up: ${this.state.search.trim()} in general search`);
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
     }
@@ -124,6 +124,7 @@ class DiscoverScreen extends Component {
 
   handleSearchFocus = () => {
     this.setState(() => ({ display: 'flex' }));
+    this.props.getUserSearches(this.props.id, '', false, 'discover');
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -143,7 +144,7 @@ class DiscoverScreen extends Component {
       useNativeDriver: true
     }).start(() => {
       this.setState(() => ({ display: 'none' }));
-      // TODO: Reset search results - back to default animated view
+      this.props.resetSearch('discover');
     });
   }
 
@@ -157,8 +158,8 @@ class DiscoverScreen extends Component {
       typingTimeout: setTimeout(() => {
         // TODO: Call action for API endpoint here
         // Query data from database here
-        if (this.state.search.length !== 0) {
-          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
+        if (this.state.search.length !== 0 && this.state.search.trim()) {
+          this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'discover');
         }
       }, 1000)
     }));
@@ -289,6 +290,7 @@ class DiscoverScreen extends Component {
             useNativeDriver
           />
           <GeneralSearchScreen
+            type="discover"
             display={this.state.display}
             opacity={this.state.opacity}
             height={this.state.height}
@@ -304,6 +306,8 @@ DiscoverScreen.propTypes = {
   id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
+  getUserSearches: PropTypes.func.isRequired,
+  resetSearch: PropTypes.func.isRequired,
 
   screenProps: PropTypes.object.isRequired,
 };
@@ -318,4 +322,7 @@ const mapStateToProps = state => ({
   current_tab: state.navigation.current_tab,
 });
 
-export default connect(mapStateToProps, null)(DiscoverScreen);
+export default connect(mapStateToProps, {
+  getUserSearches,
+  resetSearch
+})(DiscoverScreen);

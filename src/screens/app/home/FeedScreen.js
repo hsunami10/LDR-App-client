@@ -8,7 +8,7 @@ import { getUserFeed } from '../../../actions/FeedActions';
 import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
 import { logOut } from '../../../assets/helpers/authentication';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 
 /*
 HOW TO POPULATE THIS SCREEN

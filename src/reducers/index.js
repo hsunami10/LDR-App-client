@@ -7,6 +7,7 @@ import LoadingReducer from './LoadingReducer';
 import NavigationReducer from './NavigationReducer';
 import PostReducer from './PostReducer';
 import ScreenReducer from './ScreenReducer';
+import SearchReducer from './SearchReducer';
 import SocialReducer from './SocialReducer';
 import TopicReducer from './TopicReducer';
 import UserReducer from './UserReducer';
@@ -20,6 +21,7 @@ export default combineReducers({
   navigation: NavigationReducer,
   posts: PostReducer,
   screens: ScreenReducer,
+  search: SearchReducer,
   social: SocialReducer,
   topics: TopicReducer,
   user: UserReducer

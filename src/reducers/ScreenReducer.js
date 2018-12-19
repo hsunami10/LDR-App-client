@@ -166,7 +166,6 @@ export default (state = INITIAL_STATE, action) => {
 
             if (index >= 0) {
               screen.order.splice(index, 1);
-              screen.offset--;
             }
           }
         }
@@ -255,7 +254,6 @@ export default (state = INITIAL_STATE, action) => {
         for (const screenID in userScreens) {
           if (userScreens.hasOwnProperty(screenID)) {
             const posts = userScreens[screenID].posts;
-            posts.offset++;
             posts.order = [action.payload.id, ...posts.order];
           }
         }
@@ -277,11 +275,9 @@ export default (state = INITIAL_STATE, action) => {
 
             if (index >= 0) {
               posts.order.splice(index, 1);
-              posts.offset--;
             }
             if (index2 >= 0) {
               interactions.order.splice(index2, 1);
-              interactions.offset--;
             }
           }
         }

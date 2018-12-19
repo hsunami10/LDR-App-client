@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';
 import { NO_DISCOVER_USERS_MSG } from '../../../constants/noneMessages';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { getDiscoverUsers } from '../../../actions/DiscoverActions';
 
 class DiscoverUserScreen extends Component {

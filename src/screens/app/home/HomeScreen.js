@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import shortid from 'shortid';
 import { connect } from 'react-redux';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { View, Animated, Keyboard } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import GeneralSearchScreen from '../GeneralSearchScreen';
+import { getUserSearches, resetSearch } from '../../../actions/SearchActions';
 import FeedScreen from './FeedScreen';
 import SocialScreen from './SocialScreen';
 import HomeTopicScreen from './HomeTopicScreen';
@@ -30,69 +30,15 @@ class HomeScreen extends Component {
     typingTimeout: null,
     opacity: new Animated.Value(0),
     display: 'none',
-    height: 0,
-    posts2: [
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-    ]
+    height: 0
   }
 
   searchResults = () => {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    if (this.state.oldSearch !== this.state.search) {
-      console.log(`search up: ${this.state.search} in general search`);
+    if (this.state.oldSearch !== this.state.search && this.state.search.trim()) {
+      console.log(`search up: ${this.state.search.trim()} in general search`);
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
     }
@@ -103,6 +49,7 @@ class HomeScreen extends Component {
 
   handleSearchFocus = () => {
     this.setState(() => ({ display: 'flex' }));
+    this.props.getUserSearches(this.props.id, '', false, 'home');
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -122,7 +69,7 @@ class HomeScreen extends Component {
       useNativeDriver: true
     }).start(() => {
       this.setState(() => ({ display: 'none' }));
-      // TODO: Reset search results - back to default animated view
+      this.props.resetSearch('home');
     });
   }
 
@@ -136,8 +83,8 @@ class HomeScreen extends Component {
       typingTimeout: setTimeout(() => {
         // TODO: Call action for API endpoint here
         // Query data from database here
-        if (this.state.search.length !== 0) {
-          console.log(`show '${this.state.search}' top (10?) popular searches of all time`);
+        if (this.state.search.length !== 0 && this.state.search.trim()) {
+          this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'home');
         }
       }, 1000)
     }));
@@ -261,10 +208,10 @@ class HomeScreen extends Component {
             useNativeDriver
           />
           <GeneralSearchScreen
+            type="home"
             display={this.state.display}
             opacity={this.state.opacity}
             height={this.state.height}
-            results={this.state.posts2}
           />
         </View>
       </View>
@@ -276,6 +223,8 @@ HomeScreen.propTypes = {
   id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
+  getUserSearches: PropTypes.func.isRequired,
+  resetSearch: PropTypes.func.isRequired,
 
   screenProps: PropTypes.object.isRequired,
 };
@@ -286,4 +235,7 @@ const mapStateToProps = state => ({
   current_tab: state.navigation.current_tab,
 });
 
-export default connect(mapStateToProps, null)(HomeScreen);
+export default connect(mapStateToProps, {
+  getUserSearches,
+  resetSearch
+})(HomeScreen);

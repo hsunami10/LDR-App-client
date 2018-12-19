@@ -11,7 +11,7 @@ import {
 } from '../../../constants/noneMessages';
 import { getSocialInfo } from '../../../actions/SocialActions';
 import { getFriends } from '../../../actions/UserActions';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 
 // QUESTION: How to organize OWN list of friends?
 // NOTE: Don't have to worry about multiple screens for requests - you can only view them on one screen

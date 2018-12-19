@@ -25,6 +25,9 @@ export const STATUS_BAR_HEIGHT = getStatusBarHeight(true);
 
 export const COMMENTS_PAGINATE_LIMIT = 5; // NOTE: Same as commentsLimit in server/helpers/paginate.js
 
+export const DEFAULT_IOS_BACKGROUND_COLOR = '#E9E9EF';
+export const DEFAULT_ANDROID_BACKGROUND_COLOR = 'white';
+
 // NOTE: Change this in server/config/mail.js if changed
 export const EmailSubjectEnum = Object.freeze({
   password: 0, // forgotten password

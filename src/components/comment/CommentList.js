@@ -6,7 +6,7 @@ import { pushTabRoute } from '../../actions/NavigationActions';
 import CommentCard from './CommentCard';
 import { NO_COMMENTS_FOR_POST_MSG } from '../../constants/noneMessages';
 
-class CommentsList extends Component {
+class CommentList extends Component {
   viewProfile = (id, username) => {
     this.props.pushTabRoute(this.props.current_tab, 'ViewProfile');
     this.props.navigation.push('ViewProfile', { id, username });
@@ -38,7 +38,7 @@ class CommentsList extends Component {
   }
 }
 
-CommentsList.propTypes = {
+CommentList.propTypes = {
   id: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
@@ -57,4 +57,4 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   pushTabRoute
-})(CommentsList);
+})(CommentList);

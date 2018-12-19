@@ -6,7 +6,7 @@ import { StandardHeader, FullScreenLoading } from '../../../components/common';
 import DataList from '../../../components/common/DataList';
 import { getSubscribedTopics, choosePostTopic, startTopicLoading, stopTopicLoading } from '../../../actions/TopicActions';
 import { NO_SUBSCRIBED_TOPICS_MSG } from '../../../constants/noneMessages';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 
 class ChooseTopicScreen extends Component {
   componentDidMount() {

@@ -116,3 +116,12 @@ export const STOP_INITIAL_DISCOVER_TOPICS_LOADING = 'stop_initial_discover_topic
 export const START_DISCOVER_TOPICS_REFRESHING = 'start_discover_topics_refreshing';
 export const STOP_DISCOVER_TOPICS_REFRESHING = 'stop_discover_topics_refreshing';
 export const GET_DISCOVER_TOPICS = 'get_discover_topics';
+
+// Search
+export const START_SEARCH_SUGGESTIONS_LOADING = 'start_search_suggestions_loading';
+export const STOP_SEARCH_SUGGESTIONS_LOADING = 'stop_search_suggestions_loading';
+export const START_SEARCH_SUGGESTIONS_REFRESHING = 'start_search_suggestions_refreshing';
+export const STOP_SEARCH_SUGGESTIONS_REFRESHING = 'stop_search_suggestions_refreshing';
+export const GET_USER_SEARCHES = 'get_user_searches';
+export const REMOVE_USER_SEARCH = 'remove_user_search';
+export const RESET_SEARCH = 'reset_search';

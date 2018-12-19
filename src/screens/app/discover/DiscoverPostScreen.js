@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import { getDiscoverPosts } from '../../../actions/DiscoverActions';
 import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
-import { orderToArrData } from '../../../assets/helpers/misc';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { EMPTY_DISCOVER_POST_MSG } from '../../../constants/noneMessages';
 
 class DiscoverPostScreen extends Component {
@@ -20,43 +20,45 @@ class DiscoverPostScreen extends Component {
     this.props.getDiscoverPosts(
       this.props.id,
       false,
-      0,
       this.state.order,
       this.state.direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
 
   paginateData = () => {
-    let benchmark;
+    const length = this.props.posts.length;
+    const lastID = this.props.posts[length - 1].id;
+    let lastData;
     if (this.state.order === 'date_posted') {
-      benchmark = this.props.posts[0].date_posted;
+      lastData = this.props.posts[length - 1].date_posted;
     } else if (this.state.order === 'num_likes') {
-      benchmark = this.props.posts[0].num_likes;
+      lastData = this.props.posts[length - 1].num_likes;
     }
     this.props.getDiscoverPosts(
       this.props.id,
       null,
-      this.props.offset,
       this.state.order,
       this.state.direction,
-      benchmark,
+      lastID,
+      lastData,
       this.props.parentNavigation
     );
   }
 
-  handleRefresh = () => this.props.getDiscoverPosts(this.props.id, true, 0, this.state.order, this.state.direction, moment().unix(), this.props.parentNavigation)
+  handleRefresh = () => this.props.getDiscoverPosts(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)
 
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
     this.props.getDiscoverPosts(
       this.props.id,
       true,
-      0,
       order,
       direction,
-      moment().unix(),
+      '',
+      '',
       this.props.parentNavigation
     );
   }
