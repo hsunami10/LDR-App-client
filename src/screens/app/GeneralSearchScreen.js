@@ -16,24 +16,6 @@ import {
   DEFAULT_ANDROID_BACKGROUND_COLOR,
 } from '../../constants/variables';
 
-/*
-To show when the user clicks on search, before typing anything
-user_searches
-suggestion: {
-  id,
-  user_id,
-  search_term,
-  date_searched,
-}
-
-To show when the user types something
-all_searches
-suggestion: {
-  id,
-  search_term,
-  num_searches
-}
- */
 class GeneralSearchScreen extends Component {
   handleSuggestionPress = (id, term) => this.props.searchTerm(this.props.type, id, term)
   handleRemovePress = id => this.props.removeUserSearch(this.props.type, id)
@@ -43,7 +25,7 @@ class GeneralSearchScreen extends Component {
     if (this.props.initial_loading) {
       return <FullScreenLoading height={this.props.height} loading />;
     } else if (this.props.searched) {
-      return <SearchResultTabView type={this.props.type} term={this.props.term} />;
+      return <SearchResultTabView type={this.props.type} />;
     }
     return (
       <SuggestionList
@@ -78,9 +60,9 @@ GeneralSearchScreen.propTypes = {
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
+  searched: PropTypes.bool.isRequired,
 
   id: PropTypes.string.isRequired,
-  searched: PropTypes.bool.isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchTerm: PropTypes.func.isRequired,
   removeUserSearch: PropTypes.func.isRequired,
@@ -100,7 +82,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => ({
   id: state.auth.id,
-  searched: state.search[ownProps.type].searched,
   suggestions: orderToArrData(state.search[ownProps.type].suggestions.order, state.search[ownProps.type].suggestions.data),
   initial_loading: state.search[ownProps.type].initial_loading,
   refreshing: state.search[ownProps.type].refreshing,

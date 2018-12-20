@@ -77,6 +77,7 @@ SearchResultTabView.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   topics: PropTypes.arrayOf(PropTypes.object).isRequired,
   initial_loading: PropTypes.bool.isRequired,
+  term: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -88,6 +89,7 @@ const mapStateToProps = (state, ownProps) => ({
   posts: orderToArrData(state.search[ownProps.type].results.posts.order, state.posts.all_posts),
   topics: orderToArrData(state.search[ownProps.type].results.topics.order, state.topics.all_topics),
   initial_loading: state.search[ownProps.type].initial_loading,
+  term: state.search[ownProps.type].term,
 });
 
 export default connect(mapStateToProps, null)(SearchResultTabView);

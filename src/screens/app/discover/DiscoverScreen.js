@@ -37,7 +37,8 @@ class DiscoverScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
-    firstFocus: true
+    firstFocus: true,
+    searched: false
   }
 
   searchResults = () => {
@@ -49,7 +50,11 @@ class DiscoverScreen extends Component {
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
     }
-    this.setState(() => ({ oldSearch: this.state.search, typingTimeout: null }));
+    this.setState(() => ({
+      oldSearch: this.state.search,
+      typingTimeout: null,
+      searched: true
+    }));
   }
 
   handleSearchFocus = () => {
@@ -73,7 +78,8 @@ class DiscoverScreen extends Component {
       search: '',
       oldSearch: '',
       typingTimeout: null,
-      firstFocus: true
+      firstFocus: true,
+      searched: false
     }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
@@ -90,14 +96,18 @@ class DiscoverScreen extends Component {
       clearTimeout(this.state.typingTimeout);
     }
 
-    this.setState(prevState => ({
-      search,
-      typingTimeout: setTimeout(() => {
-        if (prevState.search.trim() !== search.trim()) {
-          this.props.getUserSearches(this.props.id, search.trim(), null, 'discover');
-        }
-      }, 500)
-    }));
+    this.setState(prevState => {
+      const searched = search.trim() === '' ? false : prevState.oldSearch.trim() === search.trim();
+      return {
+        search,
+        searched,
+        typingTimeout: setTimeout(() => {
+          if (prevState.search.trim() !== search.trim() && !searched) {
+            this.props.getUserSearches(this.props.id, search.trim(), null, 'discover');
+          }
+        }, 500)
+      };
+    });
   }
 
   handleRefresh = () => {
@@ -229,6 +239,7 @@ class DiscoverScreen extends Component {
             display={this.state.display}
             opacity={this.state.opacity}
             height={this.state.height}
+            searched={this.state.searched}
           />
         </View>
       </View>

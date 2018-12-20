@@ -14,10 +14,9 @@ import {
 // NOTE: Results - exactly the same as DiscoverReducer
 const INITIAL_STATE = {
   home: {
-    searched: false, // Flag to determine whether or not to show search results or search suggestions
     initial_loading: false,
     refreshing: false,
-    term: '',
+    term: '', // Should be trimmed
     suggestions: {
       order: [],
       data: {}
@@ -41,10 +40,9 @@ const INITIAL_STATE = {
     }
   },
   discover: {
-    searched: false,
     initial_loading: false,
     refreshing: false,
-    term: '',
+    term: '', // Should be trimmed
     suggestions: {
       order: [],
       data: {}
