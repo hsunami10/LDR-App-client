@@ -37,84 +37,14 @@ class DiscoverScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
-    canPaginate: false,
-    posts2: [
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-      { id: shortid(), text: `Text Here + ${shortid()}` },
-    ]
+    firstFocus: true
   }
-
-  componentDidMount() {
-    console.log('grab discover feed here with api endpoint');
-  }
-
-  handleContentSizeChange = (contentWidth, contentHeight) => {
-    this.setState(prevState => ({
-      canPaginate: contentHeight > prevState.height // Only allow pagination if content height is larger than FlatList height
-    }));
-  }
-
-  handleEndReached = () => {
-    // TODO: Handle pagination here
-    // If no more old data, then don't do anything anymore
-    console.log('discover paginate for more data here');
-  };
 
   searchResults = () => {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    if (this.state.oldSearch !== this.state.search && this.state.search.trim()) {
+    if (this.state.oldSearch.trim() !== this.state.search.trim() && this.state.search.trim()) {
       console.log(`search up: ${this.state.search.trim()} in general search`);
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
@@ -123,8 +53,10 @@ class DiscoverScreen extends Component {
   }
 
   handleSearchFocus = () => {
-    this.setState(() => ({ display: 'flex' }));
-    this.props.getUserSearches(this.props.id, '', false, 'discover');
+    if (this.state.firstFocus) { // Only search on the very first text input focus
+      this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'discover');
+    }
+    this.setState(() => ({ display: 'flex', firstFocus: false }));
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -137,7 +69,12 @@ class DiscoverScreen extends Component {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    this.setState(() => ({ search: '', typingTimeout: null }));
+    this.setState(() => ({
+      search: '',
+      oldSearch: '',
+      typingTimeout: null,
+      firstFocus: true
+    }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
       duration: 200,
@@ -153,15 +90,13 @@ class DiscoverScreen extends Component {
       clearTimeout(this.state.typingTimeout);
     }
 
-    this.setState(() => ({
+    this.setState(prevState => ({
       search,
       typingTimeout: setTimeout(() => {
-        // TODO: Call action for API endpoint here
-        // Query data from database here
-        if (this.state.search.length !== 0 && this.state.search.trim()) {
-          this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'discover');
+        if (prevState.search.trim() !== search.trim()) {
+          this.props.getUserSearches(this.props.id, search.trim(), null, 'discover');
         }
-      }, 1000)
+      }, 500)
     }));
   }
 
@@ -294,7 +229,6 @@ class DiscoverScreen extends Component {
             display={this.state.display}
             opacity={this.state.opacity}
             height={this.state.height}
-            results={this.state.posts2}
           />
         </View>
       </View>

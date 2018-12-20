@@ -9,6 +9,7 @@ import { FullScreenLoading } from '../../components/common';
 import {
   searchTerm,
   removeUserSearch,
+  getUserSearches,
 } from '../../actions/SearchActions';
 import {
   DEFAULT_IOS_BACKGROUND_COLOR,
@@ -36,19 +37,23 @@ suggestion: {
 class GeneralSearchScreen extends Component {
   handleSuggestionPress = (id, term) => this.props.searchTerm(this.props.type, id, term)
   handleRemovePress = id => this.props.removeUserSearch(this.props.type, id)
+  handleRefresh = () => this.props.getUserSearches(this.props.id, this.props.term, true, this.props.type)
 
   renderBody() {
     if (this.props.initial_loading) {
       return <FullScreenLoading height={this.props.height} loading />;
     } else if (this.props.searched) {
-      return <SearchResultTabView type={this.props.type} />;
+      return <SearchResultTabView type={this.props.type} term={this.props.term} />;
     }
     return (
       <SuggestionList
         data={this.props.suggestions}
+        refreshing={this.props.refreshing}
+        onRefresh={this.handleRefresh}
         onPress={this.handleSuggestionPress}
         onRemovePress={this.handleRemovePress}
         height={this.props.height}
+        term={this.props.term}
       />
     );
   }
@@ -74,12 +79,15 @@ GeneralSearchScreen.propTypes = {
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
 
+  id: PropTypes.string.isRequired,
   searched: PropTypes.bool.isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchTerm: PropTypes.func.isRequired,
   removeUserSearch: PropTypes.func.isRequired,
   initial_loading: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
+  term: PropTypes.string.isRequired,
+  getUserSearches: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -91,13 +99,16 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => ({
+  id: state.auth.id,
   searched: state.search[ownProps.type].searched,
   suggestions: orderToArrData(state.search[ownProps.type].suggestions.order, state.search[ownProps.type].suggestions.data),
   initial_loading: state.search[ownProps.type].initial_loading,
   refreshing: state.search[ownProps.type].refreshing,
+  term: state.search[ownProps.type].term
 });
 
 export default connect(mapStateToProps, {
   searchTerm,
   removeUserSearch,
+  getUserSearches,
 })(GeneralSearchScreen);

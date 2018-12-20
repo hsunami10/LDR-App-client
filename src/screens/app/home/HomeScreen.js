@@ -30,14 +30,15 @@ class HomeScreen extends Component {
     typingTimeout: null,
     opacity: new Animated.Value(0),
     display: 'none',
-    height: 0
+    height: 0,
+    firstFocus: true
   }
 
   searchResults = () => {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    if (this.state.oldSearch !== this.state.search && this.state.search.trim()) {
+    if (this.state.oldSearch.trim() !== this.state.search.trim() && this.state.search.trim()) {
       console.log(`search up: ${this.state.search.trim()} in general search`);
       // TODO: Figure out how to query database
       // Store search result in database - discover_searches
@@ -48,8 +49,10 @@ class HomeScreen extends Component {
   handleScroll = () => Keyboard.dismiss()
 
   handleSearchFocus = () => {
-    this.setState(() => ({ display: 'flex' }));
-    this.props.getUserSearches(this.props.id, '', false, 'home');
+    if (this.state.firstFocus) { // Only search on the very first text input focus
+      this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'home');
+    }
+    this.setState(() => ({ display: 'flex', firstFocus: false }));
     Animated.timing(this.state.opacity, {
       toValue: 1,
       duration: 200,
@@ -62,7 +65,12 @@ class HomeScreen extends Component {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
-    this.setState(() => ({ search: '', typingTimeout: null }));
+    this.setState(() => ({
+      search: '',
+      oldSearch: '',
+      typingTimeout: null,
+      firstFocus: true
+    }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
       duration: 200,
@@ -78,15 +86,13 @@ class HomeScreen extends Component {
       clearTimeout(this.state.typingTimeout);
     }
 
-    this.setState(() => ({
+    this.setState(prevState => ({
       search,
       typingTimeout: setTimeout(() => {
-        // TODO: Call action for API endpoint here
-        // Query data from database here
-        if (this.state.search.length !== 0 && this.state.search.trim()) {
-          this.props.getUserSearches(this.props.id, this.state.search.trim(), false, 'home');
+        if (prevState.search.trim() !== search.trim()) {
+          this.props.getUserSearches(this.props.id, search.trim(), null, 'home');
         }
-      }, 1000)
+      }, 500)
     }));
   }
 

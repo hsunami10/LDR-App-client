@@ -125,6 +125,20 @@ export default (state = INITIAL_STATE, action) => {
           term: action.payload.term
         }
       };
+    case REMOVE_USER_SEARCH:
+      const copySuggestions = { ...state[action.payload.type].suggestions };
+      const index = copySuggestions.order.indexOf(action.payload.id);
+      if (index >= 0) {
+        copySuggestions.order.splice(index, 1);
+        delete copySuggestions.data[action.payload.id];
+      }
+      return {
+        ...state,
+        [action.payload.type]: {
+          ...state[action.payload.type],
+          suggestions: copySuggestions
+        }
+      };
     default:
       return state;
   }
