@@ -34,8 +34,6 @@ class SuggestionList extends Component {
           />
         }
         onScroll={() => Keyboard.dismiss()}
-        onContentSizeChange={this.handleContentSizeChange}
-        onEndReached={this.handleEndReached}
         keyboardShouldPersistTaps="always"
         scrollEventThrottle={16}
         onEndReachedThreshold={0}

@@ -10,10 +10,11 @@ const PageCommentsButton = ({ keepPaging, loading, loadingSize, handlePress }) =
     underlayColor="rgba(0,0,0,0.3)"
   >
     <View style={styles.subViewStyle}>
-      {loading ? <ActivityIndicator size={loadingSize || 'small'} /> : null}
-      <Text>
-        View Previous Comments
-      </Text>
+      {
+        loading ?
+        <ActivityIndicator size={loadingSize || 'small'} /> :
+        <Text>View Previous Comments</Text>
+      }
     </View>
   </TouchableHighlight> :
   null

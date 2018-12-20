@@ -15,6 +15,7 @@ import {
   REMOVE_FRIEND,
   UNFRIEND_USER,
   GET_DISCOVER_USERS,
+  SEARCH_TERM,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -176,6 +177,15 @@ export default (state = INITIAL_STATE, action) => {
         all_users: {
           ...state.all_users,
           ...action.payload.users
+        }
+      };
+
+    case SEARCH_TERM:
+      return {
+        ...state,
+        all_users: {
+          ...state.all_users,
+          ...action.payload.users.users,
         }
       };
     default:

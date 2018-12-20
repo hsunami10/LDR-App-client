@@ -7,6 +7,8 @@ import {
   EDIT_POST,
   DELETE_POST,
   DELETE_COMMENT,
+  SEARCH_TERM,
+  GET_SEARCH_POSTS,
 } from '../actions/types';
 
 // Holds all posts data - want all posts to be the same across screens
@@ -88,6 +90,31 @@ export default (state = INITIAL_STATE, action) => {
         num_comments: parseInt(copyPosts3[action.payload.postID].num_comments, 10) - 1
       };
       return { ...state, all_posts: copyPosts3 };
+
+    case SEARCH_TERM:
+      return {
+        ...state,
+        all_posts: {
+          ...state.all_posts,
+          ...action.payload.posts.posts
+        },
+        post_likes: {
+          ...state.post_likes,
+          ...action.payload.posts.post_likes
+        }
+      };
+    case GET_SEARCH_POSTS:
+      return {
+        ...state,
+        all_posts: {
+          ...state.all_posts,
+          ...action.payload.posts
+        },
+        post_likes: {
+          ...state.post_likes,
+          ...action.payload.post_likes
+        }
+      };
     default:
       return state;
   }

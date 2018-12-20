@@ -5,7 +5,12 @@ import { TabView, TabBar } from 'react-native-tab-view';
 import { View, Animated, Keyboard } from 'react-native';
 import { SearchHeader } from '../../../components/common';
 import GeneralSearchScreen from '../GeneralSearchScreen';
-import { getUserSearches, resetSearch } from '../../../actions/SearchActions';
+import {
+  searchTerm,
+  getUserSearches,
+  resetSearch,
+  showResultTabs,
+} from '../../../actions/SearchActions';
 import FeedScreen from './FeedScreen';
 import SocialScreen from './SocialScreen';
 import HomeTopicScreen from './HomeTopicScreen';
@@ -31,27 +36,23 @@ class HomeScreen extends Component {
     opacity: new Animated.Value(0),
     display: 'none',
     height: 0,
-    firstFocus: true,
-    searched: false
+    firstFocus: true
   }
+
+  fillSearchText = term => this.setState(() => ({ search: term, oldSearch: term }))
 
   searchResults = () => {
     if (this.state.typingTimeout) {
       clearTimeout(this.state.typingTimeout);
     }
     if (this.state.oldSearch.trim() !== this.state.search.trim() && this.state.search.trim()) {
-      console.log(`search up: ${this.state.search.trim()} in general search`);
-      // TODO: Figure out how to query database
-      // Store search result in database - discover_searches
+      this.props.searchTerm('home', this.props.id, this.state.search.trim());
+      this.setState(() => ({
+        oldSearch: this.state.search,
+        typingTimeout: null
+      }));
     }
-    this.setState(() => ({
-      oldSearch: this.state.search,
-      typingTimeout: null,
-      searched: true
-    }));
   }
-
-  handleScroll = () => Keyboard.dismiss()
 
   handleSearchFocus = () => {
     if (this.state.firstFocus) { // Only search on the very first text input focus
@@ -74,8 +75,7 @@ class HomeScreen extends Component {
       search: '',
       oldSearch: '',
       typingTimeout: null,
-      firstFocus: true,
-      searched: false
+      firstFocus: true
     }));
     Animated.timing(this.state.opacity, {
       toValue: 0,
@@ -84,6 +84,7 @@ class HomeScreen extends Component {
     }).start(() => {
       this.setState(() => ({ display: 'none' }));
       this.props.resetSearch('home');
+      this.props.showResultTabs('home', false);
     });
   }
 
@@ -93,12 +94,14 @@ class HomeScreen extends Component {
     }
 
     this.setState(prevState => {
-      const searched = search.trim() === '' ? false : prevState.oldSearch.trim() === search.trim();
+      // Always hide tabs if no text
+      // Otherwise, only show tabs if the text is the same as the last submitted search
+      const showTabs = search.trim() === '' ? false : prevState.oldSearch.trim() === search.trim();
+      this.props.showResultTabs('home', showTabs);
       return {
         search,
-        searched,
         typingTimeout: setTimeout(() => {
-          if (prevState.search.trim() !== search.trim() && !searched) {
+          if (search.trim() !== prevState.search.trim() && !showTabs) { // Only grab data if not showing tabs
             this.props.getUserSearches(this.props.id, search.trim(), null, 'home');
           }
         }, 500)
@@ -193,7 +196,6 @@ class HomeScreen extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <View style={{ flex: 1 }}>
         <SearchHeader
@@ -229,7 +231,9 @@ class HomeScreen extends Component {
             display={this.state.display}
             opacity={this.state.opacity}
             height={this.state.height}
-            searched={this.state.searched}
+            fillSearch={this.fillSearchText}
+            navigation={this.props.navigation}
+            parentNavigation={this.props.screenProps.parentNavigation}
           />
         </View>
       </View>
@@ -241,8 +245,11 @@ HomeScreen.propTypes = {
   id: PropTypes.string.isRequired,
   current_route: PropTypes.string.isRequired,
   current_tab: PropTypes.string.isRequired,
+  searchTerm: PropTypes.func.isRequired,
   getUserSearches: PropTypes.func.isRequired,
   resetSearch: PropTypes.func.isRequired,
+  showTabs: PropTypes.bool.isRequired,
+  showResultTabs: PropTypes.func.isRequired,
 
   screenProps: PropTypes.object.isRequired,
 };
@@ -251,9 +258,12 @@ const mapStateToProps = state => ({
   id: state.auth.id,
   current_route: state.navigation.current_route,
   current_tab: state.navigation.current_tab,
+  showTabs: state.search.home.showTabs,
 });
 
 export default connect(mapStateToProps, {
+  searchTerm,
   getUserSearches,
-  resetSearch
+  resetSearch,
+  showResultTabs,
 })(HomeScreen);

@@ -6,9 +6,7 @@ import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from '../post/PostCard';
 import TopicCard from '../topic/TopicCard';
 import UserCard from '../user/UserCard';
-import PostSortModal from '../post/PostSortModal';
-import UserSortModal from '../user/UserSortModal';
-import TopicSortModal from '../topic/TopicSortModal';
+import { SortModal } from './SortModal';
 import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
   sendFriendRequest,
@@ -18,24 +16,27 @@ import {
   unfriendUser,
 } from '../../actions/SocialActions';
 import { subscribeTopic, unsubscribeTopic } from '../../actions/TopicActions';
+import { ListOrders } from '../../constants/variables';
 
 class DataList extends Component {
   state = {
     canPaginate: false,
     sortModalVisible: false,
-    sortButtonText: ''
+    sortButtonText: '',
+    fetchOnEndReached: false,
   }
 
+  // NOTE: Default orderings
   componentDidMount() {
     switch (this.props.type) {
       case 'posts':
-        this.setState(() => ({ sortButtonText: 'Newest' }));
+        this.setState(() => ({ sortButtonText: ListOrders.posts.default.text }));
         break;
       case 'topics':
-        this.setState(() => ({ sortButtonText: 'Popular' }));
+        this.setState(() => ({ sortButtonText: ListOrders.topics.default.text }));
         break;
       case 'users':
-        this.setState(() => ({ sortButtonText: 'Recently Joined' }));
+        this.setState(() => ({ sortButtonText: ListOrders.users.default.text }));
         break;
       default:
         break;
@@ -52,17 +53,16 @@ class DataList extends Component {
     this.props.navigation.push('ViewPost', { post_id: post.id });
   }
 
-  handleScroll = Keyboard.dismiss();
+  handleScroll = () => Keyboard.dismiss()
+  handleMomentumScrollBegin = () => this.setState(() => ({ fetchOnEndReached: true }))
 
   handleTopicActionPress = (id, type) => {
     switch (type) {
       case 'not_subscribed':
         this.props.subscribeTopic(this.props.id, id);
-        console.log(`subscribe to topic with id ${id}`);
         break;
       case 'just_subscribed':
         this.props.unsubscribeTopic(this.props.id, id);
-        console.log(`unsubscribe to topic with id ${id}`);
         break;
       default:
         break;
@@ -95,66 +95,13 @@ class DataList extends Component {
 
   // choice -> sort string to display on button
   // NOTE: Make sure "choice" matches the button titles of the respective sort modals
-  handleSortSelect = choice => {
+  handleSortSelect = (choice, order, direction) => {
     this.setState(prevState => ({
       sortModalVisible: !prevState.sortModalVisible,
       sortButtonText: choice || prevState.sortButtonText
     }));
     if (this.state.sortButtonText === choice || !choice) {
       return;
-    }
-
-    let order = '';
-    let direction = '';
-    switch (this.props.type) {
-      case 'posts':
-        switch (choice) {
-          case 'Newest':
-            order = 'date_posted';
-            direction = 'DESC';
-            break;
-          case 'Popular':
-            order = 'num_likes';
-            direction = 'DESC';
-            break;
-          default:
-            break;
-        }
-        break;
-      case 'topics':
-        switch (choice) {
-          case 'Newest':
-            order = 'date_created';
-            direction = 'DESC';
-            break;
-          case 'Oldest':
-            order = 'date_created';
-            direction = 'ASC';
-            break;
-          case 'Popular':
-            order = 'num_subscribers';
-            direction = 'DESC';
-            break;
-          default:
-            break;
-        }
-        break;
-      case 'users':
-        switch (choice) {
-          case 'Recently Joined':
-            order = 'date_joined';
-            direction = 'DESC';
-            break;
-          case 'Popular':
-            order = 'num_friends';
-            direction = 'DESC';
-            break;
-          default:
-            break;
-        }
-        break;
-      default:
-        break;
     }
     this.props.sortData(order, direction);
   }
@@ -170,8 +117,10 @@ class DataList extends Component {
   handleEndReached = () => {
     // canPaginate - true ONLY when content is overflowing
     // keepPaging - true ONLY when there is more data to retrieve
-    if (this.state.canPaginate && this.props.keepPaging) {
+    // this.state.fetchOnEndReached - true ONLY when user scrolls - handles double call on bounce (iOS)
+    if (this.state.canPaginate && this.props.keepPaging && this.state.fetchOnEndReached) {
       this.props.paginateData();
+      this.setState(() => ({ fetchOnEndReached: false }));
     }
   }
 
@@ -232,42 +181,15 @@ class DataList extends Component {
   )
 
   renderSortModal = () => {
-    switch (this.props.type) {
-      case 'posts':
-        if (this.props.enableSorting) {
-          return (
-            <PostSortModal
-              isVisible={this.state.sortModalVisible}
-              onChoiceSelect={this.handleSortSelect}
-              selected={this.state.sortButtonText}
-            />
-          );
-        }
-        break;
-      case 'topics':
-        if (this.props.enableSorting) {
-          return (
-            <TopicSortModal
-              isVisible={this.state.sortModalVisible}
-              onChoiceSelect={this.handleSortSelect}
-              selected={this.state.sortButtonText}
-            />
-          );
-        }
-        break;
-      case 'users':
-        if (this.props.enableSorting) {
-          return (
-            <UserSortModal
-              isVisible={this.state.sortModalVisible}
-              onChoiceSelect={this.handleSortSelect}
-              selected={this.state.sortButtonText}
-            />
-          );
-        }
-        break;
-      default:
-        break;
+    if (this.props.enableSorting) {
+      return (
+        <SortModal
+          type={this.props.type}
+          isVisible={this.state.sortModalVisible}
+          onChoiceSelect={this.handleSortSelect}
+          selected={this.state.sortButtonText}
+        />
+      );
     }
     return null;
   }
@@ -306,6 +228,7 @@ class DataList extends Component {
           onScroll={this.props.handleScroll || this.handleScroll}
           onContentSizeChange={this.handleContentSizeChange}
           onEndReached={this.handleEndReached}
+          onMomentumScrollBegin={this.handleMomentumScrollBegin}
           scrollEventThrottle={16}
           onEndReachedThreshold={0}
         />
@@ -332,6 +255,7 @@ class DataList extends Component {
           }
           onContentSizeChange={this.handleContentSizeChange}
           onEndReached={this.handleEndReached}
+          onMomentumScrollBegin={this.handleMomentumScrollBegin}
           scrollEventThrottle={16}
           onEndReachedThreshold={0}
         />

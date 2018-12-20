@@ -8,4 +8,5 @@ export * from './ClickableImage';
 export * from './Input';
 export * from './MultiLineInput';
 export * from './SearchHeader';
+export * from './SortModal';
 export * from './StandardHeader';

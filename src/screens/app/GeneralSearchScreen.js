@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Animated, StyleSheet, Dimensions, Platform } from 'react-native';
+import { Animated, StyleSheet, Dimensions, Platform, Keyboard } from 'react-native';
 import { orderToArrData } from '../../assets/helpers/preprocess';
-import SearchResultTabView from '../../components/search/SearchResultTabView';
+import SearchResultScreen from './search/SearchResultScreen';
 import SuggestionList from '../../components/search/suggestions/SuggestionList';
 import { FullScreenLoading } from '../../components/common';
 import {
@@ -17,15 +17,26 @@ import {
 } from '../../constants/variables';
 
 class GeneralSearchScreen extends Component {
-  handleSuggestionPress = (id, term) => this.props.searchTerm(this.props.type, id, term)
+  handleSuggestionPress = term => {
+    this.props.fillSearch(term);
+    Keyboard.dismiss();
+    this.props.searchTerm(this.props.type, this.props.id, term);
+  }
+
   handleRemovePress = id => this.props.removeUserSearch(this.props.type, id)
   handleRefresh = () => this.props.getUserSearches(this.props.id, this.props.term, true, this.props.type)
 
   renderBody() {
     if (this.props.initial_loading) {
       return <FullScreenLoading height={this.props.height} loading />;
-    } else if (this.props.searched) {
-      return <SearchResultTabView type={this.props.type} />;
+    } else if (this.props.showTabs) {
+      return (
+        <SearchResultScreen
+          type={this.props.type}
+          navigation={this.props.navigation}
+          parentNavigation={this.props.parentNavigation}
+        />
+      );
     }
     return (
       <SuggestionList
@@ -60,16 +71,19 @@ GeneralSearchScreen.propTypes = {
   display: PropTypes.string.isRequired,
   opacity: PropTypes.object.isRequired,
   height: PropTypes.number.isRequired,
-  searched: PropTypes.bool.isRequired,
+  fillSearch: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  parentNavigation: PropTypes.object.isRequired,
 
   id: PropTypes.string.isRequired,
   suggestions: PropTypes.arrayOf(PropTypes.object).isRequired,
   searchTerm: PropTypes.func.isRequired,
   removeUserSearch: PropTypes.func.isRequired,
-  initial_loading: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
   term: PropTypes.string.isRequired,
   getUserSearches: PropTypes.func.isRequired,
+  showTabs: PropTypes.bool.isRequired,
+  initial_loading: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -83,9 +97,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => ({
   id: state.auth.id,
   suggestions: orderToArrData(state.search[ownProps.type].suggestions.order, state.search[ownProps.type].suggestions.data),
-  initial_loading: state.search[ownProps.type].initial_loading,
-  refreshing: state.search[ownProps.type].refreshing,
-  term: state.search[ownProps.type].term
+  refreshing: state.search[ownProps.type].suggestions.refreshing,
+  term: state.search[ownProps.type].term,
+  showTabs: state.search[ownProps.type].showTabs,
+  initial_loading: state.search[ownProps.type].suggestions.initial_loading
 });
 
 export default connect(mapStateToProps, {

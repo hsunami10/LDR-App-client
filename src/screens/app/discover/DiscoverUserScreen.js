@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { FullScreenLoading } from '../../../components/common';
@@ -124,15 +123,12 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = state => {
-  const users = orderToArrData(state.discover.users.order, state.social.all_users);
-  return {
-    id: state.auth.id,
-    users,
-    initial_loading: state.discover.users.initial_loading,
-    refreshing: state.discover.users.refreshing,
-    keepPaging: state.discover.users.keepPaging,
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  users: orderToArrData(state.discover.users.order, state.social.all_users),
+  initial_loading: state.discover.users.initial_loading,
+  refreshing: state.discover.users.refreshing,
+  keepPaging: state.discover.users.keepPaging,
+});
 
 export default connect(mapStateToProps, { getDiscoverUsers })(DiscoverUserScreen);

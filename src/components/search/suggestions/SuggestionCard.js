@@ -7,7 +7,7 @@ import RedX from '../../../assets/images/red_x.png';
 const SuggestionCard = ({ suggestion, onPress, onRemovePress }) => (
   <TouchableHighlight
     style={styles.containerStyle}
-    onPress={() => onPress(suggestion.id, suggestion.search_term)}
+    onPress={() => onPress(suggestion.search_term)}
   >
     <View style={styles.viewStyle}>
       <View style={styles.textViewStyle}>

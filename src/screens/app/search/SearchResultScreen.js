@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
-import { orderToArrData } from '../../assets/helpers/preprocess';
-import DataList from '../../components/common/DataList';
+import { orderToArrData } from '../../../assets/helpers/preprocess';
+import SearchPostScreen from './SearchPostScreen';
 
-class SearchResultTabView extends Component {
+class SearchResultScreen extends Component {
   state = {
     navigationState: {
       index: 1,
@@ -19,10 +19,6 @@ class SearchResultTabView extends Component {
   }
 
   handleTabPress = () => Keyboard.dismiss()
-
-  handleRefresh = () => {
-
-  }
 
   handleIndexChange = index => {
     if (index !== this.state.navigationState.index) {
@@ -40,7 +36,13 @@ class SearchResultTabView extends Component {
       case 'users':
         return <Text>Users List Here!</Text>;
       case 'posts':
-        return <Text>Posts List Here!</Text>;
+        return (
+          <SearchPostScreen
+            type={this.props.type}
+            navigation={this.props.navigation}
+            parentNavigation={this.props.parentNavigation}
+          />
+        );
       case 'topics':
         return <Text>Topics List Here!</Text>;
       default:
@@ -70,14 +72,10 @@ class SearchResultTabView extends Component {
   }
 }
 
-SearchResultTabView.propTypes = {
+SearchResultScreen.propTypes = {
   type: PropTypes.oneOf(['home', 'discover']).isRequired,
-
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
-  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  topics: PropTypes.arrayOf(PropTypes.object).isRequired,
-  initial_loading: PropTypes.bool.isRequired,
-  term: PropTypes.string.isRequired,
+  navigation: PropTypes.object.isRequired,
+  parentNavigation: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -85,11 +83,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => ({
+  id: state.auth.id,
   users: orderToArrData(state.search[ownProps.type].results.users.order, state.social.all_users),
-  posts: orderToArrData(state.search[ownProps.type].results.posts.order, state.posts.all_posts),
   topics: orderToArrData(state.search[ownProps.type].results.topics.order, state.topics.all_topics),
-  initial_loading: state.search[ownProps.type].initial_loading,
   term: state.search[ownProps.type].term,
 });
 
-export default connect(mapStateToProps, null)(SearchResultTabView);
+export default connect(mapStateToProps, null)(SearchResultScreen);

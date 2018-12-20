@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { getDiscoverTopics } from '../../../actions/DiscoverActions';
@@ -131,15 +130,12 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = state => {
-  const topics = orderToArrData(state.discover.topics.order, state.topics.all_topics);
-  return {
-    id: state.auth.id,
-    topics,
-    initial_loading: state.discover.topics.initial_loading,
-    refreshing: state.discover.topics.refreshing,
-    keepPaging: state.discover.topics.keepPaging,
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  topics: orderToArrData(state.discover.topics.order, state.topics.all_topics),
+  initial_loading: state.discover.topics.initial_loading,
+  refreshing: state.discover.topics.refreshing,
+  keepPaging: state.discover.topics.keepPaging,
+});
 
 export default connect(mapStateToProps, { getDiscoverTopics })(DiscoverTopicScreen);

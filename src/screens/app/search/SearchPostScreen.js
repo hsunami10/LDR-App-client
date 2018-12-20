@@ -2,29 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
-import { getDiscoverPosts } from '../../../actions/DiscoverActions';
+import { getSearchPosts } from '../../../actions/SearchActions';
 import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
-import { NO_DISCOVER_POSTS_MSG } from '../../../constants/noneMessages';
+import { NO_SEARCH_POSTS } from '../../../constants/noneMessages';
 
-class DiscoverPostScreen extends Component {
+class SearchPostScreen extends Component {
   state = {
     height: 0,
     order: 'date_posted',
     direction: 'DESC'
-  }
-
-  componentDidMount() {
-    this.props.getDiscoverPosts(
-      this.props.id,
-      false,
-      this.state.order,
-      this.state.direction,
-      '',
-      '',
-      this.props.parentNavigation
-    );
   }
 
   paginateData = () => {
@@ -36,8 +24,10 @@ class DiscoverPostScreen extends Component {
     } else if (this.state.order === 'num_likes') {
       lastData = this.props.posts[length - 1].num_likes;
     }
-    this.props.getDiscoverPosts(
+    this.props.getSearchPosts(
       this.props.id,
+      this.props.type,
+      this.props.term,
       null,
       this.state.order,
       this.state.direction,
@@ -47,12 +37,14 @@ class DiscoverPostScreen extends Component {
     );
   }
 
-  handleRefresh = () => this.props.getDiscoverPosts(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)
+  handleRefresh = () => this.props.getSearchPosts(this.props.id, this.props.type, this.props.term, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)
 
   handleSortPosts = (order, direction) => {
     this.setState(() => ({ order, direction }));
-    this.props.getDiscoverPosts(
+    this.props.getSearchPosts(
       this.props.id,
+      this.props.type,
+      this.props.term,
       true,
       order,
       direction,
@@ -82,7 +74,7 @@ class DiscoverPostScreen extends Component {
         flatList
         data={this.props.posts}
         empty={this.props.posts.length === 0}
-        message={NO_DISCOVER_POSTS_MSG}
+        message={`${NO_SEARCH_POSTS} ${this.props.term}.`}
         enableSorting
         sortData={this.handleSortPosts}
         enablePaging
@@ -108,14 +100,16 @@ class DiscoverPostScreen extends Component {
   }
 }
 
-DiscoverPostScreen.propTypes = {
+SearchPostScreen.propTypes = {
   id: PropTypes.string.isRequired,
-  getDiscoverPosts: PropTypes.func.isRequired,
+  getSearchPosts: PropTypes.func.isRequired,
   posts: PropTypes.array.isRequired,
   keepPaging: PropTypes.bool.isRequired,
   refreshing: PropTypes.bool.isRequired,
   initial_loading: PropTypes.bool.isRequired,
+  term: PropTypes.string.isRequired,
 
+  type: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
   parentNavigation: PropTypes.object.isRequired,
 };
@@ -124,14 +118,15 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   id: state.auth.id,
-  posts: orderToArrData(state.discover.posts.order, state.posts.all_posts),
-  initial_loading: state.discover.posts.initial_loading,
-  refreshing: state.discover.posts.refreshing,
-  keepPaging: state.discover.posts.keepPaging,
+  posts: orderToArrData(state.search[ownProps.type].results.posts.order, state.posts.all_posts),
+  initial_loading: state.search[ownProps.type].results.initial_loading,
+  refreshing: state.search[ownProps.type].results.posts.refreshing,
+  keepPaging: state.search[ownProps.type].results.posts.keepPaging,
+  term: state.search[ownProps.type].term
 });
 
 export default connect(mapStateToProps, {
-  getDiscoverPosts
-})(DiscoverPostScreen);
+  getSearchPosts
+})(SearchPostScreen);
