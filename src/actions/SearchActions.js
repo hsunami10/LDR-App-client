@@ -6,6 +6,10 @@ import {
   STOP_SEARCH_SUGGESTIONS_REFRESHING,
   START_SEARCH_POSTS_REFRESHING,
   STOP_SEARCH_POSTS_REFRESHING,
+  START_SEARCH_USERS_REFRESHING,
+  STOP_SEARCH_USERS_REFRESHING,
+  START_SEARCH_TOPICS_REFRESHING,
+  STOP_SEARCH_TOPICS_REFRESHING,
   START_SEARCH_LOADING,
   STOP_SEARCH_LOADING,
   SEARCH_TERM,
@@ -14,6 +18,8 @@ import {
   RESET_SEARCH,
   SHOW_RESULT_TABS,
   GET_SEARCH_POSTS,
+  GET_SEARCH_USERS,
+  GET_SEARCH_TOPICS,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
@@ -106,6 +112,91 @@ export const getSearchPosts = (userID, type, term, refresh, order, direction, la
       }
     });
 };
+
+// ============================================ Users ============================================
+export const startSearchUsersRefreshing = type => ({ type: START_SEARCH_USERS_REFRESHING, payload: type });
+export const stopSearchUsersRefreshing = type => ({ type: STOP_SEARCH_USERS_REFRESHING, payload: type });
+
+export const getSearchUsers = (userID, type, term, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
+  if (refresh === true) {
+    dispatch(startSearchUsersRefreshing(type));
+  }
+  axios.get(`${ROOT_URL}/api/search/get-users/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+    .then(response => {
+      if (refresh === true) {
+        dispatch(stopSearchUsersRefreshing(type));
+      }
+      if (response.data.success) {
+        dispatch({
+          type: GET_SEARCH_USERS,
+          payload: {
+            type,
+            ...response.data.users
+          }
+        });
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => dispatch(logOut(navigation)),
+          'Log Out'
+        );
+      }
+    })
+    .catch(error => {
+      if (refresh === true) {
+        dispatch(stopSearchUsersRefreshing(type));
+      }
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+// ============================================ Topics ============================================
+export const startSearchTopicsRefreshing = type => ({ type: START_SEARCH_TOPICS_REFRESHING, payload: type });
+export const stopSearchTopicsRefreshing = type => ({ type: STOP_SEARCH_TOPICS_REFRESHING, payload: type });
+
+export const getSearchTopics = (userID, type, term, refresh, order, direction, lastID, lastData, navigation) => dispatch => {
+  if (refresh === true) {
+    dispatch(startSearchTopicsRefreshing(type));
+  }
+  axios.get(`${ROOT_URL}/api/search/get-topics/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+    .then(response => {
+      if (refresh === true) {
+        dispatch(stopSearchTopicsRefreshing(type));
+      }
+      if (response.data.success) {
+        dispatch({
+          type: GET_SEARCH_TOPICS,
+          payload: {
+            type,
+            ...response.data.topics
+          }
+        });
+      } else {
+        alertWithSingleAction(
+          'Oh no!',
+          response.data.error,
+          () => dispatch(logOut(navigation)),
+          'Log Out'
+        );
+      }
+    })
+    .catch(error => {
+      if (refresh === true) {
+        dispatch(stopSearchTopicsRefreshing(type));
+      }
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
 
 // ========================================= Suggestions =========================================
 export const startSearchSuggestionsLoading = type => ({ type: START_SEARCH_SUGGESTIONS_LOADING, payload: type });

@@ -12,7 +12,7 @@ import {
   GET_USER_FRIENDS,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
-import { removeCredentials, logOutUser } from './AuthActions';
+import { removeCredentials } from './AuthActions';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
 import {
   storeUserScreenInfoSuccess,

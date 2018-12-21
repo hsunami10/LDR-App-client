@@ -61,7 +61,8 @@ class ViewPostScreen extends Component {
       refresh,
       postID,
       this.state.screen_id,
-      order.length // Used to track how many comments to get - if 0, then regular page. If not, then fetch the same number of comments
+      order.length, // Used to track how many comments to get - if 0, then regular page. If not, then fetch the same number of comments
+      this.props.navigation
     );
   }
 

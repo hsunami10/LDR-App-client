@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, Keyboard } from 'react-native';
+import { StyleSheet, Keyboard } from 'react-native';
 import { TabView, TabBar } from 'react-native-tab-view';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
+import SearchUserScreen from './SearchUserScreen';
 import SearchPostScreen from './SearchPostScreen';
+import SearchTopicScreen from './SearchTopicScreen';
 
 class SearchResultScreen extends Component {
   state = {
@@ -34,7 +36,13 @@ class SearchResultScreen extends Component {
   renderScene = ({ route }) => {
     switch (route.key) {
       case 'users':
-        return <Text>Users List Here!</Text>;
+        return (
+          <SearchUserScreen
+            type={this.props.type}
+            navigation={this.props.navigation}
+            parentNavigation={this.props.parentNavigation}
+          />
+        );
       case 'posts':
         return (
           <SearchPostScreen
@@ -44,7 +52,13 @@ class SearchResultScreen extends Component {
           />
         );
       case 'topics':
-        return <Text>Topics List Here!</Text>;
+        return (
+          <SearchTopicScreen
+            type={this.props.type}
+            navigation={this.props.navigation}
+            parentNavigation={this.props.parentNavigation}
+          />
+        );
       default:
         break;
     }

@@ -28,9 +28,11 @@ export const COMMENTS_PAGINATE_LIMIT = 5; // NOTE: Same as commentsLimit in serv
 export const DEFAULT_IOS_BACKGROUND_COLOR = '#E9E9EF';
 export const DEFAULT_ANDROID_BACKGROUND_COLOR = 'white';
 
-// NOTE: "default" has to match one of the other keys
+// NOTE: "default" has to match one of the other sort types
 // NOTE: Has to match server/assets/constants.js file
 // posts, users, topics - have to match "type" for DataList
+// order properties have to match columns & properties of queries
+// This populates the sort modal
 export const ListOrders = Object.freeze({
   posts: {
     default: { // Default = new
@@ -65,11 +67,6 @@ export const ListOrders = Object.freeze({
       order: 'num_friends',
       direction: 'DESC'
     },
-    alpha: {
-      text: 'Alphabetical',
-      order: 'lowercase_username',
-      direction: 'ASC'
-    }
   },
   topics: {
     default: { // Default = popular

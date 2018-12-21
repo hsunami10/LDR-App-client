@@ -30,12 +30,7 @@ class DiscoverUserScreen extends Component {
   paginateData = () => {
     const length = this.props.users.length;
     const lastID = this.props.users[length - 1].id;
-    let lastData;
-    if (this.state.order === 'date_joined') {
-      lastData = this.props.users[length - 1].date_joined;
-    } else if (this.state.order === 'num_friends') {
-      lastData = this.props.users[length - 1].num_friends;
-    }
+    const lastData = this.props.users[length - 1][this.state.order];
     this.props.getDiscoverUsers(
       this.props.id,
       null,

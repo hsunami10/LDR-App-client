@@ -7,23 +7,19 @@ import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { NO_SEARCH_POSTS } from '../../../constants/noneMessages';
+import { ListOrders } from '../../../constants/variables';
 
 class SearchPostScreen extends Component {
   state = {
     height: 0,
-    order: 'date_posted',
-    direction: 'DESC'
+    order: ListOrders.posts.default.order,
+    direction: ListOrders.posts.default.direction
   }
 
   paginateData = () => {
     const length = this.props.posts.length;
     const lastID = this.props.posts[length - 1].id;
-    let lastData;
-    if (this.state.order === 'date_posted') {
-      lastData = this.props.posts[length - 1].date_posted;
-    } else if (this.state.order === 'num_likes') {
-      lastData = this.props.posts[length - 1].num_likes;
-    }
+    const lastData = this.props.posts[length - 1][this.state.order];
     this.props.getSearchPosts(
       this.props.id,
       this.props.type,
@@ -60,12 +56,11 @@ class SearchPostScreen extends Component {
   }
 
   renderBody = () => {
-    if (this.state.height === 0) { // Get rid of small jump in spinning icon
+    if (this.state.height === 0) {
       return null;
-    } else if (this.props.initial_loading) { // Only true once, on componentDidMount
+    } else if (this.props.initial_loading) {
       return <FullScreenLoading height={this.state.height} loading />;
     }
-    // Only updates root components (PostCard), so remember to force re-render nested components by changing state
     return (
       <DataList
         type="posts"

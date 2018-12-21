@@ -30,12 +30,15 @@ class PostCardFooter extends Component {
   }
 
   handleLikeAction = () => {
-    this.props.editPost({
-      post: this.props.post,
-      type: 'num_likes',
-      data: this.props.post_likes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
-      userID: this.props.id
-    });
+    this.props.editPost(
+      {
+        post: this.props.post,
+        type: 'num_likes',
+        data: this.props.post_likes[this.props.post.id] ? parseInt(this.props.post.num_likes, 10) - 1 : parseInt(this.props.post.num_likes, 10) + 1,
+        userID: this.props.id
+      },
+      this.props.viewing ? this.props.navigation : null
+    );
     this.setState(prevState => ({ flag: !prevState.flag }));
   }
 

@@ -30,12 +30,7 @@ class DiscoverTopicScreen extends Component {
   paginateData = () => {
     const length = this.props.topics.length;
     const lastID = this.props.topics[length - 1].id;
-    let lastData;
-    if (this.state.order === 'date_created') {
-      lastData = this.props.topics[length - 1].date_created;
-    } else if (this.state.order === 'num_subscribers') {
-      lastData = this.props.topics[length - 1].num_subscribers;
-    }
+    const lastData = this.props.topics[length - 1][this.state.order];
     this.props.getDiscoverTopics(
       this.props.id,
       null,

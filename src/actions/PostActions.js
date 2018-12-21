@@ -9,6 +9,7 @@ import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
 import { handleError } from '../assets/helpers/errors';
+import { NO_POST_MSG } from '../constants/noneMessages';
 import {
   storeCommentsScreenInfo,
   startPostScreenRefreshing,
@@ -16,7 +17,20 @@ import {
   initializePostScreenInfo
 } from './ScreenActions';
 
-export const getPostAndComments = (userID, refresh, postID, screenID, length) => dispatch => {
+export const noPostError = (dispatch, userID, postID, navigation, message = NO_POST_MSG) => {
+  alertWithSingleAction(
+    'Oh no!',
+    message,
+    () => {
+      dispatch(deletePostAction(userID, postID));
+      if (navigation) {
+        navigation.pop();
+      }
+    }
+  );
+};
+
+export const getPostAndComments = (userID, refresh, postID, screenID, length, navigation) => dispatch => {
   if (refresh) {
     dispatch(startPostScreenRefreshing(postID, screenID));
   } else {
@@ -38,11 +52,7 @@ export const getPostAndComments = (userID, refresh, postID, screenID, length) =>
         });
         dispatch(storeCommentsScreenInfo(result.comments, postID, screenID, true));
       } else if (refresh) {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(deletePostAction(userID, postID))
-        );
+        noPostError(dispatch, userID, postID, navigation, response.data.error);
       } else {
         dispatch(deletePostAction(userID, postID));
       }

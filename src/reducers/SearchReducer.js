@@ -8,6 +8,10 @@ import {
   STOP_SEARCH_SUGGESTIONS_REFRESHING,
   START_SEARCH_POSTS_REFRESHING,
   STOP_SEARCH_POSTS_REFRESHING,
+  START_SEARCH_USERS_REFRESHING,
+  STOP_SEARCH_USERS_REFRESHING,
+  START_SEARCH_TOPICS_REFRESHING,
+  STOP_SEARCH_TOPICS_REFRESHING,
   START_SEARCH_LOADING,
   STOP_SEARCH_LOADING,
   SEARCH_TERM,
@@ -16,6 +20,8 @@ import {
   RESET_SEARCH,
   SHOW_RESULT_TABS,
   GET_SEARCH_POSTS,
+  GET_SEARCH_USERS,
+  GET_SEARCH_TOPICS,
 } from '../actions/types';
 
 // NOTE: Results - exactly the same as DiscoverReducer
@@ -178,6 +184,62 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       };
+    case START_SEARCH_USERS_REFRESHING:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          results: {
+            ...state[action.payload].results,
+            users: {
+              ...state[action.payload].results.users,
+              refreshing: true
+            }
+          }
+        }
+      };
+    case STOP_SEARCH_USERS_REFRESHING:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          results: {
+            ...state[action.payload].results,
+            users: {
+              ...state[action.payload].results.users,
+              refreshing: false
+            }
+          }
+        }
+      };
+    case START_SEARCH_TOPICS_REFRESHING:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          results: {
+            ...state[action.payload].results,
+            topics: {
+              ...state[action.payload].results.topics,
+              refreshing: true
+            }
+          }
+        }
+      };
+    case STOP_SEARCH_TOPICS_REFRESHING:
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          results: {
+            ...state[action.payload].results,
+            topics: {
+              ...state[action.payload].results.topics,
+              refreshing: false
+            }
+          }
+        }
+      };
 
     case START_SEARCH_LOADING:
       return {
@@ -273,6 +335,36 @@ export default (state = INITIAL_STATE, action) => {
             posts: {
               ...state[action.payload.type].results.posts,
               order: action.payload.replace ? action.payload.order : [...state[action.payload.type].results.posts.order, ...action.payload.order],
+              keepPaging: action.payload.keepPaging
+            },
+          }
+        }
+      };
+    case GET_SEARCH_USERS:
+      return {
+        ...state,
+        [action.payload.type]: {
+          ...state[action.payload.type],
+          results: {
+            ...state[action.payload.type].results,
+            users: {
+              ...state[action.payload.type].results.users,
+              order: action.payload.replace ? action.payload.order : [...state[action.payload.type].results.users.order, ...action.payload.order],
+              keepPaging: action.payload.keepPaging
+            },
+          }
+        }
+      };
+    case GET_SEARCH_TOPICS:
+      return {
+        ...state,
+        [action.payload.type]: {
+          ...state[action.payload.type],
+          results: {
+            ...state[action.payload.type].results,
+            topics: {
+              ...state[action.payload.type].results.topics,
+              order: action.payload.replace ? action.payload.order : [...state[action.payload.type].results.topics.order, ...action.payload.order],
               keepPaging: action.payload.keepPaging
             },
           }

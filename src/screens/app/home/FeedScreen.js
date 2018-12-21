@@ -66,12 +66,7 @@ class FeedScreen extends Component {
   paginateData = () => {
     const length = this.props.posts.length;
     const lastID = this.props.posts[length - 1].id;
-    let lastData;
-    if (this.state.order === 'date_posted') {
-      lastData = this.props.posts[length - 1].date_posted;
-    } else if (this.state.order === 'num_likes') {
-      lastData = this.props.posts[length - 1].num_likes;
-    }
+    const lastData = this.props.posts[length - 1][this.state.order];
     this.props.getUserFeed(
       this.props.id,
       null,

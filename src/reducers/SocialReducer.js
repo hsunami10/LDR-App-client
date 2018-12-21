@@ -16,6 +16,7 @@ import {
   UNFRIEND_USER,
   GET_DISCOVER_USERS,
   SEARCH_TERM,
+  GET_SEARCH_USERS,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -186,6 +187,14 @@ export default (state = INITIAL_STATE, action) => {
         all_users: {
           ...state.all_users,
           ...action.payload.users.users,
+        }
+      };
+    case GET_SEARCH_USERS:
+      return {
+        ...state,
+        all_users: {
+          ...state.all_users,
+          ...action.payload.users
         }
       };
     default:

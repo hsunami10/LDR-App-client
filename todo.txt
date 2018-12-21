@@ -3,7 +3,7 @@
 
 NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
 
-NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - adjusting offset, etc. - CHANGE IN ViewProfileScreen - Friends Tab
+NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - CHANGE IN ViewProfileScreen - Friends Tab
 
 NOTE - for PostReducer, UserReducer, for fear of a memory leak (because once added, objects never get deleted, so it might ramp up a lot of data), have another object that maps ID -> screen_reference_count, stores the number of screens that have that data in it. If it hits 0, then delete it.
 

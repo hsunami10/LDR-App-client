@@ -9,6 +9,7 @@ import {
   SUBSCRIBE_TOPIC,
   UNSUBSCRIBE_TOPIC,
   SEARCH_TERM,
+  GET_SEARCH_TOPICS,
 } from '../actions/types';
 import { addTopicToOrderArrayAlpha } from '../assets/helpers/sorting';
 
@@ -104,6 +105,14 @@ export default (state = INITIAL_STATE, action) => {
         all_topics: {
           ...state.all_topics,
           ...action.payload.topics.topics
+        }
+      };
+    case GET_SEARCH_TOPICS:
+      return {
+        ...state,
+        all_topics: {
+          ...state.all_topics,
+          ...action.payload.topics
         }
       };
     default:
