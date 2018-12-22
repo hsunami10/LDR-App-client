@@ -35,7 +35,7 @@ import { orderToArrData } from '../../../assets/helpers/preprocess';
 // Show pending in second section
 // Show friends in third section
 class SocialScreen extends Component {
-  state = { height: 0 }
+  state = { height: 0, lastID: '' }
 
   componentDidMount() {
     this.props.getSocialInfo(this.props.id, false, '', '', this.props.parentNavigation);
@@ -45,7 +45,10 @@ class SocialScreen extends Component {
     const length = this.props.friends.length;
     const lastID = this.props.friends[length - 1].id;
     const lastData = this.props.friends[length - 1].date_friended;
-    this.props.getFriends(this.props.id, this.props.id, 'date_friended', 'DESC', lastID, lastData, this.props.parentNavigation);
+    if (this.state.lastID !== lastID) {
+      this.props.getFriends(this.props.id, this.props.id, 'date_friended', 'DESC', lastID, lastData, this.props.parentNavigation);
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleSocialRefresh = () => this.props.getSocialInfo(this.props.id, true, '', '', this.props.parentNavigation)

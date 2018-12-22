@@ -1,5 +1,6 @@
 - add replying to comments
 - find a way to shrink the SocialScreen's SectionList by clicking on section title? - react-native-collapsible
+- handle truncating text that overflows
 
 NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
 

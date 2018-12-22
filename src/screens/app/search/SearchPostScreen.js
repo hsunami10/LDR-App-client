@@ -7,30 +7,34 @@ import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { NO_SEARCH_POSTS } from '../../../constants/noneMessages';
-import { ListOrders } from '../../../constants/variables';
+import { SortListTypes } from '../../../constants/variables';
 
 class SearchPostScreen extends Component {
   state = {
     height: 0,
-    order: ListOrders.posts.default.order,
-    direction: ListOrders.posts.default.direction
+    order: SortListTypes.posts.default.order,
+    direction: SortListTypes.posts.default.direction,
+    lastID: ''
   }
 
   paginateData = () => {
     const length = this.props.posts.length;
     const lastID = this.props.posts[length - 1].id;
     const lastData = this.props.posts[length - 1][this.state.order];
-    this.props.getSearchPosts(
-      this.props.id,
-      this.props.type,
-      this.props.term,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getSearchPosts(
+        this.props.id,
+        this.props.type,
+        this.props.term,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getSearchPosts(this.props.id, this.props.type, this.props.term, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)

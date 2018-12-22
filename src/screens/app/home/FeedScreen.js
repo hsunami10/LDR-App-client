@@ -9,6 +9,7 @@ import { pushTabRoute } from '../../../actions/NavigationActions';
 import { EMPTY_FEED_MSG } from '../../../constants/noneMessages';
 import { logOut } from '../../../assets/helpers/authentication';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
+import { SortListTypes } from '../../../constants/variables';
 
 /*
 HOW TO POPULATE THIS SCREEN
@@ -45,8 +46,9 @@ Apply those query strings to the inclusions
 class FeedScreen extends Component {
   state = {
     height: 0,
-    order: 'date_posted',
-    direction: 'DESC'
+    order: SortListTypes.posts.default.order,
+    direction: SortListTypes.posts.default.direction,
+    lastID: ''
   }
 
   componentDidMount() {
@@ -67,15 +69,18 @@ class FeedScreen extends Component {
     const length = this.props.posts.length;
     const lastID = this.props.posts[length - 1].id;
     const lastData = this.props.posts[length - 1][this.state.order];
-    this.props.getUserFeed(
-      this.props.id,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getUserFeed(
+        this.props.id,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => {

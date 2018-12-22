@@ -16,7 +16,7 @@ import {
   unfriendUser,
 } from '../../actions/SocialActions';
 import { subscribeTopic, unsubscribeTopic } from '../../actions/TopicActions';
-import { ListOrders } from '../../constants/variables';
+import { SortListTypes } from '../../constants/variables';
 
 class DataList extends Component {
   state = {
@@ -30,13 +30,13 @@ class DataList extends Component {
   componentDidMount() {
     switch (this.props.type) {
       case 'posts':
-        this.setState(() => ({ sortButtonText: ListOrders.posts.default.text }));
+        this.setState(() => ({ sortButtonText: SortListTypes.posts.default.text }));
         break;
       case 'topics':
-        this.setState(() => ({ sortButtonText: ListOrders.topics.default.text }));
+        this.setState(() => ({ sortButtonText: SortListTypes.topics.default.text }));
         break;
       case 'users':
-        this.setState(() => ({ sortButtonText: ListOrders.users.default.text }));
+        this.setState(() => ({ sortButtonText: SortListTypes.users.default.text }));
         break;
       default:
         break;
@@ -243,7 +243,7 @@ class DataList extends Component {
             [{ id: 'foo' }, ...this.props.data] // First value - dummy value for sort by functionality
           }
           renderItem={this.props.empty ? this.renderMessage : this.renderData}
-          keyExtractor={post => post.id}
+          keyExtractor={data => data.id}
           onScroll={this.props.handleScroll || this.handleScroll}
           refreshControl={
             this.props.enableRefresh ?

@@ -7,30 +7,34 @@ import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { NO_SEARCH_TOPICS } from '../../../constants/noneMessages';
-import { ListOrders } from '../../../constants/variables';
+import { SortListTypes } from '../../../constants/variables';
 
 class SearchTopicScreen extends Component {
   state = {
     height: 0,
-    order: ListOrders.topics.default.order,
-    direction: ListOrders.topics.default.direction
+    order: SortListTypes.topics.default.order,
+    direction: SortListTypes.topics.default.direction,
+    lastID: ''
   }
 
   paginateData = () => {
     const length = this.props.topics.length;
     const lastID = this.props.topics[length - 1].id;
     const lastData = this.props.topics[length - 1][this.state.order];
-    this.props.getSearchTopics(
-      this.props.id,
-      this.props.type,
-      this.props.term,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getSearchTopics(
+        this.props.id,
+        this.props.type,
+        this.props.term,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getSearchTopics(this.props.id, this.props.type, this.props.term, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)

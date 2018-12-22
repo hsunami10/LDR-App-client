@@ -7,12 +7,14 @@ import DataList from '../../../components/common/DataList';
 import { NO_DISCOVER_USERS_MSG } from '../../../constants/noneMessages';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { getDiscoverUsers } from '../../../actions/DiscoverActions';
+import { SortListTypes } from '../../../constants/variables';
 
 class DiscoverUserScreen extends Component {
   state = {
     height: 0,
-    order: 'date_joined',
-    direction: 'DESC'
+    order: SortListTypes.users.default.order,
+    direction: SortListTypes.users.default.direction,
+    lastID: ''
   }
 
   componentDidMount() {
@@ -31,15 +33,18 @@ class DiscoverUserScreen extends Component {
     const length = this.props.users.length;
     const lastID = this.props.users[length - 1].id;
     const lastData = this.props.users[length - 1][this.state.order];
-    this.props.getDiscoverUsers(
-      this.props.id,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getDiscoverUsers(
+        this.props.id,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getDiscoverUsers(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation);

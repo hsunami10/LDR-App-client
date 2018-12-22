@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
 import { View, Button, StyleSheet, Platform } from 'react-native';
-import { ListOrders } from '../../constants/variables';
+import { SortListTypes } from '../../constants/variables';
 
 export class SortModal extends Component {
   // Map over constant object to get the text, order, and direction
   renderActions = () => {
-    const types = Object.keys(ListOrders[this.props.type]);
+    const types = Object.keys(SortListTypes[this.props.type]);
     return types.map(key => {
       if (key === 'default') {
         return null;
       }
-      const obj = ListOrders[this.props.type][key];
+      const obj = SortListTypes[this.props.type][key];
       return (
         <Button
           key={this.props.type + key}

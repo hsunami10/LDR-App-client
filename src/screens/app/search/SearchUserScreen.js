@@ -7,30 +7,34 @@ import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { NO_SEARCH_USERS } from '../../../constants/noneMessages';
-import { ListOrders } from '../../../constants/variables';
+import { SortListTypes } from '../../../constants/variables';
 
 class SearchUserScreen extends Component {
   state = {
     height: 0,
-    order: ListOrders.users.default.order,
-    direction: ListOrders.users.default.direction
+    order: SortListTypes.users.default.order,
+    direction: SortListTypes.users.default.direction,
+    lastID: ''
   }
 
   paginateData = () => {
     const length = this.props.users.length;
     const lastID = this.props.users[length - 1].id;
     const lastData = this.props.users[length - 1][this.state.order];
-    this.props.getSearchUsers(
-      this.props.id,
-      this.props.type,
-      this.props.term,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getSearchUsers(
+        this.props.id,
+        this.props.type,
+        this.props.term,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getSearchUsers(this.props.id, this.props.type, this.props.term, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)

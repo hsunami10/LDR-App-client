@@ -7,12 +7,14 @@ import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { orderToArrData } from '../../../assets/helpers/preprocess';
 import { NO_DISCOVER_POSTS_MSG } from '../../../constants/noneMessages';
+import { SortListTypes } from '../../../constants/variables';
 
 class DiscoverPostScreen extends Component {
   state = {
     height: 0,
-    order: 'date_posted',
-    direction: 'DESC'
+    order: SortListTypes.posts.default.order,
+    direction: SortListTypes.posts.default.direction,
+    lastID: ''
   }
 
   componentDidMount() {
@@ -31,15 +33,18 @@ class DiscoverPostScreen extends Component {
     const length = this.props.posts.length;
     const lastID = this.props.posts[length - 1].id;
     const lastData = this.props.posts[length - 1][this.state.order];
-    this.props.getDiscoverPosts(
-      this.props.id,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getDiscoverPosts(
+        this.props.id,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getDiscoverPosts(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation)

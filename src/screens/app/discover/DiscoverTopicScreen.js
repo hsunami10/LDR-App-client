@@ -7,12 +7,14 @@ import { orderToArrData } from '../../../assets/helpers/preprocess';
 import DataList from '../../../components/common/DataList';
 import { FullScreenLoading } from '../../../components/common';
 import { NO_DISCOVER_TOPICS_MSG } from '../../../constants/noneMessages';
+import { SortListTypes } from '../../../constants/variables';
 
 class DiscoverTopicScreen extends Component {
   state = {
     height: 0,
-    order: 'num_subscribers',
-    direction: 'DESC'
+    order: SortListTypes.topics.default.order,
+    direction: SortListTypes.topics.default.direction,
+    lastID: ''
   }
 
   componentDidMount() {
@@ -31,15 +33,18 @@ class DiscoverTopicScreen extends Component {
     const length = this.props.topics.length;
     const lastID = this.props.topics[length - 1].id;
     const lastData = this.props.topics[length - 1][this.state.order];
-    this.props.getDiscoverTopics(
-      this.props.id,
-      null,
-      this.state.order,
-      this.state.direction,
-      lastID,
-      lastData,
-      this.props.parentNavigation
-    );
+    if (this.state.lastID !== lastID) {
+      this.props.getDiscoverTopics(
+        this.props.id,
+        null,
+        this.state.order,
+        this.state.direction,
+        lastID,
+        lastData,
+        this.props.parentNavigation
+      );
+    }
+    this.setState(() => ({ lastID }));
   }
 
   handleRefresh = () => this.props.getDiscoverTopics(this.props.id, true, this.state.order, this.state.direction, '', '', this.props.parentNavigation);

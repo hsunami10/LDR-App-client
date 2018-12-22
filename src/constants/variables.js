@@ -33,7 +33,7 @@ export const DEFAULT_ANDROID_BACKGROUND_COLOR = 'white';
 // posts, users, topics - have to match "type" for DataList
 // order properties have to match columns & properties of queries
 // This populates the sort modal
-export const ListOrders = Object.freeze({
+export const SortListTypes = Object.freeze({
   posts: {
     default: { // Default = new
       text: 'Newest',
