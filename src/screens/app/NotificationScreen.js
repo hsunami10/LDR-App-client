@@ -1,6 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
+import DataList from '../../components/common/DataList';
+
+const notifications = [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+];
 
 class NotificationScreen extends Component {
   componentDidMount() {

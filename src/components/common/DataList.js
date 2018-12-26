@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { View, Text, FlatList, RefreshControl, Button, SectionList, StyleSheet, Keyboard } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  RefreshControl,
+  Button,
+  SectionList,
+  StyleSheet,
+  Keyboard
+} from 'react-native';
 import { pushTabRoute } from '../../actions/NavigationActions';
 import PostCard from '../post/PostCard';
 import TopicCard from '../topic/TopicCard';
 import UserCard from '../user/UserCard';
+import NotificationCard from '../notification/NotificationCard';
 import { SortModal } from './SortModal';
 import { requireWhenPropExists } from '../../assets/helpers/errors/proptypes';
 import {
@@ -37,6 +47,8 @@ class DataList extends Component {
         break;
       case 'users':
         this.setState(() => ({ sortButtonText: SortListTypes.users.default.text }));
+        break;
+      case 'notifications':
         break;
       default:
         break;
@@ -171,6 +183,14 @@ class DataList extends Component {
             onRequestPress={this.handleUserRequestPress}
           />
         );
+      case 'notifications':
+        return (
+          <NotificationCard
+            notification={item}
+            viewProfile={this.viewProfile}
+            viewPost={this.viewPost}
+          />
+        );
       default:
         return null;
     }
@@ -277,7 +297,7 @@ DataList.propTypes = {
   subscribeTopic: PropTypes.func.isRequired,
   unsubscribeTopic: PropTypes.func.isRequired,
 
-  type: PropTypes.oneOf(['posts', 'topics', 'users']).isRequired,
+  type: PropTypes.oneOf(['posts', 'topics', 'users', 'notifications']).isRequired,
   navigation: PropTypes.object,
   parentNavigation: PropTypes.object,
 
