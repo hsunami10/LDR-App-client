@@ -71,16 +71,13 @@ ChooseTopicScreen.propTypes = {
   refreshing: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = state => {
-  const subscribed = orderToArrData(state.topics.subscribed_order, state.topics.all_topics);
-  return {
-    id: state.auth.id,
-    loading: state.topics.loading,
-    refreshing: state.topics.refreshing,
-    post_topic: state.topics.post_topic,
-    subscribed,
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  loading: state.topics.loading,
+  refreshing: state.topics.refreshing,
+  post_topic: state.topics.post_topic,
+  subscribed: orderToArrData(state.topics.subscribed_order, state.topics.all_topics),
+});
 
 export default connect(mapStateToProps, {
   getSubscribedTopics,

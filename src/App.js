@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { Provider } from 'react-redux';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 import { SafeAreaView } from 'react-navigation';
+import * as Keychain from 'react-native-keychain';
+import io from 'socket.io-client';
+import { ROOT_URL } from './constants/variables';
+import { handleError } from './assets/helpers/errors';
+import configSocket from './assets/config/socket';
 import RootStack from '../src/navigation/RootStack';
 import store from '../index';
 
-const instructions = Platform.select({
-  ios: 'Welcome, iOS!',
-  android: 'Welcome, Android!'
-});
+const socket = io(ROOT_URL);
 
 class App extends Component {
   componentDidMount() {
-    console.log('mount app');
+    this.initSocketConnection();
+    configSocket(socket);
   }
 
-  componentWillUnmount() {
-    console.log('unmount app');
+  initSocketConnection = async () => {
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        socket.emit('initialize-connection', credentials.username);
+      }
+    } catch (e) {
+      handleError(new Error(`Unable to access keychain. ${e.message}`), true);
+    }
   }
 
   render() {
@@ -25,7 +35,7 @@ class App extends Component {
       return (
         <SafeAreaView style={{ flex: 1 }}>
           <Provider store={store}>
-            <RootStack />
+            <RootStack screenProps={{ socket }} />
           </Provider>
         </SafeAreaView>
       );
@@ -33,7 +43,7 @@ class App extends Component {
     return (
       <View style={{ flex: 1 }}>
         <Provider store={store}>
-          <RootStack />
+          <RootStack screenProps={{ socket }} />
         </Provider>
       </View>
     );

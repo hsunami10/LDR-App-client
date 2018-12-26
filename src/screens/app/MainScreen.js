@@ -166,22 +166,50 @@ class MainScreen extends Component {
   renderScene = ({ route }) => {
     switch (route.key) {
       case 'home':
-        return <HomeStack screenProps={{ parentNavigation: this.props.navigation }} />;
+        return (
+          <HomeStack
+            screenProps={{
+              parentNavigation: this.props.navigation,
+              ...this.props.screenProps
+            }}
+          />
+        );
       case 'discover':
         if (this.state.mounted.discover) {
-          return <DiscoverStack screenProps={{ parentNavigation: this.props.navigation }} />;
+          return (
+            <DiscoverStack
+              screenProps={{
+                parentNavigation: this.props.navigation,
+                ...this.props.screenProps
+              }}
+            />
+          );
         }
         break;
       case 'compose':
         break;
       case 'notifications':
         if (this.state.mounted.notifications) {
-          return <NotificationStack screenProps={{ parentNavigation: this.props.navigation }} />;
+          return (
+            <NotificationStack
+              screenProps={{
+                parentNavigation: this.props.navigation,
+                ...this.props.screenProps
+              }}
+            />
+          );
         }
         break;
       case 'profile':
         if (this.state.mounted.profile) {
-          return <ProfileStack screenProps={{ parentNavigation: this.props.navigation }} />;
+          return (
+            <ProfileStack
+              screenProps={{
+                parentNavigation: this.props.navigation,
+                ...this.props.screenProps
+              }}
+            />
+          );
         }
         break;
       default:
@@ -224,7 +252,8 @@ MainScreen.propTypes = {
   pushTabRoute: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   tab_routes: PropTypes.object.isRequired,
-  current_tab: PropTypes.string.isRequired
+  current_tab: PropTypes.string.isRequired,
+  screenProps: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -233,7 +262,7 @@ const mapStateToProps = state => ({
   current_route: state.navigation.current_route,
   current_tab: state.navigation.current_tab,
   loading: state.loading,
-  tab_routes: state.navigation.tab_routes
+  tab_routes: state.navigation.tab_routes,
 });
 
 export default connect(mapStateToProps, {

@@ -112,20 +112,15 @@ SocialScreen.propTypes = {
   private: PropTypes.bool
 };
 
-const mapStateToProps = state => {
-  const requests = orderToArrData(state.social.requests.order, state.social.all_users);
-  const pending = orderToArrData(state.social.pending.order, state.social.all_users);
-  const friends = orderToArrData(state.social.friends.order, state.social.all_users);
-  return {
-    id: state.auth.id,
-    initial_loading: state.social.initial_loading,
-    refreshing: state.social.refreshing,
-    keepPaging: state.social.friends.keepPaging,
-    requests,
-    pending,
-    friends,
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  initial_loading: state.social.initial_loading,
+  refreshing: state.social.refreshing,
+  keepPaging: state.social.friends.keepPaging,
+  requests: orderToArrData(state.social.requests.order, state.social.all_users),
+  pending: orderToArrData(state.social.pending.order, state.social.all_users),
+  friends: orderToArrData(state.social.friends.order, state.social.all_users),
+});
 
 export default connect(mapStateToProps, {
   getSocialInfo,

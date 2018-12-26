@@ -5,7 +5,6 @@ import {
   REMOVE_USER_SCREEN_INFO,
   REMOVE_POST_SCREEN_INFO,
   CREATE_POST,
-  DELETE_POST,
   DELETE_COMMENT,
   START_INITIAL_USER_SCREEN_LOADING,
   STOP_INITIAL_USER_SCREEN_LOADING,
@@ -260,29 +259,6 @@ export default (state = INITIAL_STATE, action) => {
         return { ...state, profiles: copyProfile3 };
       }
       return state;
-    case DELETE_POST:
-      const copyProfile5 = { ...state.profiles };
-      const userScreens3 = copyProfile5[action.payload.userID];
-      if (userScreens3) {
-        for (const screenID in userScreens3) {
-          if (userScreens3.hasOwnProperty(screenID)) {
-            // Handle user profile posts & interactions
-            const posts = userScreens3[screenID].posts;
-            const interactions = userScreens3[screenID].interactions;
-
-            const index = posts.order.indexOf(action.payload.postID);
-            const index2 = interactions.order.indexOf(action.payload.postID);
-
-            if (index >= 0) {
-              posts.order.splice(index, 1);
-            }
-            if (index2 >= 0) {
-              interactions.order.splice(index2, 1);
-            }
-          }
-        }
-      }
-      return { ...state, profiles: copyProfile5 };
     default:
       return state;
   }

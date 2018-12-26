@@ -1,6 +1,5 @@
 import {
   LOG_OUT_USER,
-  DELETE_POST,
 
   START_SEARCH_SUGGESTIONS_LOADING,
   STOP_SEARCH_SUGGESTIONS_LOADING,
@@ -93,23 +92,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         [action.payload]: INITIAL_STATE[action.payload]
-      };
-
-    case DELETE_POST:
-      const copyHome = { ...state.home };
-      const copyDiscover = { ...state.discover };
-      const index1 = copyHome.results.posts.order.indexOf(action.payload.postID);
-      if (index1 >= 0) {
-        copyHome.results.posts.order.splice(index1, 1);
-      }
-      const index2 = copyDiscover.results.posts.order.indexOf(action.payload.postID);
-      if (index2 >= 0) {
-        copyDiscover.results.posts.order.splice(index2, 1);
-      }
-      return {
-        ...state,
-        home: copyHome,
-        discover: copyDiscover
       };
 
     case START_SEARCH_SUGGESTIONS_LOADING:

@@ -1,10 +1,10 @@
-export const orderToArrData = (array, objOfObj) => {
-  const length = array.length;
-  const result = new Array(length);
+export const orderToArrData = (orderArr, objOfObj) => {
+  const length = orderArr.length;
+  const result = [];
   for (let i = 0; i < length; i++) {
-    const key = array[i];
+    const key = orderArr[i];
     if (objOfObj.hasOwnProperty(key)) {
-      result[i] = objOfObj[array[i]];
+      result.push(objOfObj[orderArr[i]]);
     }
   }
   return result;

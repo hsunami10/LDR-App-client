@@ -72,15 +72,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  const subscribed = orderToArrData(state.topics.subscribed_order, state.topics.all_topics);
-  return {
-    id: state.auth.id,
-    loading: state.topics.loading,
-    refreshing: state.topics.refreshing,
-    subscribed,
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  loading: state.topics.loading,
+  refreshing: state.topics.refreshing,
+  subscribed: orderToArrData(state.topics.subscribed_order, state.topics.all_topics),
+});
 
 export default connect(mapStateToProps, {
   getSubscribedTopics

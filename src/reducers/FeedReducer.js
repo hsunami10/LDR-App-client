@@ -3,10 +3,8 @@ import {
   STOP_FEED_LOADING,
   LOG_OUT_USER,
   GET_USER_FEED,
-  SORT_FEED,
   START_INITIAL_FEED_LOADING,
   STOP_INITIAL_FEED_LOADING,
-  DELETE_POST
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -36,21 +34,6 @@ export default (state = INITIAL_STATE, action) => {
         posts_order: action.payload.replace ? action.payload.order : [...state.posts_order, ...action.payload.order],
         keepPaging: action.payload.order.length !== 0 // Continue paging only when there is data retrieved
       };
-    case SORT_FEED:
-      // TODO: Sort feed action here later
-      return state;
-
-    case DELETE_POST:
-      const copyOrder = [...state.posts_order];
-      const index = copyOrder.indexOf(action.payload.postID);
-      if (index >= 0) {
-        copyOrder.splice(index, 1);
-        return {
-          ...state,
-          posts_order: copyOrder
-        };
-      }
-      return state;
     default:
       return state;
   }

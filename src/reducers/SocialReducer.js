@@ -17,6 +17,7 @@ import {
   GET_DISCOVER_USERS,
   SEARCH_TERM,
   GET_SEARCH_USERS,
+  DELETE_USER,
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -48,6 +49,11 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, refreshing: true };
     case STOP_SOCIAL_REFRESHING:
       return { ...state, refreshing: false };
+
+    case DELETE_USER:
+      const copyAllUsers = { ...state.all_users };
+      delete copyAllUsers[action.payload];
+      return { ...state, all_users: copyAllUsers };
 
     case GET_SOCIAL_INFO:
       return {

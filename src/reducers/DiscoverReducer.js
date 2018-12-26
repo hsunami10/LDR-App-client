@@ -1,6 +1,5 @@
 import {
   LOG_OUT_USER,
-  DELETE_POST,
   START_INITIAL_DISCOVER_POSTS_LOADING,
   STOP_INITIAL_DISCOVER_POSTS_LOADING,
   START_DISCOVER_POSTS_REFRESHING,
@@ -44,20 +43,6 @@ export default (state = INITIAL_STATE, action) => {
     case LOG_OUT_USER:
       return INITIAL_STATE;
 
-    case DELETE_POST:
-      const copyOrder = [...state.posts.order];
-      const index = copyOrder.indexOf(action.payload.postID);
-      if (index >= 0) {
-        copyOrder.splice(index, 1);
-        return {
-          ...state,
-          posts: {
-            ...state.posts,
-            order: copyOrder
-          }
-        };
-      }
-      return state;
     case START_INITIAL_DISCOVER_POSTS_LOADING:
       return {
         ...state,

@@ -79,7 +79,6 @@ export const STOP_FEED_LOADING = 'stop_feed_loading';
 export const START_INITIAL_FEED_LOADING = 'start_initial_feed_loading';
 export const STOP_INITIAL_FEED_LOADING = 'stop_initial_feed_loading';
 export const GET_USER_FEED = 'get_user_feed';
-export const SORT_FEED = 'sort_feed';
 
 // Social
 export const START_INITIAL_SOCIAL_LOADING = 'start_initial_social_loading';
@@ -95,6 +94,7 @@ export const REMOVE_PENDING_REQUEST = 'remove_pending_request';
 export const CANCEL_PENDING_REQUEST = 'cancel_pending_request';
 export const REMOVE_FRIEND = 'remove_friend';
 export const UNFRIEND_USER = 'unfriend_user';
+export const DELETE_USER = 'delete_user';
 
 // Discover Posts
 export const START_INITIAL_DISCOVER_POSTS_LOADING = 'start_initial_discover_posts_loading';

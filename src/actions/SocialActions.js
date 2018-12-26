@@ -12,12 +12,15 @@ import {
   REMOVE_PENDING_REQUEST,
   CANCEL_PENDING_REQUEST,
   REMOVE_FRIEND,
-  UNFRIEND_USER
+  UNFRIEND_USER,
+  DELETE_USER,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
 import { logOut } from '../assets/helpers/authentication';
+
+export const deleteUser = id => ({ type: DELETE_USER, payload: id });
 
 export const startInitialSocialLoading = () => ({ type: START_INITIAL_SOCIAL_LOADING });
 export const stopInitialSocialLoading = () => ({ type: STOP_INITIAL_SOCIAL_LOADING });

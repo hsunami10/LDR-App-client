@@ -4,6 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 class NotificationScreen extends Component {
   componentDidMount() {
+    console.log(this.props);
     console.log('grab notification feed here');
   }
 
@@ -15,6 +16,10 @@ class NotificationScreen extends Component {
     );
   }
 }
+
+NotificationScreen.propTypes = {
+
+};
 
 const styles = StyleSheet.create({
   centerItems: {

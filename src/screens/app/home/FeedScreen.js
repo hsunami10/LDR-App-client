@@ -179,18 +179,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = state => {
-  // Pre-process posts - convert from an object of objects to an array of objects
-  const posts = orderToArrData(state.feed.posts_order, state.posts.all_posts);
-  return {
-    id: state.auth.id,
-    loading: state.feed.loading,
-    initial_loading: state.feed.initial_loading,
-    current_route: state.navigation.current_route,
-    posts,
-    keepPaging: state.feed.keepPaging
-  };
-};
+const mapStateToProps = state => ({
+  id: state.auth.id,
+  loading: state.feed.loading,
+  initial_loading: state.feed.initial_loading,
+  current_route: state.navigation.current_route,
+  posts: orderToArrData(state.feed.posts_order, state.posts.all_posts),
+  keepPaging: state.feed.keepPaging
+});
 
 export default connect(mapStateToProps, {
   getUserFeed,

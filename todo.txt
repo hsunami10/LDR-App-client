@@ -1,3 +1,45 @@
+Notifications
+- What to include:
+  - replying to you in comments
+    - click on to view your post
+  - liking your post
+    - click on to view your post
+  - commenting on your post
+    - click on to view your post
+  - accepting your friend requests
+    - click on to view their profile
+  - receiving friend requests
+    - click on to view profile
+    - option to navigate to social screen
+  - it would be better if it's completely realtime, but then do NOT allow refreshing - like facebook notification feed
+  - increment "count" realtime also (in notification reducer) - "count" is the number of rows with receiver_id and viewed = false
+
+- create a table for notifications
+- one out of (sender_id, post_id) HAS to equal ''
+  - id primary key
+  - sender_id text foreign key to users.id
+    - if sender_id = '', then you know there is no specific user, post_id must NOT be ''
+    - if not = '', go to view profile
+  - post_id text foreign key to posts.id
+    - if post_id = '', then you know that it is not post-related, sender_id must NOT be ''
+    - if not = '', go to view post
+  - receiver_id text foreign key to users.id
+  - type text not null
+    - 'reply'
+    - 'like'
+    - 'comment'
+    - 'accept-request'
+    - 'receive-request'
+  - viewed boolean not null default false
+
+- TODO: handle what to do if someone else blocks you - need to handle:
+  - viewing posts
+  - commenting
+  - liking posts
+  - liking comments
+  - FOR ALL -> say user account does not exist, and then remove everything - just like when you block someone else -> invoke same action?
+- don't have to worry about you blocking them, because all of their data from your screens gets removed when you block someone
+
 - add replying to comments
 - find a way to shrink the SocialScreen's SectionList by clicking on section title? - react-native-collapsible
 - handle truncating text that overflows
@@ -6,7 +48,7 @@ NOTE - always take blocked users and partners hidden (only posts) into account (
 
 NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - CHANGE IN ViewProfileScreen - Friends Tab
 
-NOTE - for PostReducer, UserReducer, for fear of a memory leak (because once added, objects never get deleted, so it might ramp up a lot of data), have another object that maps ID -> screen_reference_count, stores the number of screens that have that data in it. If it hits 0, then delete it.
+NOTE - for PostReducer (all_posts), TopicsReducer (all_topics), SocialReducer (all_users) for fear of a memory leak (because once added, objects never get deleted, so it might ramp up a lot of data), have another object that maps ID -> screen_reference_count, stores the number of screens that have that data in it. If it hits 0, then delete it.
 
 URGENT - figure out how to animate Text component height?
 
