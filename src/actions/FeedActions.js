@@ -26,8 +26,14 @@ export const getUserFeed = (id, refresh, order, direction, lastID, lastData, nav
     dispatch(startInitialFeedLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/feed/${id}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+  axios.get(`${ROOT_URL}/api/feed/${id}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+    headers: {
+      'Cookie': 'TODO: set cookie here for request'
+    },
+    withCredentials: true
+  })
     .then(response => {
+      console.log(response);
       if (refresh === true) {
         dispatch(stopFeedLoading());
       } else if (refresh === false) {
@@ -53,7 +59,9 @@ export const getUserFeed = (id, refresh, order, direction, lastID, lastData, nav
       } else if (refresh === false) {
         dispatch(stopInitialFeedLoading());
       }
-      if (error.response) {
+      if (error.message) {
+        handleError(error, false);
+      } else if (error.response && Object.keys(error.response.data).length > 0) {
         handleError(error.response.data, false);
       } else {
         handleError(error, false);

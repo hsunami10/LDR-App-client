@@ -122,6 +122,7 @@ class AuthLoadingScreen extends Component {
   handleConnectionChange = isConnected => {
     if (this.props.current_route === 'AuthLoading') {
       this.getLoginInfo(isConnected);
+      // this.getLoginInfo(true); // NOTE: Uncomment if no internet - for testing ONLY
     } else if (!isConnected) {
       showNoConnectionAlert();
     }
