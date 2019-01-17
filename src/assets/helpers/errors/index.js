@@ -1,9 +1,9 @@
 import RNRestart from 'react-native-restart';
 import { getConnectionInfo, showNoConnectionAlert } from '../connection';
-import { removeCredentials } from '../../../actions/AuthActions';
+import { removeCredentials } from '../../helpers/authentication';
 import { alertWithSingleAction } from '../alerts';
 
-// NOTE: Same cases as generateMessage in server/assets/wrapper.js
+// NOTE: Same cases as generateMessage in server/middleware/wrapper.js
 // Only gets triggered on inserts or updates
 const handleAction = (type, callback) => {
   switch (type) {

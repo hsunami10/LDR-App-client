@@ -23,7 +23,7 @@ import {
 } from './types';
 import { ROOT_URL } from '../constants/variables';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
-import { logOut } from '../assets/helpers/authentication';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 import { handleError } from '../assets/helpers/errors';
 
 export const resetSearch = type => ({ type: RESET_SEARCH, payload: type });
@@ -41,26 +41,41 @@ export const stopSearchLoading = type => ({ type: STOP_SEARCH_LOADING, payload: 
 export const searchTerm = (type, userID, term, navigation) => dispatch => {
   dispatch(showResultTabs(type, true));
   dispatch(startSearchLoading(type));
-  axios.get(`${ROOT_URL}/api/search/search-term/${userID}?term=${term}`)
-    .then(response => {
-      dispatch(stopSearchLoading(type));
-      if (response.data.success) {
-        dispatch({
-          type: SEARCH_TERM,
-          payload: {
-            type,
-            term,
-            ...response.data.result
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/search/search-term/${userID}?term=${term}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopSearchLoading(type));
+          if (response.data.success) {
+            dispatch({
+              type: SEARCH_TERM,
+              payload: {
+                type,
+                term,
+                ...response.data.result
+              }
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
           }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (error.response) {
@@ -79,27 +94,45 @@ export const getSearchPosts = (userID, type, term, refresh, order, direction, la
   if (refresh === true) {
     dispatch(startSearchPostsRefreshing(type));
   }
-  axios.get(`${ROOT_URL}/api/search/get-posts/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopSearchPostsRefreshing(type));
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_SEARCH_POSTS,
-          payload: {
-            type,
-            ...response.data.posts
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/search/get-posts/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopSearchPostsRefreshing(type));
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_SEARCH_POSTS,
+              payload: {
+                type,
+                ...response.data.posts
+              }
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopSearchPostsRefreshing(type));
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
           }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -121,27 +154,45 @@ export const getSearchUsers = (userID, type, term, refresh, order, direction, la
   if (refresh === true) {
     dispatch(startSearchUsersRefreshing(type));
   }
-  axios.get(`${ROOT_URL}/api/search/get-users/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopSearchUsersRefreshing(type));
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_SEARCH_USERS,
-          payload: {
-            type,
-            ...response.data.users
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/search/get-users/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopSearchUsersRefreshing(type));
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_SEARCH_USERS,
+              payload: {
+                type,
+                ...response.data.users
+              }
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopSearchUsersRefreshing(type));
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
           }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -163,27 +214,45 @@ export const getSearchTopics = (userID, type, term, refresh, order, direction, l
   if (refresh === true) {
     dispatch(startSearchTopicsRefreshing(type));
   }
-  axios.get(`${ROOT_URL}/api/search/get-topics/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopSearchTopicsRefreshing(type));
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_SEARCH_TOPICS,
-          payload: {
-            type,
-            ...response.data.topics
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/search/get-topics/${userID}?term=${term}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopSearchTopicsRefreshing(type));
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_SEARCH_TOPICS,
+              payload: {
+                type,
+                ...response.data.topics
+              }
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopSearchTopicsRefreshing(type));
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
           }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -211,21 +280,41 @@ export const getUserSearches = (id, term, refresh, type) => dispatch => {
   } else if (refresh === false) {
     dispatch(startSearchSuggestionsLoading(type));
   }
-  axios.get(`${ROOT_URL}/api/search/get-user-searches/${id}?term=${term}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopSearchSuggestionsRefreshing(type));
-      } else if (refresh === false) {
-        dispatch(stopSearchSuggestionsLoading(type));
-      }
-      dispatch({
-        type: GET_USER_SEARCHES,
-        payload: {
-          result: response.data,
-          term,
-          type
-        }
-      });
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/search/get-user-searches/${id}?term=${term}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopSearchSuggestionsRefreshing(type));
+          } else if (refresh === false) {
+            dispatch(stopSearchSuggestionsLoading(type));
+          }
+          dispatch({
+            type: GET_USER_SEARCHES,
+            payload: {
+              result: response.data,
+              term,
+              type
+            }
+          });
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopSearchSuggestionsRefreshing(type));
+          } else if (refresh === false) {
+            dispatch(stopSearchSuggestionsLoading(type));
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       if (refresh === true) {
@@ -246,7 +335,22 @@ export const removeUserSearch = (type, id) => dispatch => {
     type: REMOVE_USER_SEARCH,
     payload: { id, type }
   });
-  axios.delete(`${ROOT_URL}/api/search/remove-user-search/${id}`)
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/search/remove-user-search/${id}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);

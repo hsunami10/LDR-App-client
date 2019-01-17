@@ -135,7 +135,7 @@ SignUpScreen.propTypes = {
   error_field: PropTypes.string.isRequired,
   error_msg: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  current_route: PropTypes.string.isRequired
+  current_route: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({

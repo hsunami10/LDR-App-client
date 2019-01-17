@@ -1,18 +1,50 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as Keychain from 'react-native-keychain';
 import { NetInfo, AppState, Platform, BackHandler, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { FullScreenLoading } from '../../components/common';
 import { setUserCredentials, logOutUser } from '../../actions/AuthActions';
 import { navigateToRoute, goBackwardRoute, pushTabRoute } from '../../actions/NavigationActions';
 import { handleError } from '../../assets/helpers/errors';
+import { getCredentials } from '../../assets/helpers/authentication';
 import { showNoConnectionAlert, getConnectionInfo } from '../../assets/helpers/connection';
 
 class AuthLoadingScreen extends Component {
   state = { appState: AppState.currentState }
 
   componentDidMount() {
+    this.initializeScreen();
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  getLoginInfo = async isConnected => {
+    if (!isConnected) {
+      showNoConnectionAlert();
+    } else {
+      try {
+        // { username: { id, cookie }, password: firstLogin }
+        const credentials = await getCredentials();
+        if (credentials) {
+          this.props.setUserCredentials(credentials.username.id, credentials.password === 'true');
+          this.props.pushTabRoute('home', null);
+          // this.props.navigation.navigate('CreateProfile'); // TODO: Remove this later - efficient testing only
+          this.props.navigation.navigate('App');
+        } else {
+          this.props.navigateToRoute('Welcome');
+          this.props.navigation.navigate('Auth');
+        }
+      } catch (e) {
+        handleError(new Error(`Unable to access keychain. ${e.message}`), true);
+      }
+    }
+  }
+
+  initializeScreen = () => {
     /*
     App only mounts with an initial app state of "background" if BackHandler.exitApp() in android was pressed
     iOS:
@@ -88,33 +120,6 @@ class AuthLoadingScreen extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.backHandler.remove();
-    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectionChange);
-    AppState.removeEventListener('change', this.handleAppStateChange);
-  }
-
-  getLoginInfo = async isConnected => {
-    if (!isConnected) {
-      showNoConnectionAlert();
-    } else {
-      try {
-        const credentials = await Keychain.getGenericPassword(); // { id, firstLogin }
-        if (credentials) {
-          this.props.setUserCredentials(credentials.username, credentials.password === 'true');
-          this.props.pushTabRoute('home', null);
-          // this.props.navigation.navigate('CreateProfile'); // TODO: Remove this later - efficient testing only
-          this.props.navigation.navigate('App');
-        } else {
-          this.props.navigateToRoute('Welcome');
-          this.props.navigation.navigate('Auth');
-        }
-      } catch (e) {
-        handleError(new Error(`Unable to access keychain. ${e.message}`), true);
-      }
-    }
-  }
-
   handleAppStateChange = nextAppState => {
     this.setState(() => ({ appState: nextAppState }));
   }
@@ -148,7 +153,7 @@ AuthLoadingScreen.propTypes = {
   goBackwardRoute: PropTypes.func.isRequired,
   tab_routes: PropTypes.object.isRequired,
   pushTabRoute: PropTypes.func.isRequired,
-  logOutUser: PropTypes.func.isRequired
+  logOutUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

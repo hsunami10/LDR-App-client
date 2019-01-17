@@ -16,7 +16,7 @@ import { stopLoading, startLoading } from './LoadingActions';
 import { goBackwardRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
-import { logOut } from '../assets/helpers/authentication';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 
 export const startTopicLoading = () => ({ type: START_TOPIC_LOADING });
 export const stopTopicLoading = () => ({ type: STOP_TOPIC_LOADING });
@@ -35,22 +35,37 @@ export const createTopic = (dataObj, navigation, createTopicErrorCB) => dispatch
   data.append('topic_id', uuidv4());
   data.append('clientImage', dataObj.clientImage);
 
-  axios.post(`${ROOT_URL}/api/topics/create/${dataObj.user_id}`, data, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-    .then(response => {
-      dispatch(stopLoading());
-      if (response.data.success) {
-        dispatch({
-          type: CREATE_TOPIC,
-          payload: response.data.topic
+  getCookie()
+    .then(cookie => {
+      axios.post(`${ROOT_URL}/api/topics/create/${dataObj.user_id}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopLoading());
+          if (response.data.success) {
+            dispatch({
+              type: CREATE_TOPIC,
+              payload: response.data.topic
+            });
+            // QUESTION: Navigate to topic screen?
+            dispatch(goBackwardRoute());
+            navigation.pop();
+          } else {
+            createTopicErrorCB(response.data.message);
+          }
+        })
+        .catch(error => {
+          dispatch(stopLoading());
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-        // QUESTION: Navigate to topic screen?
-        dispatch(goBackwardRoute());
-        navigation.pop();
-      } else {
-        createTopicErrorCB(response.data.error);
-      }
     })
     .catch(error => {
       dispatch(stopLoading());
@@ -68,26 +83,46 @@ export const getSubscribedTopics = (id, refresh, order, direction, navigation) =
   } else if (refresh === false) {
     dispatch(startTopicLoading());
   }
-  axios.get(`${ROOT_URL}/api/topics/subscribed/${id}?order=${order}&direction=${direction}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopTopicRefreshing());
-      } else if (refresh === false) {
-        dispatch(stopTopicLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_SUBSCRIBED_TOPICS,
-          payload: response.data.result
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/topics/subscribed/${id}?order=${order}&direction=${direction}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopTopicRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopTopicLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_SUBSCRIBED_TOPICS,
+              payload: response.data.result
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopTopicRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopTopicLoading());
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -113,7 +148,22 @@ export const subscribeTopic = (userID, topicID) => dispatch => {
     type: SUBSCRIBE_TOPIC,
     payload: topicID
   });
-  axios.post(`${ROOT_URL}/api/topics/subscribe/${userID}`, { topic_id: topicID })
+  getCookie()
+    .then(cookie => {
+      axios.post(`${ROOT_URL}/api/topics/subscribe/${userID}`, { topic_id: topicID }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
@@ -128,7 +178,22 @@ export const unsubscribeTopic = (userID, topicID) => dispatch => {
     type: UNSUBSCRIBE_TOPIC,
     payload: topicID
   });
-  axios.delete(`${ROOT_URL}/api/topics/unsubscribe/${userID}`, { topic_id: topicID })
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/topics/unsubscribe/${userID}`, { topic_id: topicID }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);

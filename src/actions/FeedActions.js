@@ -10,7 +10,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
-import { logOut } from '../assets/helpers/authentication';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 
 export const startFeedLoading = () => ({ type: START_FEED_LOADING });
 export const stopFeedLoading = () => ({ type: STOP_FEED_LOADING });
@@ -26,39 +26,50 @@ export const getUserFeed = (id, refresh, order, direction, lastID, lastData, nav
     dispatch(startInitialFeedLoading());
   }
 
-  axios.get(`${ROOT_URL}/api/feed/${id}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
-    headers: {
-      'Cookie': 'TODO: set cookie here for request'
-    },
-    withCredentials: true
-  })
-    .then(response => {
-      console.log(response);
-      if (refresh === true) {
-        dispatch(stopFeedLoading());
-      } else if (refresh === false) {
-        dispatch(stopInitialFeedLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_USER_FEED,
-          payload: response.data.feed
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/feed/${id}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopFeedLoading());
+          } else if (refresh === false) {
+            dispatch(stopInitialFeedLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_USER_FEED,
+              payload: response.data.feed
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopFeedLoading());
+          } else if (refresh === false) {
+            dispatch(stopInitialFeedLoading());
+          }
+          if (error.message) {
+            handleError(error, false);
+          } else if (error.response && Object.keys(error.response.data).length > 0) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
-      if (refresh === true) {
-        dispatch(stopFeedLoading());
-      } else if (refresh === false) {
-        dispatch(stopInitialFeedLoading());
-      }
       if (error.message) {
         handleError(error, false);
       } else if (error.response && Object.keys(error.response.data).length > 0) {

@@ -12,7 +12,7 @@ import {
   GET_USER_FRIENDS,
 } from './types';
 import { ROOT_URL } from '../constants/variables';
-import { removeCredentials } from './AuthActions';
+import { removeCredentials, logOut, getCookie } from '../assets/helpers/authentication';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
 import {
   storeUserScreenInfoSuccess,
@@ -23,7 +23,6 @@ import {
   stopInitialUserLoading,
 } from './ScreenActions';
 import { handleError } from '../assets/helpers/errors';
-import { logOut } from '../assets/helpers/authentication';
 
 export const getUserInfo = (userID, targetID, isRefresh, screenID, currentTab, order, direction, lastID, lastData, navigation) => dispatch => {
   if (isRefresh) {
@@ -32,56 +31,64 @@ export const getUserInfo = (userID, targetID, isRefresh, screenID, currentTab, o
     dispatch(startInitialUserLoading(userID, screenID));
   }
 
-  // userID used for getting liked posts
-  axios.get(`${ROOT_URL}/api/user/${targetID}?user_id=${userID}&current_tab=${currentTab}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (isRefresh) {
-        dispatch(stopUserScreenRefreshing(userID, screenID));
-      } else {
-        dispatch(stopInitialUserLoading(userID, screenID));
-      }
+  getCookie()
+    .then(cookie => {
+      // userID used for getting liked posts
+      axios.get(`${ROOT_URL}/api/user/${targetID}?user_id=${userID}&current_tab=${currentTab}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (isRefresh) {
+            dispatch(stopUserScreenRefreshing(userID, screenID));
+          } else {
+            dispatch(stopInitialUserLoading(userID, screenID));
+          }
 
-      // If own account
-      if (userID === targetID) {
-        if (response.data.success) { // If own account exists in database
-          dispatch(storeUserInfo(response.data.user));
-          dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
-        } else { // If own account does not exist in database, then log out to Welcome screen
-          removeCredentials()
-            .then(() => {
+          // If own account
+          if (userID === targetID) {
+            if (response.data.success) { // If own account exists in database
+              dispatch(storeUserInfo(response.data.user));
+              dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
+            } else { // If own account does not exist in database, then log out to Welcome screen
+              removeCredentials()
+                .then(() => {
+                  alertWithSingleAction(
+                    'Oh no!',
+                    'Your account does not exist or has been deleted. If this persists, please contact the development team.',
+                    () => dispatch(logOut(navigation)),
+                    'Log Out'
+                  );
+                })
+                .catch(error => {
+                  handleError(new Error(error.message), true);
+                });
+            }
+          } else if (response.data.success) {
+            dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
+          } else if (isRefresh) {
               alertWithSingleAction(
                 'Oh no!',
-                'Your account does not exist or has been deleted. If this persists, please contact the development team.',
-                () => dispatch(logOut(navigation)),
-                'Log Out'
+                response.data.message
               );
-            })
-            .catch(error => {
-              handleError(new Error(error.message), true);
-            });
-        }
-      } else if (response.data.success) {
-        dispatch(storeUserScreenInfoSuccess(response.data.user, screenID));
-      } else if (isRefresh) {
-          alertWithSingleAction(
-            'Oh no!',
-            response.data.error
-          );
-      } else {
-        dispatch(storeUserScreenInfoFailure(targetID, screenID));
-      }
-    })
-    .catch(error => {
-      if (isRefresh) {
-        dispatch(stopUserScreenRefreshing(userID, screenID));
-      } else {
-        dispatch(stopInitialUserLoading(userID, screenID));
-      }
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
+          } else {
+            dispatch(storeUserScreenInfoFailure(targetID, screenID));
+          }
+        })
+        .catch(error => {
+          if (isRefresh) {
+            dispatch(stopUserScreenRefreshing(userID, screenID));
+          } else {
+            dispatch(stopInitialUserLoading(userID, screenID));
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     });
 };
 
@@ -91,30 +98,45 @@ export const getFriends = (userID, targetID, order, direction, lastID, lastData,
   if (loading === true) {
     // TODO: Dispatch initial loading for ViewProfileScreen - ScreenReducer.profiles.friends
   }
-  axios.get(`${ROOT_URL}/api/user/get-friends/${targetID}?user_id=${userID}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (response.data.success) {
-        if (screenID) { // If in ViewProfileScreen
-          // TODO: Dispatch a screen reducer action here to update friends prop in ScreenReducer.profiles
-        } else { // If in SocialScreen
-          dispatch({
-            type: GET_USER_FRIENDS,
-            payload: response.data.friends
-          });
-        }
-      } else if (userID === targetID) {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error
-        );
-      }
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/user/get-friends/${targetID}?user_id=${userID}&order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (response.data.success) {
+            if (screenID) { // If in ViewProfileScreen
+              // TODO: Dispatch a screen reducer action here to update friends prop in ScreenReducer.profiles
+            } else { // If in SocialScreen
+              dispatch({
+                type: GET_USER_FRIENDS,
+                payload: response.data.friends
+              });
+            }
+          } else if (userID === targetID) {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message
+            );
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       if (error.response) {
@@ -146,17 +168,33 @@ export const stopFindPartnerLoading = screenID => ({
 
 export const findPartnerCode = (code, screenID = null) => dispatch => {
   dispatch(startFindPartnerLoading(screenID));
-  axios.get(`${ROOT_URL}/api/partner/find-code/${code}`)
-    .then(response => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (response.data.success) {
-        dispatch({
-          type: STORE_PARTNER_RESULT_SUCCESS,
-          payload: response.data.user
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/partner/find-code/${code}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopFindPartnerLoading(screenID));
+          if (response.data.success) {
+            dispatch({
+              type: STORE_PARTNER_RESULT_SUCCESS,
+              payload: response.data.user
+            });
+          } else {
+            dispatch({ type: STORE_PARTNER_RESULT_FAILURE });
+          }
+        })
+        .catch(error => {
+          dispatch(stopFindPartnerLoading(screenID));
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        dispatch({ type: STORE_PARTNER_RESULT_FAILURE });
-      }
     })
     .catch(error => {
       dispatch(stopFindPartnerLoading(screenID));
@@ -172,21 +210,37 @@ export const removePartnerResult = () => ({ type: REMOVE_PARTNER_RESULT });
 
 export const acceptResult = (userID, partnerID, screenID = null) => dispatch => {
   dispatch(startFindPartnerLoading(screenID));
-  axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID })
-    .then(response => {
-      dispatch(stopFindPartnerLoading(screenID));
-      if (response.data.success) {
-        // TODO: Finish this later - add response.data.partner to global redux state
-        dispatch({
-          type: ACCEPT_PARTNER_RESULT_SUCCESS,
-          payload: response.data
+  getCookie()
+    .then(cookie => {
+      axios.put(`${ROOT_URL}/api/partner/accept`, { userID, partnerID }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopFindPartnerLoading(screenID));
+          if (response.data.success) {
+            // TODO: Finish this later - add response.data.partner to global redux state
+            dispatch({
+              type: ACCEPT_PARTNER_RESULT_SUCCESS,
+              payload: response.data
+            });
+          } else {
+            dispatch({
+              type: ACCEPT_PARTNER_RESULT_FAILURE,
+              payload: response.data.message
+            });
+          }
+        })
+        .catch(error => {
+          dispatch(stopFindPartnerLoading(screenID));
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        dispatch({
-          type: ACCEPT_PARTNER_RESULT_FAILURE,
-          payload: response.data.error
-        });
-      }
     })
     .catch(error => {
       dispatch(stopFindPartnerLoading(screenID));

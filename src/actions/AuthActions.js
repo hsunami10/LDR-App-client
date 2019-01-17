@@ -11,33 +11,13 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { navigateToRoute, pushTabRoute } from './NavigationActions';
 import { handleError } from '../assets/helpers/errors';
-
-// Only called when from log in / sign up screen
-export const storeCredentials = async id => {
-  try {
-    await Keychain.setGenericPassword(id, 'true');
-    return Promise.resolve(id);
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-
-export const removeCredentials = async () => {
-  try {
-    await Keychain.resetGenericPassword();
-    return Promise.resolve();
-  } catch (e) {
-    return Promise.reject(`Unable to access keychain. ${e.message}`);
-  }
-};
-
-// Resets all app state to initial states
-export const logOutUser = () => dispatch => {
-  axios.get(`${ROOT_URL}/api/logout`, { withCredentials: true })
-    .then(() => {
-      dispatch({ type: LOG_OUT_USER });
-    });
-};
+import {
+  getCredentials,
+  storeUsernameCredentials,
+  storeCookie,
+  getCookie,
+  removeCredentials,
+} from '../assets/helpers/authentication';
 
 export const setAuthErrors = (screen, errorField, errorMsg, success = false) => ({
   type: SET_AUTH_ERRORS,
@@ -57,7 +37,9 @@ export const resetAuthErrors = screen => ({
 export const setNotFirstLogIn = id => dispatch => {
   (async () => {
     try {
-      await Keychain.setGenericPassword(id, 'false');
+      const credentials = await getCredentials();
+      credentials.username.id = id;
+      await Keychain.setGenericPassword(JSON.stringify(credentials.username), 'false');
     } finally {
       dispatch({ type: SET_NOT_FIRST_LOG_IN });
     }
@@ -103,15 +85,17 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
   axios.post(`${ROOT_URL}/api/login`, {
     username: userObj.username,
     password: userObj.password
-  }, { withCredentials: true })
+  })
     .then(response => {
       dispatch(stopLoading());
-      storeCredentials(response.data.id)
+      storeUsernameCredentials(response.data.id, '')
         .then(id => {
-          dispatch(setUserCredentials(id, true));
-          dispatch(pushTabRoute('home', null));
-          navigation.navigate('App');
-          resetEverything();
+          logInCallback(() => {
+            dispatch(setUserCredentials(id, true));
+            dispatch(pushTabRoute('home', null));
+            navigation.navigate('App');
+            resetEverything();
+          });
         })
         .catch(error => {
           handleError(new Error(`Unable to access keychain. ${error.message}`), true);
@@ -131,20 +115,150 @@ export const logInWithUsernameAndPassword = (userObj, navigation, resetEverythin
     });
 };
 
+export const logInCallback = callback => {
+  axios.get(`${ROOT_URL}/api/login/callback`, { withCredentials: true })
+    .then(response => {
+      storeCookie(response.data.cookie)
+        .then(() => callback())
+        .catch(error => {
+          handleError(new Error(`Unable to access keychain. ${error.message}`), true);
+        });
+    })
+    .catch(error => {
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+// Resets all app state to initial states
+export const logOutUser = () => dispatch => {
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/logout`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(() => {
+          removeCredentials()
+            .then(() => {
+              dispatch({ type: LOG_OUT_USER });
+            })
+            .catch(error => {
+              handleError(new Error(error.message), true);
+            });
+        })
+        .catch(error => {
+          removeCredentials()
+            .then(() => {
+              if (error.response) {
+                handleError(error.response.data, false);
+              } else {
+                handleError(error, false);
+              }
+            })
+            .catch(err => {
+              handleError(new Error(err.message), true);
+            });
+        });
+    })
+    .catch(error => {
+      if (error.message) {
+        handleError(error, false);
+      } else if (error.response && Object.keys(error.response.data).length > 0) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
 // ========================================== Signing Up ==========================================
 export const sendVerificationEmail = (id, email) => dispatch => {
   dispatch(startLoading());
-  axios.post(`${ROOT_URL}/api/send-verification-email`, { id, email })
+  getCookie()
+    .then(cookie => {
+      axios.post(`${ROOT_URL}/api/send-verification-email`, { id, email }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopLoading());
+          if (response.data.success) {
+            dispatch(setAuthErrors('verify_email', '', response.data.msg, true));
+          } else {
+            dispatch(setAuthErrors('verify_email', 'email', response.data.msg));
+          }
+        })
+        .catch(error => {
+          dispatch(stopLoading());
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
+    .catch(error => {
+      if (error.message) {
+        handleError(error, false);
+      } else if (error.response && Object.keys(error.response.data).length > 0) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+// ========================================== Signing Up ==========================================
+export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => dispatch => {
+  dispatch(startLoading());
+  axios.post(`${ROOT_URL}/api/signup`, userObj)
     .then(response => {
       dispatch(stopLoading());
-      if (response.data.success) {
-        dispatch(setAuthErrors('verify_email', '', response.data.msg, true));
+      if (response.data.msg) {
+        dispatch(setAuthErrors('sign_up', 'username', response.data.msg)); // Username already taken
       } else {
-        dispatch(setAuthErrors('verify_email', 'email', response.data.msg));
+        storeUsernameCredentials(response.data.id, '') // Store user ID
+          .then(id => {
+            signUpCallback( // Start and store user session
+              userObj.username,
+              userObj.password,
+              () => {
+                dispatch(setUserCredentials(id, true));
+                dispatch(navigateToRoute('CreateProfile'));
+                navigation.navigate('CreateProfile');
+                resetEverything();
+              }
+            );
+          })
+          .catch(error => {
+            handleError(new Error(`Unable to access keychain. ${error.message}`), true);
+          });
       }
     })
     .catch(error => {
       dispatch(stopLoading());
+      if (error.response) {
+        handleError(error.response.data, false);
+      } else {
+        handleError(error, false);
+      }
+    });
+};
+
+// Only invoked on signing up, because cannot start session until there is an entry in database for the user
+// Gets and stores user session cookie
+export const signUpCallback = (username, password, callback) => {
+  axios.post(`${ROOT_URL}/api/signup/callback`, { username, password }, { withCredentials: true })
+    .then(() => logInCallback(callback))
+    .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
       } else {
@@ -163,63 +277,36 @@ export const createProfile = (dataObj, navigation, resetEverything) => dispatch 
   data.append('bio', dataObj.bio);
   data.append('code', dataObj.code);
   data.append('clientImage', dataObj.clientImage);
-  console.log(data);
 
-  axios.put(`${ROOT_URL}/api/profile/create`, data, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  })
-    .then(() => {
-      dispatch(stopLoading());
-      dispatch(navigateToRoute('VerifyEmail'));
-      navigation.navigate('VerifyEmail');
-      resetEverything();
+  getCookie()
+    .then(cookie => {
+      console.log('create profile cookie: ' + cookie);
+      axios.put(`${ROOT_URL}/api/profile/create`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(() => {
+          dispatch(stopLoading());
+          dispatch(navigateToRoute('VerifyEmail'));
+          navigation.navigate('VerifyEmail');
+          resetEverything();
+        })
+        .catch(error => {
+          dispatch(stopLoading());
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
-      dispatch(stopLoading());
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
+      if (error.message) {
         handleError(error, false);
-      }
-    });
-};
-
-// ========================================== Signing Up ==========================================
-export const signUpWithUsernameAndPassword = (userObj, navigation, resetEverything) => dispatch => {
-  dispatch(startLoading());
-  axios.post(`${ROOT_URL}/api/signup`, userObj)
-    .then(response => {
-      dispatch(stopLoading());
-      if (response.data.msg) {
-        dispatch(setAuthErrors('sign_up', 'username', response.data.msg)); // Username already taken
-      } else {
-        storeCredentials(response.data.id)
-          .then(id => {
-            startSession(userObj.username, userObj.password);
-            dispatch(setUserCredentials(id, true));
-            dispatch(navigateToRoute('CreateProfile'));
-            navigation.navigate('CreateProfile');
-            resetEverything();
-          })
-          .catch(error => {
-            handleError(new Error(`Unable to access keychain. ${error.message}`), true);
-          });
-      }
-    })
-    .catch(error => {
-      dispatch(stopLoading());
-      if (error.response) {
-        handleError(error.response.data, false);
-      } else {
-        handleError(error, false);
-      }
-    });
-};
-
-export const startSession = (username, password) => {
-  axios.post(`${ROOT_URL}/api/start-session`, { username, password }, { withCredentials: true })
-    .catch(error => {
-      if (error.response) {
+      } else if (error.response && Object.keys(error.response.data).length > 0) {
         handleError(error.response.data, false);
       } else {
         handleError(error, false);

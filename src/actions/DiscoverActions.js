@@ -19,7 +19,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
-import { logOut } from '../assets/helpers/authentication';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 
 // ============================================ Posts ============================================
 export const startInitialDiscoverPostsLoading = () => ({ type: START_INITIAL_DISCOVER_POSTS_LOADING });
@@ -34,26 +34,46 @@ export const getDiscoverPosts = (userID, refresh, order, direction, lastID, last
   } else if (refresh === false) {
     dispatch(startInitialDiscoverPostsLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/posts/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopDiscoverPostsRefreshing());
-      } else if (refresh === false) {
-        dispatch(stopInitialDiscoverPostsLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_DISCOVER_POSTS,
-          payload: response.data.result
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/discover/posts/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopDiscoverPostsRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverPostsLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_DISCOVER_POSTS,
+              payload: response.data.result
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopDiscoverPostsRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverPostsLoading());
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -82,26 +102,41 @@ export const getDiscoverUsers = (userID, refresh, order, direction, lastID, last
   } else if (refresh === false) {
     dispatch(startInitialDiscoverUsersLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/users/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopDiscoverUsersRefreshing());
-      } else if (refresh === false) {
-        dispatch(stopInitialDiscoverUsersLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_DISCOVER_USERS,
-          payload: response.data.result
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/discover/users/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopDiscoverUsersRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverUsersLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_DISCOVER_USERS,
+              payload: response.data.result
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopDiscoverUsersRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverUsersLoading());
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {
@@ -131,26 +166,46 @@ export const getDiscoverTopics = (userID, refresh, order, direction, lastID, las
   } else if (refresh === false) {
     dispatch(startInitialDiscoverTopicsLoading());
   }
-  axios.get(`${ROOT_URL}/api/discover/topics/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh === true) {
-        dispatch(stopDiscoverTopicsRefreshing());
-      } else if (refresh === false) {
-        dispatch(stopInitialDiscoverTopicsLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_DISCOVER_TOPICS,
-          payload: response.data.result
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/discover/topics/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh === true) {
+            dispatch(stopDiscoverTopicsRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverTopicsLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_DISCOVER_TOPICS,
+              payload: response.data.result
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh === true) {
+            dispatch(stopDiscoverTopicsRefreshing());
+          } else if (refresh === false) {
+            dispatch(stopInitialDiscoverTopicsLoading());
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh === true) {

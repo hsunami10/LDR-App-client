@@ -18,7 +18,7 @@ import {
 import { ROOT_URL } from '../constants/variables';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
-import { logOut } from '../assets/helpers/authentication';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 
 export const deleteUser = id => ({ type: DELETE_USER, payload: id });
 
@@ -34,26 +34,46 @@ export const getSocialInfo = (userID, refresh, lastID, lastData, navigation) => 
   } else {
     dispatch(startInitialSocialLoading());
   }
-  axios.get(`${ROOT_URL}/api/social/${userID}?last_id=${lastID}&last_data=${lastData}`)
-    .then(response => {
-      if (refresh) {
-        dispatch(stopSocialRefreshing());
-      } else {
-        dispatch(stopInitialSocialLoading());
-      }
-      if (response.data.success) {
-        dispatch({
-          type: GET_SOCIAL_INFO,
-          payload: response.data.social
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/social/${userID}?last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (refresh) {
+            dispatch(stopSocialRefreshing());
+          } else {
+            dispatch(stopInitialSocialLoading());
+          }
+          if (response.data.success) {
+            dispatch({
+              type: GET_SOCIAL_INFO,
+              payload: response.data.social
+            });
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(logOut(navigation)),
+              'Log Out'
+            );
+          }
+        })
+        .catch(error => {
+          if (refresh) {
+            dispatch(stopSocialRefreshing());
+          } else {
+            dispatch(stopInitialSocialLoading());
+          }
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
         });
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(logOut(navigation)),
-          'Log Out'
-        );
-      }
     })
     .catch(error => {
       if (refresh) {
@@ -80,15 +100,30 @@ export const sendFriendRequest = (userID, targetID) => dispatch => {
     type: SEND_FRIEND_REQUEST,
     payload: targetID
   });
-  axios.post(`${ROOT_URL}/api/social/send-friend-request/${userID}`, { targetID })
-    .then(response => {
-      if (!response.data.success) {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(removeFriendRequest(targetID))
-        );
-      }
+  getCookie()
+    .then(cookie => {
+      axios.post(`${ROOT_URL}/api/social/send-friend-request/${userID}`, { targetID }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (!response.data.success) {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(removeFriendRequest(targetID))
+            );
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       if (error.response) {
@@ -104,15 +139,30 @@ export const acceptFriendRequest = (userID, targetID) => dispatch => {
     type: ACCEPT_FRIEND_REQUEST,
     payload: targetID
   });
-  axios.post(`${ROOT_URL}/api/social/accept-friend-request/${userID}`, { targetID })
-    .then(response => {
-      if (!response.data.success) {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          () => dispatch(removeFriendRequest(targetID))
-        );
-      }
+  getCookie()
+    .then(cookie => {
+      axios.post(`${ROOT_URL}/api/social/accept-friend-request/${userID}`, { targetID }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          if (!response.data.success) {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              () => dispatch(removeFriendRequest(targetID))
+            );
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       if (error.response) {
@@ -128,7 +178,22 @@ export const rejectFriendRequest = (userID, targetID) => dispatch => {
     type: REJECT_FRIEND_REQUEST,
     payload: targetID
   });
-  axios.delete(`${ROOT_URL}/api/social/reject-friend-request/${userID}?target_id=${targetID}`)
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/social/reject-friend-request/${userID}?target_id=${targetID}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
@@ -149,7 +214,22 @@ export const cancelPendingRequest = (userID, targetID) => dispatch => {
     type: CANCEL_PENDING_REQUEST,
     payload: targetID
   });
-  axios.delete(`${ROOT_URL}/api/social/cancel-pending/${userID}?target_id=${targetID}`)
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/social/cancel-pending/${userID}?target_id=${targetID}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);
@@ -170,7 +250,22 @@ export const unfriendUser = (userID, targetID) => dispatch => {
     type: UNFRIEND_USER,
     payload: targetID
   });
-  axios.delete(`${ROOT_URL}/api/social/unfriend/${userID}?target_id=${targetID}`)
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/social/unfriend/${userID}?target_id=${targetID}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .catch(error => {
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
+    })
     .catch(error => {
       if (error.response) {
         handleError(error.response.data, false);

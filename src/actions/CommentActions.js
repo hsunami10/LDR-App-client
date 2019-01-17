@@ -7,6 +7,7 @@ import { ROOT_URL } from '../constants/variables';
 import { stopLoading, startLoading } from './LoadingActions';
 import { handleError } from '../assets/helpers/errors';
 import { alertWithSingleAction } from '../assets/helpers/alerts';
+import { logOut, getCookie } from '../assets/helpers/authentication';
 import {
   startCommentsPageLoading,
   stopCommentsPageLoading,
@@ -15,18 +16,34 @@ import {
 
 export const getComments = (userID, postID, screenID, lastID, lastData, noPostCB) => dispatch => {
   dispatch(startCommentsPageLoading(postID, screenID));
-  axios.get(`${ROOT_URL}/api/comments/${userID}?last_id=${lastID}&last_date=${lastData}&post_id=${postID}`)
-    .then(response => {
-      dispatch(stopCommentsPageLoading(postID, screenID));
-      if (response.data.success) {
-        dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, false));
-      } else {
-        alertWithSingleAction(
-          'Oh no!',
-          response.data.error,
-          noPostCB
-        );
-      }
+  getCookie()
+    .then(cookie => {
+      axios.get(`${ROOT_URL}/api/comments/${userID}?last_id=${lastID}&last_date=${lastData}&post_id=${postID}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          dispatch(stopCommentsPageLoading(postID, screenID));
+          if (response.data.success) {
+            dispatch(storeCommentsScreenInfo(response.data.comments, postID, screenID, false));
+          } else {
+            alertWithSingleAction(
+              'Oh no!',
+              response.data.message,
+              noPostCB
+            );
+          }
+        })
+        .catch(error => {
+          dispatch(stopCommentsPageLoading(postID, screenID));
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       dispatch(stopCommentsPageLoading(postID, screenID));
@@ -44,10 +61,26 @@ const deleteCommentAction = (postID, commentID) => ({
 });
 export const deleteComment = (userID, postID, commentID) => dispatch => {
   dispatch(startLoading());
-  axios.delete(`${ROOT_URL}/api/comments/${commentID}?user_id=${userID}&post_id=${postID}`)
-    .then(() => {
-      dispatch(stopLoading());
-      dispatch(deleteCommentAction(postID, commentID));
+  getCookie()
+    .then(cookie => {
+      axios.delete(`${ROOT_URL}/api/comments/${commentID}?user_id=${userID}&post_id=${postID}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(() => {
+          dispatch(stopLoading());
+          dispatch(deleteCommentAction(postID, commentID));
+        })
+        .catch(error => {
+          dispatch(stopLoading());
+          if (error.response) {
+            handleError(error.response.data, false);
+          } else {
+            handleError(error, false);
+          }
+        });
     })
     .catch(error => {
       dispatch(stopLoading());
@@ -70,10 +103,27 @@ export const editComment = obj => dispatch => {
       comment
     }
   });
-  axios.put(`${ROOT_URL}/api/comments/${userID}`, { type, comment })
-    .then(response => {
-      console.log(response.status);
-      console.log('TODO: do something here after editing comment');
+
+  getCookie()
+    .then(cookie => {
+      axios.put(`${ROOT_URL}/api/comments/${userID}`, { type, comment }, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
+        .then(response => {
+          console.log(response.status);
+          console.log('TODO: do something here after editing comment');
+        })
+        .catch(error => {
+          // 1 possible error: foreign key violation comments
+          if (error.response) {
+            handleError(error.response.data, false, () => dispatch(deleteCommentAction(comment.post_id, comment.id)));
+          } else {
+            handleError(error, false, () => dispatch(deleteCommentAction(comment.post_id, comment.id)));
+          }
+        });
     })
     .catch(error => {
       // 1 possible error: foreign key violation comments
