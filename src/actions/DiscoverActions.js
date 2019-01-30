@@ -104,7 +104,12 @@ export const getDiscoverUsers = (userID, refresh, order, direction, lastID, last
   }
   getCookie()
     .then(cookie => {
-      axios.get(`${ROOT_URL}/api/discover/users/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`)
+      axios.get(`${ROOT_URL}/api/discover/users/${userID}?order=${order}&direction=${direction}&last_id=${lastID}&last_data=${lastData}`, {
+        headers: {
+          Cookie: cookie
+        },
+        withCredentials: true
+      })
         .then(response => {
           if (refresh === true) {
             dispatch(stopDiscoverUsersRefreshing());

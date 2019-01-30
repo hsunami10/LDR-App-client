@@ -180,7 +180,7 @@ export const unsubscribeTopic = (userID, topicID) => dispatch => {
   });
   getCookie()
     .then(cookie => {
-      axios.delete(`${ROOT_URL}/api/topics/unsubscribe/${userID}`, { topic_id: topicID }, {
+      axios.delete(`${ROOT_URL}/api/topics/unsubscribe/${userID}?topic_id=${topicID}`, {
         headers: {
           Cookie: cookie
         },

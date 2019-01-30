@@ -1,3 +1,9 @@
+TODO: Handle error code 401 (Unauthorized)
+
+- NOTE: might have to blacklist users for specific posts
+- get rid of partner code
+- change friends to followers - one-way
+
 Notifications
 - What to include:
   - replying to you in comments
