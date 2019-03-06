@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet, Dimensions, Keyboard, Text, Button } from 'react-native';
+import { View, StyleSheet, Dimensions, Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import Permissions from 'react-native-permissions';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -12,23 +12,15 @@ import {
   DismissKeyboard,
   MultiLineInput,
   FullScreenLoading,
-  Input
 } from '../../components/common';
 import { alertPermission, checkPermission } from '../../assets/helpers/permissions';
 import { createProfile } from '../../actions/AuthActions';
-import { findPartnerCode, removePartnerResult, acceptResult } from '../../actions/UserActions';
-import PartnerRequestCard from '../../components/user/PartnerRequestCard';
 
 // BUG: Cannot change crop rect dimension with ImagePicker
-// TODO: Have a prompt to enter a partner's code
-// Once that input is submitted, query database
-//  - If partner is found, then show a card with success message, and user is able to click on the card to ViewProfileScreen
-//  - If partner is NOT found, then show error message
 class CreateProfileScreen extends Component {
   state = {
     code: '',
     bio: '',
-    loading: false, // For querying partner
     image: null
   }
 
@@ -54,12 +46,8 @@ class CreateProfileScreen extends Component {
     }
   }
 
-  submitCode = () => this.props.findPartnerCode(this.state.code)
-  acceptResult = () => this.props.acceptResult(this.props.id, this.props.partner_result.id)
-  cancelResult = () => this.props.removePartnerResult()
-  resetEverything = () => this.setState(() => ({ loading: false, image: null }))
+  resetEverything = () => this.setState(() => ({ image: null }))
   handleChangeBio = bio => this.setState(() => ({ bio }))
-  handleChangeCode = code => this.setState(() => ({ code }))
   showActionSheet = () => this.ActionSheet.show()
   ref = o => (this.ActionSheet = o)
 
@@ -69,7 +57,6 @@ class CreateProfileScreen extends Component {
       {
         id: this.props.id,
         bio: this.state.bio,
-        code: this.state.code,
         clientImage: this.state.image || null
       },
       this.props.navigation,
@@ -174,24 +161,6 @@ class CreateProfileScreen extends Component {
               height={Dimensions.get('window').width - 250}
               containerStyle={{ marginTop: 10 }}
             />
-            <Text>Have a partner?</Text>
-            <Input
-              placeholder="Enter the code here"
-              value={this.state.code}
-              onChangeText={this.handleChangeCode}
-            />
-            <PartnerRequestCard
-              user={this.props.partner_result}
-              loading={this.props.find_partner_loading}
-              message={this.props.partner_error_msg}
-              cancelResult={this.cancelResult}
-              acceptResult={this.acceptResult}
-            />
-            <Button
-              title="Find Partner"
-              onPress={this.submitCode}
-              disabled={this.props.find_partner_loading || this.state.code.trim() === ''}
-            />
           </View>
           <ActionSheet
             ref={this.ref}
@@ -214,13 +183,7 @@ class CreateProfileScreen extends Component {
 CreateProfileScreen.propTypes = {
   createProfile: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-  partner_error_msg: PropTypes.string.isRequired,
-  findPartnerCode: PropTypes.func.isRequired,
-  find_partner_loading: PropTypes.bool.isRequired,
-  removePartnerResult: PropTypes.func.isRequired,
-  acceptResult: PropTypes.func.isRequired,
-  partner_result: PropTypes.object,
+  loading: PropTypes.bool.isRequired
 };
 
 const styles = StyleSheet.create({
@@ -234,15 +197,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   id: state.auth.id,
-  loading: state.loading,
-  partner_error_msg: state.user.partner_error_msg,
-  find_partner_loading: state.user.find_partner_loading,
-  partner_result: state.user.partner_result
+  loading: state.loading
 });
 
-export default connect(mapStateToProps, {
-  createProfile,
-  findPartnerCode,
-  removePartnerResult,
-  acceptResult
-})(CreateProfileScreen);
+export default connect(mapStateToProps, { createProfile })(CreateProfileScreen);

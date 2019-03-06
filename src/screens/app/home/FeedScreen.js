@@ -30,7 +30,6 @@ https://stackoverflow.com/questions/11828772/postgresql-combine-multiple-select-
 TODO: Figure out how to get and organize data from database
 Things to keep in mind:
   Exclude:
-    - partner's aliases
     - blocked users
   Include:
     - topics subscribed to

@@ -40,11 +40,11 @@ export const alertPermission = (permissionStatus, requestPermissionCallback, typ
       break;
     case 'location':
       title = 'Can we access your location?';
-      msg = 'We need access so you can find posts near you and update your partner.';
+      msg = 'We need access so you can find posts near you.';
       break;
     case 'notification':
       title = 'Can we send you notifications?';
-      msg = 'You may like notifications for subscribed topics and users, and updates on your partner.';
+      msg = 'You may like notifications for subscribed topics and users.';
       break;
     case 'photo':
       title = 'Can we access your photos?';

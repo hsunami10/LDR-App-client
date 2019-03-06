@@ -1,7 +1,6 @@
 TODO: Handle error code 401 (Unauthorized)
 
 - NOTE: might have to blacklist users for specific posts
-- get rid of partner code
 - change friends to followers - one-way
 
 Notifications
@@ -50,7 +49,7 @@ Notifications
 - find a way to shrink the SocialScreen's SectionList by clicking on section title? - react-native-collapsible
 - handle truncating text that overflows
 
-NOTE - always take blocked users and partners hidden (only posts) into account (exclude)
+NOTE - always take blocked users (only posts) into account (exclude)
 
 NOTE - for REMOVE_FRIEND action, they might have to be handled in other reducers - CHANGE IN ViewProfileScreen - Friends Tab
 

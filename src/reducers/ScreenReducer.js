@@ -16,14 +16,7 @@ import {
   INIT_POST_SCREEN_INFO,
   START_COMMENTS_PAGE_LOADING,
   STOP_COMMENTS_PAGE_LOADING,
-
-  ACCEPT_PARTNER_RESULT_SUCCESS,
-  STORE_PARTNER_RESULT_SUCCESS,
-  REMOVE_PARTNER_RESULT,
-  START_FIND_PARTNER_LOADING,
-  STOP_FIND_PARTNER_LOADING,
 } from '../actions/types';
-import { NO_PARTNER_FOUND_MSG } from '../constants/noneMessages';
 
 // NOTE: Only use this if there will be MULTIPLE screens with DIFFERENT data
 // Or if it would be the same for all screens (ex: post likes - posts.post_likes)
@@ -42,15 +35,6 @@ const INITIAL_STATE = {
   topics: {
     // ViewTopicScreen - topic_id : { screen_id1: {}, screen_id2: {}, ... }, topic_id2...
     // Holds all topic information
-  },
-  partners: {
-    // NOTE: Screens for - editing columns in partners table
-    // NOTE: Have these for each partners screen
-    // One for generating a code (for someone else to enter the code)
-    // Another for entering the code
-    generate_code_loading: false,
-    find_partner_loading: false,
-    partner_error_msg: NO_PARTNER_FOUND_MSG
   }
 };
 
@@ -58,19 +42,6 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOG_OUT_USER:
       return INITIAL_STATE;
-
-    case START_FIND_PARTNER_LOADING:
-      if (action.payload) {
-        // TODO: Finish this
-        console.log('return and change screen state here');
-      }
-      return state;
-    case STOP_FIND_PARTNER_LOADING:
-      // TODO: Finish this
-      if (action.payload) {
-        console.log('return and change screen state here');
-      }
-      return state;
 
     case STORE_COMMENTS_SCREEN_INFO:
       const copyPosts = { ...state.posts };

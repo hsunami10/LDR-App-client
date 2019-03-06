@@ -13,9 +13,6 @@ export const NO_SUBSCRIBED_TOPICS_MSG = 'You are not currently subscribed to any
 // Feed
 export const EMPTY_FEED_MSG = 'Oh no, you have nothing! Create posts, add friends, or subscribe to topics to view posts on your feed.';
 
-// Partner
-export const NO_PARTNER_FOUND_MSG = 'No Partner Found.';
-
 // Social
 export const NO_FRIEND_REQUESTS_MSG = 'You have no friend requests.';
 export const NO_PENDING_MSG = 'You have no pending requests';
