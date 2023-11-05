@@ -7,7 +7,7 @@ target 'LDR_App_client' do
 
   # Pods for LDR_App_client
   rn_path = '../node_modules/react-native'
-  pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
+  pod 'Yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
   pod 'React', path: rn_path, subspecs: [
     'Core',
     'RCTActionSheet',
