@@ -61,7 +61,6 @@ You have either:
  * mistyped the name or version.
  * not added the source repo that hosts the Podspec to your Podfile.
 ```
-Solution:
-```shell
-
-```
+No viable solution yet...
+- https://github.com/facebook/react-native/issues/25553
+- https://github.com/facebook/react-native/issues/26665
