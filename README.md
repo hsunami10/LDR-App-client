@@ -1,4 +1,5 @@
 # LDR App - Client Side (in development)
+[Server code is here](https://github.com/hsunami10/LDR-App-server)
 ## Troubleshooting
 **yarn start - watchman crawl failed**
 If you get an error like below:
