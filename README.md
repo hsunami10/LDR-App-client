@@ -23,6 +23,10 @@ watchman watch-del-all
 watchman shutdown-server
 ```
 
+**yarn start - failed to construct transformer**
+`Failed to construct transformer:  Error: error:0308010C:digital envelope routines::unsupported`
+Try downgrading Node.js to a previous version. The version that works for me is `v12.3.0`.
+
 **xcrun instruments error**
 ```shell
 xcrun: error: unable to find utility "instruments", not a developer tool or in PATH
