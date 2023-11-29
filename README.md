@@ -9,7 +9,7 @@ If you see `-bash: react-native: command not found`, install it globally using `
 
 ## Troubleshooting
 **yarn start - watchman crawl failed**
-If you get an error like below:
+If you get this error:
 ```shell
 Loading dependency graph...jest-haste-map: Watchman crawl failed. Retrying once with node crawler.
   Usually this happens when watchman isn't running. Create an empty `.watchmanconfig` file in your project's root folder or initialize a git or hg repository in your project.
